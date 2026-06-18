@@ -32,11 +32,13 @@ REQUIRED_FILES = [
     "docs/INSTALL.md",
     "docs/AGENT_INSTALL_ROUTE.md",
     "docs/EXTERNAL_STORAGE.md",
+    "docs/STARTER_PROOF.md",
     "docs/QUERY_MODEL.md",
     "docs/GRAPH_MODEL.md",
     "docs/OPERATIONS.md",
     "docs/LIMITS_AND_ETHICS.md",
     "docs/decisions/README.md",
+    ".github/workflows/validate.yml",
     "src/aoa_4pda_connector/cli.py",
 ]
 
@@ -58,6 +60,7 @@ REQUIRED_DIRS = [
     "evals/intake",
     "evals/reports",
     "generated",
+    ".github/workflows",
 ]
 
 REQUIRED_SCHEMAS = [
@@ -94,6 +97,15 @@ FORBIDDEN_HEAVY_ROOTS = [
     "graphs",
     "exports/full",
 ]
+
+FORBIDDEN_ARTIFACT_DIR_NAMES = {
+    "data",
+    "cache",
+    "artifacts",
+    "raw",
+    "indexes",
+    "graphs",
+}
 
 
 def main() -> int:
@@ -133,6 +145,12 @@ def main() -> int:
         path = repo_root / rel
         if path.exists():
             errors.append(f"heavy artifact path exists inside repository: {rel}")
+
+    for path in repo_root.rglob("*"):
+        if ".git" in path.parts:
+            continue
+        if path.is_dir() and path.name in FORBIDDEN_ARTIFACT_DIR_NAMES:
+            errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")
 
     _check_text(repo_root, errors, warnings)
 
@@ -184,4 +202,3 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
 
 if __name__ == "__main__":
     sys.exit(main())
-

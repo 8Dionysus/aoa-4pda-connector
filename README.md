@@ -21,7 +21,7 @@ large indexes, vector stores, or graph databases.
 | Schemas | `connector/schemas/` |
 | Synthetic fixtures | `connector/fixtures/` |
 | Starter profiles and seeds | `connector/profiles/`, `connector/seeds/` |
-| Install route | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md` |
+| Install and proof routes | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md`, `docs/STARTER_PROOF.md` |
 | Validation | `scripts/validate_connector.py`, `tests/` |
 
 ## Safe Quickstart
@@ -34,6 +34,7 @@ python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
 aoa-4pda policy check
+aoa-4pda proof starter
 ```
 
 The default skeleton does not crawl 4PDA. Crawling requires explicit operator
@@ -63,7 +64,8 @@ indexes -> evidence packets with source URLs
 
 ## Current Status
 
-Starter pipeline is available: bounded public topic crawl, normalization,
-keyword index, tiny graph export, query, and evidence-packet export. It remains
-starter-grade: no attachment downloads, no internal 4PDA search, no broad
-section discovery, no vector index, and no full-corpus mode.
+Starter pipeline is available: offline fixture proof, bounded public topic
+crawl, normalization, keyword index, tiny graph export, query, and
+evidence-packet export. It remains starter-grade: no attachment downloads, no
+internal 4PDA search, no broad section discovery, no vector index, and no
+full-corpus mode.

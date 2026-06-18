@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -66,6 +68,12 @@ def build_parser() -> argparse.ArgumentParser:
     export_packet.add_argument("--query-id", default="fixture-packet-bootloop")
     export_packet.add_argument("--query", default=None)
     export_packet.set_defaults(func=cmd_export_packet)
+
+    proof = sub.add_parser("proof", help="Run reproducible proof routes.")
+    proof_sub = proof.add_subparsers(dest="proof_command", required=True)
+    starter_proof = proof_sub.add_parser("starter", help="Run offline starter proof over fixtures.")
+    starter_proof.add_argument("--query", default="bootloop boot.img firmware")
+    starter_proof.set_defaults(func=cmd_proof_starter)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -369,6 +377,58 @@ def cmd_export_packet(args: argparse.Namespace) -> int:
     path.write_text(json.dumps(packet, ensure_ascii=False, indent=2), encoding="utf-8")
     _emit({"schema": "aoa_4pda_export_packet_v1", "status": "ok", "path": str(path), "network_touched": False})
     return 0
+
+
+def cmd_proof_starter(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    fixture = repo_root / "connector" / "fixtures" / "normalized" / "synthetic_topic.json"
+    with tempfile.TemporaryDirectory(prefix="aoa-4pda-proof-") as tmp:
+        proof_root = Path(tmp)
+        normalized_dir = proof_root / "normalized" / "fixture-starter-proof"
+        normalized_dir.mkdir(parents=True)
+        shutil.copy2(fixture, normalized_dir / "topic-synthetic-topic-1.json")
+
+        index_path = build_keyword_index(normalized_dir, proof_root / "cache" / "indexes", "starter")
+        graph_path = build_graph(normalized_dir, proof_root / "artifacts" / "graphs", "starter")
+        packet = query_keyword_index(index_path, args.query, limit=3)
+
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        graph = json.loads(graph_path.read_text(encoding="utf-8"))
+        first_result = packet["results"][0] if packet.get("results") else {}
+        checks = {
+            "fixture_topic_loaded": fixture.is_file(),
+            "doc_count_is_2": index.get("doc_count") == 2,
+            "term_count_positive": int(index.get("term_count", 0)) > 0,
+            "graph_has_topic_post_entity_nodes": int(graph.get("node_count", 0)) >= 5,
+            "graph_has_edges": int(graph.get("edge_count", 0)) >= 4,
+            "query_returns_bootloop_post": first_result.get("post_id") == "1002",
+            "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+        }
+
+    status = "ok" if all(checks.values()) else "error"
+    _emit(
+        {
+            "schema": "aoa_4pda_starter_proof_v1",
+            "status": status,
+            "profile_id": "starter",
+            "source": "synthetic_fixture",
+            "external_storage_required": False,
+            "network_touched": False,
+            "artifact_lifecycle": "temporary_deleted_after_run",
+            "query": args.query,
+            "counts": {
+                "topics": 1,
+                "posts": index.get("doc_count", 0),
+                "terms": index.get("term_count", 0),
+                "graph_nodes": graph.get("node_count", 0),
+                "graph_edges": graph.get("edge_count", 0),
+                "query_results": len(packet.get("results", [])),
+            },
+            "checks": checks,
+            "top_result": first_result,
+        }
+    )
+    return 0 if status == "ok" else 1
 
 
 def _emit(payload: dict[str, object]) -> None:

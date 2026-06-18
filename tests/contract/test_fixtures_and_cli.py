@@ -56,3 +56,22 @@ def test_cli_policy_check_denies_service_routes():
     payload = json.loads(result.stdout)
     assert payload["internal_search_allowed"] is False
     assert payload["attachments_allowed"] is False
+
+
+def test_cli_starter_proof_is_offline_and_queryable():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "proof", "starter"],
+        cwd=REPO_ROOT,
+        env=_env_with_src(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_starter_proof_v1"
+    assert payload["status"] == "ok"
+    assert payload["network_touched"] is False
+    assert payload["external_storage_required"] is False
+    assert payload["checks"]["internal_search_unused"] is True
+    assert payload["top_result"]["post_id"] == "1002"
