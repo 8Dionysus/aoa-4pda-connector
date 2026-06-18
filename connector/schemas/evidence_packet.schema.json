@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/evidence_packet.schema.json",
+  "title": "AoA 4PDA Evidence Packet",
+  "type": "object",
+  "required": ["schema", "packet_id", "query", "created_at", "results", "policy"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_evidence_packet_v1" },
+    "packet_id": { "type": "string", "minLength": 1 },
+    "query": { "type": "string" },
+    "created_at": { "type": "string" },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_url", "snippet", "score", "evidence_refs"],
+        "properties": {
+          "source_url": { "type": "string" },
+          "topic_id": { "type": "string" },
+          "post_id": { "type": "string" },
+          "snippet": { "type": "string" },
+          "score": { "type": "number" },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["source", "internal_search_used"],
+      "properties": {
+        "source": { "type": "string" },
+        "internal_search_used": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": true
+}
+

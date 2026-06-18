@@ -1,0 +1,19 @@
+schema: aoa_4pda_profile_v1
+profile_id: full-public
+description: Deferred full-public profile stub; requires explicit operator storage and policy review before activation.
+network_default: disabled
+activation_status: deferred
+requires:
+  - explicit_operator_approval
+  - storage_capacity_review
+  - policy_review
+  - rate_limit_review
+politeness:
+  min_delay_seconds: 15
+  max_concurrency: 1
+artifacts:
+  write_raw_snapshots: true
+  build_bm25: true
+  build_vector: optional
+  build_graph: true
+

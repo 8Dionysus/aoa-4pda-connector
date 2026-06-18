@@ -1,0 +1,24 @@
+schema: aoa_4pda_route_policy_v1
+source: https://4pda.to/robots.txt
+allowed_public_patterns:
+  - /forum/index.php?showtopic=
+denied_patterns:
+  - act=search
+  - act=Search
+  - act=findpost
+  - act=attach
+  - act=login
+  - act=Login
+  - act=auth
+  - act=usercp
+  - act=post
+  - act=Post
+  - act=report
+  - act=warn
+  - /forum/dl
+  - /forum/lofiversion/
+operator_notes:
+  - Build local deep search from allowed public topic/post snapshots.
+  - Stop on policy uncertainty.
+  - Do not download attachments.
+

@@ -1,0 +1,37 @@
+{
+  "schema": "aoa_4pda_normalized_topic_v1",
+  "topic_id": "synthetic-topic-1",
+  "source_url": "https://4pda.to/forum/index.php?showtopic=000001",
+  "title": "Synthetic Redmi Note 10 - Firmware",
+  "captured_at": "2026-06-15T00:00:00Z",
+  "posts": [
+    {
+      "schema": "aoa_4pda_normalized_post_v1",
+      "post_id": "1001",
+      "topic_id": "synthetic-topic-1",
+      "source_url": "https://4pda.to/forum/index.php?showtopic=000001&st=0#entry1001",
+      "author_label": "fixture-header",
+      "posted_at": null,
+      "captured_at": "2026-06-15T00:00:00Z",
+      "text": "Firmware V14.0.7.0 is listed as a synthetic fixture example.",
+      "entities": [
+        { "kind": "firmware_version", "value": "V14.0.7.0" }
+      ]
+    },
+    {
+      "schema": "aoa_4pda_normalized_post_v1",
+      "post_id": "1002",
+      "topic_id": "synthetic-topic-1",
+      "source_url": "https://4pda.to/forum/index.php?showtopic=000001&st=0#entry1002",
+      "author_label": "fixture-user",
+      "posted_at": null,
+      "captured_at": "2026-06-15T00:00:00Z",
+      "text": "User reports bootloop after flashing recovery. Suggested fix: restore boot.img.",
+      "entities": [
+        { "kind": "issue", "value": "bootloop" },
+        { "kind": "fix", "value": "restore boot.img" }
+      ]
+    }
+  ]
+}
+

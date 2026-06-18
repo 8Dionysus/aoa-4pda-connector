@@ -1,0 +1,4 @@
+redmi note 10 recovery bootloop boot.img
+firmware V14.0.7.0 warning
+twrp restore boot image
+

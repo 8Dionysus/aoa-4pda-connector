@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/index_manifest.schema.json",
+  "title": "AoA 4PDA Index Manifest",
+  "type": "object",
+  "required": ["schema", "index_id", "profile_id", "built_at", "source_run_ids", "index_kinds"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_index_manifest_v1" },
+    "index_id": { "type": "string", "minLength": 1 },
+    "profile_id": { "type": "string", "minLength": 1 },
+    "built_at": { "type": "string" },
+    "source_run_ids": { "type": "array", "items": { "type": "string" } },
+    "index_kinds": { "type": "array", "items": { "type": "string" } },
+    "artifact_root": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}
+

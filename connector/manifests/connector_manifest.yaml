@@ -1,0 +1,19 @@
+schema: aoa_connector_manifest_v1
+connector_id: aoa-4pda-connector
+source_family: 4pda
+repo_role: external_source_connector
+status: skeleton
+owns:
+  - source_policy
+  - parser_method
+  - normalized_schemas
+  - local_search_method
+  - graph_method
+  - evidence_packet_contract
+does_not_own:
+  - external_site_policy
+  - full_corpus_storage
+  - runtime_mcp_deployment
+  - proof_or_memory_doctrine
+default_profile: starter
+

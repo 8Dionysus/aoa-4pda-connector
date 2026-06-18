@@ -1,0 +1,19 @@
+schema: aoa_4pda_profile_v1
+profile_id: focused-device
+description: Bounded device-topic profile for one operator-selected device or app family.
+network_default: disabled
+max_topics: 80
+max_pages_per_topic: 8
+max_posts_per_topic: 400
+politeness:
+  min_delay_seconds: 10
+  max_concurrency: 1
+routes:
+  seed_file: connector/seeds/starter_topics.yaml
+  allowlist_manifest: connector/manifests/route_allowlist.yaml
+artifacts:
+  write_raw_snapshots: true
+  build_bm25: true
+  build_vector: optional
+  build_graph: true
+

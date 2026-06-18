@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/graph_node.schema.json",
+  "title": "AoA 4PDA Graph Node",
+  "type": "object",
+  "required": ["schema", "node_id", "kind", "label", "source_refs"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_graph_node_v1" },
+    "node_id": { "type": "string" },
+    "kind": { "type": "string" },
+    "label": { "type": "string" },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "type": "number" }
+  },
+  "additionalProperties": true
+}
+

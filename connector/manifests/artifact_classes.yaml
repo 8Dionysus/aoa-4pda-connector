@@ -1,0 +1,26 @@
+schema: aoa_connector_artifact_classes_v1
+git_safe:
+  - source_code
+  - policy_docs
+  - schemas
+  - synthetic_fixtures
+  - tiny_examples
+  - seed_profiles
+external_data_root:
+  - raw_public_snapshots
+  - normalized_corpus_jsonl
+external_cache_root:
+  - bm25_indexes
+  - vector_indexes
+  - parser_caches
+external_artifact_root:
+  - graph_databases
+  - evidence_exports
+  - run_receipts
+never_collect:
+  - private_messages
+  - login_pages
+  - user_control_pages
+  - attachments
+  - downloads
+

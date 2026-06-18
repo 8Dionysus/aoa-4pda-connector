@@ -1,0 +1,45 @@
+schema: aoa_4pda_seed_list_v1
+seed_id: starter-topics
+description: Small public starter set found through external web search, not 4PDA internal search.
+network_default: disabled
+topics:
+  - id: redmi-note-10-miui
+    url: https://4pda.to/forum/index.php?showtopic=1019814
+    label: Redmi Note 10 - MIUI firmware
+    status: public_topic_seed
+  - id: redmi-note-10-unofficial
+    url: https://4pda.to/forum/index.php?showtopic=1024484
+    label: Redmi Note 10 - unofficial firmware
+    status: public_topic_seed
+  - id: redmi-note-10-pro-unofficial
+    url: https://4pda.to/forum/index.php?showtopic=1021534
+    label: Redmi Note 10 Pro - unofficial firmware
+    status: public_topic_seed
+  - id: redmi-note-10-pro-miui
+    url: https://4pda.to/forum/index.php?showtopic=1019304
+    label: Redmi Note 10 Pro - MIUI firmware
+    status: public_topic_seed
+  - id: magisk-main
+    url: https://4pda.to/forum/index.php?showtopic=774072
+    label: Magisk
+    status: public_topic_seed
+  - id: magisk-modules-catalog
+    url: https://4pda.to/forum/index.php?showtopic=915158
+    label: Magisk modules catalog
+    status: public_topic_seed
+  - id: magisk-modules-discussion
+    url: https://4pda.to/forum/index.php?showtopic=946260
+    label: Magisk modules discussion
+    status: public_topic_seed
+  - id: twrp-build-from-source
+    url: https://4pda.to/forum/index.php?showtopic=636604
+    label: TWRP build from source
+    status: public_topic_seed
+  - id: xiaomi-mi-pad-4-unofficial
+    url: https://4pda.to/forum/index.php?showtopic=915966
+    label: Xiaomi Mi Pad 4/4 Plus - unofficial firmware
+    status: public_topic_seed
+  - id: xiaomi-faq-firmware
+    url: https://4pda.to/forum/index.php?showtopic=949619
+    label: Xiaomi firmware FAQ
+    status: public_topic_seed

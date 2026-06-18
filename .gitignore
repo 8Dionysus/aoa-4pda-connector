@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# Local environment
+.env
+
+# Heavy connector data: never commit.
+data/
+cache/
+artifacts/
+raw/
+indexes/
+graphs/
+exports/full/
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.parquet
+*.arrow
+*.faiss
+*.ann
+*.hnsw
+*.qdrant/
+*.lancedb/
+*.chromadb/
+*.weaviate/
+*.milvus/
+
+# Runtime receipts may be copied out separately when needed.
+logs/
+

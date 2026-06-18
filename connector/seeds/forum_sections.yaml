@@ -1,0 +1,6 @@
+schema: aoa_4pda_section_seed_v1
+seed_id: forum-sections
+description: Deferred section discovery placeholders. Do not crawl broad sections without policy review.
+network_default: disabled
+sections: []
+

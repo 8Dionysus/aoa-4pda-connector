@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/normalized_topic.schema.json",
+  "title": "AoA 4PDA Normalized Topic",
+  "type": "object",
+  "required": ["schema", "topic_id", "source_url", "title", "captured_at", "posts"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_normalized_topic_v1" },
+    "topic_id": { "type": "string", "minLength": 1 },
+    "source_url": { "type": "string" },
+    "title": { "type": "string" },
+    "captured_at": { "type": "string" },
+    "posts": {
+      "type": "array",
+      "items": { "$ref": "normalized_post.schema.json" }
+    }
+  },
+  "additionalProperties": true
+}
+

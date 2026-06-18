@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/graph_edge.schema.json",
+  "title": "AoA 4PDA Graph Edge",
+  "type": "object",
+  "required": ["schema", "edge_id", "kind", "from_node", "to_node", "source_refs"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_graph_edge_v1" },
+    "edge_id": { "type": "string" },
+    "kind": { "type": "string" },
+    "from_node": { "type": "string" },
+    "to_node": { "type": "string" },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "type": "number" }
+  },
+  "additionalProperties": true
+}
+
