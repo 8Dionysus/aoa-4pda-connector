@@ -7,12 +7,19 @@ python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
 aoa-4pda policy check
+aoa-4pda proof starter
 ```
 
 ## Crawl Commands
 
 Crawl commands require explicit operator intent and configured storage roots.
-Use the starter profile first:
+Run the offline proof before a live crawl:
+
+```bash
+aoa-4pda proof starter
+```
+
+Then use the starter profile first:
 
 ```bash
 aoa-4pda crawl --profile starter --max-topics 10

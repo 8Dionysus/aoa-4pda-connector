@@ -10,6 +10,7 @@
 
 ## Wave 1: Starter Corpus
 
+- offline starter proof over synthetic fixtures
 - policy-confirmed starter crawl over 10-30 public topic pages
 - normalized topic/post snapshots
 - local BM25 search over starter data
@@ -32,4 +33,3 @@
 
 - `abyss-stack` MCP/runtime adapter that consumes installed connector roots
   without moving corpora into Git
-

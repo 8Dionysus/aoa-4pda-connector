@@ -1,0 +1,54 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Validate skeleton
+        run: python scripts/validate_connector.py
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Compile Python
+        run: python -m compileall -q src scripts
+
+      - name: Run offline starter proof
+        run: aoa-4pda proof starter
+
+      - name: Guard against committed heavy artifacts
+        run: |
+          python - <<'PY'
+          import subprocess
+
+          forbidden = {"data", "cache", "artifacts", "raw", "indexes", "graphs"}
+          hits = []
+          tracked = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+          for rel in tracked:
+              if any(part in forbidden for part in rel.split("/")):
+                  hits.append(rel)
+          if hits:
+              print("tracked forbidden artifact paths:")
+              for hit in hits:
+                  print(f"- {hit}")
+              raise SystemExit(1)
+          PY

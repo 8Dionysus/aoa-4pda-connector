@@ -11,6 +11,7 @@ python -m pip install -e ".[dev]"
 python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
+aoa-4pda proof starter
 ```
 
 ## Configure External Storage
@@ -25,8 +26,13 @@ aoa-4pda doctor
 
 ## Safe Starter Route
 
-The skeleton does not run network crawls by default. A future starter crawl
-should be explicit and bounded:
+The skeleton does not run network crawls by default. First run the offline proof:
+
+```bash
+aoa-4pda proof starter
+```
+
+A live starter crawl should be explicit and bounded:
 
 ```bash
 aoa-4pda policy check
