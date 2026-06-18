@@ -11,7 +11,7 @@ temporary artifacts in a system temp directory:
 
 ```text
 synthetic normalized topic
--> keyword index
+-> BM25 + exact keyword index
 -> graph export
 -> local query
 -> evidence packet checks
@@ -31,6 +31,7 @@ Expected posture:
 - `external_storage_required: false`
 - `internal_search_unused: true`
 - query result returns the synthetic bootloop post
+- evidence packet includes matched terms and score breakdowns
 
 ## Why This Exists
 
