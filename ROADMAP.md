@@ -14,13 +14,15 @@
 - policy-confirmed starter crawl over 10-30 public topic pages
 - normalized topic/post snapshots
 - local BM25 and exact-token search over starter data
+- heuristic entity extraction for starter graph nodes
 - evidence packet query route
 
 ## Wave 2: Deep Search
 
 - chunking and stronger exact-token search for device models, firmware
   versions, and error strings
-- entity extraction for devices, apps, versions, firmware, warnings, and fixes
+- stronger entity extraction for devices, apps, versions, firmware, warnings,
+  and fixes
 - vector search adapter behind an optional dependency
 
 ## Wave 3: Graph Evidence

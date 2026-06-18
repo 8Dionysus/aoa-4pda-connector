@@ -44,23 +44,25 @@ def build_graph(normalized_dir: Path, output_dir: Path, profile_id: str = "start
             )
             for entity in post.get("entities", []):
                 value = entity["value"]
-                entity_node = f"entity:{value}"
+                kind = entity.get("kind", "term")
+                entity_node = f"entity:{kind}:{value}"
                 nodes.setdefault(
                     entity_node,
                     {
                         "schema": "aoa_4pda_graph_node_v1",
                         "node_id": entity_node,
-                        "kind": entity.get("kind", "term"),
+                        "kind": kind,
                         "label": value,
                         "source_refs": [],
                         "confidence": 0.6,
                     },
                 )
-                nodes[entity_node]["source_refs"].append(post.get("source_url"))
+                if post.get("source_url") not in nodes[entity_node]["source_refs"]:
+                    nodes[entity_node]["source_refs"].append(post.get("source_url"))
                 edges.append(
                     {
                         "schema": "aoa_4pda_graph_edge_v1",
-                        "edge_id": f"{post_node}->entity:{value}",
+                        "edge_id": f"{post_node}->{entity_node}",
                         "kind": "post_mentions_entity",
                         "from_node": post_node,
                         "to_node": entity_node,

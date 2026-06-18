@@ -29,9 +29,9 @@
       "text": "User reports bootloop after flashing recovery. Suggested fix: restore boot.img.",
       "entities": [
         { "kind": "issue", "value": "bootloop" },
+        { "kind": "file", "value": "boot.img" },
         { "kind": "fix", "value": "restore boot.img" }
       ]
     }
   ]
 }
-
