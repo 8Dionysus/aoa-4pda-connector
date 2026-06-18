@@ -12,6 +12,10 @@ The connector should answer through local evidence packets.
 - entity search for devices, apps, firmware, versions, issues, fixes, warnings
 - graph traversal for relations between topics, posts, fixes, and warnings
 
+Entity extraction v1 currently covers devices, codenames, firmware families,
+firmware versions, build IDs, tools, files, issues, fixes, and warnings through
+local heuristics.
+
 ## Starter Scoring
 
 The starter query path uses `bm25_exact_v1`:
