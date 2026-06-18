@@ -58,14 +58,14 @@ The connector must not use 4PDA internal search as a crawler API. Instead it
 builds local search from allowed public topic/post snapshots:
 
 ```text
-public topic pages -> normalized posts -> chunks -> BM25/vector/entity/graph
-indexes -> evidence packets with source URLs
+public topic pages -> normalized posts -> BM25 + exact local index
+-> graph/entity layers -> evidence packets with source URLs and query reports
 ```
 
 ## Current Status
 
 Starter pipeline is available: offline fixture proof, bounded public topic
-crawl, normalization, keyword index, tiny graph export, query, and
-evidence-packet export. It remains starter-grade: no attachment downloads, no
-internal 4PDA search, no broad section discovery, no vector index, and no
+crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
+and evidence-packet export. It remains starter-grade: no attachment downloads,
+no internal 4PDA search, no broad section discovery, no vector index, and no
 full-corpus mode.

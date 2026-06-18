@@ -107,6 +107,14 @@ FORBIDDEN_ARTIFACT_DIR_NAMES = {
     "graphs",
 }
 
+IGNORED_LOCAL_CACHE_DIR_NAMES = {
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+}
+
 
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
@@ -148,6 +156,8 @@ def main() -> int:
 
     for path in repo_root.rglob("*"):
         if ".git" in path.parts:
+            continue
+        if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in path.relative_to(repo_root).parts):
             continue
         if path.is_dir() and path.name in FORBIDDEN_ARTIFACT_DIR_NAMES:
             errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")

@@ -9,3 +9,4 @@ Decision records here explain durable route and boundary choices for
 | --- | --- |
 | `AOA-4PDA-D-0001` | [Public evidence connector skeleton](AOA-4PDA-D-0001-public-evidence-connector-skeleton.md) |
 | `AOA-4PDA-D-0002` | [CI and starter proof gate](AOA-4PDA-D-0002-ci-and-starter-proof-gate.md) |
+| `AOA-4PDA-D-0003` | [BM25 exact starter search](AOA-4PDA-D-0003-bm25-exact-starter-search.md) |
