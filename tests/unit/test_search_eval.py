@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from aoa_4pda_connector.evaluation import (
+    run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
     run_search_eval_suite,
@@ -72,5 +73,27 @@ def test_graph_query_eval_suite_reports_relation_context_without_network():
     assert case["checks"]["top_post_id"] is True
     assert case["checks"]["graph_context_present"] is True
     assert case["checks"]["expected_relation_edges_present"] is True
+    assert case["checks"]["source_refs_preserved"] is True
+    assert case["checks"]["internal_search_unused"] is True
+
+
+def test_answer_eval_suite_reports_rendered_answer_without_network():
+    report = run_answer_eval_suite(REPO_ROOT / "evals/suites/starter_answer_packets.json", REPO_ROOT)
+
+    assert report["schema"] == "aoa_4pda_answer_eval_report_v1"
+    assert report["suite_id"] == "starter-answer-packets"
+    assert report["status"] == "ok"
+    assert report["network_touched"] is False
+    assert report["artifact_lifecycle"] == "temporary_deleted_after_run"
+    assert report["owner_boundary"]["proof_owner_repo"] == "aoa-evals"
+    assert report["counts"] == {"cases": 1, "passed": 1, "failed": 0}
+
+    case = report["cases"][0]
+    assert case["case_id"] == "bootloop-answer-packet"
+    assert case["status"] == "ok"
+    assert case["checks"]["top_answer_present"] is True
+    assert case["checks"]["top_post_id"] is True
+    assert case["checks"]["answer_kind"] is True
+    assert case["checks"]["expected_labels_present"] is True
     assert case["checks"]["source_refs_preserved"] is True
     assert case["checks"]["internal_search_unused"] is True

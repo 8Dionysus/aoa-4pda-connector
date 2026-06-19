@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/answer_packet.schema.json",
+  "title": "AoA 4PDA Answer Packet",
+  "type": "object",
+  "required": ["schema", "answer_id", "query", "created_at", "answer_report", "answers", "policy"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_answer_packet_v1" },
+    "answer_id": { "type": "string", "minLength": 1 },
+    "query": { "type": "string" },
+    "created_at": { "type": ["string", "null"] },
+    "answer_report": {
+      "type": "object",
+      "required": ["renderer", "source_packet_id", "source_packet_schema"],
+      "properties": {
+        "renderer": { "const": "starter_graph_context_v1" },
+        "source_packet_id": { "type": ["string", "null"] },
+        "source_packet_schema": { "type": ["string", "null"] },
+        "query_algorithm": { "type": ["string", "null"] },
+        "graph_context_required": { "type": "boolean" }
+      }
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["answer_kind", "answer_text", "source_url", "evidence_refs", "confidence"],
+        "properties": {
+          "answer_kind": { "type": "string" },
+          "answer_text": { "type": "string" },
+          "source_url": { "type": ["string", "null"] },
+          "topic_id": { "type": ["string", "null"] },
+          "post_id": { "type": ["string", "null"] },
+          "chunk_id": { "type": ["string", "null"] },
+          "score": { "type": ["number", "null"] },
+          "issue_labels": { "type": "array", "items": { "type": "string" } },
+          "fix_labels": { "type": "array", "items": { "type": "string" } },
+          "warning_labels": { "type": "array", "items": { "type": "string" } },
+          "warned_target_labels": { "type": "array", "items": { "type": "string" } },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "source_refs": { "type": "array", "items": { "type": ["string", "null"] } },
+          "confidence": { "type": "object" }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["source", "internal_search_used"],
+      "properties": {
+        "source": { "const": "local_keyword_index_plus_graph_answer_renderer" },
+        "internal_search_used": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": true
+}

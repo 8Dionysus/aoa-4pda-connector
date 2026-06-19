@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "connector/manifests/artifact_classes.yaml",
     "connector/manifests/route_allowlist.yaml",
     "evals/PORT.yaml",
+    "evals/suites/starter_answer_packets.json",
     "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_graph_query_packets.json",
     "evals/suites/starter_search_quality.json",
@@ -53,6 +54,7 @@ REQUIRED_DIRS = [
     "src/aoa_4pda_connector/chunk",
     "src/aoa_4pda_connector/index",
     "src/aoa_4pda_connector/graph",
+    "src/aoa_4pda_connector/answer",
     "src/aoa_4pda_connector/query",
     "src/aoa_4pda_connector/storage",
     "src/aoa_4pda_connector/export",
@@ -73,6 +75,7 @@ REQUIRED_SCHEMAS = [
     "normalized_topic.schema.json",
     "normalized_post.schema.json",
     "evidence_packet.schema.json",
+    "answer_packet.schema.json",
     "index_manifest.schema.json",
     "graph_node.schema.json",
     "graph_edge.schema.json",
@@ -233,6 +236,7 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_search_quality.json": "aoa_4pda_search_eval_suite_v1",
         "starter_graph_relations.json": "aoa_4pda_graph_eval_suite_v1",
         "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
+        "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
     }
     for suite_name, schema in expected_suites.items():
         suite_path = repo_root / "evals" / "suites" / suite_name
@@ -253,6 +257,11 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("relation_edges"):
                 errors.append("starter_graph_query_packets.json must include relation_edges expectations")
+        if suite_name == "starter_answer_packets.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if not expect.get("fix_labels") or not expect.get("answer_text_contains"):
+                errors.append("starter_answer_packets.json must include answer label/text expectations")
 
 
 if __name__ == "__main__":

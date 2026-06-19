@@ -25,8 +25,8 @@ Add starter graph query packets:
 - `graph_context` is post-local: it includes entity nodes mentioned by the
   matched post plus source-ref-matching `fixes_issue` and `warns_about` edges
   touching those entities.
-- `aoa-4pda eval graph-query-packets` checks the answer packet shape against a
-  sanitized live-shaped fixture without touching the network.
+- `aoa-4pda eval graph-query-packets` checks the graph-enriched evidence packet
+  shape against a sanitized live-shaped fixture without touching the network.
 
 The packet keeps `schema: aoa_4pda_evidence_packet_v1` and adds graph fields
 additively rather than creating a separate graph-answer truth surface.
@@ -45,6 +45,8 @@ additively rather than creating a separate graph-answer truth surface.
   and starter relation context.
 - The result is still starter-grade: relation context is limited to source-ref
   matching post-local edges and does not perform global graph reasoning.
+- `AOA-4PDA-D-0010` records the deterministic answer packet renderer built on
+  top of this graph-enriched evidence packet.
 - Future graph traversal can add broader context, but must keep source refs and
   policy boundaries visible in the answer packet.
 

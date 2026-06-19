@@ -13,13 +13,15 @@ Use this when a user asks an agent to install the connector.
 6. Run `aoa-4pda proof starter`.
 7. Run `aoa-4pda eval search-quality`.
 8. Run `aoa-4pda eval graph-relations`.
-9. Ask the operator for external storage roots if they are not set.
-10. Run `aoa-4pda init --apply` only after roots are confirmed.
-11. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
-12. Stop before any network crawl unless the operator explicitly asks for it.
-13. If the operator asks for a starter run, use `--profile starter` with a
+9. Run `aoa-4pda eval graph-query-packets`.
+10. Run `aoa-4pda eval answer-packets`.
+11. Ask the operator for external storage roots if they are not set.
+12. Run `aoa-4pda init --apply` only after roots are confirmed.
+13. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
+14. Stop before any network crawl unless the operator explicitly asks for it.
+15. If the operator asks for a starter run, use `--profile starter` with a
     small `--max-topics` value first.
-14. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
+16. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
     `proof live-starter` sequentially against the same run.
 
 ## Do Not

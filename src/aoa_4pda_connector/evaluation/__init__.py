@@ -7,6 +7,7 @@ import shutil
 import tempfile
 from pathlib import Path
 
+from aoa_4pda_connector.answer import render_answer_packet
 from aoa_4pda_connector.config import find_repo_root
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
@@ -17,6 +18,7 @@ from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
 DEFAULT_SEARCH_EVAL_SUITE = Path("evals/suites/starter_search_quality.json")
 DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
 DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.json")
+DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
 
 
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
@@ -142,6 +144,61 @@ def run_graph_query_eval_suite(suite_path: Path | None = None, repo_root: Path |
     failed = [case for case in case_reports if case["status"] != "ok"]
     return {
         "schema": "aoa_4pda_graph_query_eval_report_v1",
+        "status": "ok" if not failed else "error",
+        "suite_id": suite.get("suite_id"),
+        "suite_path": str(path.relative_to(root)),
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+        },
+        "graph": {
+            "node_count": graph_payload.get("node_count"),
+            "edge_count": graph_payload.get("edge_count"),
+        },
+        "network_touched": False,
+        "artifact_lifecycle": "temporary_deleted_after_run",
+        "cases": case_reports,
+    }
+
+
+def run_answer_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
+    """Run a small public-safe rendered-answer eval suite without touching the network."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_ANSWER_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    dataset = suite.get("dataset", {})
+    fixture_path = _resolve_repo_path(root, Path(str(dataset.get("html_fixture", ""))))
+    source_url = str(dataset.get("source_url", ""))
+
+    with tempfile.TemporaryDirectory(prefix="aoa-4pda-answer-eval-") as tmp:
+        eval_root = Path(tmp)
+        normalized_dir = eval_root / "normalized"
+        normalize_snapshot(fixture_path, source_url, normalized_dir)
+        index_path = build_keyword_index(normalized_dir, eval_root / "index", "eval")
+        graph_path = build_graph(normalized_dir, eval_root / "graph", "eval")
+        index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+        graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+        case_reports = [
+            _run_answer_case(case, index_path, graph_path)
+            for case in suite.get("cases", [])
+        ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    return {
+        "schema": "aoa_4pda_answer_eval_report_v1",
         "status": "ok" if not failed else "error",
         "suite_id": suite.get("suite_id"),
         "suite_path": str(path.relative_to(root)),
@@ -312,6 +369,39 @@ def _run_graph_query_case(case: dict[str, object], index_path: Path, graph_path:
     }
 
 
+def _run_answer_case(case: dict[str, object], index_path: Path, graph_path: Path) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    evidence_packet = query_graph_packet(index_path, graph_path, query, limit=3)
+    answer_packet = render_answer_packet(evidence_packet, limit=3)
+    top_answer = answer_packet.get("answers", [{}])[0] if answer_packet.get("answers") else {}
+    source_url_contains = str(expect.get("source_url_contains", ""))
+    checks = {
+        "top_answer_present": bool(top_answer),
+        "top_post_id": top_answer.get("post_id") == expect.get("top_post_id"),
+        "answer_kind": top_answer.get("answer_kind") == expect.get("answer_kind"),
+        "expected_labels_present": _all_expected(expect.get("issue_labels", []), top_answer.get("issue_labels", []))
+        and _all_expected(expect.get("fix_labels", []), top_answer.get("fix_labels", []))
+        and _all_expected(expect.get("warning_labels", []), top_answer.get("warning_labels", []))
+        and _all_expected(expect.get("warned_target_labels", []), top_answer.get("warned_target_labels", [])),
+        "answer_text_contains": all(
+            str(fragment) in str(top_answer.get("answer_text", ""))
+            for fragment in expect.get("answer_text_contains", [])
+        ),
+        "source_refs_preserved": str(source_url_contains) in str(top_answer.get("source_url", ""))
+        and _any_source_ref_contains(top_answer.get("source_refs", []), source_url_contains),
+        "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "top_answer": top_answer,
+        "expected": expect,
+    }
+
+
 def _resolve_repo_path(repo_root: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo_root / path
 
@@ -324,6 +414,18 @@ def _any_expected(expected: object, actual: object) -> bool:
     expected_values = {str(item).lower() for item in expected if str(item)}
     actual_values = {str(item).lower() for item in actual}
     return bool(expected_values.intersection(actual_values))
+
+
+def _all_expected(expected: object, actual: object) -> bool:
+    expected_values = {str(item).lower() for item in expected if str(item)}
+    actual_values = {str(item).lower() for item in actual}
+    return expected_values.issubset(actual_values)
+
+
+def _any_source_ref_contains(values: object, needle: str) -> bool:
+    if not isinstance(values, list):
+        return False
+    return bool(needle) and any(needle in str(value) for value in values)
 
 
 def _edge_exists(edges: list[dict[str, object]], kind: str, from_node: str, to_node: str) -> bool:

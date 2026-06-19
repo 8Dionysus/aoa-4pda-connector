@@ -1,0 +1,32 @@
+{
+  "schema": "aoa_4pda_answer_eval_suite_v1",
+  "suite_id": "starter-answer-packets",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "live_shape_html_topic",
+    "html_fixture": "connector/fixtures/html/live_shape_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=42&st=0"
+  },
+  "cases": [
+    {
+      "case_id": "bootloop-answer-packet",
+      "query": "bootloop recovery.img camellia",
+      "expect": {
+        "top_post_id": "9001",
+        "answer_kind": "issue_fix_warning",
+        "source_url_contains": "showtopic=42",
+        "issue_labels": ["bootloop"],
+        "fix_labels": ["flash recovery.img", "restore boot.img"],
+        "warning_labels": ["do not install recovery.img from camellia"],
+        "warned_target_labels": ["camellia", "recovery.img"],
+        "answer_text_contains": [
+          "Issue: bootloop.",
+          "Suggested fixes: flash recovery.img; restore boot.img.",
+          "Warnings: do not install recovery.img from camellia"
+        ]
+      }
+    }
+  ]
+}
