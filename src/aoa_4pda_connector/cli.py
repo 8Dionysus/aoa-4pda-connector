@@ -407,9 +407,10 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
         index = json.loads(index_path.read_text(encoding="utf-8"))
         graph = json.loads(graph_path.read_text(encoding="utf-8"))
         first_result = packet["results"][0] if packet.get("results") else {}
+        topic = json.loads(fixture.read_text(encoding="utf-8"))
         checks = {
             "fixture_topic_loaded": fixture.is_file(),
-            "doc_count_is_2": index.get("doc_count") == 2,
+            "index_doc_count_is_2": index.get("doc_count") == 2,
             "term_count_positive": int(index.get("term_count", 0)) > 0,
             "graph_has_topic_post_entity_nodes": int(graph.get("node_count", 0)) >= 5,
             "graph_has_edges": int(graph.get("edge_count", 0)) >= 4,
@@ -430,7 +431,8 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
             "query": args.query,
             "counts": {
                 "topics": 1,
-                "posts": index.get("doc_count", 0),
+                "posts": len(topic.get("posts", [])),
+                "index_docs": index.get("doc_count", 0),
                 "terms": index.get("term_count", 0),
                 "graph_nodes": graph.get("node_count", 0),
                 "graph_edges": graph.get("edge_count", 0),

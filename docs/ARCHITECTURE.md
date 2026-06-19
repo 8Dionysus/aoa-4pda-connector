@@ -30,6 +30,14 @@ Current parser coverage includes:
 - raw public post date labels from the public post header
 - quote, edit-note, and signature text removal before indexing
 
+## Chunking Posture
+
+Chunking is a derived navigation layer. It splits normalized post text into
+deterministic overlapping evidence chunks so local search can rank and cite a
+precise fragment inside a long post. Chunks carry the original topic id, post
+id, source URL, chunk index, and source character offsets. They do not replace
+the normalized post or public source URL as evidence authority.
+
 ## Source and Derived Layers
 
 | Layer | Example | Authority |
@@ -37,7 +45,7 @@ Current parser coverage includes:
 | Source policy | `connector/SOURCE_POLICY.md` | repository |
 | Raw public snapshot | external `CONNECTOR_DATA_ROOT` | source URL + receipt |
 | Normalized record | external data root | parser output with source refs |
-| Search index | external cache root | derived navigation |
+| Search index | external cache root | derived chunk navigation |
 | Graph DB | external artifact root | derived navigation |
 | Evidence packet | examples/exported packets | answer support, not site truth |
 

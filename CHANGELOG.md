@@ -12,3 +12,5 @@
   run support for index/graph builds, and stable query-derived packet ids.
 - Hardened parser coverage with a sanitized live-shaped fixture, public
   author/date extraction, and quote/edit/signature noise cleanup.
+- Added chunking v1 so BM25/exact search indexes evidence chunks inside posts
+  and returns chunk ids, offsets, and chunk-level evidence refs.
