@@ -58,6 +58,11 @@ policy receipts.
 Configured storage may be the ignored repo-local `.connector-state/` scaffold
 for small starter runs or an external storage root for larger materialization.
 
+`aoa-4pda materialize fixture` is the no-network materialization route. It
+starts at the sanitized live-shaped fixture, runs the same parser/normalizer,
+keyword-index, graph, and answer-ready receipt path as a bounded crawl-derived
+run, and writes generated state only to configured storage roots.
+
 ## Runtime Boundary
 
 Future MCP/runtime exposure belongs in `abyss-stack` and should consume an

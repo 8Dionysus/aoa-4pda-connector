@@ -28,7 +28,10 @@ from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.policy import is_url_allowed
 from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
-from aoa_4pda_connector.storage import create_storage_roots, storage_warnings
+from aoa_4pda_connector.storage import create_storage_roots, storage_status, storage_warnings
+
+
+LIVE_SHAPE_FIXTURE_URL = "https://4pda.to/forum/index.php?showtopic=42&st=0"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -47,6 +50,22 @@ def build_parser() -> argparse.ArgumentParser:
     init = sub.add_parser("init", help="Prepare configured storage roots.")
     init.add_argument("--apply", action="store_true", help="Create configured roots instead of printing a plan.")
     init.set_defaults(func=cmd_init)
+
+    storage = sub.add_parser("storage", help="Inspect configured storage roots.")
+    storage_sub = storage.add_subparsers(dest="storage_command", required=True)
+    storage_status_parser = storage_sub.add_parser("status", help="Report configured storage root readiness.")
+    storage_status_parser.add_argument("--measure", action="store_true", help="Measure recursive file counts and bytes.")
+    storage_status_parser.set_defaults(func=cmd_storage_status)
+
+    materialize = sub.add_parser("materialize", help="Materialize small no-network starter datasets.")
+    materialize_sub = materialize.add_subparsers(dest="materialize_command", required=True)
+    materialize_fixture = materialize_sub.add_parser(
+        "fixture",
+        help="Write a sanitized fixture run into configured storage roots.",
+    )
+    materialize_fixture.add_argument("--run", default="starter-fixture")
+    materialize_fixture.add_argument("--profile", default="starter")
+    materialize_fixture.set_defaults(func=cmd_materialize_fixture)
 
     policy = sub.add_parser("policy", help="Policy commands.")
     policy_sub = policy.add_subparsers(dest="policy_command", required=True)
@@ -145,6 +164,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "normalized_post.schema.json",
         "evidence_packet.schema.json",
         "answer_packet.schema.json",
+        "materialize_receipt.schema.json",
         "index_manifest.schema.json",
         "graph_node.schema.json",
         "graph_edge.schema.json",
@@ -233,6 +253,13 @@ def cmd_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_storage_status(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    _emit(storage_status(repo_root, roots, measure=bool(args.measure)))
+    return 0
+
+
 def cmd_policy_check(_args: argparse.Namespace) -> int:
     samples = {
         "allowed_topic": "https://4pda.to/forum/index.php?showtopic=000001",
@@ -252,6 +279,97 @@ def cmd_policy_check(_args: argparse.Namespace) -> int:
         }
     )
     return 0 if ok else 1
+
+
+def cmd_materialize_fixture(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    error = _require_roots(roots, ["data", "cache", "artifact"])
+    if error:
+        return error
+    create_storage_roots(roots)
+    run_id = args.run
+    normalized_dir = roots.data / "normalized" / run_id
+    fixture_path = repo_root / "connector" / "fixtures" / "html" / "live_shape_topic.html"
+    normalized_path = normalize_snapshot(fixture_path, LIVE_SHAPE_FIXTURE_URL, normalized_dir)
+    index_path = build_keyword_index(normalized_dir, roots.cache / "indexes" / run_id, args.profile)
+    graph_path = build_graph(normalized_dir, roots.artifact / "graphs" / run_id, args.profile)
+
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    receipt_dir = roots.artifact / "receipts"
+    normalized_receipt = {
+        "schema": "aoa_4pda_normalize_receipt_v1",
+        "run_id": run_id,
+        "source_run_id": run_id,
+        "finished_at": _now(),
+        "normalized": [{"source_url": LIVE_SHAPE_FIXTURE_URL, "path": str(normalized_path)}],
+        "counts": {"topics": 1},
+        "network_touched": False,
+    }
+    index_receipt = {
+        "schema": "aoa_4pda_index_manifest_v1",
+        "index_id": run_id,
+        "profile_id": args.profile,
+        "built_at": _now(),
+        "source_run_ids": [run_id],
+        "index_kinds": ["keyword"],
+        "artifact_root": str(index_path.parent),
+        "index_path": str(index_path),
+        "network_touched": False,
+    }
+    graph_receipt = {
+        "schema": "aoa_4pda_graph_receipt_v1",
+        "run_id": run_id,
+        "profile_id": args.profile,
+        "built_at": _now(),
+        "graph_path": str(graph_path),
+        "network_touched": False,
+    }
+    materialize_receipt = {
+        "schema": "aoa_4pda_materialize_receipt_v1",
+        "run_id": run_id,
+        "profile_id": args.profile,
+        "fixture": "live_shape_topic",
+        "source_url": LIVE_SHAPE_FIXTURE_URL,
+        "finished_at": _now(),
+        "storage_mode": roots.mode,
+        "storage_roots": roots.as_dict(),
+        "normalized_path": str(normalized_path),
+        "index_path": str(index_path),
+        "graph_path": str(graph_path),
+        "counts": {
+            "topics": 1,
+            "index_docs": int(index.get("doc_count", 0)),
+            "index_terms": int(index.get("term_count", 0)),
+            "graph_nodes": int(graph.get("node_count", 0)),
+            "graph_edges": int(graph.get("edge_count", 0)),
+        },
+        "policy": {
+            "allowed_public_only": True,
+            "internal_search_used": False,
+            "attachments_downloaded": False,
+        },
+        "network_touched": False,
+    }
+    normalize_receipt_path = _write_receipt(receipt_dir, run_id, "normalize", normalized_receipt)
+    index_receipt_path = _write_receipt(receipt_dir, run_id, "index", index_receipt)
+    graph_receipt_path = _write_receipt(receipt_dir, run_id, "graph", graph_receipt)
+    materialize_receipt_path = _write_receipt(receipt_dir, run_id, "materialize", materialize_receipt)
+    _emit(
+        {
+            "status": "ok",
+            "receipt": str(materialize_receipt_path),
+            "receipts": {
+                "normalize": str(normalize_receipt_path),
+                "index": str(index_receipt_path),
+                "graph": str(graph_receipt_path),
+                "materialize": str(materialize_receipt_path),
+            },
+            **materialize_receipt,
+        }
+    )
+    return 0
 
 
 def cmd_crawl(args: argparse.Namespace) -> int:

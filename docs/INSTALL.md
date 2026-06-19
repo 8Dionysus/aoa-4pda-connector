@@ -11,7 +11,10 @@ python -m pip install -e ".[dev]"
 python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
+aoa-4pda storage status
 aoa-4pda proof starter
+aoa-4pda materialize fixture
+aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
@@ -23,6 +26,7 @@ aoa-4pda eval answer-packets
 ```bash
 aoa-4pda init --apply
 aoa-4pda doctor
+aoa-4pda storage status
 ```
 
 Without environment variables, `init --apply` uses the ignored repo-local
@@ -41,6 +45,9 @@ The skeleton does not run network crawls by default. First run the offline proof
 
 ```bash
 aoa-4pda proof starter
+aoa-4pda materialize fixture
+aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
+aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets

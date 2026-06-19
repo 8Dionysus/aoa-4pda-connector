@@ -22,6 +22,13 @@ If these variables are unset, the CLI uses:
 That repo-local root is portable and ignored by Git. It is meant for starter
 or bounded local work, not for full corpus growth.
 
+Inspect the active route before creating or rotating data:
+
+```bash
+aoa-4pda storage status
+aoa-4pda storage status --measure
+```
+
 ## Recommended Local Route
 
 Start with `.connector-state/` when the expected data size is small and the

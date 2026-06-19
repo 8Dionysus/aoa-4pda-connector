@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/materialize_receipt.schema.json",
+  "title": "AoA 4PDA Materialize Receipt",
+  "type": "object",
+  "required": [
+    "schema",
+    "run_id",
+    "profile_id",
+    "fixture",
+    "source_url",
+    "finished_at",
+    "storage_mode",
+    "storage_roots",
+    "normalized_path",
+    "index_path",
+    "graph_path",
+    "counts",
+    "policy",
+    "network_touched"
+  ],
+  "properties": {
+    "schema": { "const": "aoa_4pda_materialize_receipt_v1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "profile_id": { "type": "string", "minLength": 1 },
+    "fixture": { "type": "string", "minLength": 1 },
+    "source_url": { "type": "string", "minLength": 1 },
+    "finished_at": { "type": "string", "minLength": 1 },
+    "storage_mode": { "type": "string", "minLength": 1 },
+    "storage_roots": {
+      "type": "object",
+      "required": ["CONNECTOR_DATA_ROOT", "CONNECTOR_CACHE_ROOT", "CONNECTOR_ARTIFACT_ROOT"],
+      "properties": {
+        "CONNECTOR_DATA_ROOT": { "type": ["string", "null"] },
+        "CONNECTOR_CACHE_ROOT": { "type": ["string", "null"] },
+        "CONNECTOR_ARTIFACT_ROOT": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "normalized_path": { "type": "string", "minLength": 1 },
+    "index_path": { "type": "string", "minLength": 1 },
+    "graph_path": { "type": "string", "minLength": 1 },
+    "counts": {
+      "type": "object",
+      "required": ["topics", "index_docs", "index_terms", "graph_nodes", "graph_edges"],
+      "properties": {
+        "topics": { "type": "integer", "minimum": 0 },
+        "index_docs": { "type": "integer", "minimum": 0 },
+        "index_terms": { "type": "integer", "minimum": 0 },
+        "graph_nodes": { "type": "integer", "minimum": 0 },
+        "graph_edges": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "policy": {
+      "type": "object",
+      "required": ["allowed_public_only", "internal_search_used", "attachments_downloaded"],
+      "properties": {
+        "allowed_public_only": { "type": "boolean" },
+        "internal_search_used": { "const": false },
+        "attachments_downloaded": { "const": false }
+      },
+      "additionalProperties": true
+    },
+    "network_touched": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

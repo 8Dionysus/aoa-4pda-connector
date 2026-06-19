@@ -12,6 +12,7 @@
 ## Wave 1: Starter Corpus
 
 - offline starter proof over synthetic fixtures
+- no-network materialized fixture database for fresh-clone query smoke tests
 - policy-confirmed starter crawl over 10-30 public topic pages
 - live starter proof over external storage artifacts
 - normalized topic/post snapshots
