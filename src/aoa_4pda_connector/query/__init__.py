@@ -15,6 +15,7 @@ BM25_K1 = 1.5
 BM25_B = 0.75
 EXACT_TERM_BOOST = 1.75
 PHRASE_BOOST = 2.5
+RELATION_EDGE_KINDS = ("fixes_issue", "warns_about")
 
 
 def packet_id_for_query(query: str) -> str:
@@ -130,6 +131,33 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
     }
 
 
+def query_graph_packet(index_path: Path, graph_path: Path, query: str, limit: int = 5) -> dict[str, object]:
+    """Return keyword results enriched with starter graph relation context."""
+
+    packet = query_keyword_index(index_path, query, limit)
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    nodes = {str(node.get("node_id")): node for node in graph.get("nodes", [])}
+    edges = [edge for edge in graph.get("edges", [])]
+
+    for result in packet.get("results", []):
+        result["graph_context"] = _graph_context_for_result(result, nodes, edges)
+
+    packet["policy"]["source"] = "local_keyword_index_plus_graph"
+    packet["graph_report"] = {
+        "graph_path": str(graph_path),
+        "node_count": graph.get("node_count", 0),
+        "edge_count": graph.get("edge_count", 0),
+        "relation_edge_kinds": sorted(
+            {
+                str(edge.get("kind"))
+                for edge in edges
+                if edge.get("kind") in RELATION_EDGE_KINDS
+            }
+        ),
+    }
+    return packet
+
+
 def _average_doc_length(docs: object) -> float:
     lengths = [max(1, int(doc.get("tokens", 0))) for doc in docs]
     return sum(lengths) / len(lengths) if lengths else 1.0
@@ -159,3 +187,111 @@ def _focused_snippet(text: str, needles: list[str], radius: int = 190) -> str:
     prefix = "..." if start > 0 else ""
     suffix = "..." if end < len(text) else ""
     return f"{prefix}{text[start:end].strip()}{suffix}"
+
+
+def _graph_context_for_result(
+    result: dict[str, object],
+    nodes: dict[str, dict[str, object]],
+    edges: list[dict[str, object]],
+) -> dict[str, object]:
+    post_id = result.get("post_id")
+    post_node = f"post:{post_id}" if post_id is not None else ""
+    source_url = str(result.get("source_url", ""))
+    mention_edges = [
+        edge
+        for edge in edges
+        if edge.get("kind") == "post_mentions_entity"
+        and edge.get("from_node") == post_node
+        and _source_refs_include(edge, source_url)
+    ]
+    entity_node_ids = sorted({str(edge.get("to_node")) for edge in mention_edges if edge.get("to_node")})
+    entity_node_set = set(entity_node_ids)
+    relation_edges = [
+        _edge_summary(edge)
+        for edge in edges
+        if edge.get("kind") in RELATION_EDGE_KINDS
+        and _source_refs_include(edge, source_url)
+        and (
+            str(edge.get("from_node")) in entity_node_set
+            or str(edge.get("to_node")) in entity_node_set
+        )
+    ]
+    relation_endpoint_ids = {
+        node_id
+        for edge in relation_edges
+        for node_id in [str(edge.get("from_node")), str(edge.get("to_node"))]
+        if node_id
+    }
+    context_node_ids = sorted(entity_node_set.union(relation_endpoint_ids))
+    fixes_issue = _relation_targets_by_from(relation_edges, "fixes_issue")
+    warns_about = _relation_targets_by_from(relation_edges, "warns_about")
+    warned_target_ids = sorted({target for targets in warns_about.values() for target in targets})
+
+    return {
+        "post_node": post_node,
+        "source_refs": [source_url] if source_url else [],
+        "entity_node_ids": entity_node_ids,
+        "relation_edges": relation_edges,
+        "issues": [
+            _node_summary(nodes[node_id])
+            for node_id in context_node_ids
+            if node_id in nodes and nodes[node_id].get("kind") == "issue"
+        ],
+        "fixes": [
+            {**_node_summary(nodes[node_id]), "fixes_issue_node_ids": fixes_issue.get(node_id, [])}
+            for node_id in sorted(fixes_issue)
+            if node_id in nodes
+        ],
+        "warnings": [
+            {**_node_summary(nodes[node_id]), "warns_about_node_ids": warns_about.get(node_id, [])}
+            for node_id in sorted(warns_about)
+            if node_id in nodes
+        ],
+        "warned_targets": [
+            _node_summary(nodes[node_id])
+            for node_id in warned_target_ids
+            if node_id in nodes
+        ],
+    }
+
+
+def _relation_targets_by_from(edges: list[dict[str, object]], kind: str) -> dict[str, list[str]]:
+    targets: dict[str, list[str]] = {}
+    for edge in edges:
+        if edge.get("kind") != kind:
+            continue
+        from_node = str(edge.get("from_node"))
+        to_node = str(edge.get("to_node"))
+        if not from_node or not to_node:
+            continue
+        values = targets.setdefault(from_node, [])
+        if to_node not in values:
+            values.append(to_node)
+    return {node_id: sorted(values) for node_id, values in targets.items()}
+
+
+def _node_summary(node: dict[str, object]) -> dict[str, object]:
+    return {
+        "node_id": node.get("node_id"),
+        "kind": node.get("kind"),
+        "label": node.get("label"),
+        "source_refs": node.get("source_refs", []),
+        "confidence": node.get("confidence"),
+    }
+
+
+def _edge_summary(edge: dict[str, object]) -> dict[str, object]:
+    return {
+        "edge_id": edge.get("edge_id"),
+        "kind": edge.get("kind"),
+        "from_node": edge.get("from_node"),
+        "to_node": edge.get("to_node"),
+        "source_refs": edge.get("source_refs", []),
+        "confidence": edge.get("confidence"),
+    }
+
+
+def _source_refs_include(item: dict[str, object], source_url: str) -> bool:
+    if not source_url:
+        return True
+    return any(str(ref) == source_url for ref in item.get("source_refs", []))

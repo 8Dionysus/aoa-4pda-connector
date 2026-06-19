@@ -52,6 +52,11 @@ sanitized live-shaped HTML fixture, verifies expected issue/fix/warning entity
 nodes, post-to-entity graph edges, `fixes_issue` edges, and `warns_about`
 edges, and deletes temporary graph artifacts after the run.
 
+`aoa-4pda eval graph-query-packets` is the companion graph-answer check. It
+uses the same sanitized live-shaped fixture, builds temporary local index and
+graph artifacts, runs a graph-enriched query packet, and verifies that expected
+relation context and source refs survive into the answer surface.
+
 This eval is local connector evidence. It does not create central proof
 verdicts, broad regression scores, or full-corpus quality claims.
 

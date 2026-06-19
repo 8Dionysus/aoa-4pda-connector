@@ -34,6 +34,25 @@ The starter query path uses `bm25_exact_v1`:
 - derive default packet ids from a stable SHA-256 query digest so repeated
   processes export the same packet id for the same query
 
+## Starter Graph Query Packets
+
+`aoa-4pda query-graph` adds graph context to the local keyword result packet.
+It reads an already-built local keyword index and graph export from external
+storage receipts, runs the same BM25/exact query, and adds `graph_context` to
+each result.
+
+The starter graph context is post-local:
+
+- `entity_node_ids` lists entities mentioned by the matched post.
+- `relation_edges` includes source-ref-matching `fixes_issue` and
+  `warns_about` edges touching those entities.
+- `issues`, `fixes`, `warnings`, and `warned_targets` summarize the graph
+  nodes needed to answer "what fixes this?" and "what is this warning about?"
+
+The packet remains an evidence packet, not a graph proof verdict. The graph
+context is a navigation layer over cited posts, and it inherits the starter
+relation heuristics and their limits.
+
 ## Starter Search Eval
 
 `aoa-4pda eval search-quality` runs the local
@@ -43,6 +62,12 @@ chunk refs, exact-term matches, source URLs, query report unit, and the
 internal-search boundary. The report is connector-local evidence, not a central
 `aoa-evals` verdict.
 
+`aoa-4pda eval graph-query-packets` runs
+`evals/suites/starter_graph_query_packets.json`. It builds temporary local
+index and graph artifacts from the sanitized live-shaped fixture and checks
+that graph-enriched query packets preserve expected relation context and source
+refs without touching the network.
+
 ## Answer Contract
 
 Every answer should carry:
@@ -51,6 +76,7 @@ Every answer should carry:
 - topic id and post id when known
 - observed/captured timestamps
 - matched chunks or post refs
+- graph context when relation traversal was requested
 - query report and score breakdown when produced by a local index
 - freshness note
 - policy route note

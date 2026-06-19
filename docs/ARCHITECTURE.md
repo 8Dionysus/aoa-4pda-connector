@@ -14,7 +14,7 @@ seeds/profile
 -> normalize topic/post records
 -> chunk and entity extraction
 -> local indexes and graph
--> evidence packets
+-> graph-enriched evidence packets
 ```
 
 ## Parser Posture
@@ -48,6 +48,7 @@ the normalized post or public source URL as evidence authority.
 | Search index | external cache root | derived chunk navigation |
 | Graph DB | external artifact root | derived navigation |
 | Evidence packet | examples/exported packets | answer support, not site truth |
+| Graph query context | `graph_context` in packets | derived navigation over cited posts |
 
 Generated indexes and graphs help navigation. They do not replace source URLs or
 policy receipts.

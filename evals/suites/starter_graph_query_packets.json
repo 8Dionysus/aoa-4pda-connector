@@ -1,0 +1,45 @@
+{
+  "schema": "aoa_4pda_graph_query_eval_suite_v1",
+  "suite_id": "starter-graph-query-packets",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "live_shape_html_topic",
+    "html_fixture": "connector/fixtures/html/live_shape_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=42&st=0"
+  },
+  "cases": [
+    {
+      "case_id": "bootloop-relation-context-packet",
+      "query": "bootloop recovery.img camellia",
+      "expect": {
+        "top_post_id": "9001",
+        "query_report_unit": "chunk",
+        "source_url_contains": "showtopic=42",
+        "relation_edges": [
+          {
+            "kind": "fixes_issue",
+            "from_node": "entity:fix:flash recovery.img",
+            "to_node": "entity:issue:bootloop"
+          },
+          {
+            "kind": "fixes_issue",
+            "from_node": "entity:fix:restore boot.img",
+            "to_node": "entity:issue:bootloop"
+          },
+          {
+            "kind": "warns_about",
+            "from_node": "entity:warning:do not install recovery.img from camellia",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "warns_about",
+            "from_node": "entity:warning:do not install recovery.img from camellia",
+            "to_node": "entity:codename:camellia"
+          }
+        ]
+      }
+    }
+  ]
+}

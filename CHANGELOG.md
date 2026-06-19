@@ -20,3 +20,5 @@
   fixture to protect post-to-entity graph edges for issue/fix/warning evidence.
 - Added starter graph relation semantics v1 with heuristic `fixes_issue` and
   `warns_about` edges plus eval coverage.
+- Added starter graph query packets that enrich keyword evidence results with
+  post-local `fixes_issue` and `warns_about` graph context plus eval coverage.
