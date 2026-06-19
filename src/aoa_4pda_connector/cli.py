@@ -22,7 +22,7 @@ from aoa_4pda_connector.evaluation import (
     run_graph_query_eval_suite,
     run_search_eval_suite,
 )
-from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep
+from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep, topic_id_from_url, topic_page_url
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
@@ -381,6 +381,7 @@ def cmd_crawl(args: argparse.Namespace) -> int:
     create_storage_roots(roots)
     profile = _read_profile(repo_root, args.profile)
     max_topics = args.max_topics or int(profile.get("max_topics", 10))
+    max_pages_per_topic = int(profile.get("max_pages_per_topic", 1))
     delay = args.delay_seconds if args.delay_seconds is not None else float(profile.get("min_delay_seconds", 8))
     seeds = _read_seed_urls(repo_root / str(profile.get("seed_file", "connector/seeds/starter_topics.yaml")))
     run_id = _new_run_id("crawl")
@@ -389,24 +390,41 @@ def cmd_crawl(args: argparse.Namespace) -> int:
     fetched = []
     errors = []
     selected = seeds[:max_topics]
-    for index, seed in enumerate(selected):
-        try:
-            result = fetch_public_topic(seed["url"], raw_dir)
-            fetched.append(
-                {
-                    "seed_id": seed["id"],
-                    "label": seed["label"],
-                    "url": result.url,
-                    "path": str(result.path),
-                    "bytes": result.bytes_written,
-                    "sha256": result.sha256,
-                    "status": result.status,
-                }
-            )
-        except Exception as exc:  # noqa: BLE001 - receipt should preserve crawl failure detail.
-            errors.append({"seed_id": seed["id"], "url": seed["url"], "error": str(exc)})
-        if index + 1 < len(selected):
-            polite_sleep(delay)
+    total_requests = len(selected) * max_pages_per_topic
+    request_index = 0
+    for seed in selected:
+        for page_index in range(max_pages_per_topic):
+            request_index += 1
+            page_url = topic_page_url(seed["url"], page_index)
+            page_start = page_index * 20
+            try:
+                result = fetch_public_topic(page_url, raw_dir)
+                fetched.append(
+                    {
+                        "seed_id": seed["id"],
+                        "label": seed["label"],
+                        "page_index": page_index,
+                        "page_start": page_start,
+                        "url": result.url,
+                        "path": str(result.path),
+                        "bytes": result.bytes_written,
+                        "sha256": result.sha256,
+                        "status": result.status,
+                    }
+                )
+            except Exception as exc:  # noqa: BLE001 - receipt should preserve crawl failure detail.
+                errors.append(
+                    {
+                        "seed_id": seed["id"],
+                        "page_index": page_index,
+                        "page_start": page_start,
+                        "url": page_url,
+                        "error": str(exc),
+                    }
+                )
+            if request_index < total_requests:
+                polite_sleep(delay)
+    fetched_topic_ids = sorted({item["seed_id"] for item in fetched})
     receipt = {
         "schema": "aoa_4pda_crawl_receipt_v1",
         "run_id": run_id,
@@ -419,7 +437,15 @@ def cmd_crawl(args: argparse.Namespace) -> int:
             "internal_search_used": False,
             "attachments_downloaded": False,
         },
-        "counts": {"requested": len(selected), "fetched": len(fetched), "errors": len(errors)},
+        "counts": {
+            "requested": len(selected),
+            "fetched": len(fetched),
+            "requested_topics": len(selected),
+            "requested_pages": total_requests,
+            "fetched_topics": len(fetched_topic_ids),
+            "fetched_pages": len(fetched),
+            "errors": len(errors),
+        },
         "snapshots": fetched,
         "errors": errors,
         "network_touched": True,
@@ -441,13 +467,14 @@ def cmd_normalize(args: argparse.Namespace) -> int:
     for snapshot in receipt.get("snapshots", []):
         path = normalize_snapshot(Path(snapshot["path"]), snapshot["url"], output_dir)
         normalized.append({"source_url": snapshot["url"], "path": str(path)})
+    topic_ids = sorted({topic_id_from_url(str(item["source_url"])) for item in normalized})
     payload = {
         "schema": "aoa_4pda_normalize_receipt_v1",
         "run_id": run_id,
         "source_run_id": receipt["run_id"],
         "finished_at": _now(),
         "normalized": normalized,
-        "counts": {"topics": len(normalized)},
+        "counts": {"topics": len(topic_ids), "pages": len(normalized)},
         "network_touched": False,
     }
     receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "normalize", payload)
@@ -687,19 +714,24 @@ def cmd_proof_live_starter(args: argparse.Namespace) -> int:
 
     crawl_counts = crawl_receipt.get("counts", {})
     normalize_counts = normalize_receipt.get("counts", {})
+    requested_topics = int(crawl_counts.get("requested_topics", crawl_counts.get("requested", 0)))
+    requested_pages = int(crawl_counts.get("requested_pages", crawl_counts.get("requested", 0)))
+    fetched_topics = int(crawl_counts.get("fetched_topics", crawl_counts.get("fetched", 0)))
+    fetched_pages = int(crawl_counts.get("fetched_pages", crawl_counts.get("fetched", 0)))
+    normalized_topics = int(normalize_counts.get("topics", normalize_counts.get("pages", 0)))
+    normalized_pages = int(normalize_counts.get("pages", normalize_counts.get("topics", 0)))
     policy = crawl_receipt.get("policy", {})
     storage_warning_list = storage_warnings(repo_root, roots)
     first_result = packet["results"][0] if packet.get("results") else {}
     checks = {
         "external_roots_ready": not storage_warning_list,
-        "crawl_fetched_public_topics": int(crawl_counts.get("fetched", 0)) > 0
+        "crawl_fetched_public_topics": fetched_topics > 0
         and int(crawl_counts.get("errors", 0)) == 0,
         "policy_preserved": policy.get("allowed_public_only") is True
         and policy.get("internal_search_used") is False
         and policy.get("attachments_downloaded") is False
         and packet.get("policy", {}).get("internal_search_used") is False,
-        "normalized_topics_match_fetched": int(normalize_counts.get("topics", 0))
-        == int(crawl_counts.get("fetched", 0)),
+        "normalized_pages_match_fetched": normalized_pages == fetched_pages,
         "index_has_posts": int(index.get("doc_count", 0)) > 0,
         "graph_has_nodes_edges": int(graph.get("node_count", 0)) > 0 and int(graph.get("edge_count", 0)) > 0,
         "query_returns_result": bool(packet.get("results")),
@@ -726,9 +758,12 @@ def cmd_proof_live_starter(args: argparse.Namespace) -> int:
                 "graph_path": str(graph_path),
             },
             "counts": {
-                "requested_topics": int(crawl_counts.get("requested", 0)),
-                "fetched_topics": int(crawl_counts.get("fetched", 0)),
-                "normalized_topics": int(normalize_counts.get("topics", 0)),
+                "requested_topics": requested_topics,
+                "requested_pages": requested_pages,
+                "fetched_topics": fetched_topics,
+                "fetched_pages": fetched_pages,
+                "normalized_topics": normalized_topics,
+                "normalized_pages": normalized_pages,
                 "index_docs": int(index.get("doc_count", 0)),
                 "index_terms": int(index.get("term_count", 0)),
                 "graph_nodes": int(graph.get("node_count", 0)),

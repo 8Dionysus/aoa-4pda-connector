@@ -28,3 +28,5 @@
   fallback roots for small starter databases before external storage is needed.
 - Added `storage status` and no-network `materialize fixture` commands for
   inspecting storage and writing a tiny queryable fixture database.
+- Made starter crawls honor `max_pages_per_topic` and write page-distinct
+  normalized snapshots instead of overwriting later topic pages.

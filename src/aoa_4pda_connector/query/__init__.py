@@ -30,6 +30,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
     phrase_candidates = _phrase_candidates(terms)
     docs = {doc["doc_id"]: doc for doc in index.get("docs", [])}
     doc_count = max(1, int(index.get("doc_count", len(docs))))
+    specific_terms = _specific_query_terms(terms, exact_terms, index, doc_count)
     avg_doc_len = _average_doc_length(docs.values())
     doc_scores: dict[str, dict[str, object]] = {}
 
@@ -71,15 +72,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
                 entry["matched_phrases"].add(phrase)
 
     results = []
-    ranked = sorted(
-        doc_scores.items(),
-        key=lambda item: (
-            float(item[1]["bm25"]) + float(item[1]["exact"]) + float(item[1]["phrase"]),
-            len(item[1]["matched_exact_terms"]),
-            len(item[1]["matched_phrases"]),
-        ),
-        reverse=True,
-    )
+    ranked = sorted(doc_scores.items(), key=lambda item: _ranking_key(item, specific_terms), reverse=True)
     for doc_id, score in ranked[:limit]:
         doc = docs[doc_id]
         text = str(doc.get("text", ""))
@@ -87,6 +80,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
         matched_terms = sorted(score["matched_terms"])
         matched_exact_terms = sorted(score["matched_exact_terms"])
         matched_phrases = sorted(score["matched_phrases"])
+        matched_specific_terms = sorted(_matched_specific_terms(score, specific_terms))
         results.append(
             {
                 "source_url": doc.get("source_url"),
@@ -106,6 +100,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
                 "matched_terms": matched_terms,
                 "matched_exact_terms": matched_exact_terms,
                 "matched_phrases": matched_phrases,
+                "matched_specific_terms": matched_specific_terms,
                 "evidence_refs": [f"chunk:{doc.get('chunk_id', doc_id)}", f"post:{doc.get('post_id')}"],
             }
         )
@@ -119,6 +114,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
             "unit": index.get("unit", "post"),
             "terms": terms,
             "exact_terms": exact_terms,
+            "specific_terms": specific_terms,
             "phrase_candidates": phrase_candidates,
             "bm25": {"k1": BM25_K1, "b": BM25_B},
             "boosts": {"exact_term": EXACT_TERM_BOOST, "phrase": PHRASE_BOOST},
@@ -172,6 +168,43 @@ def _phrase_candidates(terms: list[str]) -> list[str]:
             if any(any(char.isdigit() for char in term) for term in window) and phrase not in phrases:
                 phrases.append(phrase)
     return phrases
+
+
+def _specific_query_terms(
+    terms: list[str],
+    exact_terms: list[str],
+    index: dict[str, object],
+    doc_count: int,
+) -> list[str]:
+    inverted = index.get("inverted", {})
+    rare_cutoff = max(3, int(doc_count * 0.08))
+    specific: list[str] = []
+    for term in terms:
+        if term.isdigit():
+            continue
+        hits = inverted.get(term, []) if isinstance(inverted, dict) else []
+        is_rare = 0 < len(hits) <= rare_cutoff
+        is_structured = term in exact_terms and any(separator in term for separator in [".", "_", "/", "-"])
+        if (is_rare or is_structured) and term not in specific:
+            specific.append(term)
+    return specific
+
+
+def _matched_specific_terms(score: dict[str, object], specific_terms: list[str]) -> set[str]:
+    matched_terms = set(score["matched_terms"])
+    matched_exact_terms = set(score["matched_exact_terms"])
+    return (matched_terms | matched_exact_terms).intersection(specific_terms)
+
+
+def _ranking_key(item: tuple[str, dict[str, object]], specific_terms: list[str]) -> tuple[float, int, int, float]:
+    score = item[1]
+    total = float(score["bm25"]) + float(score["exact"]) + float(score["phrase"])
+    return (
+        float(len(_matched_specific_terms(score, specific_terms))),
+        len(score["matched_exact_terms"]),
+        len(score["matched_phrases"]),
+        total,
+    )
 
 
 def _focused_snippet(text: str, needles: list[str], radius: int = 190) -> str:

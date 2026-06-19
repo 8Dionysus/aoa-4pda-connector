@@ -69,4 +69,5 @@ aoa-4pda answer "redmi note 10 twrp bootloop"
 
 These commands write to configured storage roots, defaulting to ignored
 repo-local `.connector-state/` when no external roots are set. The default
-starter profile remains bounded and conservative.
+starter profile remains bounded and conservative, including a small
+`max_pages_per_topic` limit for public topic pagination.

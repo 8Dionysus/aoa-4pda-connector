@@ -48,8 +48,10 @@ aoa-4pda answer "redmi note 10 twrp bootloop firmware"
 Run these stages sequentially. `build-index` and `build-graph` consume the
 normalization receipt for the selected run.
 
-The command path writes raw snapshots, normalized topics, indexes, graphs, and
-evidence packets to configured storage roots outside Git history.
+The starter profile fetches bounded public page offsets per topic according to
+`max_pages_per_topic`. The command path writes raw snapshots, normalized topic
+pages, indexes, graphs, and evidence packets to configured storage roots
+outside Git history.
 
 ## Receipts
 

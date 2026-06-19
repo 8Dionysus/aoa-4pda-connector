@@ -1,6 +1,6 @@
 schema: aoa_4pda_profile_v1
 profile_id: starter
-description: Tiny policy-safe smoke profile for synthetic fixtures and a future 10-30 topic public starter crawl.
+description: Tiny policy-safe smoke profile for synthetic fixtures and a bounded 10-30 topic public starter crawl.
 network_default: disabled
 max_topics: 30
 max_pages_per_topic: 3
@@ -16,4 +16,3 @@ artifacts:
   build_bm25: true
   build_vector: false
   build_graph: true
-
