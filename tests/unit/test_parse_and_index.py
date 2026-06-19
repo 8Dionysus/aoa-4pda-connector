@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, tokenize
+from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
 from aoa_4pda_connector.query import packet_id_for_query, query_keyword_index
 
@@ -19,6 +20,44 @@ def test_parse_synthetic_topic_fixture():
     assert len(posts) == 2
     assert posts[1]["post_id"] == "1002"
     assert "bootloop" in posts[1]["text"]
+
+
+def test_parse_live_shape_fixture_extracts_metadata_and_drops_noise():
+    raw = (REPO_ROOT / "connector/fixtures/html/live_shape_topic.html").read_bytes()
+    document = decode_html(raw)
+    posts = extract_posts(document)
+
+    assert len(posts) == 1
+    post = posts[0]
+    assert post["post_id"] == "9001"
+    assert post["author_label"] == "fixture_author"
+    assert post["posted_at"] == "01.04.21, 09:32"
+    assert "fastboot flash recovery recovery.img" in post["text"]
+    assert "Restore boot.img" in post["text"]
+    assert "Quoted stale boot.img" not in post["text"]
+    assert "Edited by fixture moderator" not in post["text"]
+    assert "--------------------" not in post["text"]
+    assert "Signature mentions" not in post["text"]
+    assert "profile card noise" not in post["text"]
+
+
+def test_normalize_live_shape_fixture_preserves_post_metadata(tmp_path):
+    raw_path = REPO_ROOT / "connector/fixtures/html/live_shape_topic.html"
+    output_path = normalize_snapshot(
+        raw_path,
+        "https://4pda.to/forum/index.php?showtopic=42&st=0",
+        tmp_path,
+    )
+    topic = json.loads(output_path.read_text(encoding="utf-8"))
+    post = topic["posts"][0]
+
+    assert post["post_id"] == "9001"
+    assert post["author_label"] == "fixture_author"
+    assert post["posted_at"] == "01.04.21, 09:32"
+    assert post["source_url"] == "https://4pda.to/forum/index.php?showtopic=42&st=0#entry9001"
+    assert {"kind": "tool", "value": "TWRP"} in post["entities"]
+    assert {"kind": "tool", "value": "fastboot"} in post["entities"]
+    assert {"kind": "file", "value": "boot.img"} in post["entities"]
 
 
 def test_keyword_index_and_query_fixture(tmp_path):
