@@ -38,6 +38,9 @@ jobs:
       - name: Run starter search eval
         run: aoa-4pda eval search-quality
 
+      - name: Run starter graph relation eval
+        run: aoa-4pda eval graph-relations
+
       - name: Guard against committed heavy artifacts
         run: |
           python - <<'PY'

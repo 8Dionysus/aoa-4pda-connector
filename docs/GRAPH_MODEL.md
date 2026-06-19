@@ -48,3 +48,15 @@ Entity extraction v1 is heuristic and local:
 - bounded fix/warning patterns around technical files such as `boot.img`
 
 It is a navigation layer, not a final classifier.
+
+## Starter Graph Eval
+
+`aoa-4pda eval graph-relations` runs
+`evals/suites/starter_graph_relations.json`. It normalizes the sanitized
+live-shaped HTML fixture, builds a temporary graph, and checks that expected
+entity nodes and `post_mentions_entity` edges exist for issue, fix, warning,
+file, and tool evidence.
+
+This is connector-local evidence only. It does not claim full relation
+extraction quality and does not promote `fixes_issue` or `warns_about` to a
+validated central proof verdict.

@@ -8,11 +8,14 @@ import tempfile
 from pathlib import Path
 
 from aoa_4pda_connector.config import find_repo_root
+from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
+from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.query import query_keyword_index
 
 
 DEFAULT_SEARCH_EVAL_SUITE = Path("evals/suites/starter_search_quality.json")
+DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
 
 
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
@@ -67,6 +70,51 @@ def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None
     }
 
 
+def run_graph_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
+    """Run a small public-safe graph relation eval suite without touching the network."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_GRAPH_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    dataset = suite.get("dataset", {})
+    fixture_path = _resolve_repo_path(root, Path(str(dataset.get("html_fixture", ""))))
+    source_url = str(dataset.get("source_url", ""))
+
+    with tempfile.TemporaryDirectory(prefix="aoa-4pda-graph-eval-") as tmp:
+        eval_root = Path(tmp)
+        normalized_dir = eval_root / "normalized"
+        normalize_snapshot(fixture_path, source_url, normalized_dir)
+        graph_path = build_graph(normalized_dir, eval_root / "graph", "eval")
+        graph = json.loads(graph_path.read_text(encoding="utf-8"))
+        case_reports = [_run_graph_case(case, graph) for case in suite.get("cases", [])]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    return {
+        "schema": "aoa_4pda_graph_eval_report_v1",
+        "status": "ok" if not failed else "error",
+        "suite_id": suite.get("suite_id"),
+        "suite_path": str(path.relative_to(root)),
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+        },
+        "graph": {
+            "node_count": graph.get("node_count"),
+            "edge_count": graph.get("edge_count"),
+        },
+        "network_touched": False,
+        "artifact_lifecycle": "temporary_deleted_after_run",
+        "cases": case_reports,
+    }
+
+
 def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
     query = str(case.get("query", ""))
     expect = case.get("expect", {})
@@ -95,6 +143,51 @@ def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
     }
 
 
+def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[str, object]:
+    expect = case.get("expect", {})
+    post_id = str(expect.get("post_id", ""))
+    topic_id = str(expect.get("topic_id", ""))
+    post_node = f"post:{post_id}"
+    topic_node = f"topic:{topic_id}"
+    expected_entity_ids = [str(node_id) for node_id in expect.get("entity_node_ids", [])]
+    expected_mention_ids = [str(node_id) for node_id in expect.get("post_mentions_entity_node_ids", [])]
+    source_url_contains = str(expect.get("source_url_contains", ""))
+
+    nodes = {str(node.get("node_id")): node for node in graph.get("nodes", [])}
+    edges = [edge for edge in graph.get("edges", [])]
+    post_mention_targets = {
+        str(edge.get("to_node"))
+        for edge in edges
+        if edge.get("kind") == "post_mentions_entity" and edge.get("from_node") == post_node
+    }
+    expected_mention_edges = [
+        edge
+        for edge in edges
+        if edge.get("kind") == "post_mentions_entity"
+        and edge.get("from_node") == post_node
+        and edge.get("to_node") in expected_mention_ids
+    ]
+
+    checks = {
+        "post_node_present": post_node in nodes,
+        "topic_contains_post_edge": _edge_exists(edges, "topic_contains_post", topic_node, post_node),
+        "expected_entity_nodes_present": all(node_id in nodes for node_id in expected_entity_ids),
+        "post_mentions_expected_entities": all(node_id in post_mention_targets for node_id in expected_mention_ids),
+        "source_refs_preserved": _source_refs_contain(nodes.get(post_node, {}), source_url_contains)
+        and all(_source_refs_contain(edge, source_url_contains) for edge in expected_mention_edges),
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "post_node": post_node,
+        "expected_entity_node_ids": expected_entity_ids,
+        "expected_post_mentions_entity_node_ids": expected_mention_ids,
+        "checks": checks,
+        "matched_entity_node_ids": sorted(node_id for node_id in expected_entity_ids if node_id in nodes),
+        "matched_post_mentions_entity_node_ids": sorted(node_id for node_id in expected_mention_ids if node_id in post_mention_targets),
+    }
+
+
 def _resolve_repo_path(repo_root: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo_root / path
 
@@ -107,3 +200,17 @@ def _any_expected(expected: object, actual: object) -> bool:
     expected_values = {str(item).lower() for item in expected if str(item)}
     actual_values = {str(item).lower() for item in actual}
     return bool(expected_values.intersection(actual_values))
+
+
+def _edge_exists(edges: list[dict[str, object]], kind: str, from_node: str, to_node: str) -> bool:
+    return any(
+        edge.get("kind") == kind
+        and edge.get("from_node") == from_node
+        and edge.get("to_node") == to_node
+        for edge in edges
+    )
+
+
+def _source_refs_contain(item: dict[str, object], needle: str) -> bool:
+    refs = [str(ref) for ref in item.get("source_refs", [])]
+    return bool(needle) and any(needle in ref for ref in refs)

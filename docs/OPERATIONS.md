@@ -9,6 +9,7 @@ aoa-4pda doctor
 aoa-4pda policy check
 aoa-4pda proof starter
 aoa-4pda eval search-quality
+aoa-4pda eval graph-relations
 ```
 
 ## Crawl Commands
@@ -19,6 +20,7 @@ Run the offline proof before a live crawl:
 ```bash
 aoa-4pda proof starter
 aoa-4pda eval search-quality
+aoa-4pda eval graph-relations
 ```
 
 Then use the starter profile first:

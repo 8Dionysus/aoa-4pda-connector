@@ -11,7 +11,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from aoa_4pda_connector.config import StorageRoots, find_repo_root
-from aoa_4pda_connector.evaluation import DEFAULT_SEARCH_EVAL_SUITE, run_search_eval_suite
+from aoa_4pda_connector.evaluation import (
+    DEFAULT_GRAPH_EVAL_SUITE,
+    DEFAULT_SEARCH_EVAL_SUITE,
+    run_graph_eval_suite,
+    run_search_eval_suite,
+)
 from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
@@ -90,6 +95,9 @@ def build_parser() -> argparse.ArgumentParser:
     search_quality = eval_sub.add_parser("search-quality", help="Run the starter search quality eval.")
     search_quality.add_argument("--suite", default=str(DEFAULT_SEARCH_EVAL_SUITE))
     search_quality.set_defaults(func=cmd_eval_search_quality)
+    graph_relations = eval_sub.add_parser("graph-relations", help="Run the starter graph relation eval.")
+    graph_relations.add_argument("--suite", default=str(DEFAULT_GRAPH_EVAL_SUITE))
+    graph_relations.set_defaults(func=cmd_eval_graph_relations)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -539,6 +547,12 @@ def cmd_proof_live_starter(args: argparse.Namespace) -> int:
 
 def cmd_eval_search_quality(args: argparse.Namespace) -> int:
     report = run_search_eval_suite(Path(args.suite), find_repo_root())
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
+def cmd_eval_graph_relations(args: argparse.Namespace) -> int:
+    report = run_graph_eval_suite(Path(args.suite), find_repo_root())
     _emit(report)
     return 0 if report.get("status") == "ok" else 1
 
