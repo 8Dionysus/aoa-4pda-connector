@@ -40,6 +40,16 @@ The real 4PDA starter crawl is deliberately explicit and bounded. CI and fresh
 clones still need a reliable proof that the connector method is wired together.
 The starter proof keeps that confidence local, small, and GitHub-safe.
 
+## Starter Search Eval
+
+`aoa-4pda eval search-quality` is the companion retrieval-quality check for
+the same fresh-clone posture. It runs tiny public-safe cases from
+`evals/suites/starter_search_quality.json`, verifies expected top posts and
+chunk refs, and deletes temporary indexes after the run.
+
+This eval is local connector evidence. It does not create central proof
+verdicts, broad regression scores, or full-corpus quality claims.
+
 ## What It Does Not Prove
 
 - live 4PDA availability

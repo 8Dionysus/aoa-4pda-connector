@@ -28,6 +28,8 @@ REQUIRED_FILES = [
     "connector/manifests/connector_manifest.yaml",
     "connector/manifests/artifact_classes.yaml",
     "connector/manifests/route_allowlist.yaml",
+    "evals/PORT.yaml",
+    "evals/suites/starter_search_quality.json",
     "docs/ARCHITECTURE.md",
     "docs/INSTALL.md",
     "docs/AGENT_INSTALL_ROUTE.md",
@@ -53,6 +55,7 @@ REQUIRED_DIRS = [
     "src/aoa_4pda_connector/storage",
     "src/aoa_4pda_connector/export",
     "src/aoa_4pda_connector/serve",
+    "src/aoa_4pda_connector/evaluation",
     "tests/unit",
     "tests/contract",
     "tests/integration",
@@ -140,6 +143,7 @@ def main() -> int:
     for path in [
         *repo_root.glob("connector/fixtures/**/*.json"),
         *repo_root.glob("connector/examples/**/*.json"),
+        *repo_root.glob("evals/suites/**/*.json"),
         *repo_root.glob("generated/**/*.json"),
     ]:
         _load_json(path, errors)
@@ -163,6 +167,7 @@ def main() -> int:
             errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")
 
     _check_text(repo_root, errors, warnings)
+    _check_eval_port(repo_root, errors)
 
     payload = {
         "schema": "aoa_4pda_connector_validation_v1",
@@ -208,6 +213,28 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
 
     if "internal search" not in source_policy.lower():
         warnings.append("source policy should mention internal search boundary")
+
+
+def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
+    port = (repo_root / "evals" / "PORT.yaml").read_text(encoding="utf-8")
+    required_tokens = [
+        "schema_version: local_eval_port_v1",
+        "owner_repo: aoa-4pda-connector",
+        "proof_owner_repo: aoa-evals",
+        "no verdict, scoring, regression, or proof doctrine authority",
+    ]
+    for token in required_tokens:
+        if token not in port:
+            errors.append(f"eval port missing boundary token: {token}")
+
+    suite_path = repo_root / "evals" / "suites" / "starter_search_quality.json"
+    suite = json.loads(suite_path.read_text(encoding="utf-8"))
+    if suite.get("schema") != "aoa_4pda_search_eval_suite_v1":
+        errors.append("search eval suite has unexpected schema")
+    if suite.get("proof_owner_repo") != "aoa-evals":
+        errors.append("search eval suite must keep aoa-evals as proof owner")
+    if not suite.get("cases"):
+        errors.append("search eval suite must include at least one case")
 
 
 if __name__ == "__main__":

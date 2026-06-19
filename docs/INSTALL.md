@@ -12,6 +12,7 @@ python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
 aoa-4pda proof starter
+aoa-4pda eval search-quality
 ```
 
 ## Configure External Storage
@@ -30,6 +31,7 @@ The skeleton does not run network crawls by default. First run the offline proof
 
 ```bash
 aoa-4pda proof starter
+aoa-4pda eval search-quality
 ```
 
 A live starter crawl should be explicit and bounded:

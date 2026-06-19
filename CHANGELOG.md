@@ -14,3 +14,5 @@
   author/date extraction, and quote/edit/signature noise cleanup.
 - Added chunking v1 so BM25/exact search indexes evidence chunks inside posts
   and returns chunk ids, offsets, and chunk-level evidence refs.
+- Added a repo-local starter search eval pack with a no-network runner and CI
+  gate for expected top chunk/post evidence.

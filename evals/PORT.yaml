@@ -1,0 +1,16 @@
+schema_version: local_eval_port_v1
+owner_repo: aoa-4pda-connector
+status: active
+proof_owner_repo: aoa-evals
+default_intake_schema: eval_need_v1
+central_boundary: no verdict, scoring, regression, or proof doctrine authority
+local_authority:
+  - connector-specific query suites
+  - public-safe synthetic and bounded-fixture cases
+  - local runner outputs and compact reports
+  - evidence that a connector change preserved expected retrieval behavior
+non_goals:
+  - central eval bundle creation
+  - accepted proof verdicts
+  - broad live-corpus scoring
+  - committed large reports or generated indexes

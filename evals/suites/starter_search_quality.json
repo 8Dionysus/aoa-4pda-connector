@@ -1,0 +1,37 @@
+{
+  "schema": "aoa_4pda_search_eval_suite_v1",
+  "suite_id": "starter-search-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "synthetic_normalized_topic",
+    "topic_fixture": "connector/fixtures/normalized/synthetic_topic.json"
+  },
+  "cases": [
+    {
+      "case_id": "bootloop-fix-post",
+      "query": "redmi note 10 recovery bootloop boot.img",
+      "expect": {
+        "top_post_id": "1002",
+        "top_chunk_ref_prefix": "chunk:synthetic-topic-1:1002:",
+        "matched_terms_any": ["bootloop", "recovery"],
+        "matched_exact_terms_any": ["boot.img"],
+        "source_url_contains": "#entry1002",
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "firmware-version-post",
+      "query": "firmware V14.0.7.0",
+      "expect": {
+        "top_post_id": "1001",
+        "top_chunk_ref_prefix": "chunk:synthetic-topic-1:1001:",
+        "matched_terms_any": ["firmware"],
+        "matched_exact_terms_any": ["v14.0.7.0"],
+        "source_url_contains": "#entry1001",
+        "query_report_unit": "chunk"
+      }
+    }
+  ]
+}

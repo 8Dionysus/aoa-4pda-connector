@@ -35,6 +35,9 @@ jobs:
       - name: Run offline starter proof
         run: aoa-4pda proof starter
 
+      - name: Run starter search eval
+        run: aoa-4pda eval search-quality
+
       - name: Guard against committed heavy artifacts
         run: |
           python - <<'PY'

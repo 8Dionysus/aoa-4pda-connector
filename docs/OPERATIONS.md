@@ -8,6 +8,7 @@ python -m pytest -q
 aoa-4pda doctor
 aoa-4pda policy check
 aoa-4pda proof starter
+aoa-4pda eval search-quality
 ```
 
 ## Crawl Commands
@@ -17,6 +18,7 @@ Run the offline proof before a live crawl:
 
 ```bash
 aoa-4pda proof starter
+aoa-4pda eval search-quality
 ```
 
 Then use the starter profile first:
