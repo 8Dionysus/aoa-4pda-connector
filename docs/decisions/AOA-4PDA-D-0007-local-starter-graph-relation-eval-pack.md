@@ -12,6 +12,8 @@ the source post.
 
 The connector needs a small fresh-clone graph-quality check before stronger
 relation extraction such as `fixes_issue` or `warns_about` is implemented.
+`AOA-4PDA-D-0008` later extends this eval from post-to-entity coverage to
+starter relation edge coverage.
 
 ## Decision
 
@@ -34,6 +36,8 @@ deleted after the run.
 - CI can catch graph regressions where an entity is extracted but no longer
   linked to the source post.
 - This remains a starter graph-quality gate, not full relation extraction.
+- `AOA-4PDA-D-0008` extends the same suite to check starter `fixes_issue` and
+  `warns_about` edges.
 
 ## Boundaries
 
@@ -42,8 +46,8 @@ deleted after the run.
   regression truth.
 - No live crawl, internal search route, attachment route, generated graph
   artifact, or repeated report is committed.
-- `fixes_issue` and `warns_about` stay future relation-extraction work; this
-  decision only protects post-to-entity edges.
+- This decision originally protected post-to-entity edges. Starter relation
+  edge semantics are recorded separately in `AOA-4PDA-D-0008`.
 
 ## Source Surfaces
 

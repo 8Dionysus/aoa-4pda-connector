@@ -47,4 +47,5 @@ def test_graph_eval_suite_reports_live_shape_entity_edges_without_network():
     assert case["checks"]["topic_contains_post_edge"] is True
     assert case["checks"]["expected_entity_nodes_present"] is True
     assert case["checks"]["post_mentions_expected_entities"] is True
+    assert case["checks"]["expected_relation_edges_present"] is True
     assert case["checks"]["source_refs_preserved"] is True

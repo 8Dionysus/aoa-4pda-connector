@@ -49,8 +49,8 @@ chunk refs, and deletes temporary indexes after the run.
 
 `aoa-4pda eval graph-relations` is the companion graph-quality check. It uses a
 sanitized live-shaped HTML fixture, verifies expected issue/fix/warning entity
-nodes and post-to-entity graph edges, and deletes temporary graph artifacts
-after the run.
+nodes, post-to-entity graph edges, `fixes_issue` edges, and `warns_about`
+edges, and deletes temporary graph artifacts after the run.
 
 This eval is local connector evidence. It does not create central proof
 verdicts, broad regression scores, or full-corpus quality claims.

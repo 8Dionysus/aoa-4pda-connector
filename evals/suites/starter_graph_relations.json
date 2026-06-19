@@ -32,6 +32,28 @@
           "entity:fix:restore boot.img",
           "entity:warning:do not install recovery.img from camellia"
         ],
+        "relation_edges": [
+          {
+            "kind": "fixes_issue",
+            "from_node": "entity:fix:flash recovery.img",
+            "to_node": "entity:issue:bootloop"
+          },
+          {
+            "kind": "fixes_issue",
+            "from_node": "entity:fix:restore boot.img",
+            "to_node": "entity:issue:bootloop"
+          },
+          {
+            "kind": "warns_about",
+            "from_node": "entity:warning:do not install recovery.img from camellia",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "warns_about",
+            "from_node": "entity:warning:do not install recovery.img from camellia",
+            "to_node": "entity:codename:camellia"
+          }
+        ],
         "source_url_contains": "#entry9001"
       }
     }
