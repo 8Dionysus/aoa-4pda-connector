@@ -8,6 +8,8 @@ from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 
+from aoa_4pda_connector.chunk import chunk_post
+
 
 TOKEN_RE = re.compile(r"[0-9A-Za-zА-Яа-яЁё]+(?:[._/\-][0-9A-Za-zА-Яа-яЁё]+)*", re.U)
 
@@ -32,35 +34,41 @@ def build_keyword_index(normalized_dir: Path, output_dir: Path, profile_id: str 
         topic = json.loads(topic_path.read_text(encoding="utf-8"))
         title = str(topic.get("title", ""))
         for post in topic.get("posts", []):
-            text = str(post.get("text", ""))
-            doc_id = f"{post.get('topic_id')}:{post.get('post_id')}"
-            search_text = f"{title} {text}".strip()
-            tokens = tokenize(search_text)
-            counts = Counter(tokens)
-            exact_terms = extract_exact_terms(tokens)
-            docs.append(
-                {
-                    "doc_id": doc_id,
-                    "topic_id": post.get("topic_id"),
-                    "post_id": post.get("post_id"),
-                    "source_url": post.get("source_url"),
-                    "title": title,
-                    "text": text,
-                    "search_text": search_text,
-                    "exact_text": " ".join(tokens),
-                    "exact_terms": exact_terms,
-                    "tokens": sum(counts.values()),
-                }
-            )
-            for token, count in counts.items():
-                inverted[token].append({"doc_id": doc_id, "count": count})
-            for token in exact_terms:
-                exact[token].append(doc_id)
+            for chunk in chunk_post(post):
+                text = str(chunk.get("text", ""))
+                doc_id = str(chunk["chunk_id"])
+                search_text = f"{title} {text}".strip()
+                tokens = tokenize(search_text)
+                counts = Counter(tokens)
+                exact_terms = extract_exact_terms(tokens)
+                docs.append(
+                    {
+                        "doc_id": doc_id,
+                        "chunk_id": chunk["chunk_id"],
+                        "chunk_index": chunk["chunk_index"],
+                        "char_start": chunk["char_start"],
+                        "char_end": chunk["char_end"],
+                        "topic_id": post.get("topic_id"),
+                        "post_id": post.get("post_id"),
+                        "source_url": post.get("source_url"),
+                        "title": title,
+                        "text": text,
+                        "search_text": search_text,
+                        "exact_text": " ".join(tokens),
+                        "exact_terms": exact_terms,
+                        "tokens": sum(counts.values()),
+                    }
+                )
+                for token, count in counts.items():
+                    inverted[token].append({"doc_id": doc_id, "count": count})
+                for token in exact_terms:
+                    exact[token].append(doc_id)
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / "keyword_index.json"
     payload = {
         "schema": "aoa_4pda_keyword_index_v1",
         "profile_id": profile_id,
+        "unit": "chunk",
         "scoring": {
             "algorithm": "bm25_exact_v1",
             "bm25_k1": 1.5,

@@ -15,14 +15,15 @@
 - live starter proof over external storage artifacts
 - normalized topic/post snapshots
 - live-shaped sanitized parser fixtures
+- chunking v1 for evidence chunks inside long posts
 - local BM25 and exact-token search over starter data
 - heuristic entity extraction for starter graph nodes
 - evidence packet query route
 
 ## Wave 2: Deep Search
 
-- chunking and stronger exact-token search for device models, firmware
-  versions, and error strings
+- stronger exact-token search for device models, firmware versions, and error
+  strings
 - stronger entity extraction for devices, apps, versions, firmware, warnings,
   and fixes
 - vector search adapter behind an optional dependency
