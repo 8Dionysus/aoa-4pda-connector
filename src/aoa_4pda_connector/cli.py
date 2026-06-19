@@ -154,6 +154,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         ".connector-state/**",
         "!.connector-state/README.md",
         "!.connector-state/AGENTS.md",
+        "!.connector-state/**/.gitkeep",
         "data/",
         "cache/",
         "artifacts/",

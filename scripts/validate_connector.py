@@ -92,6 +92,7 @@ REQUIRED_GITIGNORE = [
     ".connector-state/**",
     "!.connector-state/README.md",
     "!.connector-state/AGENTS.md",
+    "!.connector-state/**/.gitkeep",
     "data/",
     "cache/",
     "artifacts/",
