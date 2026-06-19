@@ -7,7 +7,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from aoa_4pda_connector.fetch import topic_id_from_url
+from aoa_4pda_connector.fetch import topic_id_from_url, topic_page_start_from_url
 from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
 
 
@@ -48,6 +48,7 @@ def normalize_snapshot(raw_path: Path, source_url: str, output_dir: Path) -> Pat
     document = decode_html(raw_path.read_bytes())
     captured_at = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     topic_id = topic_id_from_url(source_url)
+    page_start = topic_page_start_from_url(source_url)
     posts = []
     for post in extract_posts(document):
         post_id = post["post_id"]
@@ -67,13 +68,14 @@ def normalize_snapshot(raw_path: Path, source_url: str, output_dir: Path) -> Pat
     topic = {
         "schema": "aoa_4pda_normalized_topic_v1",
         "topic_id": topic_id,
+        "page_start": page_start,
         "source_url": source_url,
         "title": extract_title(document),
         "captured_at": captured_at,
         "posts": posts,
     }
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"topic-{topic_id}.json"
+    output_path = output_dir / f"topic-{topic_id}-st{page_start}.json"
     output_path.write_text(json.dumps(topic, ensure_ascii=False, indent=2), encoding="utf-8")
     return output_path
 

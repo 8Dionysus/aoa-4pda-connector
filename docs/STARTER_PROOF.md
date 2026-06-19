@@ -114,7 +114,7 @@ proof checks:
 - configured storage roots exist and are Git-ignored when repo-local
 - crawl policy preserved public-topic-only intake
 - internal search and attachments were not used
-- normalized topic count matches fetched topics
+- normalized page count matches fetched public topic pages
 - keyword index and graph artifacts exist and are non-empty
 - local query returns at least one evidence result
 - only the crawl stage touched the network

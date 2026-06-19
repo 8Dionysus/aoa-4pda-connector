@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from aoa_4pda_connector.fetch import topic_page_start_from_url, topic_page_url
 from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, tokenize
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
@@ -51,6 +52,8 @@ def test_normalize_live_shape_fixture_preserves_post_metadata(tmp_path):
     topic = json.loads(output_path.read_text(encoding="utf-8"))
     post = topic["posts"][0]
 
+    assert output_path.name == "topic-42-st0.json"
+    assert topic["page_start"] == "0"
     assert post["post_id"] == "9001"
     assert post["author_label"] == "fixture_author"
     assert post["posted_at"] == "01.04.21, 09:32"
@@ -58,6 +61,15 @@ def test_normalize_live_shape_fixture_preserves_post_metadata(tmp_path):
     assert {"kind": "tool", "value": "TWRP"} in post["entities"]
     assert {"kind": "tool", "value": "fastboot"} in post["entities"]
     assert {"kind": "file", "value": "boot.img"} in post["entities"]
+
+
+def test_topic_page_url_generates_public_pagination_offsets():
+    seed = "https://4pda.to/forum/index.php?showtopic=42"
+
+    assert topic_page_url(seed, 0) == "https://4pda.to/forum/index.php?showtopic=42&st=0"
+    assert topic_page_url(seed, 1) == "https://4pda.to/forum/index.php?showtopic=42&st=20"
+    assert topic_page_url(seed, 2) == "https://4pda.to/forum/index.php?showtopic=42&st=40"
+    assert topic_page_start_from_url(topic_page_url(seed, 2)) == "40"
 
 
 def test_keyword_index_and_query_fixture(tmp_path):
@@ -140,6 +152,55 @@ def test_query_uses_bm25_exact_terms_phrases_and_focused_snippets(tmp_path):
     assert top["score_breakdown"]["exact"] > 0
     assert top["score_breakdown"]["phrase"] > 0
     assert "boot.img" in top["snippet"]
+
+
+def test_query_prioritizes_specific_terms_over_topic_boilerplate(tmp_path):
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "specific-ranking",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=42",
+        "title": "Redmi Note 10 Pro - Firmware",
+        "captured_at": "2026-06-18T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "3001",
+                "topic_id": "specific-ranking",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=42#entry3001",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-18T00:00:00Z",
+                "text": "Redmi Note 10 Pro firmware overview. Redmi Note 10 Pro firmware archive.",
+                "entities": [],
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "3002",
+                "topic_id": "specific-ranking",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=42#entry3002",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-18T00:00:00Z",
+                "text": "If bootloop appears after flashing recovery, boot to TWRP and flash recovery.img again.",
+                "entities": [],
+            },
+        ],
+    }
+    (normalized_dir / "topic-specific-ranking.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index")
+    packet = query_keyword_index(index_path, "bootloop recovery.img redmi note 10")
+
+    assert "bootloop" in packet["query_report"]["specific_terms"]
+    assert "recovery.img" in packet["query_report"]["specific_terms"]
+    top = packet["results"][0]
+    assert top["post_id"] == "3002"
+    assert "bootloop" in top["matched_specific_terms"]
+    assert "recovery.img" in top["matched_specific_terms"]
 
 
 def test_query_packet_id_is_stable_across_processes():

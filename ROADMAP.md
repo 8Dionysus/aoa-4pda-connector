@@ -13,7 +13,8 @@
 
 - offline starter proof over synthetic fixtures
 - no-network materialized fixture database for fresh-clone query smoke tests
-- policy-confirmed starter crawl over 10-30 public topic pages
+- policy-confirmed starter crawl over 10-30 public topics with bounded page
+  offsets
 - live starter proof over external storage artifacts
 - normalized topic/post snapshots
 - live-shaped sanitized parser fixtures

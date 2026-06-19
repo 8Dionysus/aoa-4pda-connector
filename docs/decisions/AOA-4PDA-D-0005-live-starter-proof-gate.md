@@ -28,8 +28,8 @@ crawl -> normalize -> build-index -> build-graph -> proof live-starter
 `proof live-starter` does not crawl. It reads receipts, the keyword index, the
 graph export, and a local query result from configured external roots. It checks
 that policy was preserved, only the crawl stage touched the network, normalized
-topic count matches fetched topics, index and graph artifacts are non-empty, and
-the local query returns evidence.
+page count matches fetched public topic pages, index and graph artifacts are
+non-empty, and the local query returns evidence.
 
 Index and graph build commands accept `--run` so agents can rebuild artifacts
 for a named normalized run instead of relying only on whichever receipt is
@@ -43,6 +43,8 @@ same query produces the same packet id across processes.
   receipt as sufficient.
 - Dependent live-run stages must run sequentially because each stage consumes
   the previous stage's receipt.
+- Starter crawls preserve page-distinct normalized topic snapshots, so bounded
+  pagination does not overwrite earlier pages from the same topic.
 - Query packet ids are reproducible across Python processes.
 
 ## Boundaries

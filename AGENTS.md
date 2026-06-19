@@ -75,5 +75,5 @@ The validator must stay safe on a fresh clone with no external storage mounted.
 Report changed surfaces, validation results, skipped live crawl or storage
 checks, and the next safe step. For this skeleton, the first safe materialized
 step is `aoa-4pda materialize fixture`; the next network step is a starter
-crawl over 10-30 public topic pages after policy and storage roots are
-confirmed.
+crawl over 10-30 public topics with bounded public page offsets after policy
+and storage roots are confirmed.
