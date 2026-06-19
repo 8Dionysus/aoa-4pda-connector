@@ -62,6 +62,17 @@ These edges preserve the source post ref and use lower confidence than direct
 post/topic structure. They are useful navigation hints, not final proof that a
 fix is universally correct or a warning applies outside its cited post.
 
+## Starter Query Context
+
+`aoa-4pda query-graph` uses the graph as an enrichment layer for local keyword
+results. For each matched post it collects the post's mentioned entity nodes,
+then attaches source-ref-matching `fixes_issue` and `warns_about` edges that
+touch those entities.
+
+The resulting `graph_context` stays inside the evidence packet result. It is
+not a standalone graph verdict and does not make relation edges stronger than
+their cited source refs and confidence values.
+
 ## Starter Graph Eval
 
 `aoa-4pda eval graph-relations` runs
@@ -73,3 +84,7 @@ entity nodes, `post_mentions_entity` edges, `fixes_issue` edges, and
 This is connector-local evidence only. It does not claim full relation
 extraction quality and does not promote relation edges to a validated central
 proof verdict.
+
+`aoa-4pda eval graph-query-packets` additionally checks that a graph-enriched
+query packet carries the expected relation context for the same public-safe
+fixture without touching the network or committing generated graph artifacts.

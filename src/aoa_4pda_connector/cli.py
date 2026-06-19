@@ -13,8 +13,10 @@ from pathlib import Path
 from aoa_4pda_connector.config import StorageRoots, find_repo_root
 from aoa_4pda_connector.evaluation import (
     DEFAULT_GRAPH_EVAL_SUITE,
+    DEFAULT_GRAPH_QUERY_EVAL_SUITE,
     DEFAULT_SEARCH_EVAL_SUITE,
     run_graph_eval_suite,
+    run_graph_query_eval_suite,
     run_search_eval_suite,
 )
 from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep
@@ -22,7 +24,7 @@ from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.policy import is_url_allowed
-from aoa_4pda_connector.query import query_keyword_index
+from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
 from aoa_4pda_connector.storage import create_storage_roots, storage_warnings
 
 
@@ -72,6 +74,12 @@ def build_parser() -> argparse.ArgumentParser:
     query.add_argument("query")
     query.set_defaults(func=cmd_query)
 
+    query_graph = sub.add_parser("query-graph", help="Query local keyword index with graph relation context.")
+    query_graph.add_argument("query")
+    query_graph.add_argument("--run", default="latest")
+    query_graph.add_argument("--limit", type=int, default=5)
+    query_graph.set_defaults(func=cmd_query_graph)
+
     export_packet = sub.add_parser("export-packet", help="Export an evidence packet.")
     export_packet.add_argument("--query-id", default=None)
     export_packet.add_argument("--query", default=None)
@@ -98,6 +106,9 @@ def build_parser() -> argparse.ArgumentParser:
     graph_relations = eval_sub.add_parser("graph-relations", help="Run the starter graph relation eval.")
     graph_relations.add_argument("--suite", default=str(DEFAULT_GRAPH_EVAL_SUITE))
     graph_relations.set_defaults(func=cmd_eval_graph_relations)
+    graph_query_packets = eval_sub.add_parser("graph-query-packets", help="Run the starter graph query packet eval.")
+    graph_query_packets.add_argument("--suite", default=str(DEFAULT_GRAPH_QUERY_EVAL_SUITE))
+    graph_query_packets.set_defaults(func=cmd_eval_graph_query_packets)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -384,6 +395,36 @@ def cmd_query(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_query_graph(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env()
+    error = _require_roots(roots, ["cache", "artifact"])
+    if error:
+        return error
+    try:
+        index_receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "index")
+        run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or args.run)
+        graph_receipt = _load_graph_receipt_for_query(roots.artifact, args.run, run_id)
+        packet = query_graph_packet(
+            Path(str(index_receipt["index_path"])),
+            Path(str(graph_receipt["graph_path"])),
+            args.query,
+            limit=args.limit,
+        )
+    except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_graph_query_error_v1",
+                "status": "error",
+                "run": args.run,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+    _emit({"status": "ok", **packet, "network_touched": False})
+    return 0
+
+
 def cmd_export_packet(args: argparse.Namespace) -> int:
     roots = StorageRoots.from_env()
     error = _require_roots(roots, ["artifact"])
@@ -557,6 +598,12 @@ def cmd_eval_graph_relations(args: argparse.Namespace) -> int:
     return 0 if report.get("status") == "ok" else 1
 
 
+def cmd_eval_graph_query_packets(args: argparse.Namespace) -> int:
+    report = run_graph_query_eval_suite(Path(args.suite), find_repo_root())
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
 def _emit(payload: dict[str, object]) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
 
@@ -639,6 +686,14 @@ def _load_latest_or_named_receipt(artifact_root: Path, run: str, kind: str) -> d
     receipt_dir = artifact_root / "receipts"
     path = receipt_dir / f"latest_{kind}.json" if run == "latest" else receipt_dir / f"{run}.{kind}.json"
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _load_graph_receipt_for_query(artifact_root: Path, requested_run: str, index_run_id: str) -> dict[str, object]:
+    receipt_dir = artifact_root / "receipts"
+    named_graph = receipt_dir / f"{index_run_id}.graph.json"
+    if named_graph.is_file():
+        return json.loads(named_graph.read_text(encoding="utf-8"))
+    return _load_latest_or_named_receipt(artifact_root, requested_run, "graph")
 
 
 if __name__ == "__main__":

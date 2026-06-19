@@ -31,6 +31,8 @@ and these starter relation edges.
 - Graph consumers can navigate from fixes to issues and warnings to affected
   artifacts without waiting for a full semantic relation extractor.
 - The rule is intentionally post-local and heuristic, so recall is limited.
+- `AOA-4PDA-D-0009` records the first answer-packet consumer of these relation
+  edges.
 - Future stronger extraction can replace or augment this layer with richer
   evidence, but must preserve source refs and eval coverage.
 

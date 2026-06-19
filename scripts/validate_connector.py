@@ -30,6 +30,7 @@ REQUIRED_FILES = [
     "connector/manifests/route_allowlist.yaml",
     "evals/PORT.yaml",
     "evals/suites/starter_graph_relations.json",
+    "evals/suites/starter_graph_query_packets.json",
     "evals/suites/starter_search_quality.json",
     "docs/ARCHITECTURE.md",
     "docs/INSTALL.md",
@@ -231,6 +232,7 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
     expected_suites = {
         "starter_search_quality.json": "aoa_4pda_search_eval_suite_v1",
         "starter_graph_relations.json": "aoa_4pda_graph_eval_suite_v1",
+        "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
     }
     for suite_name, schema in expected_suites.items():
         suite_path = repo_root / "evals" / "suites" / suite_name
@@ -246,6 +248,11 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("relation_edges"):
                 errors.append("starter_graph_relations.json must include relation_edges expectations")
+        if suite_name == "starter_graph_query_packets.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if not expect.get("relation_edges"):
+                errors.append("starter_graph_query_packets.json must include relation_edges expectations")
 
 
 if __name__ == "__main__":
