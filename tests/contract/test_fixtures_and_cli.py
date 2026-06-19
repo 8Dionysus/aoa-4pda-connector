@@ -81,6 +81,24 @@ def test_cli_starter_proof_is_offline_and_queryable():
     assert payload["top_result"]["post_id"] == "1002"
 
 
+def test_cli_search_eval_runs_public_safe_suite():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "eval", "search-quality"],
+        cwd=REPO_ROOT,
+        env=_env_with_src(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_search_eval_report_v1"
+    assert payload["status"] == "ok"
+    assert payload["suite_id"] == "starter-search-quality"
+    assert payload["network_touched"] is False
+    assert payload["counts"]["failed"] == 0
+
+
 def test_cli_live_starter_proof_checks_named_external_run(tmp_path):
     run_id = "live-proof-test"
     data_root = tmp_path / "data"

@@ -34,6 +34,15 @@ The starter query path uses `bm25_exact_v1`:
 - derive default packet ids from a stable SHA-256 query digest so repeated
   processes export the same packet id for the same query
 
+## Starter Search Eval
+
+`aoa-4pda eval search-quality` runs the local
+`evals/suites/starter_search_quality.json` suite. It builds a temporary chunk
+index from synthetic normalized fixtures and checks expected top posts,
+chunk refs, exact-term matches, source URLs, query report unit, and the
+internal-search boundary. The report is connector-local evidence, not a central
+`aoa-evals` verdict.
+
 ## Answer Contract
 
 Every answer should carry:

@@ -20,6 +20,7 @@ large indexes, vector stores, or graph databases.
 | CLI entrypoint | `aoa-4pda` |
 | Schemas | `connector/schemas/` |
 | Synthetic fixtures | `connector/fixtures/` |
+| Local eval port | `evals/PORT.yaml`, `evals/suites/` |
 | Starter profiles and seeds | `connector/profiles/`, `connector/seeds/` |
 | Install and proof routes | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md`, `docs/STARTER_PROOF.md` |
 | Validation | `scripts/validate_connector.py`, `tests/` |
@@ -35,6 +36,7 @@ python -m pytest -q
 aoa-4pda doctor
 aoa-4pda policy check
 aoa-4pda proof starter
+aoa-4pda eval search-quality
 ```
 
 The default skeleton does not crawl 4PDA. Crawling requires explicit operator
@@ -69,6 +71,23 @@ crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
 heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, and a live starter proof over configured
-external storage. It remains starter-grade: no attachment downloads, no internal
-4PDA search, no broad section discovery, no vector index, and no full-corpus
-mode.
+external storage. It also has a local starter search eval pack that checks
+expected top evidence for tiny public-safe cases. It remains starter-grade: no
+attachment downloads, no internal 4PDA search, no broad section discovery, no
+vector index, and no full-corpus mode.
+
+## Local Eval Route
+
+`evals/` is a repo-local evidence port. It owns connector-specific suites,
+small public-safe cases, and compact runner reports. Central proof doctrine,
+accepted verdicts, scoring authority, and regression truth stay in `aoa-evals`.
+
+Run the starter retrieval eval:
+
+```bash
+aoa-4pda eval search-quality
+```
+
+The command builds a temporary chunk index from synthetic normalized fixtures,
+checks expected top posts/chunks, verifies source refs and exact terms, and
+deletes the temporary artifacts after the run.

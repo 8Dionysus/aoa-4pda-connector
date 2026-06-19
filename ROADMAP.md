@@ -17,6 +17,7 @@
 - live-shaped sanitized parser fixtures
 - chunking v1 for evidence chunks inside long posts
 - local BM25 and exact-token search over starter data
+- starter search eval pack for expected top evidence checks
 - heuristic entity extraction for starter graph nodes
 - evidence packet query route
 
@@ -27,6 +28,7 @@
 - stronger entity extraction for devices, apps, versions, firmware, warnings,
   and fixes
 - vector search adapter behind an optional dependency
+- retrieval eval expansion against bounded external-storage starter runs
 
 ## Wave 3: Graph Evidence
 

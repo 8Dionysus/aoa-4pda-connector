@@ -10,13 +10,15 @@ Use this when a user asks an agent to install the connector.
 3. Install the package in editable mode.
 4. Run `python scripts/validate_connector.py`.
 5. Run `python -m pytest -q`.
-6. Ask the operator for external storage roots if they are not set.
-7. Run `aoa-4pda init --apply` only after roots are confirmed.
-8. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
-9. Stop before any network crawl unless the operator explicitly asks for it.
-10. If the operator asks for a starter run, use `--profile starter` with a
+6. Run `aoa-4pda proof starter`.
+7. Run `aoa-4pda eval search-quality`.
+8. Ask the operator for external storage roots if they are not set.
+9. Run `aoa-4pda init --apply` only after roots are confirmed.
+10. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
+11. Stop before any network crawl unless the operator explicitly asks for it.
+12. If the operator asks for a starter run, use `--profile starter` with a
     small `--max-topics` value first.
-11. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
+13. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
     `proof live-starter` sequentially against the same run.
 
 ## Do Not
