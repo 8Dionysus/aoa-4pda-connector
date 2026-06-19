@@ -5,8 +5,9 @@ connector that can build local, policy-gated search and graph evidence from
 public 4PDA topic/post pages.
 
 It stores method, code, schemas, policy, tiny fixtures, seed profiles, eval
-queries, and an install route. It does not store full crawls, raw corpora,
-large indexes, vector stores, or graph databases.
+queries, an install route, and an ignored repo-local state scaffold. It does
+not commit full crawls, raw corpora, large indexes, vector stores, or graph
+databases.
 
 ## What This Repository Does
 
@@ -16,6 +17,7 @@ large indexes, vector stores, or graph databases.
 | Agent route and validation | `AGENTS.md` |
 | Source and crawl policy | `connector/SOURCE_POLICY.md`, `connector/manifests/route_allowlist.yaml` |
 | Storage contract | `connector/STORAGE_POLICY.md`, `.env.example` |
+| Repo-local state scaffold | `.connector-state/` |
 | Executable skeleton | `src/aoa_4pda_connector/` |
 | CLI entrypoint | `aoa-4pda` |
 | Schemas | `connector/schemas/` |
@@ -43,19 +45,35 @@ aoa-4pda eval answer-packets
 ```
 
 The default skeleton does not crawl 4PDA. Crawling requires explicit operator
-intent, a bounded profile, and external storage roots.
+intent and a bounded profile. If storage roots are not configured, the CLI uses
+the ignored repo-local `.connector-state/` root for small starter runs.
 
-## External Storage
+## Storage Roots
 
-Set storage roots before any crawl or index build:
+By default, generated connector state goes to ignored repo-local storage:
 
 ```bash
-export CONNECTOR_DATA_ROOT=/mnt/external/abyss-connectors/4pda/data
-export CONNECTOR_CACHE_ROOT=/mnt/external/abyss-connectors/4pda/cache
-export CONNECTOR_ARTIFACT_ROOT=/mnt/external/abyss-connectors/4pda/artifacts
+aoa-4pda init --apply
 ```
 
-These roots are intentionally outside the repository.
+This creates or confirms:
+
+```text
+.connector-state/data
+.connector-state/cache
+.connector-state/artifacts
+```
+
+For larger runs, override the roots with external storage:
+
+```bash
+export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
+export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
+export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
+```
+
+The `.connector-state/` scaffold is tracked, but generated content inside it is
+ignored by Git.
 
 ## Search Posture
 

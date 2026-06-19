@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from aoa_4pda_connector.answer import render_answer_packet
-from aoa_4pda_connector.config import StorageRoots, find_repo_root
+from aoa_4pda_connector.config import LOCAL_STATE_DIR, StorageRoots, find_repo_root
 from aoa_4pda_connector.evaluation import (
     DEFAULT_ANSWER_EVAL_SUITE,
     DEFAULT_GRAPH_EVAL_SUITE,
@@ -44,8 +44,8 @@ def build_parser() -> argparse.ArgumentParser:
     doctor = sub.add_parser("doctor", help="Check local skeleton and storage posture.")
     doctor.set_defaults(func=cmd_doctor)
 
-    init = sub.add_parser("init", help="Prepare external storage roots.")
-    init.add_argument("--apply", action="store_true", help="Create external roots instead of printing a plan.")
+    init = sub.add_parser("init", help="Prepare configured storage roots.")
+    init.add_argument("--apply", action="store_true", help="Create configured roots instead of printing a plan.")
     init.set_defaults(func=cmd_init)
 
     policy = sub.add_parser("policy", help="Policy commands.")
@@ -101,7 +101,7 @@ def build_parser() -> argparse.ArgumentParser:
     starter_proof.set_defaults(func=cmd_proof_starter)
     live_starter_proof = proof_sub.add_parser(
         "live-starter",
-        help="Verify an already-built bounded live starter run in external storage.",
+        help="Verify an already-built bounded live starter run in configured storage.",
     )
     live_starter_proof.add_argument("--run", default="latest")
     live_starter_proof.add_argument("--query", default="Redmi Note 10 Pro TWRP boot.img")
@@ -130,7 +130,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def cmd_doctor(_args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(repo_root)
     warnings = storage_warnings(repo_root, roots)
     required = [
         repo_root / "connector" / "SOURCE_POLICY.md",
@@ -150,6 +150,11 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "graph_edge.schema.json",
     ]
     required_ignore_patterns = [
+        ".connector-state/",
+        ".connector-state/**",
+        "!.connector-state/README.md",
+        "!.connector-state/AGENTS.md",
+        "!.connector-state/**/.gitkeep",
         "data/",
         "cache/",
         "artifacts/",
@@ -183,6 +188,8 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
             "schema": "aoa_4pda_doctor_v1",
             "status": status,
             "repo_root": str(repo_root),
+            "storage_mode": roots.mode,
+            "local_state_dir": LOCAL_STATE_DIR,
             "storage_roots": roots.as_dict(),
             "warnings": warnings,
             "missing": missing,
@@ -195,7 +202,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
 
 def cmd_init(args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(repo_root)
     missing = roots.missing()
     warnings = storage_warnings(repo_root, roots)
     if args.apply and missing:
@@ -215,6 +222,8 @@ def cmd_init(args: argparse.Namespace) -> int:
             "schema": "aoa_4pda_init_v1",
             "status": "ok",
             "apply": bool(args.apply),
+            "storage_mode": roots.mode,
+            "local_state_dir": LOCAL_STATE_DIR,
             "storage_roots": roots.as_dict(),
             "created": created,
             "warnings": warnings,
@@ -247,7 +256,7 @@ def cmd_policy_check(_args: argparse.Namespace) -> int:
 
 def cmd_crawl(args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(repo_root)
     error = _require_roots(roots, ["data", "artifact"])
     if error:
         return error
@@ -303,7 +312,7 @@ def cmd_crawl(args: argparse.Namespace) -> int:
 
 
 def cmd_normalize(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["data", "artifact"])
     if error:
         return error
@@ -329,7 +338,7 @@ def cmd_normalize(args: argparse.Namespace) -> int:
 
 
 def cmd_build_index(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["data", "cache", "artifact"])
     if error:
         return error
@@ -355,7 +364,7 @@ def cmd_build_index(args: argparse.Namespace) -> int:
 
 
 def cmd_build_graph(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["data", "artifact"])
     if error:
         return error
@@ -392,7 +401,7 @@ def cmd_stub(name: str, args: argparse.Namespace) -> int:
 
 
 def cmd_query(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     if roots.cache and roots.artifact:
         try:
             receipt = _load_latest_or_named_receipt(roots.artifact, "latest", "index")
@@ -409,7 +418,7 @@ def cmd_query(args: argparse.Namespace) -> int:
 
 
 def cmd_query_graph(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["cache", "artifact"])
     if error:
         return error
@@ -431,7 +440,7 @@ def cmd_query_graph(args: argparse.Namespace) -> int:
 
 
 def cmd_answer(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["cache", "artifact"])
     if error:
         return error
@@ -454,7 +463,7 @@ def cmd_answer(args: argparse.Namespace) -> int:
 
 
 def cmd_export_packet(args: argparse.Namespace) -> int:
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["artifact"])
     if error:
         return error
@@ -531,7 +540,7 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
 
 def cmd_proof_live_starter(args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
-    roots = StorageRoots.from_env()
+    roots = StorageRoots.from_env(repo_root)
     error = _require_roots(roots, ["data", "cache", "artifact"])
     if error:
         return error
@@ -588,6 +597,7 @@ def cmd_proof_live_starter(args: argparse.Namespace) -> int:
             "status": status,
             "run_id": run_id,
             "profile_id": crawl_receipt.get("profile_id"),
+            "storage_mode": roots.mode,
             "query": args.query,
             "proof_command_network_touched": False,
             "source_run_network_touched": bool(crawl_receipt.get("network_touched")),

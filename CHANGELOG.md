@@ -24,3 +24,5 @@
   post-local `fixes_issue` and `warns_about` graph context plus eval coverage.
 - Added deterministic starter answer packets that render graph-enriched
   evidence into issue/fix/warning summaries plus local eval coverage.
+- Added an ignored repo-local `.connector-state/` storage scaffold and default
+  fallback roots for small starter databases before external storage is needed.

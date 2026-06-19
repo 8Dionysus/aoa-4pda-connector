@@ -15,8 +15,10 @@ Use this when a user asks an agent to install the connector.
 8. Run `aoa-4pda eval graph-relations`.
 9. Run `aoa-4pda eval graph-query-packets`.
 10. Run `aoa-4pda eval answer-packets`.
-11. Ask the operator for external storage roots if they are not set.
-12. Run `aoa-4pda init --apply` only after roots are confirmed.
+11. Run `aoa-4pda init --apply` to create the default ignored repo-local
+    `.connector-state/` roots, unless the operator supplied external roots.
+12. Ask the operator for external storage roots before larger or long-lived
+    crawls.
 13. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
 14. Stop before any network crawl unless the operator explicitly asks for it.
 15. If the operator asks for a starter run, use `--profile starter` with a
@@ -28,6 +30,7 @@ Use this when a user asks an agent to install the connector.
 
 - do not use 4PDA internal search routes
 - do not download attachments
-- do not create large data inside the repository
+- do not commit generated data; repo-local `.connector-state/` is allowed only
+  as ignored local state
 - do not run full-public profile without explicit policy and storage review
 - do not parallelize dependent live-run stages that consume prior receipts

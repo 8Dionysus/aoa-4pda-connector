@@ -12,6 +12,11 @@ build/
 # Local environment
 .env
 
+# Repo-local connector state.
+# Keep route cards and empty directory anchors, ignore all generated content.
+.connector-state/
+.connector-state/**
+
 # Heavy connector data: never commit.
 data/
 cache/
@@ -39,3 +44,9 @@ exports/full/
 # Runtime receipts may be copied out separately when needed.
 logs/
 
+# Keep the repo-local state scaffold tracked after broad heavy-data ignores.
+!.connector-state/
+!.connector-state/README.md
+!.connector-state/AGENTS.md
+!.connector-state/**/
+!.connector-state/**/.gitkeep
