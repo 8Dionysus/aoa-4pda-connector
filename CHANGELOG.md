@@ -18,3 +18,5 @@
   gate for expected top chunk/post evidence.
 - Added a repo-local starter graph relation eval over the sanitized live-shaped
   fixture to protect post-to-entity graph edges for issue/fix/warning evidence.
+- Added starter graph relation semantics v1 with heuristic `fixes_issue` and
+  `warns_about` edges plus eval coverage.

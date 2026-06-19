@@ -73,9 +73,10 @@ heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, and a live starter proof over configured
 external storage. It also has local starter search and graph eval packs that
-check expected top evidence and graph entity edges for tiny public-safe cases.
-It remains starter-grade: no attachment downloads, no internal 4PDA search, no
-broad section discovery, no vector index, and no full-corpus mode.
+check expected top evidence, graph entity edges, and starter relation edges for
+tiny public-safe cases. It remains starter-grade: no attachment downloads, no
+internal 4PDA search, no broad section discovery, no vector index, and no
+full-corpus mode.
 
 ## Local Eval Route
 
@@ -92,5 +93,5 @@ aoa-4pda eval graph-relations
 
 The command builds a temporary chunk index from synthetic normalized fixtures,
 or a temporary graph from a live-shaped HTML fixture, checks expected posts,
-chunks, entity nodes, source refs, and graph edges, and deletes temporary
-artifacts after the run.
+chunks, entity nodes, relation edges, source refs, and graph edges, and deletes
+temporary artifacts after the run.

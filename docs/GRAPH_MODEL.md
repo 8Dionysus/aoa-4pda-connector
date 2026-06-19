@@ -49,14 +49,27 @@ Entity extraction v1 is heuristic and local:
 
 It is a navigation layer, not a final classifier.
 
+## Starter Relation Edges
+
+Relation edges v1 are heuristic and post-local:
+
+- `fixes_issue` links a `fix` entity to an `issue` entity mentioned in the same
+  post.
+- `warns_about` links a `warning` entity to file, codename, device, firmware,
+  or build entities explicitly named inside the warning text.
+
+These edges preserve the source post ref and use lower confidence than direct
+post/topic structure. They are useful navigation hints, not final proof that a
+fix is universally correct or a warning applies outside its cited post.
+
 ## Starter Graph Eval
 
 `aoa-4pda eval graph-relations` runs
 `evals/suites/starter_graph_relations.json`. It normalizes the sanitized
 live-shaped HTML fixture, builds a temporary graph, and checks that expected
-entity nodes and `post_mentions_entity` edges exist for issue, fix, warning,
-file, and tool evidence.
+entity nodes, `post_mentions_entity` edges, `fixes_issue` edges, and
+`warns_about` edges exist for issue, fix, warning, file, and tool evidence.
 
 This is connector-local evidence only. It does not claim full relation
-extraction quality and does not promote `fixes_issue` or `warns_about` to a
-validated central proof verdict.
+extraction quality and does not promote relation edges to a validated central
+proof verdict.

@@ -241,6 +241,11 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             errors.append(f"{suite_name} must keep aoa-evals as proof owner")
         if not suite.get("cases"):
             errors.append(f"{suite_name} must include at least one case")
+        if suite_name == "starter_graph_relations.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if not expect.get("relation_edges"):
+                errors.append("starter_graph_relations.json must include relation_edges expectations")
 
 
 if __name__ == "__main__":

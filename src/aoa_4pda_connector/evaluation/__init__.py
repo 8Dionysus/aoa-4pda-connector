@@ -151,6 +151,14 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
     topic_node = f"topic:{topic_id}"
     expected_entity_ids = [str(node_id) for node_id in expect.get("entity_node_ids", [])]
     expected_mention_ids = [str(node_id) for node_id in expect.get("post_mentions_entity_node_ids", [])]
+    expected_relation_edges = [
+        {
+            "kind": str(edge.get("kind", "")),
+            "from_node": str(edge.get("from_node", "")),
+            "to_node": str(edge.get("to_node", "")),
+        }
+        for edge in expect.get("relation_edges", [])
+    ]
     source_url_contains = str(expect.get("source_url_contains", ""))
 
     nodes = {str(node.get("node_id")): node for node in graph.get("nodes", [])}
@@ -173,8 +181,13 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
         "topic_contains_post_edge": _edge_exists(edges, "topic_contains_post", topic_node, post_node),
         "expected_entity_nodes_present": all(node_id in nodes for node_id in expected_entity_ids),
         "post_mentions_expected_entities": all(node_id in post_mention_targets for node_id in expected_mention_ids),
+        "expected_relation_edges_present": all(_edge_exists(edges, **edge) for edge in expected_relation_edges),
         "source_refs_preserved": _source_refs_contain(nodes.get(post_node, {}), source_url_contains)
-        and all(_source_refs_contain(edge, source_url_contains) for edge in expected_mention_edges),
+        and all(_source_refs_contain(edge, source_url_contains) for edge in expected_mention_edges)
+        and all(
+            _source_refs_contain(_find_edge(edges, **edge), source_url_contains)
+            for edge in expected_relation_edges
+        ),
     }
     return {
         "case_id": case.get("case_id"),
@@ -182,9 +195,15 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
         "post_node": post_node,
         "expected_entity_node_ids": expected_entity_ids,
         "expected_post_mentions_entity_node_ids": expected_mention_ids,
+        "expected_relation_edges": expected_relation_edges,
         "checks": checks,
         "matched_entity_node_ids": sorted(node_id for node_id in expected_entity_ids if node_id in nodes),
         "matched_post_mentions_entity_node_ids": sorted(node_id for node_id in expected_mention_ids if node_id in post_mention_targets),
+        "matched_relation_edges": [
+            edge
+            for edge in expected_relation_edges
+            if _edge_exists(edges, **edge)
+        ],
     }
 
 
@@ -203,11 +222,19 @@ def _any_expected(expected: object, actual: object) -> bool:
 
 
 def _edge_exists(edges: list[dict[str, object]], kind: str, from_node: str, to_node: str) -> bool:
-    return any(
-        edge.get("kind") == kind
-        and edge.get("from_node") == from_node
-        and edge.get("to_node") == to_node
-        for edge in edges
+    return bool(_find_edge(edges, kind, from_node, to_node))
+
+
+def _find_edge(edges: list[dict[str, object]], kind: str, from_node: str, to_node: str) -> dict[str, object]:
+    return next(
+        (
+            edge
+            for edge in edges
+            if edge.get("kind") == kind
+            and edge.get("from_node") == from_node
+            and edge.get("to_node") == to_node
+        ),
+        {},
     )
 
 

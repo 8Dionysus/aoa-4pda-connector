@@ -37,6 +37,8 @@ classifier.
   between different entity kinds.
 - Graph edges remain `post_mentions_entity` in this slice; stronger relation
   extraction such as `fixes_issue` remains later work.
+- `AOA-4PDA-D-0008` later adds starter relation edges v1 while keeping this
+  entity extraction decision as the base layer.
 
 ## Boundaries
 

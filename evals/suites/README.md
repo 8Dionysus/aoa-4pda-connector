@@ -15,6 +15,7 @@ Together they verify:
 - no internal-search dependency
 - chunk-level evidence refs
 - post-to-entity graph edges for issue, fix, warning, file, and tool evidence
+- starter `fixes_issue` and `warns_about` relation edges
 
 Run it with:
 

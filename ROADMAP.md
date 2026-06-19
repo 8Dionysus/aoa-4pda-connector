@@ -20,6 +20,7 @@
 - starter search eval pack for expected top evidence checks
 - starter graph relation eval pack for issue/fix/warning entity-edge checks
 - heuristic entity extraction for starter graph nodes
+- heuristic `fixes_issue` and `warns_about` relation edges v1
 - evidence packet query route
 
 ## Wave 2: Deep Search
@@ -34,7 +35,7 @@
 ## Wave 3: Graph Evidence
 
 - graph node/edge builder
-- issue/fix/warning relation extraction
+- broader issue/fix/warning relation extraction beyond starter heuristics
 - graph query packets
 
 ## Wave 4: Runtime Access
