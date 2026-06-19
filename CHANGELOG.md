@@ -10,3 +10,5 @@
   versions, tools, files, issues, fixes, warnings, and kind-scoped graph nodes.
 - Added live starter proof for externally stored public crawl artifacts, named
   run support for index/graph builds, and stable query-derived packet ids.
+- Hardened parser coverage with a sanitized live-shaped fixture, public
+  author/date extraction, and quote/edit/signature noise cleanup.

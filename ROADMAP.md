@@ -14,6 +14,7 @@
 - policy-confirmed starter crawl over 10-30 public topic pages
 - live starter proof over external storage artifacts
 - normalized topic/post snapshots
+- live-shaped sanitized parser fixtures
 - local BM25 and exact-token search over starter data
 - heuristic entity extraction for starter graph nodes
 - evidence packet query route

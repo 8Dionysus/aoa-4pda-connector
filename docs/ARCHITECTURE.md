@@ -17,6 +17,19 @@ seeds/profile
 -> evidence packets
 ```
 
+## Parser Posture
+
+The parser is fixture-backed, not raw-corpus-backed. Tiny sanitized HTML
+fixtures may mimic live 4PDA structure, but raw live pages stay in external
+storage.
+
+Current parser coverage includes:
+
+- old table-based public topic posts with `data-post` and `post-main-*` ids
+- post author labels from the public post header
+- raw public post date labels from the public post header
+- quote, edit-note, and signature text removal before indexing
+
 ## Source and Derived Layers
 
 | Layer | Example | Authority |
@@ -35,4 +48,3 @@ policy receipts.
 
 Future MCP/runtime exposure belongs in `abyss-stack` and should consume an
 installed connector through configured data/artifact roots.
-
