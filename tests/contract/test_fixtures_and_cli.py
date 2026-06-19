@@ -79,6 +79,88 @@ def test_cli_init_apply_uses_repo_local_state_when_env_is_unset():
     assert str(REPO_ROOT / ".connector-state" / "data") in payload["created"]
 
 
+def test_cli_storage_status_reports_repo_local_default_without_network():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "storage", "status", "--measure"],
+        cwd=REPO_ROOT,
+        env=_env_with_src_without_storage(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_storage_status_v1"
+    assert payload["storage_mode"] == "repo_local_default"
+    assert payload["network_touched"] is False
+    assert payload["roots"]["data"]["inside_repo_local_state"] is True
+    assert payload["roots"]["cache"]["inside_repo_local_state"] is True
+    assert payload["roots"]["artifact"]["inside_repo_local_state"] is True
+    assert payload["measure"] is True
+
+
+def test_cli_materialize_fixture_writes_queryable_local_state_without_network(tmp_path):
+    run_id = "materialize-fixture-test"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+    materialize = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "materialize",
+            "fixture",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert materialize.returncode == 0, materialize.stdout + materialize.stderr
+    materialized = json.loads(materialize.stdout)
+    assert materialized["schema"] == "aoa_4pda_materialize_receipt_v1"
+    assert materialized["run_id"] == run_id
+    assert materialized["network_touched"] is False
+    assert materialized["counts"]["index_docs"] == 1
+    assert materialized["counts"]["graph_edges"] >= 4
+    assert (artifact_root / "receipts" / f"{run_id}.index.json").is_file()
+    assert (artifact_root / "receipts" / f"{run_id}.graph.json").is_file()
+
+    answer = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "answer",
+            "bootloop recovery.img camellia",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert answer.returncode == 0, answer.stdout + answer.stderr
+    packet = json.loads(answer.stdout)
+    assert packet["schema"] == "aoa_4pda_answer_packet_v1"
+    assert packet["network_touched"] is False
+    assert packet["answers"][0]["post_id"] == "9001"
+
+
 def test_cli_policy_check_denies_service_routes():
     result = subprocess.run(
         [sys.executable, "-m", "aoa_4pda_connector.cli", "policy", "check"],

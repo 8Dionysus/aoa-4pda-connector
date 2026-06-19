@@ -82,6 +82,7 @@ REQUIRED_SCHEMAS = [
     "normalized_post.schema.json",
     "evidence_packet.schema.json",
     "answer_packet.schema.json",
+    "materialize_receipt.schema.json",
     "index_manifest.schema.json",
     "graph_node.schema.json",
     "graph_edge.schema.json",

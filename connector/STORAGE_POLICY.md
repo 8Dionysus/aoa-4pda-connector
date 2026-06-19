@@ -22,6 +22,9 @@ export CONNECTOR_ARTIFACT_ROOT=.connector-state/artifacts
 If these variables are unset, the CLI uses the same repo-local default rooted
 at `.connector-state/`.
 
+Use `aoa-4pda storage status` to inspect which route is active. Add
+`--measure` when you need recursive file counts and byte totals.
+
 ## Repo-Local State
 
 `.connector-state/` is allowed for small starter databases on machines where
@@ -65,3 +68,5 @@ and cache directories.
 `python scripts/validate_connector.py` and `aoa-4pda doctor` must work on a
 fresh clone without external storage mounted. Missing environment roots should
 fall back to `.connector-state/` until the operator chooses an external route.
+`aoa-4pda materialize fixture` may create a tiny queryable local database under
+the configured roots without touching the network.

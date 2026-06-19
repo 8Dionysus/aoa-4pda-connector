@@ -46,8 +46,12 @@ justify that move.
 
 - `aoa-4pda init --apply` can prepare local storage without environment
   variables.
+- `aoa-4pda storage status` can report active storage readiness without
+  touching the network.
 - Small starter runs can materialize inside the repository checkout while still
   staying outside Git history.
+- `aoa-4pda materialize fixture` can create a tiny queryable local database for
+  fresh clones before any live crawl.
 - Validators and `doctor` must distinguish the allowed `.connector-state/`
   workspace from forbidden root-level heavy directories such as `data/`,
   `cache/`, `indexes/`, and `graphs/`.
@@ -72,4 +76,5 @@ justify that move.
 - `docs/INSTALL.md`
 - `scripts/validate_connector.py`
 - `src/aoa_4pda_connector/config.py`
-
+- `src/aoa_4pda_connector/storage/__init__.py`
+- `src/aoa_4pda_connector/cli.py`

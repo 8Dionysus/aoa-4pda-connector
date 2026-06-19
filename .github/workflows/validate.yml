@@ -35,6 +35,12 @@ jobs:
       - name: Run offline starter proof
         run: aoa-4pda proof starter
 
+      - name: Materialize no-network fixture
+        run: |
+          aoa-4pda storage status
+          aoa-4pda materialize fixture
+          aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
+
       - name: Run starter search eval
         run: aoa-4pda eval search-quality
 

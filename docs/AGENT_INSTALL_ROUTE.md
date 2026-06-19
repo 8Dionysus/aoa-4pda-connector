@@ -10,20 +10,31 @@ Use this when a user asks an agent to install the connector.
 3. Install the package in editable mode.
 4. Run `python scripts/validate_connector.py`.
 5. Run `python -m pytest -q`.
-6. Run `aoa-4pda proof starter`.
-7. Run `aoa-4pda eval search-quality`.
-8. Run `aoa-4pda eval graph-relations`.
-9. Run `aoa-4pda eval graph-query-packets`.
-10. Run `aoa-4pda eval answer-packets`.
-11. Run `aoa-4pda init --apply` to create the default ignored repo-local
+6. Run `aoa-4pda doctor` and `aoa-4pda storage status`.
+7. Run `aoa-4pda proof starter`.
+8. Run `aoa-4pda init --apply` to create the default ignored repo-local
     `.connector-state/` roots, unless the operator supplied external roots.
-12. Ask the operator for external storage roots before larger or long-lived
+9. Run `aoa-4pda materialize fixture` to create the tiny no-network local
+   database.
+10. Run:
+    ```bash
+    aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
+    ```
+11. Run:
+    ```bash
+    aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
+    ```
+12. Run `aoa-4pda eval search-quality`.
+13. Run `aoa-4pda eval graph-relations`.
+14. Run `aoa-4pda eval graph-query-packets`.
+15. Run `aoa-4pda eval answer-packets`.
+16. Ask the operator for external storage roots before larger or long-lived
     crawls.
-13. Run `aoa-4pda doctor` and `aoa-4pda policy check`.
-14. Stop before any network crawl unless the operator explicitly asks for it.
-15. If the operator asks for a starter run, use `--profile starter` with a
+17. Run `aoa-4pda policy check`.
+18. Stop before any network crawl unless the operator explicitly asks for it.
+19. If the operator asks for a starter run, use `--profile starter` with a
     small `--max-topics` value first.
-16. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
+20. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
     `proof live-starter` sequentially against the same run.
 
 ## Do Not

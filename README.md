@@ -36,8 +36,10 @@ python -m pip install -e ".[dev]"
 python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
+aoa-4pda storage status
 aoa-4pda policy check
 aoa-4pda proof starter
+aoa-4pda materialize fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
@@ -75,6 +77,13 @@ export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
 The `.connector-state/` scaffold is tracked, but generated content inside it is
 ignored by Git.
 
+To create a tiny no-network local database for smoke testing:
+
+```bash
+aoa-4pda materialize fixture
+aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
+```
+
 ## Search Posture
 
 The connector must not use 4PDA internal search as a crawler API. Instead it
@@ -92,14 +101,14 @@ crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
 heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, and a live starter proof over configured
-external storage. It also has local starter search and graph eval packs that
-check expected top evidence, graph entity edges, and starter relation edges for
-tiny public-safe cases. Starter graph query packets can enrich top local search
-results with post-local `fixes_issue` and `warns_about` context from the graph.
-Starter answer packets render that graph context into deterministic issue/fix/
-warning summaries for agents. It remains starter-grade: no attachment
-downloads, no internal 4PDA search, no broad section discovery, no vector
-index, and no full-corpus mode.
+storage. It also has a no-network fixture materialization route, local starter
+search and graph eval packs, and checks for expected top evidence, graph entity
+edges, and starter relation edges for tiny public-safe cases. Starter graph
+query packets can enrich top local search results with post-local
+`fixes_issue` and `warns_about` context from the graph. Starter answer packets
+render that graph context into deterministic issue/fix/warning summaries for
+agents. It remains starter-grade: no attachment downloads, no internal 4PDA
+search, no broad section discovery, no vector index, and no full-corpus mode.
 
 ## Local Eval Route
 

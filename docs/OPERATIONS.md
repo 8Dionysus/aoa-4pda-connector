@@ -6,8 +6,10 @@
 python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
+aoa-4pda storage status
 aoa-4pda policy check
 aoa-4pda proof starter
+aoa-4pda materialize fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
@@ -22,6 +24,8 @@ When no external roots are set, the connector uses ignored repo-local
 
 ```bash
 aoa-4pda proof starter
+aoa-4pda materialize fixture
+aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
@@ -49,8 +53,8 @@ evidence packets to configured storage roots outside Git history.
 
 ## Receipts
 
-Future crawl/index/graph runs should write receipts to
-`CONNECTOR_ARTIFACT_ROOT`, not to Git.
+Fixture materialization and future crawl/index/graph runs should write receipts
+to `CONNECTOR_ARTIFACT_ROOT`, not to Git.
 
 ## Cleanup
 

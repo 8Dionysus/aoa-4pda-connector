@@ -40,6 +40,22 @@ The real 4PDA starter crawl is deliberately explicit and bounded. CI and fresh
 clones still need a reliable proof that the connector method is wired together.
 The starter proof keeps that confidence local, small, and GitHub-safe.
 
+## Materialized Fixture Route
+
+`aoa-4pda materialize fixture` writes the sanitized live-shaped fixture into
+configured storage roots without touching the network:
+
+```bash
+aoa-4pda init --apply
+aoa-4pda materialize fixture
+aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
+aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
+```
+
+This is the first durable local database route for fresh clones. It writes
+normalized data, a keyword index, a graph export, and receipts to configured
+storage roots while leaving generated files ignored by Git.
+
 ## Starter Search Eval
 
 `aoa-4pda eval search-quality` is the companion retrieval-quality check for

@@ -26,3 +26,5 @@
   evidence into issue/fix/warning summaries plus local eval coverage.
 - Added an ignored repo-local `.connector-state/` storage scaffold and default
   fallback roots for small starter databases before external storage is needed.
+- Added `storage status` and no-network `materialize fixture` commands for
+  inspecting storage and writing a tiny queryable fixture database.
