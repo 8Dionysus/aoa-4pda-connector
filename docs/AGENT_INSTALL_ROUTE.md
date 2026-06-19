@@ -16,6 +16,8 @@ Use this when a user asks an agent to install the connector.
 9. Stop before any network crawl unless the operator explicitly asks for it.
 10. If the operator asks for a starter run, use `--profile starter` with a
     small `--max-topics` value first.
+11. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
+    `proof live-starter` sequentially against the same run.
 
 ## Do Not
 
@@ -23,3 +25,4 @@ Use this when a user asks an agent to install the connector.
 - do not download attachments
 - do not create large data inside the repository
 - do not run full-public profile without explicit policy and storage review
+- do not parallelize dependent live-run stages that consume prior receipts

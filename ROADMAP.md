@@ -12,6 +12,7 @@
 
 - offline starter proof over synthetic fixtures
 - policy-confirmed starter crawl over 10-30 public topic pages
+- live starter proof over external storage artifacts
 - normalized topic/post snapshots
 - local BM25 and exact-token search over starter data
 - heuristic entity extraction for starter graph nodes

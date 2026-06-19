@@ -66,6 +66,7 @@ public topic pages -> normalized posts -> BM25 + exact local index
 
 Starter pipeline is available: offline fixture proof, bounded public topic
 crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
-heuristic entity extraction, and evidence-packet export. It remains
+heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
+and a live starter proof over configured external storage. It remains
 starter-grade: no attachment downloads, no internal 4PDA search, no broad
 section discovery, no vector index, and no full-corpus mode.

@@ -28,6 +28,8 @@ The starter query path uses `bm25_exact_v1`:
   breakdowns in the evidence packet
 - build snippets around the first matched query term instead of always cutting
   from the beginning of the post
+- derive default packet ids from a stable SHA-256 query digest so repeated
+  processes export the same packet id for the same query
 
 ## Answer Contract
 

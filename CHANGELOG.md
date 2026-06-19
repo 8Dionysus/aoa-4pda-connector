@@ -8,3 +8,5 @@
   breakdowns, matched terms, matched phrases, and focused snippets.
 - Added heuristic entity extraction v1 for devices, codenames, firmware
   versions, tools, files, issues, fixes, warnings, and kind-scoped graph nodes.
+- Added live starter proof for externally stored public crawl artifacts, named
+  run support for index/graph builds, and stable query-derived packet ids.

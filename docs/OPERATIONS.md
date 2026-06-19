@@ -24,10 +24,14 @@ Then use the starter profile first:
 ```bash
 aoa-4pda crawl --profile starter --max-topics 10
 aoa-4pda normalize --run latest
-aoa-4pda build-index --profile starter
-aoa-4pda build-graph --profile starter
+aoa-4pda build-index --profile starter --run latest
+aoa-4pda build-graph --profile starter --run latest
+aoa-4pda proof live-starter --run latest --query "redmi note 10 twrp bootloop firmware"
 aoa-4pda query "redmi note 10 twrp bootloop firmware"
 ```
+
+Run these stages sequentially. `build-index` and `build-graph` consume the
+normalization receipt for the selected run.
 
 The command path writes raw snapshots, normalized topics, indexes, graphs, and
 evidence packets outside Git.
