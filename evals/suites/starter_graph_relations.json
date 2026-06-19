@@ -1,0 +1,39 @@
+{
+  "schema": "aoa_4pda_graph_eval_suite_v1",
+  "suite_id": "starter-graph-relations",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "live_shape_html_topic",
+    "html_fixture": "connector/fixtures/html/live_shape_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=42&st=0"
+  },
+  "cases": [
+    {
+      "case_id": "live-shape-issue-fix-warning-post",
+      "expect": {
+        "post_id": "9001",
+        "topic_id": "42",
+        "entity_node_ids": [
+          "entity:tool:TWRP",
+          "entity:tool:fastboot",
+          "entity:file:recovery.img",
+          "entity:file:boot.img",
+          "entity:issue:bootloop",
+          "entity:fix:flash recovery.img",
+          "entity:fix:restore boot.img",
+          "entity:codename:camellia",
+          "entity:warning:do not install recovery.img from camellia"
+        ],
+        "post_mentions_entity_node_ids": [
+          "entity:issue:bootloop",
+          "entity:fix:flash recovery.img",
+          "entity:fix:restore boot.img",
+          "entity:warning:do not install recovery.img from camellia"
+        ],
+        "source_url_contains": "#entry9001"
+      }
+    }
+  ]
+}

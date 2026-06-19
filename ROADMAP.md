@@ -18,6 +18,7 @@
 - chunking v1 for evidence chunks inside long posts
 - local BM25 and exact-token search over starter data
 - starter search eval pack for expected top evidence checks
+- starter graph relation eval pack for issue/fix/warning entity-edge checks
 - heuristic entity extraction for starter graph nodes
 - evidence packet query route
 

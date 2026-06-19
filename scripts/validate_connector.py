@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "connector/manifests/artifact_classes.yaml",
     "connector/manifests/route_allowlist.yaml",
     "evals/PORT.yaml",
+    "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_search_quality.json",
     "docs/ARCHITECTURE.md",
     "docs/INSTALL.md",
@@ -227,14 +228,19 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         if token not in port:
             errors.append(f"eval port missing boundary token: {token}")
 
-    suite_path = repo_root / "evals" / "suites" / "starter_search_quality.json"
-    suite = json.loads(suite_path.read_text(encoding="utf-8"))
-    if suite.get("schema") != "aoa_4pda_search_eval_suite_v1":
-        errors.append("search eval suite has unexpected schema")
-    if suite.get("proof_owner_repo") != "aoa-evals":
-        errors.append("search eval suite must keep aoa-evals as proof owner")
-    if not suite.get("cases"):
-        errors.append("search eval suite must include at least one case")
+    expected_suites = {
+        "starter_search_quality.json": "aoa_4pda_search_eval_suite_v1",
+        "starter_graph_relations.json": "aoa_4pda_graph_eval_suite_v1",
+    }
+    for suite_name, schema in expected_suites.items():
+        suite_path = repo_root / "evals" / "suites" / suite_name
+        suite = json.loads(suite_path.read_text(encoding="utf-8"))
+        if suite.get("schema") != schema:
+            errors.append(f"{suite_name} has unexpected schema")
+        if suite.get("proof_owner_repo") != "aoa-evals":
+            errors.append(f"{suite_name} must keep aoa-evals as proof owner")
+        if not suite.get("cases"):
+            errors.append(f"{suite_name} must include at least one case")
 
 
 if __name__ == "__main__":

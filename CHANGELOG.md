@@ -16,3 +16,5 @@
   and returns chunk ids, offsets, and chunk-level evidence refs.
 - Added a repo-local starter search eval pack with a no-network runner and CI
   gate for expected top chunk/post evidence.
+- Added a repo-local starter graph relation eval over the sanitized live-shaped
+  fixture to protect post-to-entity graph edges for issue/fix/warning evidence.

@@ -37,6 +37,7 @@ aoa-4pda doctor
 aoa-4pda policy check
 aoa-4pda proof starter
 aoa-4pda eval search-quality
+aoa-4pda eval graph-relations
 ```
 
 The default skeleton does not crawl 4PDA. Crawling requires explicit operator
@@ -71,10 +72,10 @@ crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
 heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, and a live starter proof over configured
-external storage. It also has a local starter search eval pack that checks
-expected top evidence for tiny public-safe cases. It remains starter-grade: no
-attachment downloads, no internal 4PDA search, no broad section discovery, no
-vector index, and no full-corpus mode.
+external storage. It also has local starter search and graph eval packs that
+check expected top evidence and graph entity edges for tiny public-safe cases.
+It remains starter-grade: no attachment downloads, no internal 4PDA search, no
+broad section discovery, no vector index, and no full-corpus mode.
 
 ## Local Eval Route
 
@@ -86,8 +87,10 @@ Run the starter retrieval eval:
 
 ```bash
 aoa-4pda eval search-quality
+aoa-4pda eval graph-relations
 ```
 
 The command builds a temporary chunk index from synthetic normalized fixtures,
-checks expected top posts/chunks, verifies source refs and exact terms, and
-deletes the temporary artifacts after the run.
+or a temporary graph from a live-shaped HTML fixture, checks expected posts,
+chunks, entity nodes, source refs, and graph edges, and deletes temporary
+artifacts after the run.
