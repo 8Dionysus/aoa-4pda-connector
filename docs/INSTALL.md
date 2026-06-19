@@ -14,6 +14,8 @@ aoa-4pda doctor
 aoa-4pda proof starter
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
+aoa-4pda eval graph-query-packets
+aoa-4pda eval answer-packets
 ```
 
 ## Configure External Storage
@@ -34,6 +36,8 @@ The skeleton does not run network crawls by default. First run the offline proof
 aoa-4pda proof starter
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
+aoa-4pda eval graph-query-packets
+aoa-4pda eval answer-packets
 ```
 
 A live starter crawl should be explicit and bounded:
@@ -45,6 +49,8 @@ aoa-4pda normalize --run latest
 aoa-4pda build-index --profile starter
 aoa-4pda build-graph --profile starter
 aoa-4pda query "redmi note 10 twrp bootloop"
+aoa-4pda query-graph "redmi note 10 twrp bootloop"
+aoa-4pda answer "redmi note 10 twrp bootloop"
 ```
 
 These commands write only to configured external storage roots. The default

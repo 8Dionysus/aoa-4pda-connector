@@ -7,6 +7,7 @@ The active starter suites are:
 - `starter_search_quality.json`, a public-safe synthetic query suite
 - `starter_graph_relations.json`, a sanitized live-shaped graph relation suite
 - `starter_graph_query_packets.json`, a graph-enriched query packet suite
+- `starter_answer_packets.json`, a deterministic rendered answer packet suite
 
 Together they verify:
 
@@ -18,6 +19,7 @@ Together they verify:
 - post-to-entity graph edges for issue, fix, warning, file, and tool evidence
 - starter `fixes_issue` and `warns_about` relation edges
 - relation-aware `graph_context` in evidence packet results
+- issue/fix/warning labels and answer text in rendered answer packets
 
 Run it with:
 
@@ -25,6 +27,7 @@ Run it with:
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
+aoa-4pda eval answer-packets
 ```
 
 This is local connector evidence only. Central proof authority remains in

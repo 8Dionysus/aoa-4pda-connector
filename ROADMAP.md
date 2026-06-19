@@ -23,6 +23,7 @@
 - heuristic `fixes_issue` and `warns_about` relation edges v1
 - evidence packet query route
 - starter graph query packets with post-local relation context
+- starter answer packets rendered from graph-enriched evidence
 
 ## Wave 2: Deep Search
 
@@ -38,6 +39,7 @@
 - graph node/edge builder
 - broader issue/fix/warning relation extraction beyond starter heuristics
 - broader graph query traversal beyond starter post-local packets
+- richer answer synthesis over multiple posts and relation paths
 
 ## Wave 4: Runtime Access
 

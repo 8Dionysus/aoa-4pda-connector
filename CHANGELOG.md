@@ -22,3 +22,5 @@
   `warns_about` edges plus eval coverage.
 - Added starter graph query packets that enrich keyword evidence results with
   post-local `fixes_issue` and `warns_about` graph context plus eval coverage.
+- Added deterministic starter answer packets that render graph-enriched
+  evidence into issue/fix/warning summaries plus local eval coverage.

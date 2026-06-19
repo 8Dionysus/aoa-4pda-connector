@@ -15,6 +15,7 @@ seeds/profile
 -> chunk and entity extraction
 -> local indexes and graph
 -> graph-enriched evidence packets
+-> deterministic answer packets
 ```
 
 ## Parser Posture
@@ -49,6 +50,7 @@ the normalized post or public source URL as evidence authority.
 | Graph DB | external artifact root | derived navigation |
 | Evidence packet | examples/exported packets | answer support, not site truth |
 | Graph query context | `graph_context` in packets | derived navigation over cited posts |
+| Answer packet | `aoa_4pda_answer_packet_v1` | deterministic agent handoff, not source truth |
 
 Generated indexes and graphs help navigation. They do not replace source URLs or
 policy receipts.

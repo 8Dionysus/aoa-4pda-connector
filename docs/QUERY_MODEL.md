@@ -53,6 +53,23 @@ The packet remains an evidence packet, not a graph proof verdict. The graph
 context is a navigation layer over cited posts, and it inherits the starter
 relation heuristics and their limits.
 
+## Starter Answer Packets
+
+`aoa-4pda answer` renders a graph-enriched evidence packet into a compact
+`aoa_4pda_answer_packet_v1` answer packet. It uses deterministic local rules,
+not an LLM:
+
+- `issue_labels`, `fix_labels`, `warning_labels`, and
+  `warned_target_labels` are copied from `graph_context`.
+- `answer_text` is a short reproducible summary of those labels.
+- `source_url`, `evidence_refs`, score details, and source refs remain attached
+  to each answer.
+- `confidence` names the starter graph context as the basis and keeps relation
+  confidence visible.
+
+Answer packets are for agent handoff and UI/API ergonomics. They do not replace
+the evidence packet, graph export, or source URL as the truth surface.
+
 ## Starter Search Eval
 
 `aoa-4pda eval search-quality` runs the local
@@ -68,6 +85,11 @@ index and graph artifacts from the sanitized live-shaped fixture and checks
 that graph-enriched query packets preserve expected relation context and source
 refs without touching the network.
 
+`aoa-4pda eval answer-packets` runs
+`evals/suites/starter_answer_packets.json`. It checks that deterministic answer
+packets preserve expected issue/fix/warning labels, source refs, and the
+internal-search boundary.
+
 ## Answer Contract
 
 Every answer should carry:
@@ -77,6 +99,7 @@ Every answer should carry:
 - observed/captured timestamps
 - matched chunks or post refs
 - graph context when relation traversal was requested
+- deterministic answer text when answer rendering was requested
 - query report and score breakdown when produced by a local index
 - freshness note
 - policy route note

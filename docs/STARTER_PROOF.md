@@ -57,6 +57,11 @@ uses the same sanitized live-shaped fixture, builds temporary local index and
 graph artifacts, runs a graph-enriched query packet, and verifies that expected
 relation context and source refs survive into the answer surface.
 
+`aoa-4pda eval answer-packets` checks the deterministic rendered answer packet.
+It verifies that issue, fix, warning, warned-target labels, answer text
+fragments, and source refs survive the full local query -> graph context ->
+answer renderer path.
+
 This eval is local connector evidence. It does not create central proof
 verdicts, broad regression scores, or full-corpus quality claims.
 

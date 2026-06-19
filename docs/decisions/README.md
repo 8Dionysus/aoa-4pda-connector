@@ -16,3 +16,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0007` | [Local starter graph relation eval pack](AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md) |
 | `AOA-4PDA-D-0008` | [Starter graph relation edges v1](AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md) |
 | `AOA-4PDA-D-0009` | [Starter graph query packets](AOA-4PDA-D-0009-starter-graph-query-packets.md) |
+| `AOA-4PDA-D-0010` | [Starter answer packets](AOA-4PDA-D-0010-starter-answer-packets.md) |

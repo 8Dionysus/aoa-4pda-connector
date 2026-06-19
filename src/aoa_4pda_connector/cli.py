@@ -10,11 +10,14 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
+from aoa_4pda_connector.answer import render_answer_packet
 from aoa_4pda_connector.config import StorageRoots, find_repo_root
 from aoa_4pda_connector.evaluation import (
+    DEFAULT_ANSWER_EVAL_SUITE,
     DEFAULT_GRAPH_EVAL_SUITE,
     DEFAULT_GRAPH_QUERY_EVAL_SUITE,
     DEFAULT_SEARCH_EVAL_SUITE,
+    run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
     run_search_eval_suite,
@@ -80,6 +83,12 @@ def build_parser() -> argparse.ArgumentParser:
     query_graph.add_argument("--limit", type=int, default=5)
     query_graph.set_defaults(func=cmd_query_graph)
 
+    answer = sub.add_parser("answer", help="Render a structured answer from local keyword and graph evidence.")
+    answer.add_argument("query")
+    answer.add_argument("--run", default="latest")
+    answer.add_argument("--limit", type=int, default=5)
+    answer.set_defaults(func=cmd_answer)
+
     export_packet = sub.add_parser("export-packet", help="Export an evidence packet.")
     export_packet.add_argument("--query-id", default=None)
     export_packet.add_argument("--query", default=None)
@@ -109,6 +118,9 @@ def build_parser() -> argparse.ArgumentParser:
     graph_query_packets = eval_sub.add_parser("graph-query-packets", help="Run the starter graph query packet eval.")
     graph_query_packets.add_argument("--suite", default=str(DEFAULT_GRAPH_QUERY_EVAL_SUITE))
     graph_query_packets.set_defaults(func=cmd_eval_graph_query_packets)
+    answer_packets = eval_sub.add_parser("answer-packets", help="Run the starter rendered answer packet eval.")
+    answer_packets.add_argument("--suite", default=str(DEFAULT_ANSWER_EVAL_SUITE))
+    answer_packets.set_defaults(func=cmd_eval_answer_packets)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -132,6 +144,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "normalized_topic.schema.json",
         "normalized_post.schema.json",
         "evidence_packet.schema.json",
+        "answer_packet.schema.json",
         "index_manifest.schema.json",
         "graph_node.schema.json",
         "graph_edge.schema.json",
@@ -401,15 +414,7 @@ def cmd_query_graph(args: argparse.Namespace) -> int:
     if error:
         return error
     try:
-        index_receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "index")
-        run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or args.run)
-        graph_receipt = _load_graph_receipt_for_query(roots.artifact, args.run, run_id)
-        packet = query_graph_packet(
-            Path(str(index_receipt["index_path"])),
-            Path(str(graph_receipt["graph_path"])),
-            args.query,
-            limit=args.limit,
-        )
+        packet = _query_graph_packet_from_roots(roots.artifact, args.run, args.query, args.limit)
     except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
         _emit(
             {
@@ -422,6 +427,29 @@ def cmd_query_graph(args: argparse.Namespace) -> int:
         )
         return 1
     _emit({"status": "ok", **packet, "network_touched": False})
+    return 0
+
+
+def cmd_answer(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env()
+    error = _require_roots(roots, ["cache", "artifact"])
+    if error:
+        return error
+    try:
+        evidence_packet = _query_graph_packet_from_roots(roots.artifact, args.run, args.query, args.limit)
+        answer_packet = render_answer_packet(evidence_packet, limit=args.limit)
+    except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_answer_error_v1",
+                "status": "error",
+                "run": args.run,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+    _emit({"status": "ok", **answer_packet, "network_touched": False})
     return 0
 
 
@@ -604,6 +632,12 @@ def cmd_eval_graph_query_packets(args: argparse.Namespace) -> int:
     return 0 if report.get("status") == "ok" else 1
 
 
+def cmd_eval_answer_packets(args: argparse.Namespace) -> int:
+    report = run_answer_eval_suite(Path(args.suite), find_repo_root())
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
 def _emit(payload: dict[str, object]) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
 
@@ -694,6 +728,18 @@ def _load_graph_receipt_for_query(artifact_root: Path, requested_run: str, index
     if named_graph.is_file():
         return json.loads(named_graph.read_text(encoding="utf-8"))
     return _load_latest_or_named_receipt(artifact_root, requested_run, "graph")
+
+
+def _query_graph_packet_from_roots(artifact_root: Path, run: str, query: str, limit: int) -> dict[str, object]:
+    index_receipt = _load_latest_or_named_receipt(artifact_root, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    graph_receipt = _load_graph_receipt_for_query(artifact_root, run, run_id)
+    return query_graph_packet(
+        Path(str(index_receipt["index_path"])),
+        Path(str(graph_receipt["graph_path"])),
+        query,
+        limit=limit,
+    )
 
 
 if __name__ == "__main__":

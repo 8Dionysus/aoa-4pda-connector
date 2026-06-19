@@ -41,6 +41,12 @@ jobs:
       - name: Run starter graph relation eval
         run: aoa-4pda eval graph-relations
 
+      - name: Run starter graph query packet eval
+        run: aoa-4pda eval graph-query-packets
+
+      - name: Run starter answer packet eval
+        run: aoa-4pda eval answer-packets
+
       - name: Guard against committed heavy artifacts
         run: |
           python - <<'PY'

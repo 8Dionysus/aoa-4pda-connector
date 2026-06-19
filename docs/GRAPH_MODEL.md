@@ -88,3 +88,7 @@ proof verdict.
 `aoa-4pda eval graph-query-packets` additionally checks that a graph-enriched
 query packet carries the expected relation context for the same public-safe
 fixture without touching the network or committing generated graph artifacts.
+
+`aoa-4pda answer` consumes that graph context to render deterministic answer
+packets. The renderer does not add graph truth; it copies cited issue, fix,
+warning, and warned-target labels into a handoff surface for agents.
