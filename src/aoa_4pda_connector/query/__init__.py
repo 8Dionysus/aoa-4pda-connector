@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from datetime import UTC, datetime
@@ -14,6 +15,11 @@ BM25_K1 = 1.5
 BM25_B = 0.75
 EXACT_TERM_BOOST = 1.75
 PHRASE_BOOST = 2.5
+
+
+def packet_id_for_query(query: str) -> str:
+    digest = hashlib.sha256(query.strip().encode("utf-8")).hexdigest()
+    return f"query-{digest[:16]}"
 
 
 def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[str, object]:
@@ -100,7 +106,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
         )
     return {
         "schema": "aoa_4pda_evidence_packet_v1",
-        "packet_id": f"query-{abs(hash(query))}",
+        "packet_id": packet_id_for_query(query),
         "query": query,
         "created_at": datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "query_report": {

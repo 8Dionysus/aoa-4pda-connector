@@ -54,10 +54,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     build_index = sub.add_parser("build-index", help="Build starter keyword index.")
     build_index.add_argument("--profile", default="starter")
+    build_index.add_argument("--run", default="latest")
     build_index.set_defaults(func=cmd_build_index)
 
     build_graph = sub.add_parser("build-graph", help="Build starter graph export.")
     build_graph.add_argument("--profile", default="starter")
+    build_graph.add_argument("--run", default="latest")
     build_graph.set_defaults(func=cmd_build_graph)
 
     query = sub.add_parser("query", help="Query local keyword index or fixture fallback.")
@@ -65,7 +67,7 @@ def build_parser() -> argparse.ArgumentParser:
     query.set_defaults(func=cmd_query)
 
     export_packet = sub.add_parser("export-packet", help="Export an evidence packet.")
-    export_packet.add_argument("--query-id", default="fixture-packet-bootloop")
+    export_packet.add_argument("--query-id", default=None)
     export_packet.add_argument("--query", default=None)
     export_packet.set_defaults(func=cmd_export_packet)
 
@@ -74,6 +76,13 @@ def build_parser() -> argparse.ArgumentParser:
     starter_proof = proof_sub.add_parser("starter", help="Run offline starter proof over fixtures.")
     starter_proof.add_argument("--query", default="bootloop boot.img firmware")
     starter_proof.set_defaults(func=cmd_proof_starter)
+    live_starter_proof = proof_sub.add_parser(
+        "live-starter",
+        help="Verify an already-built bounded live starter run in external storage.",
+    )
+    live_starter_proof.add_argument("--run", default="latest")
+    live_starter_proof.add_argument("--query", default="Redmi Note 10 Pro TWRP boot.img")
+    live_starter_proof.set_defaults(func=cmd_proof_live_starter)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -285,7 +294,7 @@ def cmd_build_index(args: argparse.Namespace) -> int:
     error = _require_roots(roots, ["data", "cache", "artifact"])
     if error:
         return error
-    receipt = _load_latest_or_named_receipt(roots.artifact, "latest", "normalize")
+    receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
     run_id = receipt["run_id"]
     normalized_dir = roots.data / "normalized" / run_id
     output_dir = roots.cache / "indexes" / run_id
@@ -311,7 +320,7 @@ def cmd_build_graph(args: argparse.Namespace) -> int:
     error = _require_roots(roots, ["data", "artifact"])
     if error:
         return error
-    receipt = _load_latest_or_named_receipt(roots.artifact, "latest", "normalize")
+    receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
     run_id = receipt["run_id"]
     normalized_dir = roots.data / "normalized" / run_id
     output_dir = roots.artifact / "graphs" / run_id
@@ -366,11 +375,14 @@ def cmd_export_packet(args: argparse.Namespace) -> int:
     if error:
         return error
     if args.query:
-        packet = query_keyword_index(Path(_load_latest_or_named_receipt(roots.artifact, "latest", "index")["index_path"]), args.query)
+        index_receipt = _load_latest_or_named_receipt(roots.artifact, "latest", "index")
+        packet = query_keyword_index(Path(index_receipt["index_path"]), args.query)
+        if args.query_id:
+            packet["packet_id"] = args.query_id
     else:
         fixture = Path("connector/fixtures/expected_packets/synthetic_bootloop_packet.json")
         packet = json.loads(fixture.read_text(encoding="utf-8"))
-        packet["packet_id"] = args.query_id
+        packet["packet_id"] = args.query_id or "fixture-packet-bootloop"
     output_dir = roots.artifact / "evidence_packets"
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / f"{packet['packet_id']}.json"
@@ -422,6 +434,91 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
                 "terms": index.get("term_count", 0),
                 "graph_nodes": graph.get("node_count", 0),
                 "graph_edges": graph.get("edge_count", 0),
+                "query_results": len(packet.get("results", [])),
+            },
+            "checks": checks,
+            "top_result": first_result,
+        }
+    )
+    return 0 if status == "ok" else 1
+
+
+def cmd_proof_live_starter(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env()
+    error = _require_roots(roots, ["data", "cache", "artifact"])
+    if error:
+        return error
+    try:
+        crawl_receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "crawl")
+        run_id = str(crawl_receipt["run_id"])
+        normalize_receipt = _load_latest_or_named_receipt(roots.artifact, run_id, "normalize")
+        index_receipt = _load_latest_or_named_receipt(roots.artifact, run_id, "index")
+        graph_receipt = _load_latest_or_named_receipt(roots.artifact, run_id, "graph")
+        index_path = Path(str(index_receipt["index_path"]))
+        graph_path = Path(str(graph_receipt["graph_path"]))
+        packet = query_keyword_index(index_path, args.query, limit=5)
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001 - proof output should preserve route failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_live_starter_proof_v1",
+                "status": "error",
+                "run": args.run,
+                "error": str(exc),
+                "proof_command_network_touched": False,
+            }
+        )
+        return 1
+
+    crawl_counts = crawl_receipt.get("counts", {})
+    normalize_counts = normalize_receipt.get("counts", {})
+    policy = crawl_receipt.get("policy", {})
+    storage_warning_list = storage_warnings(repo_root, roots)
+    first_result = packet["results"][0] if packet.get("results") else {}
+    checks = {
+        "external_roots_ready": not storage_warning_list,
+        "crawl_fetched_public_topics": int(crawl_counts.get("fetched", 0)) > 0
+        and int(crawl_counts.get("errors", 0)) == 0,
+        "policy_preserved": policy.get("allowed_public_only") is True
+        and policy.get("internal_search_used") is False
+        and policy.get("attachments_downloaded") is False
+        and packet.get("policy", {}).get("internal_search_used") is False,
+        "normalized_topics_match_fetched": int(normalize_counts.get("topics", 0))
+        == int(crawl_counts.get("fetched", 0)),
+        "index_has_posts": int(index.get("doc_count", 0)) > 0,
+        "graph_has_nodes_edges": int(graph.get("node_count", 0)) > 0 and int(graph.get("edge_count", 0)) > 0,
+        "query_returns_result": bool(packet.get("results")),
+        "network_limited_to_crawl": crawl_receipt.get("network_touched") is True
+        and normalize_receipt.get("network_touched") is False
+        and index_receipt.get("network_touched") is False
+        and graph_receipt.get("network_touched") is False,
+    }
+    status = "ok" if all(checks.values()) else "error"
+    _emit(
+        {
+            "schema": "aoa_4pda_live_starter_proof_v1",
+            "status": status,
+            "run_id": run_id,
+            "profile_id": crawl_receipt.get("profile_id"),
+            "query": args.query,
+            "proof_command_network_touched": False,
+            "source_run_network_touched": bool(crawl_receipt.get("network_touched")),
+            "storage_roots": roots.as_dict(),
+            "storage_warnings": storage_warning_list,
+            "artifact_paths": {
+                "index_path": str(index_path),
+                "graph_path": str(graph_path),
+            },
+            "counts": {
+                "requested_topics": int(crawl_counts.get("requested", 0)),
+                "fetched_topics": int(crawl_counts.get("fetched", 0)),
+                "normalized_topics": int(normalize_counts.get("topics", 0)),
+                "index_docs": int(index.get("doc_count", 0)),
+                "index_terms": int(index.get("term_count", 0)),
+                "graph_nodes": int(graph.get("node_count", 0)),
+                "graph_edges": int(graph.get("edge_count", 0)),
                 "query_results": len(packet.get("results", [])),
             },
             "checks": checks,

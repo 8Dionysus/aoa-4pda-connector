@@ -5,7 +5,7 @@ from pathlib import Path
 
 from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, tokenize
 from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
-from aoa_4pda_connector.query import query_keyword_index
+from aoa_4pda_connector.query import packet_id_for_query, query_keyword_index
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -101,3 +101,9 @@ def test_query_uses_bm25_exact_terms_phrases_and_focused_snippets(tmp_path):
     assert top["score_breakdown"]["exact"] > 0
     assert top["score_breakdown"]["phrase"] > 0
     assert "boot.img" in top["snippet"]
+
+
+def test_query_packet_id_is_stable_across_processes():
+    query = "Redmi Note 10 Pro TWRP boot.img"
+    assert packet_id_for_query(query) == packet_id_for_query(query)
+    assert packet_id_for_query(query) == "query-1e51a44d7d241e63"
