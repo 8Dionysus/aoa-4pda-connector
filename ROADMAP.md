@@ -4,6 +4,7 @@
 
 - repository route cards
 - source and storage policy
+- ignored repo-local state scaffold
 - CLI skeleton
 - schemas and synthetic fixtures
 - validator and tests

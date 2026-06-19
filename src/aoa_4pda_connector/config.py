@@ -10,6 +10,7 @@ from pathlib import Path
 ENV_DATA_ROOT = "CONNECTOR_DATA_ROOT"
 ENV_CACHE_ROOT = "CONNECTOR_CACHE_ROOT"
 ENV_ARTIFACT_ROOT = "CONNECTOR_ARTIFACT_ROOT"
+LOCAL_STATE_DIR = ".connector-state"
 
 
 def find_repo_root(start: Path | None = None) -> Path:
@@ -27,13 +28,30 @@ class StorageRoots:
     data: Path | None
     cache: Path | None
     artifact: Path | None
+    mode: str = "environment"
 
     @classmethod
-    def from_env(cls) -> "StorageRoots":
+    def from_env(cls, repo_root: Path | None = None) -> "StorageRoots":
+        root = (repo_root or find_repo_root()).resolve()
+        env_values = {
+            ENV_DATA_ROOT: os.environ.get(ENV_DATA_ROOT),
+            ENV_CACHE_ROOT: os.environ.get(ENV_CACHE_ROOT),
+            ENV_ARTIFACT_ROOT: os.environ.get(ENV_ARTIFACT_ROOT),
+        }
+        if any(env_values.values()):
+            return cls(
+                data=_env_path(ENV_DATA_ROOT, root),
+                cache=_env_path(ENV_CACHE_ROOT, root),
+                artifact=_env_path(ENV_ARTIFACT_ROOT, root),
+                mode="environment",
+            )
+
+        state_root = root / LOCAL_STATE_DIR
         return cls(
-            data=_env_path(ENV_DATA_ROOT),
-            cache=_env_path(ENV_CACHE_ROOT),
-            artifact=_env_path(ENV_ARTIFACT_ROOT),
+            data=state_root / "data",
+            cache=state_root / "cache",
+            artifact=state_root / "artifacts",
+            mode="repo_local_default",
         )
 
     def missing(self) -> list[str]:
@@ -53,12 +71,21 @@ class StorageRoots:
             ENV_ARTIFACT_ROOT: str(self.artifact) if self.artifact else None,
         }
 
+    def local_state_root(self) -> Path | None:
+        if not (self.data and self.cache and self.artifact):
+            return None
+        common = Path(os.path.commonpath([self.data, self.cache, self.artifact]))
+        return common
 
-def _env_path(name: str) -> Path | None:
+
+def _env_path(name: str, repo_root: Path) -> Path | None:
     value = os.environ.get(name)
     if not value:
         return None
-    return Path(value).expanduser().resolve()
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = repo_root / path
+    return path.resolve()
 
 
 def path_is_inside(path: Path, root: Path) -> bool:
@@ -67,4 +94,3 @@ def path_is_inside(path: Path, root: Path) -> bool:
         return True
     except ValueError:
         return False
-

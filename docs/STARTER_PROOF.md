@@ -2,7 +2,7 @@
 
 `aoa-4pda proof starter` is the fresh-clone proof route for the connector. It
 proves that the local search and graph path works without touching the network
-and without requiring external storage roots.
+and without requiring configured storage roots.
 
 ## What It Checks
 
@@ -73,12 +73,12 @@ verdicts, broad regression scores, or full-corpus quality claims.
 - vector search
 - production graph extraction quality
 
-Those belong to later bounded runs with configured external storage roots.
+Those belong to later bounded runs with configured storage roots.
 
 ## Live Starter Proof
 
 `aoa-4pda proof live-starter` verifies an already-built bounded public starter
-run in external storage. The proof command itself does not touch the network;
+run in configured storage. The proof command itself does not touch the network;
 it checks receipts and local artifacts produced by the explicit live route.
 
 Run the live stages in order:
@@ -95,7 +95,7 @@ Do not parallelize `normalize`, `build-index`, and `build-graph`; each stage
 depends on the receipt written by the previous stage. A successful live starter
 proof checks:
 
-- external storage roots are configured outside the repository
+- configured storage roots exist and are Git-ignored when repo-local
 - crawl policy preserved public-topic-only intake
 - internal search and attachments were not used
 - normalized topic count matches fetched topics

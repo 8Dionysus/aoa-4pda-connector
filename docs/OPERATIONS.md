@@ -17,7 +17,8 @@ aoa-4pda eval answer-packets
 ## Crawl Commands
 
 Crawl commands require explicit operator intent and configured storage roots.
-Run the offline proof before a live crawl:
+When no external roots are set, the connector uses ignored repo-local
+`.connector-state/` roots. Run the offline proof before a live crawl:
 
 ```bash
 aoa-4pda proof starter
@@ -44,7 +45,7 @@ Run these stages sequentially. `build-index` and `build-graph` consume the
 normalization receipt for the selected run.
 
 The command path writes raw snapshots, normalized topics, indexes, graphs, and
-evidence packets outside Git.
+evidence packets to configured storage roots outside Git history.
 
 ## Receipts
 
@@ -53,5 +54,5 @@ Future crawl/index/graph runs should write receipts to
 
 ## Cleanup
 
-Delete or rotate external artifacts only after checking active processes,
-storage policy, and operator intent.
+Delete or rotate repo-local or external artifacts only after checking active
+processes, storage policy, and operator intent.

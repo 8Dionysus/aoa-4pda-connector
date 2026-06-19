@@ -21,6 +21,14 @@ def _env_with_src() -> dict[str, str]:
     return env
 
 
+def _env_with_src_without_storage() -> dict[str, str]:
+    env = _env_with_src()
+    env.pop("CONNECTOR_DATA_ROOT", None)
+    env.pop("CONNECTOR_CACHE_ROOT", None)
+    env.pop("CONNECTOR_ARTIFACT_ROOT", None)
+    return env
+
+
 def test_fixture_packet_is_json_and_does_not_use_internal_search():
     packet = json.loads(
         (REPO_ROOT / "connector/fixtures/expected_packets/synthetic_bootloop_packet.json").read_text(
@@ -36,7 +44,7 @@ def test_cli_doctor_is_safe_without_external_storage():
     result = subprocess.run(
         [sys.executable, "-m", "aoa_4pda_connector.cli", "doctor"],
         cwd=REPO_ROOT,
-        env=_env_with_src(),
+        env=_env_with_src_without_storage(),
         text=True,
         capture_output=True,
         check=False,
@@ -45,6 +53,30 @@ def test_cli_doctor_is_safe_without_external_storage():
     payload = json.loads(result.stdout)
     assert payload["schema"] == "aoa_4pda_doctor_v1"
     assert payload["network_touched"] is False
+    assert payload["storage_mode"] == "repo_local_default"
+    assert payload["storage_roots"]["CONNECTOR_DATA_ROOT"] == str(REPO_ROOT / ".connector-state" / "data")
+    assert payload["storage_roots"]["CONNECTOR_CACHE_ROOT"] == str(REPO_ROOT / ".connector-state" / "cache")
+    assert payload["storage_roots"]["CONNECTOR_ARTIFACT_ROOT"] == str(
+        REPO_ROOT / ".connector-state" / "artifacts"
+    )
+
+
+def test_cli_init_apply_uses_repo_local_state_when_env_is_unset():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "init", "--apply"],
+        cwd=REPO_ROOT,
+        env=_env_with_src_without_storage(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_init_v1"
+    assert payload["status"] == "ok"
+    assert payload["storage_mode"] == "repo_local_default"
+    assert payload["network_touched"] is False
+    assert str(REPO_ROOT / ".connector-state" / "data") in payload["created"]
 
 
 def test_cli_policy_check_denies_service_routes():

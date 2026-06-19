@@ -18,6 +18,8 @@ REQUIRED_FILES = [
     "pyproject.toml",
     ".env.example",
     ".gitignore",
+    ".connector-state/AGENTS.md",
+    ".connector-state/README.md",
     "connector/SOURCE_POLICY.md",
     "connector/STORAGE_POLICY.md",
     "connector/profiles/starter.yaml",
@@ -48,6 +50,10 @@ REQUIRED_FILES = [
 ]
 
 REQUIRED_DIRS = [
+    ".connector-state",
+    ".connector-state/data",
+    ".connector-state/cache",
+    ".connector-state/artifacts",
     "src/aoa_4pda_connector/fetch",
     "src/aoa_4pda_connector/parse",
     "src/aoa_4pda_connector/normalize",
@@ -82,6 +88,10 @@ REQUIRED_SCHEMAS = [
 ]
 
 REQUIRED_GITIGNORE = [
+    ".connector-state/",
+    ".connector-state/**",
+    "!.connector-state/README.md",
+    "!.connector-state/AGENTS.md",
     "data/",
     "cache/",
     "artifacts/",
@@ -122,6 +132,8 @@ IGNORED_LOCAL_CACHE_DIR_NAMES = {
     ".ruff_cache",
     ".venv",
 }
+
+ALLOWED_REPO_LOCAL_STATE_ROOT = ".connector-state"
 
 
 def main() -> int:
@@ -166,7 +178,10 @@ def main() -> int:
     for path in repo_root.rglob("*"):
         if ".git" in path.parts:
             continue
-        if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in path.relative_to(repo_root).parts):
+        rel_parts = path.relative_to(repo_root).parts
+        if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in rel_parts):
+            continue
+        if rel_parts and rel_parts[0] == ALLOWED_REPO_LOCAL_STATE_ROOT:
             continue
         if path.is_dir() and path.name in FORBIDDEN_ARTIFACT_DIR_NAMES:
             errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")
@@ -210,6 +225,10 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     for var in ["CONNECTOR_DATA_ROOT", "CONNECTOR_CACHE_ROOT", "CONNECTOR_ARTIFACT_ROOT"]:
         if var not in storage_policy or var not in env_example:
             errors.append(f"storage root variable missing from docs/env: {var}")
+
+    for token in [".connector-state", "repo-local", "external storage"]:
+        if token not in storage_policy or token not in env_example:
+            errors.append(f"repo-local storage token missing from docs/env: {token}")
 
     for profile in (repo_root / "connector" / "profiles").glob("*.yaml"):
         text = profile.read_text(encoding="utf-8")

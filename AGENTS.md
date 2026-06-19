@@ -55,6 +55,9 @@ Before large data, runtime, AI, or benchmark work, also read
 - Do not bypass robots, account, privacy, or rate boundaries.
 - Do not commit raw captures, indexes, graph DBs, vector stores, caches, or
   full exports.
+- The repo-local `.connector-state/` directory is an ignored workspace for
+  small starter runs. Treat generated files inside it as local state, not source
+  truth.
 
 ## Validation
 
@@ -73,4 +76,3 @@ Report changed surfaces, validation results, skipped live crawl or storage
 checks, and the next safe step. For this skeleton, the next safe step is a
 starter crawl over 10-30 public topic pages after policy and storage roots are
 confirmed.
-

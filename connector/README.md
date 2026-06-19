@@ -18,5 +18,4 @@ schemas, seed routes, or fixture expectations.
 ## Rule
 
 Keep this source home small and reproducible. Real captures, indexes, graphs,
-and full exports belong in external storage roots.
-
+and full exports belong in configured storage roots outside Git history.

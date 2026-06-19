@@ -21,8 +21,8 @@ seeds/profile
 ## Parser Posture
 
 The parser is fixture-backed, not raw-corpus-backed. Tiny sanitized HTML
-fixtures may mimic live 4PDA structure, but raw live pages stay in external
-storage.
+fixtures may mimic live 4PDA structure, but raw live pages stay in configured
+storage roots and must not be committed.
 
 Current parser coverage includes:
 
@@ -44,16 +44,19 @@ the normalized post or public source URL as evidence authority.
 | Layer | Example | Authority |
 | --- | --- | --- |
 | Source policy | `connector/SOURCE_POLICY.md` | repository |
-| Raw public snapshot | external `CONNECTOR_DATA_ROOT` | source URL + receipt |
-| Normalized record | external data root | parser output with source refs |
-| Search index | external cache root | derived chunk navigation |
-| Graph DB | external artifact root | derived navigation |
+| Raw public snapshot | `CONNECTOR_DATA_ROOT` | source URL + receipt |
+| Normalized record | data root | parser output with source refs |
+| Search index | cache root | derived chunk navigation |
+| Graph DB | artifact root | derived navigation |
 | Evidence packet | examples/exported packets | answer support, not site truth |
 | Graph query context | `graph_context` in packets | derived navigation over cited posts |
 | Answer packet | `aoa_4pda_answer_packet_v1` | deterministic agent handoff, not source truth |
 
 Generated indexes and graphs help navigation. They do not replace source URLs or
 policy receipts.
+
+Configured storage may be the ignored repo-local `.connector-state/` scaffold
+for small starter runs or an external storage root for larger materialization.
 
 ## Runtime Boundary
 
