@@ -21,6 +21,7 @@ DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.
 DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
 DEFAULT_LIVE_SEARCH_EVAL_SUITE = Path("evals/suites/live_starter_search_quality.json")
 DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_graph_query_quality.json")
+DEFAULT_LIVE_ANSWER_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_answer_quality.json")
 
 
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
@@ -409,6 +410,107 @@ def run_live_graph_query_eval_suite(
     }
 
 
+def run_live_answer_eval_suite(
+    run: str = "latest",
+    suite_path: Path | None = None,
+    repo_root: Path | None = None,
+    artifact_root: Path | None = None,
+) -> dict[str, object]:
+    """Run rendered-answer evals against an already-built bounded live run."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_LIVE_ANSWER_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    roots = StorageRoots.from_env(root)
+    artifacts = artifact_root or roots.artifact
+    if artifacts is None:
+        raise FileNotFoundError("CONNECTOR_ARTIFACT_ROOT is not configured")
+
+    index_receipt = _load_latest_or_named_receipt(artifacts, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    crawl_receipt = _load_latest_or_named_receipt(artifacts, run_id, "crawl")
+    normalize_receipt = _load_latest_or_named_receipt(artifacts, run_id, "normalize")
+    graph_receipt = _load_latest_or_named_receipt(artifacts, run_id, "graph")
+    index_path = Path(str(index_receipt["index_path"]))
+    graph_path = Path(str(graph_receipt["graph_path"]))
+    index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+    graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+    case_reports = [
+        _run_live_answer_case(case, index_path, graph_path, int(suite.get("default_limit", 5)))
+        for case in suite.get("cases", [])
+    ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    crawl_counts = crawl_receipt.get("counts", {})
+    normalize_counts = normalize_receipt.get("counts", {})
+    policy = crawl_receipt.get("policy", {})
+    dataset = suite.get("dataset", {})
+    expected_profile = dataset.get("expected_profile")
+    checks = {
+        "policy_preserved": policy.get("allowed_public_only") is True
+        and policy.get("internal_search_used") is False
+        and policy.get("attachments_downloaded") is False,
+        "profile_matches": True
+        if expected_profile is None
+        else crawl_receipt.get("profile_id") == expected_profile
+        and index_receipt.get("profile_id") == expected_profile
+        and graph_receipt.get("profile_id") == expected_profile,
+        "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
+        "graph_has_relation_edges": bool(
+            {
+                edge.get("kind")
+                for edge in graph_payload.get("edges", [])
+                if str(edge.get("kind", "")).endswith(("_targets_file", "_uses_tool", "_mentions_firmware"))
+            }
+        ),
+        "network_limited_to_source_crawl": crawl_receipt.get("network_touched") is True
+        and normalize_receipt.get("network_touched") is False
+        and index_receipt.get("network_touched") is False
+        and graph_receipt.get("network_touched") is False,
+    }
+    status = "ok" if not failed and all(checks.values()) else "error"
+    return {
+        "schema": "aoa_4pda_live_answer_eval_report_v1",
+        "status": status,
+        "suite_id": suite.get("suite_id"),
+        "suite_path": str(path.relative_to(root)) if path.is_relative_to(root) else str(path),
+        "run_id": run_id,
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+            "requested_topics": int(crawl_counts.get("requested_topics", crawl_counts.get("requested", 0))),
+            "requested_pages": int(crawl_counts.get("requested_pages", crawl_counts.get("requested", 0))),
+            "fetched_topics": int(crawl_counts.get("fetched_topics", crawl_counts.get("fetched", 0))),
+            "fetched_pages": int(crawl_counts.get("fetched_pages", crawl_counts.get("fetched", 0))),
+            "normalized_topics": int(normalize_counts.get("topics", 0)),
+            "normalized_pages": int(normalize_counts.get("pages", normalize_counts.get("topics", 0))),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+            "path": str(index_path),
+        },
+        "graph": {
+            "node_count": graph_payload.get("node_count"),
+            "edge_count": graph_payload.get("edge_count"),
+            "path": str(graph_path),
+        },
+        "checks": checks,
+        "network_touched": False,
+        "source_run_network_touched": bool(crawl_receipt.get("network_touched")),
+        "artifact_lifecycle": "read_existing_configured_storage",
+        "cases": case_reports,
+    }
+
+
 def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
     query = str(case.get("query", ""))
     expect = case.get("expect", {})
@@ -687,23 +789,7 @@ def _run_answer_case(case: dict[str, object], index_path: Path, graph_path: Path
     evidence_packet = query_graph_packet(index_path, graph_path, query, limit=3)
     answer_packet = render_answer_packet(evidence_packet, limit=3)
     top_answer = answer_packet.get("answers", [{}])[0] if answer_packet.get("answers") else {}
-    source_url_contains = str(expect.get("source_url_contains", ""))
-    checks = {
-        "top_answer_present": bool(top_answer),
-        "top_post_id": top_answer.get("post_id") == expect.get("top_post_id"),
-        "answer_kind": top_answer.get("answer_kind") == expect.get("answer_kind"),
-        "expected_labels_present": _all_expected(expect.get("issue_labels", []), top_answer.get("issue_labels", []))
-        and _all_expected(expect.get("fix_labels", []), top_answer.get("fix_labels", []))
-        and _all_expected(expect.get("warning_labels", []), top_answer.get("warning_labels", []))
-        and _all_expected(expect.get("warned_target_labels", []), top_answer.get("warned_target_labels", [])),
-        "answer_text_contains": all(
-            str(fragment) in str(top_answer.get("answer_text", ""))
-            for fragment in expect.get("answer_text_contains", [])
-        ),
-        "source_refs_preserved": str(source_url_contains) in str(top_answer.get("source_url", ""))
-        and _any_source_ref_contains(top_answer.get("source_refs", []), source_url_contains),
-        "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
-    }
+    checks = _answer_checks(top_answer, answer_packet, expect)
     return {
         "case_id": case.get("case_id"),
         "status": "ok" if all(checks.values()) else "error",
@@ -711,6 +797,79 @@ def _run_answer_case(case: dict[str, object], index_path: Path, graph_path: Path
         "checks": checks,
         "top_answer": top_answer,
         "expected": expect,
+    }
+
+
+def _run_live_answer_case(
+    case: dict[str, object],
+    index_path: Path,
+    graph_path: Path,
+    default_limit: int,
+) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    limit = int(case.get("limit", default_limit))
+    evidence_packet = query_graph_packet(index_path, graph_path, query, limit=limit)
+    answer_packet = render_answer_packet(evidence_packet, limit=limit)
+    top_answer = answer_packet.get("answers", [{}])[0] if answer_packet.get("answers") else {}
+    query_report = evidence_packet.get("query_report", {})
+    graph_report = evidence_packet.get("graph_report", {})
+    checks = {
+        **_answer_checks(top_answer, answer_packet, expect),
+        "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
+        "graph_report_relation_edge_kinds_all": _optional_all_expected(
+            expect.get("graph_report_relation_edge_kinds_all"),
+            graph_report.get("relation_edge_kinds", []),
+        ),
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "query_report": query_report,
+        "graph_report": graph_report,
+        "answer_report": answer_packet.get("answer_report", {}),
+        "top_answer": top_answer,
+        "expected": expect,
+    }
+
+
+def _answer_checks(
+    top_answer: dict[str, object],
+    answer_packet: dict[str, object],
+    expect: object,
+) -> dict[str, bool]:
+    expected = expect if isinstance(expect, dict) else {}
+    source_url_contains = expected.get("source_url_contains")
+    label_fields = [
+        "issue_labels",
+        "fix_labels",
+        "warning_labels",
+        "warned_target_labels",
+        "root_action_labels",
+        "recovery_action_labels",
+        "target_file_labels",
+        "tool_labels",
+        "firmware_context_labels",
+    ]
+    return {
+        "top_answer_present": bool(top_answer),
+        "top_post_id": _optional_equal(top_answer.get("post_id"), expected.get("top_post_id")),
+        "answer_kind": _optional_equal(top_answer.get("answer_kind"), expected.get("answer_kind")),
+        "expected_labels_present": all(
+            _optional_all_expected(expected.get(field), top_answer.get(field, []))
+            for field in label_fields
+        ),
+        "answer_text_contains": all(
+            str(fragment) in str(top_answer.get("answer_text", ""))
+            for fragment in _list_or_empty(expected.get("answer_text_contains"))
+        ),
+        "source_refs_preserved": True
+        if source_url_contains is None
+        else str(source_url_contains) in str(top_answer.get("source_url", ""))
+        and _any_source_ref_contains(top_answer.get("source_refs", []), str(source_url_contains)),
+        "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
     }
 
 
@@ -758,6 +917,10 @@ def _optional_any_expected(expected: object, actual: object) -> bool:
 
 def _optional_all_expected(expected: object, actual: object) -> bool:
     return True if expected is None else _all_expected(expected, actual)
+
+
+def _list_or_empty(value: object) -> list[object]:
+    return value if isinstance(value, list) else []
 
 
 def _any_source_ref_contains(values: object, needle: str) -> bool:

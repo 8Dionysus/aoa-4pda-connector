@@ -40,7 +40,9 @@ REQUIRED_FILES = [
     "evals/suites/live_starter_search_quality.json",
     "evals/suites/live_xiaomi_13t_search_quality.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
+    "evals/suites/live_xiaomi_13t_answer_quality.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
+    "evals/suites/xiaomi_13t_answer_packets.json",
     "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
     "docs/ARCHITECTURE.md",
     "docs/INSTALL.md",
@@ -266,6 +268,8 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
         "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_starter_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
+        "xiaomi_13t_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
+        "live_xiaomi_13t_answer_quality.json": "aoa_4pda_live_answer_eval_suite_v1",
     }
     for suite_name, schema in expected_suites.items():
         suite_path = repo_root / "evals" / "suites" / suite_name
@@ -291,6 +295,16 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("fix_labels") or not expect.get("answer_text_contains"):
                 errors.append("starter_answer_packets.json must include answer label/text expectations")
+        if suite_name == "xiaomi_13t_answer_packets.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if not expect.get("root_action_labels") or not expect.get("recovery_action_labels"):
+                errors.append("xiaomi_13t_answer_packets.json must include root/recovery answer expectations")
+        if suite_name == "live_xiaomi_13t_answer_quality.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if not expect.get("recovery_action_labels") or not expect.get("target_file_labels"):
+                errors.append("live_xiaomi_13t_answer_quality.json must include recovery/file answer expectations")
 
 
 if __name__ == "__main__":

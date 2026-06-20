@@ -1,0 +1,57 @@
+{
+  "schema": "aoa_4pda_live_answer_eval_suite_v1",
+  "suite_id": "live-xiaomi-13t-answer-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded Xiaomi 13T run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 5,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_index_plus_graph_answer",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "xiaomi-13t",
+    "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
+    "notes": "Reads existing configured storage receipts, keyword index, and graph export for a named Xiaomi 13T run; renders answers locally and does not crawl or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-live-recovery-answer",
+      "query": "Xiaomi 13T aristotle recovery.img fastboot",
+      "expect": {
+        "top_post_id": "128964413",
+        "answer_kind": "recovery",
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "graph_report_relation_edge_kinds_all": ["recovery_targets_file", "recovery_uses_tool"],
+        "recovery_action_labels": ["flash recovery.img"],
+        "target_file_labels": ["recovery.img"],
+        "tool_labels": ["fastboot"],
+        "firmware_context_labels": ["HyperOS"],
+        "answer_text_contains": [
+          "Recovery actions: flash recovery.img.",
+          "Target files: recovery.img.",
+          "Tools: fastboot; TWRP."
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-root-answer",
+      "query": "2306EPN60G HyperOS boot.img Magisk KSU",
+      "expect": {
+        "top_post_id": "128449684",
+        "answer_kind": "root",
+        "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "query_report_unit": "chunk",
+        "graph_report_relation_edge_kinds_all": ["root_targets_file", "root_uses_tool"],
+        "root_action_labels": ["patch boot.img"],
+        "target_file_labels": ["boot.img"],
+        "tool_labels": ["Magisk"],
+        "answer_text_contains": [
+          "Root actions: patch boot.img.",
+          "Target files: boot.img.",
+          "Tools: Magisk."
+        ]
+      }
+    }
+  ]
+}

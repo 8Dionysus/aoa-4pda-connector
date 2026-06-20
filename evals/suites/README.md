@@ -16,6 +16,10 @@ The active starter suites are:
   suite for already-built Xiaomi 13T index and graph artifacts
 - `xiaomi_13t_graph_relations.json`, a focused public-safe graph relation
   suite for Xiaomi 13T firmware/root/recovery evidence
+- `xiaomi_13t_answer_packets.json`, a focused public-safe rendered answer
+  packet suite for Xiaomi 13T root/recovery evidence
+- `live_xiaomi_13t_answer_quality.json`, a focused named-run rendered answer
+  suite for already-built Xiaomi 13T index and graph artifacts
 
 Together they verify:
 
@@ -33,6 +37,8 @@ Together they verify:
 - issue/fix/warning labels and answer text in rendered answer packets
 - live-run exact and specific-term retrieval over existing configured storage
 - live-run Xiaomi 13T graph-query packets with root/recovery relation context
+- Xiaomi 13T root/recovery/file/tool/firmware labels in deterministic answer
+  packets
 
 Run it with:
 
@@ -41,9 +47,11 @@ aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
 aoa-4pda eval answer-packets
+aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
 aoa-4pda eval live-search-quality --run <run-id>
 aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_search_quality.json
 aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
+aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json
 aoa-4pda eval graph-relations --suite evals/suites/xiaomi_13t_graph_relations.json
 ```
 

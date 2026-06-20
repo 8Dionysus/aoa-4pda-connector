@@ -77,6 +77,7 @@ aoa-4pda build-index --profile xiaomi-13t --run latest
 aoa-4pda build-graph --profile xiaomi-13t --run latest
 aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
 aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
+aoa-4pda eval live-answer-quality --run latest --suite evals/suites/live_xiaomi_13t_answer_quality.json
 aoa-4pda answer "Xiaomi 13T aristotle TWRP boot.img" --run latest
 ```
 

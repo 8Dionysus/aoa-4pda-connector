@@ -55,6 +55,10 @@ the normalized post or public source URL as evidence authority.
 Generated indexes and graphs help navigation. They do not replace source URLs or
 policy receipts.
 
+Current answer packets can summarize starter issue/fix/warning context and
+focused Xiaomi root/recovery/file/tool/firmware relation labels from cited graph
+context.
+
 Configured storage may be the ignored repo-local `.connector-state/` scaffold
 for small starter runs or an external storage root for larger materialization.
 

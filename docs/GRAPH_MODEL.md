@@ -112,7 +112,8 @@ fixture without touching the network or committing generated graph artifacts.
 
 `aoa-4pda answer` consumes that graph context to render deterministic answer
 packets. The renderer does not add graph truth; it copies cited issue, fix,
-warning, and warned-target labels into a handoff surface for agents.
+warning, warned-target, root/recovery action, target file, tool, and firmware
+labels into a handoff surface for agents.
 
 `evals/suites/xiaomi_13t_graph_relations.json` is a focused graph relation
 suite for the Xiaomi 13T profile. It checks public-safe fixture evidence for
@@ -126,3 +127,7 @@ receipt-driven live gate. It does not build a new corpus; it reads an
 operator-materialized Xiaomi 13T run from configured storage and checks that
 `query-graph` returns cited root/recovery relation context from the existing
 keyword index and graph export.
+
+`evals/suites/live_xiaomi_13t_answer_quality.json` renders those existing local
+graph-query packets into answer packets and checks the same root/recovery
+context at the agent handoff layer.

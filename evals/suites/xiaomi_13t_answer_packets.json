@@ -1,0 +1,35 @@
+{
+  "schema": "aoa_4pda_answer_eval_suite_v1",
+  "suite_id": "xiaomi-13t-answer-packets",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "sanitized_xiaomi_13t_firmware_html_topic",
+    "html_fixture": "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140"
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-root-recovery-answer-packet",
+      "query": "Xiaomi 13T aristotle recovery.img boot.img Magisk KSU fastboot",
+      "expect": {
+        "top_post_id": "128964413",
+        "answer_kind": "root_recovery",
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "root_action_labels": ["patch boot.img"],
+        "recovery_action_labels": ["flash recovery.img"],
+        "target_file_labels": ["boot.img", "recovery.img"],
+        "tool_labels": ["Magisk", "KSU", "fastboot", "OrangeFox", "TWRP"],
+        "firmware_context_labels": ["HyperOS", "HyperOS 2.0.2"],
+        "answer_text_contains": [
+          "Root actions: patch boot.img.",
+          "Recovery actions: flash recovery.img.",
+          "Target files: boot.img; recovery.img.",
+          "Tools: KSU; Magisk; fastboot; OrangeFox; TWRP.",
+          "Firmware context: HyperOS; HyperOS 2.0.2."
+        ]
+      }
+    }
+  ]
+}
