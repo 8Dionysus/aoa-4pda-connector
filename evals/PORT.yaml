@@ -7,6 +7,7 @@ central_boundary: no verdict, scoring, regression, or proof doctrine authority
 local_authority:
   - connector-specific query suites
   - public-safe synthetic and bounded-fixture cases
+  - named-run live search quality checks over configured storage receipts
   - local runner outputs and compact reports
   - evidence that a connector change preserved expected retrieval behavior
 non_goals:

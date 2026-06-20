@@ -1,0 +1,43 @@
+{
+  "schema": "aoa_4pda_live_search_eval_suite_v1",
+  "suite_id": "live-starter-search-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 5,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_index",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "starter",
+    "notes": "Reads existing configured storage receipts and keyword index for a named run; does not crawl or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "redmi-note-10-pro-boot-image",
+      "query": "Redmi Note 10 Pro TWRP boot.img",
+      "expect": {
+        "top_post_id": "105092172",
+        "top_chunk_ref_prefix": "chunk:1019304:105092172:",
+        "matched_exact_terms_any": ["boot.img"],
+        "matched_specific_terms_any": ["boot.img"],
+        "query_report_specific_terms_all": ["boot.img"],
+        "source_url_contains": "showtopic=1019304",
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "redmi-note-10-recovery-image",
+      "query": "bootloop recovery.img redmi note 10",
+      "expect": {
+        "top_post_id": "105638716",
+        "top_chunk_ref_prefix": "chunk:1021534:105638716:",
+        "matched_exact_terms_any": ["recovery.img"],
+        "matched_specific_terms_any": ["recovery.img"],
+        "query_report_specific_terms_all": ["bootloop", "recovery.img"],
+        "source_url_contains": "showtopic=1021534",
+        "query_report_unit": "chunk"
+      }
+    }
+  ]
+}

@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_graph_query_packets.json",
     "evals/suites/starter_search_quality.json",
+    "evals/suites/live_starter_search_quality.json",
     "docs/ARCHITECTURE.md",
     "docs/INSTALL.md",
     "docs/AGENT_INSTALL_ROUTE.md",
@@ -258,6 +259,7 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_graph_relations.json": "aoa_4pda_graph_eval_suite_v1",
         "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
         "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
+        "live_starter_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
     }
     for suite_name, schema in expected_suites.items():
         suite_path = repo_root / "evals" / "suites" / suite_name

@@ -30,3 +30,5 @@
   inspecting storage and writing a tiny queryable fixture database.
 - Made starter crawls honor `max_pages_per_topic` and write page-distinct
   normalized snapshots instead of overwriting later topic pages.
+- Added `eval live-search-quality` for checking expected top evidence and
+  specific-term matches against an already-built bounded live starter run.

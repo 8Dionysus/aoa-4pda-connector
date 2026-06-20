@@ -102,13 +102,14 @@ heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, and a live starter proof over configured
 storage. It also has a no-network fixture materialization route, local starter
-search and graph eval packs, and checks for expected top evidence, graph entity
-edges, and starter relation edges for tiny public-safe cases. Starter graph
-query packets can enrich top local search results with post-local
-`fixes_issue` and `warns_about` context from the graph. Starter answer packets
-render that graph context into deterministic issue/fix/warning summaries for
-agents. It remains starter-grade: no attachment downloads, no internal 4PDA
-search, no broad section discovery, no vector index, and no full-corpus mode.
+search and graph eval packs, and a live search-quality eval for already-built
+bounded starter runs. The evals check expected top evidence, graph entity edges,
+starter relation edges, and live-run specific-term retrieval. Starter graph
+query packets can enrich top local search results with post-local `fixes_issue`
+and `warns_about` context from the graph. Starter answer packets render that
+graph context into deterministic issue/fix/warning summaries for agents. It
+remains starter-grade: no attachment downloads, no internal 4PDA search, no
+broad section discovery, no vector index, and no full-corpus mode.
 
 ## Local Eval Route
 
@@ -125,8 +126,14 @@ aoa-4pda eval graph-query-packets
 aoa-4pda eval answer-packets
 ```
 
-The command builds a temporary chunk index from synthetic normalized fixtures,
-or temporary index/graph artifacts from a live-shaped HTML fixture, checks
-expected posts, chunks, entity nodes, relation edges, graph-enriched query
-packets, rendered answer packets, source refs, and graph edges, and deletes
-temporary artifacts after the run.
+After a bounded live starter run has been crawled, normalized, and indexed, run
+the live search-quality gate:
+
+```bash
+aoa-4pda eval live-search-quality --run latest
+```
+
+The no-network evals build temporary chunk/index/graph artifacts from synthetic
+or sanitized fixtures and delete them after the run. The live search-quality
+eval reads existing configured storage receipts and the named keyword index; it
+does not crawl, commit generated artifacts, or create central proof verdicts.
