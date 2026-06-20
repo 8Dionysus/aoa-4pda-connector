@@ -62,6 +62,8 @@ aoa-4pda crawl --profile starter
 aoa-4pda normalize --run latest
 aoa-4pda build-index --profile starter
 aoa-4pda build-graph --profile starter
+aoa-4pda proof live-starter --run latest --query "redmi note 10 twrp boot.img"
+aoa-4pda eval live-search-quality --run latest
 aoa-4pda query "redmi note 10 twrp bootloop"
 aoa-4pda query-graph "redmi note 10 twrp bootloop"
 aoa-4pda answer "redmi note 10 twrp bootloop"
@@ -71,3 +73,7 @@ These commands write to configured storage roots, defaulting to ignored
 repo-local `.connector-state/` when no external roots are set. The default
 starter profile remains bounded and conservative, including a small
 `max_pages_per_topic` limit for public topic pagination.
+
+`eval live-search-quality` reads the already-built keyword index for the named
+run. It is a local quality gate over configured storage, not a new crawl and not
+a committed corpus.

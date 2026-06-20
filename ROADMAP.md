@@ -27,6 +27,7 @@
 - evidence packet query route
 - starter graph query packets with post-local relation context
 - starter answer packets rendered from graph-enriched evidence
+- live starter search quality eval over named configured-storage runs
 
 ## Wave 2: Deep Search
 
@@ -35,7 +36,7 @@
 - stronger entity extraction for devices, apps, versions, firmware, warnings,
   and fixes
 - vector search adapter behind an optional dependency
-- retrieval eval expansion against bounded external-storage starter runs
+- broader retrieval eval expansion against bounded external-storage runs
 
 ## Wave 3: Graph Evidence
 

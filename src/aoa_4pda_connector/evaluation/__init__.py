@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 
 from aoa_4pda_connector.answer import render_answer_packet
-from aoa_4pda_connector.config import find_repo_root
+from aoa_4pda_connector.config import StorageRoots, find_repo_root
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
@@ -19,6 +19,7 @@ DEFAULT_SEARCH_EVAL_SUITE = Path("evals/suites/starter_search_quality.json")
 DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
 DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.json")
 DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
+DEFAULT_LIVE_SEARCH_EVAL_SUITE = Path("evals/suites/live_starter_search_quality.json")
 
 
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
@@ -228,6 +229,84 @@ def run_answer_eval_suite(suite_path: Path | None = None, repo_root: Path | None
     }
 
 
+def run_live_search_eval_suite(
+    run: str = "latest",
+    suite_path: Path | None = None,
+    repo_root: Path | None = None,
+    artifact_root: Path | None = None,
+) -> dict[str, object]:
+    """Run a local retrieval eval against an already-built bounded live run."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_LIVE_SEARCH_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    roots = StorageRoots.from_env(root)
+    artifacts = artifact_root or roots.artifact
+    if artifacts is None:
+        raise FileNotFoundError("CONNECTOR_ARTIFACT_ROOT is not configured")
+
+    index_receipt = _load_latest_or_named_receipt(artifacts, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    crawl_receipt = _load_latest_or_named_receipt(artifacts, run_id, "crawl")
+    normalize_receipt = _load_latest_or_named_receipt(artifacts, run_id, "normalize")
+    index_path = Path(str(index_receipt["index_path"]))
+    index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+    case_reports = [
+        _run_live_search_case(case, index_path, int(suite.get("default_limit", 5)))
+        for case in suite.get("cases", [])
+    ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    crawl_counts = crawl_receipt.get("counts", {})
+    normalize_counts = normalize_receipt.get("counts", {})
+    policy = crawl_receipt.get("policy", {})
+    checks = {
+        "policy_preserved": policy.get("allowed_public_only") is True
+        and policy.get("internal_search_used") is False
+        and policy.get("attachments_downloaded") is False,
+        "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
+        "network_limited_to_source_crawl": crawl_receipt.get("network_touched") is True
+        and normalize_receipt.get("network_touched") is False
+        and index_receipt.get("network_touched") is False,
+    }
+    status = "ok" if not failed and all(checks.values()) else "error"
+    return {
+        "schema": "aoa_4pda_live_search_eval_report_v1",
+        "status": status,
+        "suite_id": suite.get("suite_id"),
+        "suite_path": str(path.relative_to(root)),
+        "run_id": run_id,
+        "dataset": suite.get("dataset", {}),
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+            "requested_topics": int(crawl_counts.get("requested_topics", crawl_counts.get("requested", 0))),
+            "requested_pages": int(crawl_counts.get("requested_pages", crawl_counts.get("requested", 0))),
+            "fetched_topics": int(crawl_counts.get("fetched_topics", crawl_counts.get("fetched", 0))),
+            "fetched_pages": int(crawl_counts.get("fetched_pages", crawl_counts.get("fetched", 0))),
+            "normalized_topics": int(normalize_counts.get("topics", 0)),
+            "normalized_pages": int(normalize_counts.get("pages", normalize_counts.get("topics", 0))),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+            "path": str(index_path),
+        },
+        "checks": checks,
+        "network_touched": False,
+        "source_run_network_touched": bool(crawl_receipt.get("network_touched")),
+        "artifact_lifecycle": "read_existing_configured_storage",
+        "cases": case_reports,
+    }
+
+
 def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
     query = str(case.get("query", ""))
     expect = case.get("expect", {})
@@ -252,6 +331,56 @@ def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
         "status": "ok" if all(checks.values()) else "error",
         "query": query,
         "checks": checks,
+        "top_result": top_result,
+    }
+
+
+def _run_live_search_case(case: dict[str, object], index_path: Path, default_limit: int) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    limit = int(case.get("limit", default_limit))
+    packet = query_keyword_index(index_path, query, limit=limit)
+    top_result = packet.get("results", [{}])[0] if packet.get("results") else {}
+    evidence_refs = [str(ref) for ref in top_result.get("evidence_refs", [])]
+    query_report = packet.get("query_report", {})
+    checks = {
+        "top_result_present": bool(top_result),
+        "top_post_id": _optional_equal(top_result.get("post_id"), expect.get("top_post_id")),
+        "top_chunk_ref_prefix": _optional_any_prefix(evidence_refs, expect.get("top_chunk_ref_prefix")),
+        "matched_terms_any": _optional_any_expected(
+            expect.get("matched_terms_any"),
+            top_result.get("matched_terms", []),
+        ),
+        "matched_terms_all": _optional_all_expected(
+            expect.get("matched_terms_all"),
+            top_result.get("matched_terms", []),
+        ),
+        "matched_exact_terms_any": _optional_any_expected(
+            expect.get("matched_exact_terms_any"),
+            top_result.get("matched_exact_terms", []),
+        ),
+        "matched_specific_terms_any": _optional_any_expected(
+            expect.get("matched_specific_terms_any"),
+            top_result.get("matched_specific_terms", []),
+        ),
+        "matched_specific_terms_all": _optional_all_expected(
+            expect.get("matched_specific_terms_all"),
+            top_result.get("matched_specific_terms", []),
+        ),
+        "query_report_specific_terms_all": _optional_all_expected(
+            expect.get("query_report_specific_terms_all"),
+            query_report.get("specific_terms", []),
+        ),
+        "source_url_contains": _optional_contains(top_result.get("source_url"), expect.get("source_url_contains")),
+        "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
+        "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "query_report": query_report,
         "top_result": top_result,
     }
 
@@ -406,6 +535,12 @@ def _resolve_repo_path(repo_root: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo_root / path
 
 
+def _load_latest_or_named_receipt(artifact_root: Path, run: str, kind: str) -> dict[str, object]:
+    receipt_dir = artifact_root / "receipts"
+    path = receipt_dir / f"latest_{kind}.json" if run == "latest" else receipt_dir / f"{run}.{kind}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def _any_prefix(values: list[str], prefix: str) -> bool:
     return bool(prefix) and any(value.startswith(prefix) for value in values)
 
@@ -420,6 +555,26 @@ def _all_expected(expected: object, actual: object) -> bool:
     expected_values = {str(item).lower() for item in expected if str(item)}
     actual_values = {str(item).lower() for item in actual}
     return expected_values.issubset(actual_values)
+
+
+def _optional_equal(actual: object, expected: object) -> bool:
+    return True if expected is None else actual == expected
+
+
+def _optional_contains(actual: object, expected: object) -> bool:
+    return True if expected is None else str(expected) in str(actual)
+
+
+def _optional_any_prefix(values: list[str], prefix: object) -> bool:
+    return True if prefix is None else _any_prefix(values, str(prefix))
+
+
+def _optional_any_expected(expected: object, actual: object) -> bool:
+    return True if expected is None else _any_expected(expected, actual)
+
+
+def _optional_all_expected(expected: object, actual: object) -> bool:
+    return True if expected is None else _all_expected(expected, actual)
 
 
 def _any_source_ref_contains(values: object, needle: str) -> bool:

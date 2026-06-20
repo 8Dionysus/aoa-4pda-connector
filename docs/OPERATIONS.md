@@ -40,6 +40,7 @@ aoa-4pda normalize --run latest
 aoa-4pda build-index --profile starter --run latest
 aoa-4pda build-graph --profile starter --run latest
 aoa-4pda proof live-starter --run latest --query "redmi note 10 twrp bootloop firmware"
+aoa-4pda eval live-search-quality --run latest
 aoa-4pda query "redmi note 10 twrp bootloop firmware"
 aoa-4pda query-graph "redmi note 10 twrp bootloop firmware"
 aoa-4pda answer "redmi note 10 twrp bootloop firmware"
@@ -52,6 +53,10 @@ The starter profile fetches bounded public page offsets per topic according to
 `max_pages_per_topic`. The command path writes raw snapshots, normalized topic
 pages, indexes, graphs, and evidence packets to configured storage roots
 outside Git history.
+
+`eval live-search-quality` is a no-network gate over an existing named run. It
+reads crawl/normalize/index receipts and checks expected top evidence for
+specific technical terms without writing live corpus data to Git.
 
 ## Receipts
 

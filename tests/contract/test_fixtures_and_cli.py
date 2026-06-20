@@ -267,6 +267,103 @@ def test_cli_answer_eval_runs_public_safe_suite():
     assert payload["counts"]["failed"] == 0
 
 
+def test_cli_live_search_eval_checks_named_run_without_network(tmp_path):
+    run_id = "live-search-eval-cli-test"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    normalized_dir = data_root / "normalized" / run_id
+    normalized_dir.mkdir(parents=True)
+    _write_live_search_eval_topics(normalized_dir)
+    index_path = build_keyword_index(normalized_dir, cache_root / "indexes" / run_id, "starter")
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "starter",
+            "policy": {
+                "allowed_public_only": True,
+                "internal_search_used": False,
+                "attachments_downloaded": False,
+            },
+            "counts": {
+                "requested_topics": 2,
+                "requested_pages": 2,
+                "fetched_topics": 2,
+                "fetched_pages": 2,
+                "errors": 0,
+            },
+            "network_touched": True,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "normalize",
+        {
+            "schema": "aoa_4pda_normalize_receipt_v1",
+            "run_id": run_id,
+            "source_run_id": run_id,
+            "counts": {"topics": 2, "pages": 2},
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": run_id,
+            "profile_id": "starter",
+            "source_run_ids": [run_id],
+            "index_kinds": ["keyword"],
+            "index_path": str(index_path),
+            "network_touched": False,
+        },
+    )
+
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "eval",
+            "live-search-quality",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_live_search_eval_report_v1"
+    assert payload["status"] == "ok"
+    assert payload["suite_id"] == "live-starter-search-quality"
+    assert payload["run_id"] == run_id
+    assert payload["network_touched"] is False
+    assert payload["source_run_network_touched"] is True
+    assert payload["counts"]["failed"] == 0
+    assert payload["cases"][0]["checks"]["matched_specific_terms_any"] is True
+
+
 def test_cli_live_starter_proof_checks_named_external_run(tmp_path):
     run_id = "live-proof-test"
     data_root = tmp_path / "data"
@@ -385,3 +482,79 @@ def _write_receipt(receipts_dir: Path, run_id: str, kind: str, payload: dict[str
     encoded = json.dumps(payload, ensure_ascii=False, indent=2)
     (receipts_dir / f"{run_id}.{kind}.json").write_text(encoded, encoding="utf-8")
     (receipts_dir / f"latest_{kind}.json").write_text(encoded, encoding="utf-8")
+
+
+def _write_live_search_eval_topics(normalized_dir: Path) -> None:
+    topics = [
+        {
+            "schema": "aoa_4pda_normalized_topic_v1",
+            "topic_id": "1019304",
+            "page_start": "0",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1019304&st=0",
+            "title": "Redmi Note 10 Pro - TWRP and Root",
+            "captured_at": "2026-06-19T00:00:00Z",
+            "posts": [
+                {
+                    "schema": "aoa_4pda_normalized_post_v1",
+                    "post_id": "105092172",
+                    "topic_id": "1019304",
+                    "source_url": "https://4pda.to/forum/index.php?showtopic=1019304&st=0#entry105092172",
+                    "captured_at": "2026-06-19T00:00:00Z",
+                    "author_label": None,
+                    "posted_at": None,
+                    "text": "Redmi Note 10 Pro root guide. Patch boot.img in Magisk, then use TWRP only when needed.",
+                    "entities": [],
+                },
+                {
+                    "schema": "aoa_4pda_normalized_post_v1",
+                    "post_id": "105092000",
+                    "topic_id": "1019304",
+                    "source_url": "https://4pda.to/forum/index.php?showtopic=1019304&st=0#entry105092000",
+                    "captured_at": "2026-06-19T00:00:00Z",
+                    "author_label": None,
+                    "posted_at": None,
+                    "text": "Redmi Note 10 Pro discussion. Redmi Note 10 Pro firmware overview and common topic index.",
+                    "entities": [],
+                },
+            ],
+        },
+        {
+            "schema": "aoa_4pda_normalized_topic_v1",
+            "topic_id": "1021534",
+            "page_start": "0",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1021534&st=0",
+            "title": "Redmi Note 10 - Recovery",
+            "captured_at": "2026-06-19T00:00:00Z",
+            "posts": [
+                {
+                    "schema": "aoa_4pda_normalized_post_v1",
+                    "post_id": "105638716",
+                    "topic_id": "1021534",
+                    "source_url": "https://4pda.to/forum/index.php?showtopic=1021534&st=0#entry105638716",
+                    "captured_at": "2026-06-19T00:00:00Z",
+                    "author_label": None,
+                    "posted_at": None,
+                    "text": (
+                        "If bootloop appears, use fastboot flash recovery recovery.img, "
+                        "then fastboot boot recovery.img."
+                    ),
+                    "entities": [],
+                },
+                {
+                    "schema": "aoa_4pda_normalized_post_v1",
+                    "post_id": "105638000",
+                    "topic_id": "1021534",
+                    "source_url": "https://4pda.to/forum/index.php?showtopic=1021534&st=0#entry105638000",
+                    "captured_at": "2026-06-19T00:00:00Z",
+                    "author_label": None,
+                    "posted_at": None,
+                    "text": "Redmi Note 10 Redmi Note 10 firmware news and topic navigation.",
+                    "entities": [],
+                },
+            ],
+        },
+    ]
+    for topic in topics:
+        (normalized_dir / f"topic-{topic['topic_id']}-st0.json").write_text(
+            json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+        )

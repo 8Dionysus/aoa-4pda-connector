@@ -36,6 +36,8 @@ Use this when a user asks an agent to install the connector.
     small `--max-topics` value first.
 20. After a starter crawl, run `normalize`, `build-index`, `build-graph`, and
     `proof live-starter` sequentially against the same run.
+21. Run `aoa-4pda eval live-search-quality --run <run-id>` only after that
+    named live run has an index receipt.
 
 ## Do Not
 
@@ -45,3 +47,5 @@ Use this when a user asks an agent to install the connector.
   as ignored local state
 - do not run full-public profile without explicit policy and storage review
 - do not parallelize dependent live-run stages that consume prior receipts
+- do not treat `eval live-search-quality` as permission to crawl; it reads an
+  existing run only

@@ -79,6 +79,13 @@ chunk refs, exact-term matches, source URLs, query report unit, and the
 internal-search boundary. The report is connector-local evidence, not a central
 `aoa-evals` verdict.
 
+`aoa-4pda eval live-search-quality --run <run-id>` runs
+`evals/suites/live_starter_search_quality.json` against an already-built
+bounded live starter run. It reads configured storage receipts and the keyword
+index for the named run, then checks expected top posts, source URLs, exact
+terms, specific-term reporting, and the internal-search boundary. It does not
+crawl, rebuild a corpus, or commit generated artifacts.
+
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local
 index and graph artifacts from the sanitized live-shaped fixture and checks
