@@ -39,6 +39,7 @@ REQUIRED_FILES = [
     "evals/suites/starter_search_quality.json",
     "evals/suites/live_starter_search_quality.json",
     "evals/suites/live_xiaomi_13t_search_quality.json",
+    "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
     "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
     "docs/ARCHITECTURE.md",

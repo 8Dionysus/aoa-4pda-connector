@@ -159,9 +159,11 @@ For a Xiaomi 13T run, use the focused suite:
 
 ```bash
 aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
+aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
 ```
 
 The no-network evals build temporary chunk/index/graph artifacts from synthetic
 or sanitized fixtures and delete them after the run. The live search-quality
-eval reads existing configured storage receipts and the named keyword index; it
-does not crawl, commit generated artifacts, or create central proof verdicts.
+and live graph-query evals read existing configured storage receipts and named
+keyword/graph artifacts; they do not crawl, commit generated artifacts, or
+create central proof verdicts.

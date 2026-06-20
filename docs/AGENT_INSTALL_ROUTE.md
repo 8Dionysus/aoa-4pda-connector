@@ -38,6 +38,8 @@ Use this when a user asks an agent to install the connector.
     `proof live-starter` sequentially against the same run.
 21. Run `aoa-4pda eval live-search-quality --run <run-id>` only after that
     named live run has an index receipt.
+22. For a Xiaomi 13T run with a graph receipt, run
+    `aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json`.
 
 ## Do Not
 
@@ -49,3 +51,5 @@ Use this when a user asks an agent to install the connector.
 - do not parallelize dependent live-run stages that consume prior receipts
 - do not treat `eval live-search-quality` as permission to crawl; it reads an
   existing run only
+- do not treat `eval live-graph-query-quality` as permission to crawl or
+  rebuild a corpus; it reads existing index and graph receipts only

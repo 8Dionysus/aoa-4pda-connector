@@ -113,6 +113,16 @@ aoa-4pda build-graph --profile starter --run latest
 aoa-4pda proof live-starter --run latest --query "Redmi Note 10 Pro TWRP boot.img"
 ```
 
+For an already-built Xiaomi 13T focused run, use the matching graph-query gate:
+
+```bash
+aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
+```
+
+That eval reads configured crawl, normalize, index, and graph receipts and
+checks that cited root/recovery relation context survives into `query-graph`
+packets. It does not crawl, rebuild a corpus, or commit generated artifacts.
+
 Do not parallelize `normalize`, `build-index`, and `build-graph`; each stage
 depends on the receipt written by the previous stage. A successful live starter
 proof checks:

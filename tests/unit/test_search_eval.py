@@ -7,10 +7,13 @@ from aoa_4pda_connector.evaluation import (
     run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
+    run_live_graph_query_eval_suite,
     run_live_search_eval_suite,
     run_search_eval_suite,
 )
+from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
+from aoa_4pda_connector.normalize import extract_entities
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -193,6 +196,108 @@ def test_live_search_eval_suite_checks_named_run_without_network(tmp_path):
     assert sweet_case["checks"]["query_report_technical_terms_all"] is True
 
 
+def test_live_graph_query_eval_suite_checks_named_run_without_network(tmp_path):
+    run_id = "live-graph-query-eval-test"
+    artifact_root = tmp_path / "artifacts"
+    normalized_dir = tmp_path / "data" / "normalized" / run_id
+    normalized_dir.mkdir(parents=True)
+    _write_live_graph_query_eval_topics(normalized_dir)
+    index_path = build_keyword_index(normalized_dir, tmp_path / "cache" / "indexes" / run_id, "xiaomi-13t")
+    graph_path = build_graph(normalized_dir, artifact_root / "graphs" / run_id, "xiaomi-13t")
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "policy": {
+                "allowed_public_only": True,
+                "internal_search_used": False,
+                "attachments_downloaded": False,
+            },
+            "counts": {
+                "requested_topics": 1,
+                "requested_pages": 1,
+                "fetched_topics": 1,
+                "fetched_pages": 1,
+                "errors": 0,
+            },
+            "network_touched": True,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "normalize",
+        {
+            "schema": "aoa_4pda_normalize_receipt_v1",
+            "run_id": run_id,
+            "source_run_id": run_id,
+            "counts": {"topics": 1, "pages": 1},
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "source_run_ids": [run_id],
+            "index_kinds": ["keyword"],
+            "index_path": str(index_path),
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "graph",
+        {
+            "schema": "aoa_4pda_graph_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "graph_path": str(graph_path),
+            "network_touched": False,
+        },
+    )
+
+    report = run_live_graph_query_eval_suite(
+        run_id,
+        REPO_ROOT / "evals/suites/live_xiaomi_13t_graph_query_quality.json",
+        REPO_ROOT,
+        artifact_root,
+    )
+
+    assert report["schema"] == "aoa_4pda_live_graph_query_eval_report_v1"
+    assert report["suite_id"] == "live-xiaomi-13t-graph-query-quality"
+    assert report["status"] == "ok"
+    assert report["run_id"] == run_id
+    assert report["network_touched"] is False
+    assert report["source_run_network_touched"] is True
+    assert report["artifact_lifecycle"] == "read_existing_configured_storage"
+    assert report["owner_boundary"]["proof_owner_repo"] == "aoa-evals"
+    assert report["checks"]["policy_preserved"] is True
+    assert report["checks"]["profile_matches"] is True
+    assert report["checks"]["graph_has_relation_edges"] is True
+    assert report["counts"]["cases"] == 2
+    assert report["counts"]["failed"] == 0
+
+    recovery_case = report["cases"][0]
+    assert recovery_case["checks"]["top_post_id"] is True
+    assert recovery_case["checks"]["expected_relation_edges_present"] is True
+    assert recovery_case["checks"]["source_refs_preserved"] is True
+    root_case = report["cases"][1]
+    assert root_case["checks"]["top_post_id"] is True
+    assert root_case["checks"]["graph_report_relation_edge_kinds_all"] is True
+
+
 def _write_live_search_eval_topics(normalized_dir: Path) -> None:
     topics = [
         {
@@ -267,6 +372,54 @@ def _write_live_search_eval_topics(normalized_dir: Path) -> None:
         (normalized_dir / f"topic-{topic['topic_id']}-st0.json").write_text(
             json.dumps(topic, ensure_ascii=False), encoding="utf-8"
         )
+
+
+def _write_live_graph_query_eval_topics(normalized_dir: Path) -> None:
+    posts = [
+        {
+            "post_id": "128964413",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+            "text": (
+                "Xiaomi 13T aristotle на HyperOS. Сама TWRP: "
+                "twrp-3.7.1_A13-5.10.136-vendor_boot-aristotle.img. "
+                "Родной recovery от стоковой прошивки: recovery.img. "
+                "Прошить recovery.img можно через fastboot."
+            ),
+        },
+        {
+            "post_id": "128449684",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=1820#entry128449684",
+            "text": (
+                "Xiaomi 13T 2306EPN60G HyperOS: чтобы установить Magisk, "
+                "нужно пропатчить через boot_installer boot.img."
+            ),
+        },
+    ]
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "1076859",
+        "page_start": "2140",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-20T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": post["post_id"],
+                "topic_id": "1076859",
+                "source_url": post["source_url"],
+                "captured_at": "2026-06-20T00:00:00Z",
+                "author_label": None,
+                "posted_at": None,
+                "text": post["text"],
+                "entities": extract_entities(post["text"]),
+            }
+            for post in posts
+        ],
+    }
+    (normalized_dir / "topic-1076859-st2140.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
 
 
 def _write_receipt(receipts_dir: Path, run_id: str, kind: str, payload: dict[str, object]) -> None:

@@ -43,3 +43,6 @@
 - Added focused Xiaomi 13T entity extraction v2 for model/codename/HyperOS,
   root/recovery actions, image files, Magisk/KSU/TWRP/OrangeFox/fastboot
   evidence, plus a public-safe graph relation eval suite.
+- Added a receipt-driven Xiaomi 13T live graph-query quality eval that checks
+  root/recovery relation context over existing configured-storage index and
+  graph artifacts without recrawling.

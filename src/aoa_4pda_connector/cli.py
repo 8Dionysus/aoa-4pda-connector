@@ -16,11 +16,13 @@ from aoa_4pda_connector.evaluation import (
     DEFAULT_ANSWER_EVAL_SUITE,
     DEFAULT_GRAPH_EVAL_SUITE,
     DEFAULT_GRAPH_QUERY_EVAL_SUITE,
+    DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE,
     DEFAULT_LIVE_SEARCH_EVAL_SUITE,
     DEFAULT_SEARCH_EVAL_SUITE,
     run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
+    run_live_graph_query_eval_suite,
     run_live_search_eval_suite,
     run_search_eval_suite,
 )
@@ -150,6 +152,13 @@ def build_parser() -> argparse.ArgumentParser:
     live_search_quality.add_argument("--suite", default=str(DEFAULT_LIVE_SEARCH_EVAL_SUITE))
     live_search_quality.add_argument("--run", default="latest")
     live_search_quality.set_defaults(func=cmd_eval_live_search_quality)
+    live_graph_query_quality = eval_sub.add_parser(
+        "live-graph-query-quality",
+        help="Run graph-query quality eval against an already-built bounded live run.",
+    )
+    live_graph_query_quality.add_argument("--suite", default=str(DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE))
+    live_graph_query_quality.add_argument("--run", default="latest")
+    live_graph_query_quality.set_defaults(func=cmd_eval_live_graph_query_quality)
     graph_relations = eval_sub.add_parser("graph-relations", help="Run the starter graph relation eval.")
     graph_relations.add_argument("--suite", default=str(DEFAULT_GRAPH_EVAL_SUITE))
     graph_relations.set_defaults(func=cmd_eval_graph_relations)
@@ -363,6 +372,7 @@ def cmd_profile_inspect(args: argparse.Namespace) -> int:
             },
             "quality_gates": {
                 "live_search_suite": profile.get("live_search_suite"),
+                "live_graph_query_suite": profile.get("live_graph_query_suite"),
             },
             "seed": {
                 "path": str(profile.get("seed_file")),
@@ -906,6 +916,29 @@ def cmd_eval_live_search_quality(args: argparse.Namespace) -> int:
     return 0 if report.get("status") == "ok" else 1
 
 
+def cmd_eval_live_graph_query_quality(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env(find_repo_root())
+    error = _require_roots(roots, ["artifact"])
+    if error:
+        return error
+    try:
+        report = run_live_graph_query_eval_suite(args.run, Path(args.suite), find_repo_root(), roots.artifact)
+    except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_live_graph_query_eval_error_v1",
+                "status": "error",
+                "run": args.run,
+                "suite": args.suite,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
 def cmd_eval_graph_relations(args: argparse.Namespace) -> int:
     report = run_graph_eval_suite(Path(args.suite), find_repo_root())
     _emit(report)
@@ -973,6 +1006,7 @@ def _read_profile(repo_root: Path, profile_id: str) -> dict[str, object]:
         "seed_file",
         "allowlist_manifest",
         "live_search_suite",
+        "live_graph_query_suite",
     }
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
