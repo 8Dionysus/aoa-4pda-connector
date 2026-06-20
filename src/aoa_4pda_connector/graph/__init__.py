@@ -73,6 +73,7 @@ def build_graph(normalized_dir: Path, output_dir: Path, profile_id: str = "start
                     }
                 )
             _append_relation_edges(edges, post_node, entities, source_url)
+            _append_xiaomi_relation_edges(edges, post_node, entities, source_url)
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / "graph.json"
     payload = {
@@ -118,6 +119,95 @@ def _append_relation_edges(
                 post_node,
                 source_url,
                 0.45,
+            )
+
+
+def _append_xiaomi_relation_edges(
+    edges: list[dict[str, object]],
+    post_node: str,
+    entities: list[dict[str, object]],
+    source_url: object,
+) -> None:
+    root_actions = _entities_by_kind(entities, "root_action")
+    recovery_actions = _entities_by_kind(entities, "recovery_action")
+    files = _entities_by_kind(entities, "file")
+    tools = _entities_by_kind(entities, "tool")
+    firmware = [
+        *(_entities_by_kind(entities, "firmware_family")),
+        *(_entities_by_kind(entities, "firmware_version")),
+        *(_entities_by_kind(entities, "build_id")),
+    ]
+    root_tools = {"Magisk", "KSU"}
+    recovery_tools = {"fastboot", "TWRP", "OrangeFox"}
+
+    for action in root_actions:
+        action_text = str(action.get("value", "")).casefold()
+        for file_entity in files:
+            if str(file_entity.get("value", "")).casefold() in action_text:
+                _append_edge(
+                    edges,
+                    "root_targets_file",
+                    _entity_node_id(action),
+                    _entity_node_id(file_entity),
+                    post_node,
+                    source_url,
+                    0.5,
+                )
+        for tool in tools:
+            if tool.get("value") in root_tools:
+                _append_edge(
+                    edges,
+                    "root_uses_tool",
+                    _entity_node_id(action),
+                    _entity_node_id(tool),
+                    post_node,
+                    source_url,
+                    0.45,
+                )
+        for firmware_entity in firmware:
+            _append_edge(
+                edges,
+                "root_mentions_firmware",
+                _entity_node_id(action),
+                _entity_node_id(firmware_entity),
+                post_node,
+                source_url,
+                0.35,
+            )
+
+    for action in recovery_actions:
+        action_text = str(action.get("value", "")).casefold()
+        for file_entity in files:
+            if str(file_entity.get("value", "")).casefold() in action_text:
+                _append_edge(
+                    edges,
+                    "recovery_targets_file",
+                    _entity_node_id(action),
+                    _entity_node_id(file_entity),
+                    post_node,
+                    source_url,
+                    0.5,
+                )
+        for tool in tools:
+            if tool.get("value") in recovery_tools:
+                _append_edge(
+                    edges,
+                    "recovery_uses_tool",
+                    _entity_node_id(action),
+                    _entity_node_id(tool),
+                    post_node,
+                    source_url,
+                    0.45,
+                )
+        for firmware_entity in firmware:
+            _append_edge(
+                edges,
+                "recovery_mentions_firmware",
+                _entity_node_id(action),
+                _entity_node_id(firmware_entity),
+                post_node,
+                source_url,
+                0.35,
             )
 
 

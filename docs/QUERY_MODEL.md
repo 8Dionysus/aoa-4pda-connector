@@ -12,9 +12,9 @@ The connector should answer through local evidence packets.
 - entity search for devices, apps, firmware, versions, issues, fixes, warnings
 - graph traversal for relations between topics, posts, fixes, and warnings
 
-Entity extraction v1 currently covers devices, codenames, firmware families,
-firmware versions, build IDs, tools, files, issues, fixes, and warnings through
-local heuristics.
+Entity extraction currently covers devices, device models, codenames, firmware
+families, firmware versions, build IDs, tools, files, root actions, recovery
+actions, issues, fixes, and warnings through local heuristics.
 
 ## Local Scoring
 
@@ -50,8 +50,10 @@ each result.
 The starter graph context is post-local:
 
 - `entity_node_ids` lists entities mentioned by the matched post.
-- `relation_edges` includes source-ref-matching `fixes_issue` and
-  `warns_about` edges touching those entities.
+- `relation_edges` includes source-ref-matching relation edges touching those
+  entities. The starter relation set includes `fixes_issue`, `warns_about`,
+  root action edges to files/tools/firmware, and recovery action edges to
+  files/tools/firmware.
 - `issues`, `fixes`, `warnings`, and `warned_targets` summarize the graph
   nodes needed to answer "what fixes this?" and "what is this warning about?"
 
@@ -103,6 +105,12 @@ configured local storage only.
 index and graph artifacts from the sanitized live-shaped fixture and checks
 that graph-enriched query packets preserve expected relation context and source
 refs without touching the network.
+
+`aoa-4pda eval graph-relations --suite evals/suites/xiaomi_13t_graph_relations.json`
+runs the focused Xiaomi 13T graph suite. It checks that sanitized firmware
+fixture evidence yields Xiaomi 13T, model number, codename, HyperOS, Magisk/KSU,
+TWRP/OrangeFox/fastboot, boot/recovery image nodes, and root/recovery relation
+edges in the graph export.
 
 `aoa-4pda eval answer-packets` runs
 `evals/suites/starter_answer_packets.json`. It checks that deterministic answer

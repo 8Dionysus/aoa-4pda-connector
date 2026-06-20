@@ -38,6 +38,9 @@
   - starter technical token aliases for split file/version/model forms
 - stronger entity extraction for devices, apps, versions, firmware, warnings,
   and fixes
+  - focused Xiaomi 13T extraction for model numbers, codenames, HyperOS
+    versions, root actions, recovery actions, image files, and
+    Magisk/KSU/TWRP/OrangeFox/fastboot evidence
 - vector search adapter behind an optional dependency
 - broader retrieval eval expansion against bounded external-storage runs
 

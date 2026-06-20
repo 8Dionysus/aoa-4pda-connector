@@ -40,3 +40,6 @@
 - Added seed-window crawl support for preserving source `st=` offsets and
   per-seed page limits, then used it for high-signal Xiaomi 13T firmware
   windows.
+- Added focused Xiaomi 13T entity extraction v2 for model/codename/HyperOS,
+  root/recovery actions, image files, Magisk/KSU/TWRP/OrangeFox/fastboot
+  evidence, plus a public-safe graph relation eval suite.

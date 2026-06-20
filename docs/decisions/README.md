@@ -21,3 +21,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0012` | [Live starter search quality eval](AOA-4PDA-D-0012-live-starter-search-quality-eval.md) |
 | `AOA-4PDA-D-0013` | [Technical token normalization](AOA-4PDA-D-0013-technical-token-normalization.md) |
 | `AOA-4PDA-D-0014` | [Focused Xiaomi 13T profile](AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md) |
+| `AOA-4PDA-D-0015` | [Xiaomi entity extraction v2](AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md) |

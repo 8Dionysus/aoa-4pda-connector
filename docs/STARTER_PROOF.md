@@ -68,6 +68,12 @@ sanitized live-shaped HTML fixture, verifies expected issue/fix/warning entity
 nodes, post-to-entity graph edges, `fixes_issue` edges, and `warns_about`
 edges, and deletes temporary graph artifacts after the run.
 
+`aoa-4pda eval graph-relations --suite evals/suites/xiaomi_13t_graph_relations.json`
+is the focused Xiaomi 13T graph-quality check. It uses a public-safe firmware
+fixture and verifies expected device, model, codename, HyperOS, tool, image
+file, root-action, recovery-action, and relation-edge evidence without touching
+the network.
+
 `aoa-4pda eval graph-query-packets` is the companion graph-answer check. It
 uses the same sanitized live-shaped fixture, builds temporary local index and
 graph artifacts, runs a graph-enriched query packet, and verifies that expected
