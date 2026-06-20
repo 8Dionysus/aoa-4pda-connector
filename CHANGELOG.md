@@ -32,3 +32,5 @@
   normalized snapshots instead of overwriting later topic pages.
 - Added `eval live-search-quality` for checking expected top evidence and
   specific-term matches against an already-built bounded live starter run.
+- Added technical token normalization for split file names, firmware versions,
+  separated model strings, and starter device aliases such as `sweet`.

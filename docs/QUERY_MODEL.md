@@ -23,10 +23,15 @@ The starter query path uses `bm25_exact_v1`:
 - split normalized posts into deterministic overlapping evidence chunks
 - tokenize public topic titles and post text with Cyrillic/Latin/digit support
 - preserve dotted and dashed technical tokens such as `boot.img`
+- add starter technical aliases for split forms such as `boot img`,
+  `recovery img`, `V 14 0 7 0`, separated model strings such as `SM G991B`,
+  and device aliases such as `sweet` for `Redmi Note 10 Pro`
 - compute BM25 over the local chunk inverted index
 - boost exact terms and exact model/version phrases
 - return matched terms, matched exact terms, matched phrases, and score
   breakdowns in the evidence packet
+- report derived aliases as `technical_terms` so evals can check normalization
+  separately from top-result rank
 - build snippets around the first matched query term instead of always cutting
   from the beginning of the post or chunk
 - return `chunk_id`, `chunk_index`, source character offsets, and both
@@ -83,8 +88,9 @@ internal-search boundary. The report is connector-local evidence, not a central
 `evals/suites/live_starter_search_quality.json` against an already-built
 bounded live starter run. It reads configured storage receipts and the keyword
 index for the named run, then checks expected top posts, source URLs, exact
-terms, specific-term reporting, and the internal-search boundary. It does not
-crawl, rebuild a corpus, or commit generated artifacts.
+terms, specific-term reporting, technical-term normalization, and the
+internal-search boundary. It does not crawl, rebuild a corpus, or commit
+generated artifacts.
 
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local

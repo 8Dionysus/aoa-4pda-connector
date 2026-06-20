@@ -100,11 +100,12 @@ Starter pipeline is available: offline fixture proof, bounded public topic
 crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
 heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
-cleanup, chunk-level evidence search, and a live starter proof over configured
-storage. It also has a no-network fixture materialization route, local starter
-search and graph eval packs, and a live search-quality eval for already-built
-bounded starter runs. The evals check expected top evidence, graph entity edges,
-starter relation edges, and live-run specific-term retrieval. Starter graph
+cleanup, chunk-level evidence search, technical token aliases, and a live
+starter proof over configured storage. It also has a no-network fixture
+materialization route, local starter search and graph eval packs, and a live
+search-quality eval for already-built bounded starter runs. The evals check
+expected top evidence, graph entity edges, starter relation edges, split
+file/version normalization, and live-run specific-term retrieval. Starter graph
 query packets can enrich top local search results with post-local `fixes_issue`
 and `warns_about` context from the graph. Starter answer packets render that
 graph context into deterministic issue/fix/warning summaries for agents. It
