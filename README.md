@@ -121,17 +121,17 @@ heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
 cleanup, chunk-level evidence search, technical token aliases, a concrete
 Xiaomi 13T focused-device profile, and a live starter proof over configured
-storage. It also has a no-network fixture
-materialization route, local starter search and graph eval packs, and a live
-search-quality eval for already-built bounded starter and Xiaomi 13T runs. The
-evals check expected top evidence, graph entity edges, starter relation edges,
-split file/version/model normalization, and live-run specific-term retrieval.
-Starter graph
-query packets can enrich top local search results with post-local `fixes_issue`
-and `warns_about` context from the graph. Starter answer packets render that
-graph context into deterministic issue/fix/warning summaries for agents. It
-remains starter-grade: no attachment downloads, no internal 4PDA search, no
-broad section discovery, no vector index, and no full-corpus mode.
+storage. It also has a no-network fixture materialization route, local starter
+search/graph/answer eval packs, and live quality evals for already-built
+bounded starter and Xiaomi 13T runs. The evals check expected top evidence,
+graph entity edges, starter relation edges, split file/version/model
+normalization, live-run specific-term retrieval, and Xiaomi root/recovery
+answer labels. Starter graph query packets can enrich top local search results
+with post-local `fixes_issue`, `warns_about`, root, recovery, file, tool, and
+firmware context from the graph. Starter answer packets render that graph
+context into deterministic issue/fix/warning and root/recovery summaries for
+agents. It remains starter-grade: no attachment downloads, no internal 4PDA
+search, no broad section discovery, no vector index, and no full-corpus mode.
 
 ## Local Eval Route
 
@@ -146,6 +146,7 @@ aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
 aoa-4pda eval answer-packets
+aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
 ```
 
 After a bounded live starter run has been crawled, normalized, and indexed, run
@@ -160,10 +161,11 @@ For a Xiaomi 13T run, use the focused suite:
 ```bash
 aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
 aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
+aoa-4pda eval live-answer-quality --run latest --suite evals/suites/live_xiaomi_13t_answer_quality.json
 ```
 
 The no-network evals build temporary chunk/index/graph artifacts from synthetic
-or sanitized fixtures and delete them after the run. The live search-quality
-and live graph-query evals read existing configured storage receipts and named
-keyword/graph artifacts; they do not crawl, commit generated artifacts, or
-create central proof verdicts.
+or sanitized fixtures and delete them after the run. The live search,
+graph-query, and answer evals read existing configured storage receipts and
+named keyword/graph artifacts; they do not crawl, commit generated artifacts,
+or create central proof verdicts.

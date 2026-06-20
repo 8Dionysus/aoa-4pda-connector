@@ -79,6 +79,8 @@ run. It is a local quality gate over configured storage, not a new crawl and not
 a committed corpus.
 
 For focused Xiaomi 13T runs, `eval live-graph-query-quality --run <run-id>
---suite evals/suites/live_xiaomi_13t_graph_query_quality.json` also reads the
+--suite evals/suites/live_xiaomi_13t_graph_query_quality.json` reads the
 already-built graph export and checks root/recovery relation context in local
-`query-graph` packets.
+`query-graph` packets. `eval live-answer-quality --run <run-id> --suite
+evals/suites/live_xiaomi_13t_answer_quality.json` checks the deterministic
+answer packet rendered from that same configured storage.

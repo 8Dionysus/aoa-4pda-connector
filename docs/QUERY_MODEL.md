@@ -69,6 +69,9 @@ not an LLM:
 
 - `issue_labels`, `fix_labels`, `warning_labels`, and
   `warned_target_labels` are copied from `graph_context`.
+- `root_action_labels`, `recovery_action_labels`, `target_file_labels`,
+  `tool_labels`, and `firmware_context_labels` are derived from cited
+  root/recovery relation edges when present.
 - `answer_text` is a short reproducible summary of those labels.
 - `source_url`, `evidence_refs`, score details, and source refs remain attached
   to each answer.
@@ -108,6 +111,12 @@ such as `root_targets_file`, `root_uses_tool`, `recovery_targets_file`, and
 `recovery_uses_tool`. It does not crawl, rebuild the corpus, use 4PDA internal
 search, or commit generated artifacts.
 
+`aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json`
+runs the focused Xiaomi 13T answer gate against the same existing receipts. It
+renders local graph-query packets into answer packets and checks that
+root/recovery actions, target files, tools, firmware context, source refs, and
+the internal-search boundary survive the answer renderer.
+
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local
 index and graph artifacts from the sanitized live-shaped fixture and checks
@@ -124,6 +133,11 @@ edges in the graph export.
 `evals/suites/starter_answer_packets.json`. It checks that deterministic answer
 packets preserve expected issue/fix/warning labels, source refs, and the
 internal-search boundary.
+
+`aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json`
+runs the focused public-safe answer suite over the sanitized Xiaomi 13T fixture.
+It checks deterministic root/recovery/file/tool/firmware labels without using
+network or committing generated artifacts.
 
 ## Answer Contract
 

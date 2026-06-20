@@ -40,6 +40,9 @@ Use this when a user asks an agent to install the connector.
     named live run has an index receipt.
 22. For a Xiaomi 13T run with a graph receipt, run
     `aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json`.
+23. Then run
+    `aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json`
+    to verify deterministic answer packets over the same stored run.
 
 ## Do Not
 
@@ -53,3 +56,5 @@ Use this when a user asks an agent to install the connector.
   existing run only
 - do not treat `eval live-graph-query-quality` as permission to crawl or
   rebuild a corpus; it reads existing index and graph receipts only
+- do not treat `eval live-answer-quality` as permission to crawl or rebuild a
+  corpus; it renders answers from existing index and graph receipts only

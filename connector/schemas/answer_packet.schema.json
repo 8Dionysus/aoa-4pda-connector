@@ -13,7 +13,7 @@
       "type": "object",
       "required": ["renderer", "source_packet_id", "source_packet_schema"],
       "properties": {
-        "renderer": { "const": "starter_graph_context_v1" },
+        "renderer": { "enum": ["starter_graph_context_v1", "starter_graph_context_v2"] },
         "source_packet_id": { "type": ["string", "null"] },
         "source_packet_schema": { "type": ["string", "null"] },
         "query_algorithm": { "type": ["string", "null"] },
@@ -37,6 +37,11 @@
           "fix_labels": { "type": "array", "items": { "type": "string" } },
           "warning_labels": { "type": "array", "items": { "type": "string" } },
           "warned_target_labels": { "type": "array", "items": { "type": "string" } },
+          "root_action_labels": { "type": "array", "items": { "type": "string" } },
+          "recovery_action_labels": { "type": "array", "items": { "type": "string" } },
+          "target_file_labels": { "type": "array", "items": { "type": "string" } },
+          "tool_labels": { "type": "array", "items": { "type": "string" } },
+          "firmware_context_labels": { "type": "array", "items": { "type": "string" } },
           "evidence_refs": { "type": "array", "items": { "type": "string" } },
           "source_refs": { "type": "array", "items": { "type": ["string", "null"] } },
           "confidence": { "type": "object" }

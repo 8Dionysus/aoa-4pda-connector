@@ -46,3 +46,6 @@
 - Added a receipt-driven Xiaomi 13T live graph-query quality eval that checks
   root/recovery relation context over existing configured-storage index and
   graph artifacts without recrawling.
+- Added root/recovery answer packet rendering with public-safe Xiaomi 13T
+  answer eval coverage and a receipt-driven live answer-quality gate over
+  existing configured-storage index and graph artifacts.
