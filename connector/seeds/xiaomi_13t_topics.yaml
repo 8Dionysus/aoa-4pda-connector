@@ -1,0 +1,67 @@
+schema: aoa_4pda_seed_list_v1
+seed_id: xiaomi-13t-topics
+description: Bounded public seed set for Xiaomi 13T focused-device runs. Found through external web search, not 4PDA internal search.
+network_default: disabled
+target_device_id: xiaomi-13t
+target_label: Xiaomi 13T
+target_codename: aristotle
+target_model_aliases: 2306EPN60G, 2306EPN60R, XIG04
+source_discovery:
+  method: external_web_search
+  checked_at: 2026-06-20
+  internal_4pda_search_used: false
+topics:
+  - id: xiaomi-13t-discussion
+    url: https://4pda.to/forum/index.php?showtopic=1074451
+    label: Xiaomi 13T - discussion
+    status: public_topic_seed
+    focus: device_discussion
+    max_pages: 4
+  - id: xiaomi-13t-firmware
+    url: https://4pda.to/forum/index.php?showtopic=1076859
+    label: Xiaomi 13T - firmware
+    status: public_topic_seed
+    focus: firmware_root_tools_recovery
+    max_pages: 4
+  - id: xiaomi-13t-firmware-boot-recovery-1800
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=1800
+    label: Xiaomi 13T - firmware boot/recovery window
+    status: public_topic_seed
+    focus: boot_img_recovery_extract
+    max_pages: 2
+  - id: xiaomi-13t-firmware-recovery-2140
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=2140
+    label: Xiaomi 13T - recovery.img window
+    status: public_topic_seed
+    focus: recovery_img_restore
+    max_pages: 2
+  - id: xiaomi-13t-firmware-boot-3580
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=3580
+    label: Xiaomi 13T - boot.img window
+    status: public_topic_seed
+    focus: boot_img_magisk
+    max_pages: 2
+  - id: xiaomi-13t-firmware-hyperos-boot-5400
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=5400
+    label: Xiaomi 13T - HyperOS boot.img window
+    status: public_topic_seed
+    focus: hyperos_boot_img
+    max_pages: 2
+  - id: xiaomi-13t-firmware-current-recovery-6780
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=6780
+    label: Xiaomi 13T - current recovery/TWRP window
+    status: public_topic_seed
+    focus: twrp_orangefox_current
+    max_pages: 2
+  - id: xiaomi-13t-battery
+    url: https://4pda.to/forum/index.php?showtopic=1078716
+    label: Xiaomi 13T - battery life
+    status: public_topic_seed
+    focus: power_notifications_runtime_issues
+    max_pages: 2
+  - id: xiaomi-13t-accessories
+    url: https://4pda.to/forum/index.php?showtopic=1076961
+    label: Xiaomi 13T - accessories
+    status: public_topic_seed
+    focus: accessories_peripherals_compatibility
+    max_pages: 2

@@ -38,6 +38,7 @@ python -m pytest -q
 aoa-4pda doctor
 aoa-4pda storage status
 aoa-4pda policy check
+aoa-4pda profile inspect xiaomi-13t
 aoa-4pda proof starter
 aoa-4pda materialize fixture
 aoa-4pda eval search-quality
@@ -69,9 +70,11 @@ This creates or confirms:
 For larger runs, override the roots with external storage:
 
 ```bash
-export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
+export CONNECTOR_FAMILY_ROOT=/path/to/connector-databases
+export CONNECTOR_INSTANCE_ROOT="$CONNECTOR_FAMILY_ROOT/aoa-4pda-connector"
+export CONNECTOR_DATA_ROOT="$CONNECTOR_INSTANCE_ROOT/data"
+export CONNECTOR_CACHE_ROOT="$CONNECTOR_INSTANCE_ROOT/cache"
+export CONNECTOR_ARTIFACT_ROOT="$CONNECTOR_INSTANCE_ROOT/artifacts"
 ```
 
 The `.connector-state/` scaffold is tracked, but generated content inside it is
@@ -83,6 +86,22 @@ To create a tiny no-network local database for smoke testing:
 aoa-4pda materialize fixture
 aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 ```
+
+## Focused Device Route
+
+The first focused-device profile is Xiaomi 13T:
+
+```bash
+aoa-4pda profile inspect xiaomi-13t
+```
+
+The profile uses `connector/seeds/xiaomi_13t_topics.yaml` and starts from
+public seed windows for discussion, firmware, battery/runtime issues, and
+accessories. Firmware seeds include high-signal `st=` offsets for
+`boot.img`, `recovery.img`, TWRP, and HyperOS material instead of only the
+first pages of the topic. It preserves aliases such as `aristotle`,
+`2306EPN60G`, `2306EPN60R`, and `XIG04` for local deep search. It does not
+crawl until the operator explicitly runs `aoa-4pda crawl --profile xiaomi-13t`.
 
 ## Search Posture
 
@@ -100,12 +119,14 @@ Starter pipeline is available: offline fixture proof, bounded public topic
 crawl, normalization, BM25/exact keyword index, tiny graph export, query report,
 heuristic entity extraction, stable evidence-packet ids, evidence-packet export,
 live-shaped parser fixtures, author/date extraction, quote/edit/signature noise
-cleanup, chunk-level evidence search, technical token aliases, and a live
-starter proof over configured storage. It also has a no-network fixture
+cleanup, chunk-level evidence search, technical token aliases, a concrete
+Xiaomi 13T focused-device profile, and a live starter proof over configured
+storage. It also has a no-network fixture
 materialization route, local starter search and graph eval packs, and a live
-search-quality eval for already-built bounded starter runs. The evals check
-expected top evidence, graph entity edges, starter relation edges, split
-file/version normalization, and live-run specific-term retrieval. Starter graph
+search-quality eval for already-built bounded starter and Xiaomi 13T runs. The
+evals check expected top evidence, graph entity edges, starter relation edges,
+split file/version/model normalization, and live-run specific-term retrieval.
+Starter graph
 query packets can enrich top local search results with post-local `fixes_issue`
 and `warns_about` context from the graph. Starter answer packets render that
 graph context into deterministic issue/fix/warning summaries for agents. It
@@ -132,6 +153,12 @@ the live search-quality gate:
 
 ```bash
 aoa-4pda eval live-search-quality --run latest
+```
+
+For a Xiaomi 13T run, use the focused suite:
+
+```bash
+aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
 ```
 
 The no-network evals build temporary chunk/index/graph artifacts from synthetic

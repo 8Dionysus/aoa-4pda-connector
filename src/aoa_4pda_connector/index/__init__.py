@@ -22,6 +22,7 @@ FILE_IMAGE_STEMS = (
     "vendor_boot",
 )
 DEVICE_ALIAS_PATTERNS = (
+    (re.compile(r"\bxiaomi\s+13t\b(?!\s+pro\b)", re.I), "aristotle"),
     (re.compile(r"\bredmi\s+note\s+10\s+pro\b", re.I), "sweet"),
     (re.compile(r"\bredmi\s+note\s+10\b(?!\s+pro\b)", re.I), "mojito"),
 )
@@ -51,6 +52,9 @@ def technical_alias_tokens(text: str) -> list[str]:
 
     for match in re.finditer(r"\b([a-z]{1,4})[\s_/-]+([a-z]?\d{3,}[a-z0-9]*)\b", lowered):
         _append_unique(aliases, f"{match.group(1)}-{match.group(2)}")
+
+    for match in re.finditer(r"\b(\d{3,4})[\s_/-]+([a-z]{2,}\d+[a-z0-9]*)\b", lowered):
+        _append_unique(aliases, f"{match.group(1)}{match.group(2)}")
 
     for pattern, alias in DEVICE_ALIAS_PATTERNS:
         if pattern.search(text):

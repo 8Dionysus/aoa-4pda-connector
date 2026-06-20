@@ -31,6 +31,8 @@
 
 ## Wave 2: Deep Search
 
+- focused-device profile route with Xiaomi 13T seed set, profile inspection,
+  and a live-run eval suite
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms

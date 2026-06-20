@@ -8,6 +8,7 @@ python -m pytest -q
 aoa-4pda doctor
 aoa-4pda storage status
 aoa-4pda policy check
+aoa-4pda profile inspect xiaomi-13t
 aoa-4pda proof starter
 aoa-4pda materialize fixture
 aoa-4pda eval search-quality
@@ -57,6 +58,31 @@ outside Git history.
 `eval live-search-quality` is a no-network gate over an existing named run. It
 reads crawl/normalize/index receipts and checks expected top evidence for
 specific technical terms without writing live corpus data to Git.
+
+## Focused Xiaomi 13T Route
+
+Inspect the profile and storage roots before any live request:
+
+```bash
+aoa-4pda storage status --measure
+aoa-4pda profile inspect xiaomi-13t
+```
+
+Then run the bounded Xiaomi 13T profile only after explicit operator intent:
+
+```bash
+aoa-4pda crawl --profile xiaomi-13t
+aoa-4pda normalize --run latest
+aoa-4pda build-index --profile xiaomi-13t --run latest
+aoa-4pda build-graph --profile xiaomi-13t --run latest
+aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
+aoa-4pda answer "Xiaomi 13T aristotle TWRP boot.img" --run latest
+```
+
+The Xiaomi 13T seed set is intentionally small but not only first-page based:
+it includes high-signal firmware `st=` windows for `boot.img`,
+`recovery.img`, TWRP, and HyperOS material. Expand it through reviewed seed
+files and eval cases before increasing topic scope.
 
 ## Receipts
 

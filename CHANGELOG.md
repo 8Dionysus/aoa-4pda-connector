@@ -34,3 +34,9 @@
   specific-term matches against an already-built bounded live starter run.
 - Added technical token normalization for split file names, firmware versions,
   separated model strings, and starter device aliases such as `sweet`.
+- Added a Xiaomi 13T focused-device profile, public topic seed set,
+  profile-inspection CLI route, focused live-search eval suite, and portable
+  connector-family storage recipe.
+- Added seed-window crawl support for preserving source `st=` offsets and
+  per-seed page limits, then used it for high-signal Xiaomi 13T firmware
+  windows.

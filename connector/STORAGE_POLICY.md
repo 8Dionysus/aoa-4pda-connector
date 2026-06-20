@@ -46,10 +46,17 @@ exports from this tree.
 For larger runs, point the roots to external storage:
 
 ```bash
-export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
+export CONNECTOR_FAMILY_ROOT=/path/to/connector-databases
+export CONNECTOR_INSTANCE_ROOT="$CONNECTOR_FAMILY_ROOT/aoa-4pda-connector"
+export CONNECTOR_DATA_ROOT="$CONNECTOR_INSTANCE_ROOT/data"
+export CONNECTOR_CACHE_ROOT="$CONNECTOR_INSTANCE_ROOT/cache"
+export CONNECTOR_ARTIFACT_ROOT="$CONNECTOR_INSTANCE_ROOT/artifacts"
 ```
+
+`CONNECTOR_FAMILY_ROOT` is a documentation convention rather than a required
+CLI variable. It gives agents and operators a portable head folder for many
+future connector databases while keeping the three explicit `CONNECTOR_*_ROOT`
+variables as the runtime contract.
 
 ## AbyssOS Machine Route
 

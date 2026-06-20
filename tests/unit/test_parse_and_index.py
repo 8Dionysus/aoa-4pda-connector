@@ -72,6 +72,14 @@ def test_topic_page_url_generates_public_pagination_offsets():
     assert topic_page_start_from_url(topic_page_url(seed, 2)) == "40"
 
 
+def test_topic_page_url_preserves_seed_start_offset():
+    seed = "https://4pda.to/forum/index.php?showtopic=1076859&st=1800"
+
+    assert topic_page_url(seed, 0) == "https://4pda.to/forum/index.php?showtopic=1076859&st=1800"
+    assert topic_page_url(seed, 1) == "https://4pda.to/forum/index.php?showtopic=1076859&st=1820"
+    assert topic_page_start_from_url(topic_page_url(seed, 1)) == "1820"
+
+
 def test_keyword_index_and_query_fixture(tmp_path):
     normalized_dir = tmp_path / "normalized"
     normalized_dir.mkdir()
@@ -113,6 +121,20 @@ def test_tokenization_adds_technical_aliases_for_split_forum_terms():
     assert "v14.0.7.0" in exact_terms
     assert "sm-g991b" in exact_terms
     assert "sweet" in tokens
+
+
+def test_tokenization_adds_xiaomi_13t_device_aliases():
+    text = "Xiaomi 13T 2306 EPN60G recovery img"
+    tokens = tokenize(text)
+    exact_terms = extract_exact_terms(tokens)
+    aliases = technical_alias_tokens(text)
+
+    assert "aristotle" in aliases
+    assert "2306epn60g" in aliases
+    assert "recovery.img" in aliases
+    assert "aristotle" in tokens
+    assert "2306epn60g" in exact_terms
+    assert "recovery.img" in exact_terms
 
 
 def test_query_uses_bm25_exact_terms_phrases_and_focused_snippets(tmp_path):
@@ -268,6 +290,57 @@ def test_query_normalizes_split_file_version_and_codename_aliases(tmp_path):
     assert "boot.img" in top["matched_exact_terms"]
     assert "v14.0.7.0" in top["matched_exact_terms"]
     assert "boot.img" in top["matched_specific_terms"]
+
+
+def test_query_normalizes_xiaomi_13t_name_and_split_model_alias(tmp_path):
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "xiaomi-13t-normalization",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-20T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "5001",
+                "topic_id": "xiaomi-13t-normalization",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry5001",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-20T00:00:00Z",
+                "text": "Aristotle firmware note for model 2306EPN60G with TWRP and boot.img patching.",
+                "entities": [],
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "5002",
+                "topic_id": "xiaomi-13t-normalization",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry5002",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-20T00:00:00Z",
+                "text": "General Xiaomi 13T discussion without model-specific recovery files.",
+                "entities": [],
+            },
+        ],
+    }
+    (normalized_dir / "topic-xiaomi-13t-normalization.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index", "xiaomi-13t")
+    packet = query_keyword_index(index_path, "Xiaomi 13T 2306 EPN60G boot img")
+
+    assert "aristotle" in packet["query_report"]["technical_terms"]
+    assert "2306epn60g" in packet["query_report"]["technical_terms"]
+    assert "boot.img" in packet["query_report"]["technical_terms"]
+    top = packet["results"][0]
+    assert top["post_id"] == "5001"
+    assert "2306epn60g" in top["matched_exact_terms"]
+    assert "boot.img" in top["matched_exact_terms"]
+    assert "aristotle" in top["matched_specific_terms"]
 
 
 def test_query_packet_id_is_stable_across_processes():
