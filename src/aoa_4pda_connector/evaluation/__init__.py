@@ -322,6 +322,10 @@ def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
             expect.get("matched_exact_terms_any", []),
             top_result.get("matched_exact_terms", []),
         ),
+        "query_report_technical_terms_all": _optional_all_expected(
+            expect.get("query_report_technical_terms_all"),
+            packet.get("query_report", {}).get("technical_terms", []),
+        ),
         "source_url_contains": str(expect.get("source_url_contains", "")) in str(top_result.get("source_url", "")),
         "query_report_unit": packet.get("query_report", {}).get("unit") == expect.get("query_report_unit"),
         "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
@@ -370,6 +374,10 @@ def _run_live_search_case(case: dict[str, object], index_path: Path, default_lim
         "query_report_specific_terms_all": _optional_all_expected(
             expect.get("query_report_specific_terms_all"),
             query_report.get("specific_terms", []),
+        ),
+        "query_report_technical_terms_all": _optional_all_expected(
+            expect.get("query_report_technical_terms_all"),
+            query_report.get("technical_terms", []),
         ),
         "source_url_contains": _optional_contains(top_result.get("source_url"), expect.get("source_url_contains")),
         "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),

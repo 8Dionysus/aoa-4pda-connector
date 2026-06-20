@@ -32,6 +32,32 @@
         "source_url_contains": "#entry1001",
         "query_report_unit": "chunk"
       }
+    },
+    {
+      "case_id": "split-firmware-version-post",
+      "query": "firmware V 14 0 7 0",
+      "expect": {
+        "top_post_id": "1001",
+        "top_chunk_ref_prefix": "chunk:synthetic-topic-1:1001:",
+        "matched_terms_any": ["firmware"],
+        "matched_exact_terms_any": ["v14.0.7.0"],
+        "query_report_technical_terms_all": ["v14.0.7.0"],
+        "source_url_contains": "#entry1001",
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "split-boot-image-post",
+      "query": "redmi note 10 boot img bootloop",
+      "expect": {
+        "top_post_id": "1002",
+        "top_chunk_ref_prefix": "chunk:synthetic-topic-1:1002:",
+        "matched_terms_any": ["bootloop"],
+        "matched_exact_terms_any": ["boot.img"],
+        "query_report_technical_terms_all": ["boot.img"],
+        "source_url_contains": "#entry1002",
+        "query_report_unit": "chunk"
+      }
     }
   ]
 }

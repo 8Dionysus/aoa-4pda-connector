@@ -26,7 +26,7 @@ def test_search_eval_suite_reports_case_quality_without_network():
     assert report["artifact_lifecycle"] == "temporary_deleted_after_run"
     assert report["owner_boundary"]["local_eval_port_owner"] == "aoa-4pda-connector"
     assert report["owner_boundary"]["proof_owner_repo"] == "aoa-evals"
-    assert report["counts"] == {"cases": 2, "passed": 2, "failed": 0}
+    assert report["counts"] == {"cases": 4, "passed": 4, "failed": 0}
 
     bootloop_case = report["cases"][0]
     assert bootloop_case["case_id"] == "bootloop-fix-post"
@@ -35,6 +35,9 @@ def test_search_eval_suite_reports_case_quality_without_network():
     assert bootloop_case["checks"]["top_chunk_ref_prefix"] is True
     assert bootloop_case["checks"]["query_report_unit"] is True
     assert bootloop_case["checks"]["internal_search_unused"] is True
+    split_version_case = next(case for case in report["cases"] if case["case_id"] == "split-firmware-version-post")
+    assert split_version_case["checks"]["query_report_technical_terms_all"] is True
+    assert split_version_case["top_result"]["post_id"] == "1001"
 
 
 def test_graph_eval_suite_reports_live_shape_entity_edges_without_network():
@@ -175,7 +178,7 @@ def test_live_search_eval_suite_checks_named_run_without_network(tmp_path):
     assert report["network_touched"] is False
     assert report["source_run_network_touched"] is True
     assert report["owner_boundary"]["proof_owner_repo"] == "aoa-evals"
-    assert report["counts"]["cases"] == 2
+    assert report["counts"]["cases"] == 4
     assert report["counts"]["failed"] == 0
     assert report["checks"]["policy_preserved"] is True
     assert report["checks"]["index_has_posts"] is True
@@ -185,6 +188,9 @@ def test_live_search_eval_suite_checks_named_run_without_network(tmp_path):
     assert boot_case["checks"]["top_post_id"] is True
     assert boot_case["checks"]["matched_specific_terms_any"] is True
     assert boot_case["checks"]["query_report_specific_terms_all"] is True
+    sweet_case = next(case for case in report["cases"] if case["case_id"] == "sweet-split-boot-image")
+    assert sweet_case["checks"]["top_post_id"] is True
+    assert sweet_case["checks"]["query_report_technical_terms_all"] is True
 
 
 def _write_live_search_eval_topics(normalized_dir: Path) -> None:

@@ -33,6 +33,7 @@
 
 - stronger exact-token search for device models, firmware versions, and error
   strings
+  - starter technical token aliases for split file/version/model forms
 - stronger entity extraction for devices, apps, versions, firmware, warnings,
   and fixes
 - vector search adapter behind an optional dependency

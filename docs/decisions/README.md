@@ -19,3 +19,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0010` | [Starter answer packets](AOA-4PDA-D-0010-starter-answer-packets.md) |
 | `AOA-4PDA-D-0011` | [Repo-local state root](AOA-4PDA-D-0011-repo-local-state-root.md) |
 | `AOA-4PDA-D-0012` | [Live starter search quality eval](AOA-4PDA-D-0012-live-starter-search-quality-eval.md) |
+| `AOA-4PDA-D-0013` | [Technical token normalization](AOA-4PDA-D-0013-technical-token-normalization.md) |

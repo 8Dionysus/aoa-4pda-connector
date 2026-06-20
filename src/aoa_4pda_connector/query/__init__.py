@@ -8,7 +8,7 @@ import math
 from datetime import UTC, datetime
 from pathlib import Path
 
-from aoa_4pda_connector.index import extract_exact_terms, tokenize
+from aoa_4pda_connector.index import extract_exact_terms, technical_alias_tokens, tokenize
 
 
 BM25_K1 = 1.5
@@ -26,6 +26,7 @@ def packet_id_for_query(query: str) -> str:
 def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[str, object]:
     index = json.loads(index_path.read_text(encoding="utf-8"))
     terms = tokenize(query)
+    technical_terms = technical_alias_tokens(query)
     exact_terms = extract_exact_terms(terms)
     phrase_candidates = _phrase_candidates(terms)
     docs = {doc["doc_id"]: doc for doc in index.get("docs", [])}
@@ -113,6 +114,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
             "algorithm": "bm25_exact_v1",
             "unit": index.get("unit", "post"),
             "terms": terms,
+            "technical_terms": technical_terms,
             "exact_terms": exact_terms,
             "specific_terms": specific_terms,
             "phrase_candidates": phrase_candidates,

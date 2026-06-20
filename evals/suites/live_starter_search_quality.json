@@ -38,6 +38,30 @@
         "source_url_contains": "showtopic=1021534",
         "query_report_unit": "chunk"
       }
+    },
+    {
+      "case_id": "sweet-split-boot-image",
+      "query": "sweet boot img twrp",
+      "expect": {
+        "top_post_id": "105092172",
+        "top_chunk_ref_prefix": "chunk:1019304:105092172:",
+        "matched_terms_any": ["sweet", "twrp"],
+        "matched_exact_terms_any": ["boot.img"],
+        "matched_specific_terms_any": ["boot.img"],
+        "query_report_technical_terms_all": ["boot.img"],
+        "source_url_contains": "showtopic=1019304",
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "split-recovery-image",
+      "query": "bootloop recovery img redmi note 10",
+      "expect": {
+        "matched_exact_terms_any": ["recovery.img"],
+        "matched_specific_terms_any": ["recovery.img"],
+        "query_report_technical_terms_all": ["recovery.img"],
+        "query_report_unit": "chunk"
+      }
     }
   ]
 }

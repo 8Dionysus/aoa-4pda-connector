@@ -14,6 +14,8 @@ The active starter suites are:
 Together they verify:
 
 - exact model/version matching
+- split technical token normalization for file names, firmware versions, model
+  strings, and starter device aliases
 - issue/fix retrieval
 - source URL preservation
 - no internal-search dependency

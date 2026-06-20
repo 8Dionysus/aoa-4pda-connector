@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from aoa_4pda_connector.fetch import topic_page_start_from_url, topic_page_url
-from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, tokenize
+from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, technical_alias_tokens, tokenize
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
 from aoa_4pda_connector.query import packet_id_for_query, query_keyword_index
@@ -97,6 +97,22 @@ def test_tokenization_preserves_forum_search_terms():
     assert "v14.0.7.0" in exact_terms
     assert "recovery.img" in exact_terms
     assert "10" in exact_terms
+
+
+def test_tokenization_adds_technical_aliases_for_split_forum_terms():
+    text = "Redmi Note 10 Pro sweet boot img V 14 0 7 0 SM G991B"
+    tokens = tokenize(text)
+    exact_terms = extract_exact_terms(tokens)
+    aliases = technical_alias_tokens(text)
+
+    assert "boot.img" in aliases
+    assert "v14.0.7.0" in aliases
+    assert "sm-g991b" in aliases
+    assert "sweet" in aliases
+    assert "boot.img" in exact_terms
+    assert "v14.0.7.0" in exact_terms
+    assert "sm-g991b" in exact_terms
+    assert "sweet" in tokens
 
 
 def test_query_uses_bm25_exact_terms_phrases_and_focused_snippets(tmp_path):
@@ -201,6 +217,57 @@ def test_query_prioritizes_specific_terms_over_topic_boilerplate(tmp_path):
     assert top["post_id"] == "3002"
     assert "bootloop" in top["matched_specific_terms"]
     assert "recovery.img" in top["matched_specific_terms"]
+
+
+def test_query_normalizes_split_file_version_and_codename_aliases(tmp_path):
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "technical-normalization",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=42",
+        "title": "Redmi Note 10 Pro - Firmware",
+        "captured_at": "2026-06-18T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "4001",
+                "topic_id": "technical-normalization",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=42#entry4001",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-18T00:00:00Z",
+                "text": "General sweet firmware index without an image file.",
+                "entities": [],
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "4002",
+                "topic_id": "technical-normalization",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=42#entry4002",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-18T00:00:00Z",
+                "text": "Patch boot.img from firmware V14.0.7.0 before flashing Magisk.",
+                "entities": [],
+            },
+        ],
+    }
+    (normalized_dir / "topic-technical-normalization.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index")
+    packet = query_keyword_index(index_path, "sweet boot img V 14 0 7 0")
+
+    assert "boot.img" in packet["query_report"]["technical_terms"]
+    assert "v14.0.7.0" in packet["query_report"]["technical_terms"]
+    assert "sweet" in packet["query_report"]["terms"]
+    top = packet["results"][0]
+    assert top["post_id"] == "4002"
+    assert "boot.img" in top["matched_exact_terms"]
+    assert "v14.0.7.0" in top["matched_exact_terms"]
+    assert "boot.img" in top["matched_specific_terms"]
 
 
 def test_query_packet_id_is_stable_across_processes():
