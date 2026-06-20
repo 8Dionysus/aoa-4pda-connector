@@ -176,6 +176,32 @@ def test_cli_policy_check_denies_service_routes():
     assert payload["attachments_allowed"] is False
 
 
+def test_cli_profile_inspect_reports_xiaomi_13t_route_without_network():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "profile", "inspect", "xiaomi-13t"],
+        cwd=REPO_ROOT,
+        env=_env_with_src_without_storage(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_profile_inspect_v1"
+    assert payload["status"] == "ok"
+    assert payload["profile_id"] == "xiaomi-13t"
+    assert payload["profile_kind"] == "focused-device"
+    assert payload["target"]["device_id"] == "xiaomi-13t"
+    assert payload["target"]["codename"] == "aristotle"
+    assert "2306EPN60G" in payload["target"]["model_aliases"]
+    assert payload["routes"]["seed_file"] == "connector/seeds/xiaomi_13t_topics.yaml"
+    assert payload["seed"]["topic_count"] == 9
+    assert "xiaomi-13t-firmware" in payload["seed"]["topic_ids"]
+    assert "xiaomi-13t-firmware-boot-recovery-1800" in payload["seed"]["topic_ids"]
+    assert payload["checks"]["seed_urls_allowed_public_topics"] is True
+    assert payload["network_touched"] is False
+
+
 def test_cli_starter_proof_is_offline_and_queryable():
     result = subprocess.run(
         [sys.executable, "-m", "aoa_4pda_connector.cli", "proof", "starter"],

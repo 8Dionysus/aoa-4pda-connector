@@ -1,0 +1,51 @@
+{
+  "schema": "aoa_4pda_live_search_eval_suite_v1",
+  "suite_id": "live-xiaomi-13t-search-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded Xiaomi 13T run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 5,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_index",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "xiaomi-13t",
+    "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
+    "notes": "Reads existing configured storage receipts and keyword index for a named Xiaomi 13T run; does not crawl or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-aristotle-boot-image",
+      "query": "Xiaomi 13T aristotle TWRP boot img",
+      "expect": {
+        "matched_terms_any": ["xiaomi", "13t", "aristotle", "twrp"],
+        "matched_exact_terms_any": ["boot.img"],
+        "matched_specific_terms_any": ["boot.img"],
+        "query_report_technical_terms_all": ["aristotle", "boot.img"],
+        "source_url_contains": "showtopic=1076859",
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-split-model-hyperos",
+      "query": "2306 EPN60G HyperOS update Xiaomi 13T",
+      "expect": {
+        "matched_terms_any": ["2306epn60g", "hyperos", "xiaomi", "13t"],
+        "matched_specific_terms_any": ["2306epn60g"],
+        "query_report_technical_terms_all": ["2306epn60g", "aristotle"],
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-recovery-image",
+      "query": "aristotle recovery img fastboot Xiaomi 13T",
+      "expect": {
+        "matched_exact_terms_any": ["recovery.img"],
+        "matched_specific_terms_any": ["recovery.img"],
+        "query_report_technical_terms_all": ["recovery.img", "aristotle"],
+        "source_url_contains": "showtopic=1076859",
+        "query_report_unit": "chunk"
+      }
+    }
+  ]
+}

@@ -78,6 +78,12 @@ def build_parser() -> argparse.ArgumentParser:
     policy_check = policy_sub.add_parser("check", help="Check route policy files and sample URLs.")
     policy_check.set_defaults(func=cmd_policy_check)
 
+    profile = sub.add_parser("profile", help="Inspect bounded crawl/search profiles.")
+    profile_sub = profile.add_subparsers(dest="profile_command", required=True)
+    profile_inspect = profile_sub.add_parser("inspect", help="Inspect a profile, its seed file, and storage route.")
+    profile_inspect.add_argument("profile", nargs="?", default="focused-device")
+    profile_inspect.set_defaults(func=cmd_profile_inspect)
+
     crawl = sub.add_parser("crawl", help="Bounded public topic crawl.")
     crawl.add_argument("--profile", default="starter")
     crawl.add_argument("--max-topics", type=int, default=None)
@@ -294,6 +300,86 @@ def cmd_policy_check(_args: argparse.Namespace) -> int:
     return 0 if ok else 1
 
 
+def cmd_profile_inspect(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    try:
+        profile = _read_profile(repo_root, args.profile)
+        seed_rel = str(profile.get("seed_file", "connector/seeds/starter_topics.yaml"))
+        seed_path = repo_root / seed_rel
+        seeds = _read_seed_urls(seed_path) if seed_path.is_file() else []
+    except Exception as exc:  # noqa: BLE001 - inspect output should preserve route failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_profile_inspect_v1",
+                "status": "error",
+                "profile_id": args.profile,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+
+    seed_checks = [
+        {"seed_id": seed.get("id"), "url": seed.get("url"), "allowed_public_topic": is_url_allowed(seed.get("url", ""))}
+        for seed in seeds
+    ]
+    checks = {
+        "profile_file_exists": (repo_root / "connector" / "profiles" / f"{args.profile}.yaml").is_file(),
+        "network_default_disabled": profile.get("network_default") == "disabled",
+        "seed_file_exists": (repo_root / str(profile.get("seed_file"))).is_file(),
+        "seed_urls_allowed_public_topics": all(check["allowed_public_topic"] for check in seed_checks),
+        "internal_search_unused": True,
+    }
+    status = "ok" if all(checks.values()) else "error"
+    _emit(
+        {
+            "schema": "aoa_4pda_profile_inspect_v1",
+            "status": status,
+            "profile_id": profile.get("profile_id", args.profile),
+            "requested_profile": args.profile,
+            "profile_kind": profile.get("profile_kind"),
+            "description": profile.get("description"),
+            "target": {
+                "device_id": profile.get("target_device_id"),
+                "label": profile.get("target_label"),
+                "codename": profile.get("target_codename"),
+                "model_aliases": _split_csv(profile.get("target_model_aliases")),
+                "search_terms": _split_csv(profile.get("target_search_terms")),
+            },
+            "network_default": profile.get("network_default"),
+            "limits": {
+                "max_topics": profile.get("max_topics"),
+                "max_pages_per_topic": profile.get("max_pages_per_topic"),
+                "max_posts_per_topic": profile.get("max_posts_per_topic"),
+            },
+            "politeness": {
+                "min_delay_seconds": profile.get("min_delay_seconds"),
+                "max_concurrency": profile.get("max_concurrency"),
+            },
+            "routes": {
+                "seed_file": profile.get("seed_file"),
+                "allowlist_manifest": profile.get("allowlist_manifest"),
+            },
+            "quality_gates": {
+                "live_search_suite": profile.get("live_search_suite"),
+            },
+            "seed": {
+                "path": str(profile.get("seed_file")),
+                "topic_count": len(seeds),
+                "topic_ids": [seed.get("id") for seed in seeds],
+                "topics": seeds,
+                "checks": seed_checks,
+            },
+            "storage_mode": roots.mode,
+            "storage_roots": roots.as_dict(),
+            "checks": checks,
+            "network_touched": False,
+        }
+    )
+    return 0 if status == "ok" else 1
+
+
 def cmd_materialize_fixture(args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
     roots = StorageRoots.from_env(repo_root)
@@ -403,13 +489,14 @@ def cmd_crawl(args: argparse.Namespace) -> int:
     fetched = []
     errors = []
     selected = seeds[:max_topics]
-    total_requests = len(selected) * max_pages_per_topic
+    total_requests = sum(_seed_page_count(seed, max_pages_per_topic) for seed in selected)
     request_index = 0
     for seed in selected:
-        for page_index in range(max_pages_per_topic):
+        seed_pages = _seed_page_count(seed, max_pages_per_topic)
+        for page_index in range(seed_pages):
             request_index += 1
             page_url = topic_page_url(seed["url"], page_index)
-            page_start = page_index * 20
+            page_start = topic_page_url(seed["url"], page_index).rsplit("st=", 1)[-1]
             try:
                 result = fetch_public_topic(page_url, raw_dir)
                 fetched.append(
@@ -417,7 +504,7 @@ def cmd_crawl(args: argparse.Namespace) -> int:
                         "seed_id": seed["id"],
                         "label": seed["label"],
                         "page_index": page_index,
-                        "page_start": page_start,
+                        "page_start": int(page_start),
                         "url": result.url,
                         "path": str(result.path),
                         "bytes": result.bytes_written,
@@ -868,7 +955,25 @@ def _require_roots(roots: StorageRoots, names: list[str]) -> int:
 
 def _read_profile(repo_root: Path, profile_id: str) -> dict[str, object]:
     path = repo_root / "connector" / "profiles" / f"{profile_id}.yaml"
-    values: dict[str, object] = {"seed_file": "connector/seeds/starter_topics.yaml"}
+    values: dict[str, object] = {
+        "profile_path": str(path.relative_to(repo_root)),
+        "seed_file": "connector/seeds/starter_topics.yaml",
+    }
+    string_keys = {
+        "schema",
+        "profile_id",
+        "profile_kind",
+        "description",
+        "target_device_id",
+        "target_label",
+        "target_codename",
+        "target_model_aliases",
+        "target_search_terms",
+        "network_default",
+        "seed_file",
+        "allowlist_manifest",
+        "live_search_suite",
+    }
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#") or ":" not in line:
@@ -881,7 +986,7 @@ def _read_profile(repo_root: Path, profile_id: str) -> dict[str, object]:
                 values[key] = int(value)
             except ValueError:
                 values[key] = float(value)
-        elif key == "seed_file":
+        elif key in string_keys and value:
             values[key] = value
     if "min_delay_seconds" not in values:
         values["min_delay_seconds"] = 8
@@ -901,9 +1006,28 @@ def _read_seed_urls(path: Path) -> list[dict[str, str]]:
             current["url"] = line.split(":", 1)[1].strip()
         elif current and line.startswith("label:"):
             current["label"] = line.split(":", 1)[1].strip()
+        elif current and line.startswith("status:"):
+            current["status"] = line.split(":", 1)[1].strip()
+        elif current and line.startswith("focus:"):
+            current["focus"] = line.split(":", 1)[1].strip()
+        elif current and line.startswith("max_pages:"):
+            current["max_pages"] = line.split(":", 1)[1].strip()
     if current:
         seeds.append(current)
     return [seed for seed in seeds if seed.get("url")]
+
+
+def _seed_page_count(seed: dict[str, str], default_pages: int) -> int:
+    try:
+        return max(1, int(seed.get("max_pages", default_pages)))
+    except ValueError:
+        return default_pages
+
+
+def _split_csv(value: object) -> list[str]:
+    if value is None:
+        return []
+    return [item.strip() for item in str(value).split(",") if item.strip()]
 
 
 def _write_receipt(receipt_dir: Path, run_id: str, kind: str, payload: dict[str, object]) -> Path:

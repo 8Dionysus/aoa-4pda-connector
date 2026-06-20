@@ -36,7 +36,8 @@ def canonical_topic_url(url: str) -> str:
 def topic_page_url(url: str, page_index: int, *, posts_per_page: int = 20) -> str:
     parsed = urlparse(canonical_topic_url(url))
     query = parse_qs(parsed.query)
-    query["st"] = [str(page_index * posts_per_page)]
+    base_start = int(query.get("st", ["0"])[0] or 0)
+    query["st"] = [str(base_start + page_index * posts_per_page)]
     canonical_query = urlencode({"showtopic": query.get("showtopic", [""])[0], "st": query["st"][0]})
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", canonical_query, ""))
 

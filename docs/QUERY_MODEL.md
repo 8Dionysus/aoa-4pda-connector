@@ -16,16 +16,17 @@ Entity extraction v1 currently covers devices, codenames, firmware families,
 firmware versions, build IDs, tools, files, issues, fixes, and warnings through
 local heuristics.
 
-## Starter Scoring
+## Local Scoring
 
-The starter query path uses `bm25_exact_v1`:
+The starter and focused-device query paths use `bm25_exact_v1`:
 
 - split normalized posts into deterministic overlapping evidence chunks
 - tokenize public topic titles and post text with Cyrillic/Latin/digit support
 - preserve dotted and dashed technical tokens such as `boot.img`
-- add starter technical aliases for split forms such as `boot img`,
+- add technical aliases for split forms such as `boot img`,
   `recovery img`, `V 14 0 7 0`, separated model strings such as `SM G991B`,
-  and device aliases such as `sweet` for `Redmi Note 10 Pro`
+  split Xiaomi model strings such as `2306 EPN60G`, and device aliases such as
+  `sweet` for `Redmi Note 10 Pro` or `aristotle` for `Xiaomi 13T`
 - compute BM25 over the local chunk inverted index
 - boost exact terms and exact model/version phrases
 - return matched terms, matched exact terms, matched phrases, and score
@@ -91,6 +92,11 @@ index for the named run, then checks expected top posts, source URLs, exact
 terms, specific-term reporting, technical-term normalization, and the
 internal-search boundary. It does not crawl, rebuild a corpus, or commit
 generated artifacts.
+
+For an already-built Xiaomi 13T focused run, pass
+`--suite evals/suites/live_xiaomi_13t_search_quality.json`. That suite checks
+`aristotle`, split `2306 EPN60G`, `boot.img`, and `recovery.img` retrieval over
+configured local storage only.
 
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local

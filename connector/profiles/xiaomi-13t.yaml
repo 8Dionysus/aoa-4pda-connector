@@ -1,7 +1,7 @@
 schema: aoa_4pda_profile_v1
-profile_id: focused-device
+profile_id: xiaomi-13t
 profile_kind: focused-device
-description: Bounded device-topic profile alias for the current operator-selected focused device.
+description: Bounded focused-device profile for Xiaomi 13T public topic evidence.
 target_device_id: xiaomi-13t
 target_label: Xiaomi 13T
 target_codename: aristotle
