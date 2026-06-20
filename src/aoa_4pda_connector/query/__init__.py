@@ -15,7 +15,16 @@ BM25_K1 = 1.5
 BM25_B = 0.75
 EXACT_TERM_BOOST = 1.75
 PHRASE_BOOST = 2.5
-RELATION_EDGE_KINDS = ("fixes_issue", "warns_about")
+RELATION_EDGE_KINDS = (
+    "fixes_issue",
+    "recovery_mentions_firmware",
+    "recovery_targets_file",
+    "recovery_uses_tool",
+    "root_mentions_firmware",
+    "root_targets_file",
+    "root_uses_tool",
+    "warns_about",
+)
 
 
 def packet_id_for_query(query: str) -> str:

@@ -8,7 +8,7 @@ from pathlib import Path
 
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
-from aoa_4pda_connector.normalize import normalize_snapshot
+from aoa_4pda_connector.normalize import extract_entities, normalize_snapshot
 from aoa_4pda_connector.query import query_graph_packet
 
 
@@ -25,7 +25,7 @@ def test_query_graph_packet_attaches_relation_context_without_network(tmp_path):
     assert packet["policy"]["source"] == "local_keyword_index_plus_graph"
     assert packet["policy"]["internal_search_used"] is False
     assert packet["graph_report"]["graph_path"] == str(graph_path)
-    assert packet["graph_report"]["relation_edge_kinds"] == ["fixes_issue", "warns_about"]
+    assert {"fixes_issue", "warns_about"}.issubset(set(packet["graph_report"]["relation_edge_kinds"]))
 
     result = packet["results"][0]
     assert result["post_id"] == "9001"
@@ -143,11 +143,85 @@ def test_cli_query_graph_uses_external_index_and_graph_without_network(tmp_path)
     assert {"fixes_issue", "warns_about"}.issubset(edge_kinds)
 
 
+def test_query_graph_packet_carries_xiaomi_root_and_recovery_relations(tmp_path):
+    index_path, graph_path = _build_xiaomi_firmware_index_and_graph(tmp_path)
+
+    packet = query_graph_packet(index_path, graph_path, "Xiaomi 13T aristotle recovery.img", limit=1)
+
+    assert {
+        "recovery_targets_file",
+        "recovery_uses_tool",
+        "root_targets_file",
+        "root_uses_tool",
+    }.issubset(set(packet["graph_report"]["relation_edge_kinds"]))
+
+    result = packet["results"][0]
+    assert result["post_id"] == "128964413"
+    relation_edges = {
+        (edge["kind"], edge["from_node"], edge["to_node"])
+        for edge in result["graph_context"]["relation_edges"]
+    }
+
+    assert (
+        "recovery_targets_file",
+        "entity:recovery_action:flash recovery.img",
+        "entity:file:recovery.img",
+    ) in relation_edges
+    assert (
+        "recovery_uses_tool",
+        "entity:recovery_action:flash recovery.img",
+        "entity:tool:fastboot",
+    ) in relation_edges
+    assert (
+        "root_uses_tool",
+        "entity:root_action:patch boot.img",
+        "entity:tool:Magisk",
+    ) in relation_edges
+
+
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:
     normalized_dir = tmp_path / "normalized"
     normalize_snapshot(REPO_ROOT / "connector/fixtures/html/live_shape_topic.html", LIVE_FIXTURE_URL, normalized_dir)
     index_path = build_keyword_index(normalized_dir, tmp_path / "index", "starter")
     graph_path = build_graph(normalized_dir, tmp_path / "graph", "starter")
+    return index_path, graph_path
+
+
+def _build_xiaomi_firmware_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    text = (
+        "Xiaomi 13T 2306EPN60G aristotle на HyperOS 2.0.2. "
+        "Можно пропатчить boot.img через Magisk или KSU. "
+        "Сама TWRP: twrp-3.7.1_A13-5.10.136-vendor_boot-aristotle.img. "
+        "Родной recovery от стоковой прошивки: recovery.img. "
+        "Orange Fox for Xiaomi 13T тоже прошивается через fastboot."
+    )
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "1076859",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-20T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "128964413",
+                "topic_id": "1076859",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-20T00:00:00Z",
+                "text": text,
+                "entities": extract_entities(text),
+            }
+        ],
+    }
+    (normalized_dir / "topic-1076859-st2140.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index", "xiaomi-13t")
+    graph_path = build_graph(normalized_dir, tmp_path / "graph", "xiaomi-13t")
     return index_path, graph_path
 
 

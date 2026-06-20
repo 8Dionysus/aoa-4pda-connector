@@ -12,20 +12,29 @@ from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
 
 
 FILE_RE = re.compile(r"\b[\w.-]+\.(?:img|zip|apk|bin|tar|tgz|xz)\b", re.I)
+PARTITION_IMAGE_RE = re.compile(r"\b(?:boot|init_boot|vendor_boot|recovery|dtbo|vbmeta|super)(?:-[a-z0-9_]+)?\.img\b", re.I)
 FIRMWARE_VERSION_RE = re.compile(r"\bV\d+(?:\.\d+){2,}(?:\.[A-Z0-9]+)?\b", re.I)
+HYPEROS_VERSION_RE = re.compile(r"\bHyperOS\s+\d+(?:\.\d+){1,5}\b", re.I)
+OS_VERSION_RE = re.compile(r"\bOS\d+(?:\.\d+){2,5}\b", re.I)
 BUILD_ID_RE = re.compile(r"\b[A-Z]{2,}[A-Z0-9]{2,}(?:\.[A-Z0-9]+){2,}\b")
+DEVICE_MODEL_RE = re.compile(r"\b\d{4}[A-Z]{2,}\d{2}[A-Z]\b", re.I)
 DEVICE_RE = re.compile(
-    r"\b(?:Redmi\s+Note\s+\d+(?:\s+Pro|\s+Plus)?|Redmi\s+\d+[A-Za-z]*|Xiaomi\s+Mi\s+Pad\s+\d(?:\s+Plus)?|Poco\s+[A-Z0-9 ]{2,12})\b",
+    r"\b(?:Redmi\s+Note\s+\d+(?:\s+Pro|\s+Plus)?|Redmi\s+\d+[A-Za-z]*|Xiaomi\s+Mi\s+Pad\s+\d(?:\s+Plus)?|Xiaomi\s+13T(?:\s+Pro)?|Poco\s+[A-Z0-9 ]{2,12})\b",
     re.I,
 )
 KNOWN_TOOLS = {
     "adb": "ADB",
     "fastboot": "fastboot",
+    "ksu": "KSU",
+    "kernel su": "KSU",
     "magisk": "Magisk",
     "miflash": "MiFlash",
+    "orange fox": "OrangeFox",
+    "orangefox": "OrangeFox",
     "twrp": "TWRP",
 }
 KNOWN_CODENAMES = {
+    "aristotle",
     "camellia",
     "clover",
     "mojito",
@@ -85,7 +94,13 @@ def extract_entities(text: str) -> list[dict[str, str]]:
     lowered = text.lower()
     for match in DEVICE_RE.finditer(text):
         _add_entity(entities, "device", _canonical_spaces(match.group(0)))
+    for match in DEVICE_MODEL_RE.finditer(text):
+        _add_entity(entities, "device_model", match.group(0).upper())
     for match in FIRMWARE_VERSION_RE.finditer(text):
+        _add_entity(entities, "firmware_version", match.group(0).upper())
+    for match in HYPEROS_VERSION_RE.finditer(text):
+        _add_entity(entities, "firmware_version", _canonical_spaces(match.group(0)))
+    for match in OS_VERSION_RE.finditer(text):
         _add_entity(entities, "firmware_version", match.group(0).upper())
     for match in BUILD_ID_RE.finditer(text):
         _add_entity(entities, "build_id", match.group(0).upper())
@@ -100,6 +115,8 @@ def extract_entities(text: str) -> list[dict[str, str]]:
             _add_entity(entities, "codename", codename)
     for match in FILE_RE.finditer(text):
         _add_entity(entities, "file", match.group(0).lower())
+    for match in PARTITION_IMAGE_RE.finditer(text):
+        _add_entity(entities, "file", match.group(0).lower())
     for raw, canonical in ISSUE_TERMS.items():
         if re.search(rf"\b{re.escape(raw)}\b", lowered):
             _add_entity(entities, "issue", canonical)
@@ -110,6 +127,8 @@ def extract_entities(text: str) -> list[dict[str, str]]:
             _add_entity(entities, "fix", f"restore {file_value}")
         if re.search(rf"\b(?:flash|прош(?:ить|ей|ивка))\b[^.?!]{{0,80}}{re.escape(file_value)}", lowered):
             _add_entity(entities, "fix", f"flash {file_value}")
+
+    _add_root_and_recovery_actions(entities, lowered)
 
     for file_entity in [entity for entity in entities if entity["kind"] == "file"]:
         for codename_entity in [entity for entity in entities if entity["kind"] == "codename"]:
@@ -141,3 +160,23 @@ def _canonical_warning(lowered_text: str, file_value: str, codename: str) -> str
     if re.search(rf"(?:не\s+ставить|do\s+not\s+install|warning).{{0,160}}{file_pattern}.{{0,80}}(?:от|from)\s+{codename_pattern}", lowered_text):
         return f"do not install {file_value} from {codename}"
     return None
+
+
+def _add_root_and_recovery_actions(entities: list[dict[str, str]], lowered: str) -> None:
+    files = {entity["value"] for entity in entities if entity["kind"] == "file"}
+    tools = {entity["value"] for entity in entities if entity["kind"] == "tool"}
+
+    for file_value in sorted(files):
+        file_pattern = re.escape(file_value)
+        if file_value in {"boot.img", "init_boot.img"} and (
+            re.search(rf"\b(?:patch|patched|патч(?:ить|енный)?|пропатч(?:ить|енный)?)\b[^.?!]{{0,120}}{file_pattern}", lowered)
+            or re.search(rf"{file_pattern}[^.?!]{{0,120}}\b(?:magisk|ksu|kernel\s+su)\b", lowered)
+        ):
+            _add_entity(entities, "root_action", f"patch {file_value}")
+
+        if file_value == "recovery.img" and (
+            re.search(rf"\b(?:flash|прош(?:ить|ей|ивается|ивка))\b[^.?!]{{0,120}}{file_pattern}", lowered)
+            or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b(?:fastboot|twrp|orange\s*fox|orangefox)\b", lowered)
+            or {"TWRP", "OrangeFox", "fastboot"}.intersection(tools)
+        ):
+            _add_entity(entities, "recovery_action", f"flash {file_value}")

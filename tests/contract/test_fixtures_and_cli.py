@@ -257,6 +257,32 @@ def test_cli_graph_eval_runs_public_safe_suite():
     assert payload["counts"]["failed"] == 0
 
 
+def test_cli_xiaomi_graph_eval_runs_public_safe_suite():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "eval",
+            "graph-relations",
+            "--suite",
+            "evals/suites/xiaomi_13t_graph_relations.json",
+        ],
+        cwd=REPO_ROOT,
+        env=_env_with_src(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_graph_eval_report_v1"
+    assert payload["status"] == "ok"
+    assert payload["suite_id"] == "xiaomi-13t-graph-relations"
+    assert payload["network_touched"] is False
+    assert payload["counts"]["failed"] == 0
+
+
 def test_cli_graph_query_eval_runs_public_safe_suite():
     result = subprocess.run(
         [sys.executable, "-m", "aoa_4pda_connector.cli", "eval", "graph-query-packets"],

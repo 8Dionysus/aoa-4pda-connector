@@ -1,0 +1,72 @@
+{
+  "schema": "aoa_4pda_graph_eval_suite_v1",
+  "suite_id": "xiaomi-13t-graph-relations",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "sanitized_xiaomi_13t_firmware_html_topic",
+    "html_fixture": "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140"
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-root-recovery-post",
+      "expect": {
+        "post_id": "128964413",
+        "topic_id": "1076859",
+        "entity_node_ids": [
+          "entity:device:Xiaomi 13T",
+          "entity:device_model:2306EPN60G",
+          "entity:codename:aristotle",
+          "entity:firmware_family:HyperOS",
+          "entity:firmware_version:HyperOS 2.0.2",
+          "entity:tool:Magisk",
+          "entity:tool:KSU",
+          "entity:tool:TWRP",
+          "entity:tool:OrangeFox",
+          "entity:tool:fastboot",
+          "entity:file:boot.img",
+          "entity:file:vendor_boot-aristotle.img",
+          "entity:file:recovery.img",
+          "entity:root_action:patch boot.img",
+          "entity:recovery_action:flash recovery.img"
+        ],
+        "post_mentions_entity_node_ids": [
+          "entity:root_action:patch boot.img",
+          "entity:recovery_action:flash recovery.img",
+          "entity:file:recovery.img",
+          "entity:tool:fastboot"
+        ],
+        "relation_edges": [
+          {
+            "kind": "root_targets_file",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:file:boot.img"
+          },
+          {
+            "kind": "root_uses_tool",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:tool:Magisk"
+          },
+          {
+            "kind": "root_uses_tool",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:tool:KSU"
+          },
+          {
+            "kind": "recovery_targets_file",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "recovery_uses_tool",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:tool:fastboot"
+          }
+        ],
+        "source_url_contains": "#entry128964413"
+      }
+    }
+  ]
+}
