@@ -20,6 +20,7 @@ DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
 DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.json")
 DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
 DEFAULT_LIVE_SEARCH_EVAL_SUITE = Path("evals/suites/live_starter_search_quality.json")
+DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_graph_query_quality.json")
 
 
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
@@ -307,6 +308,107 @@ def run_live_search_eval_suite(
     }
 
 
+def run_live_graph_query_eval_suite(
+    run: str = "latest",
+    suite_path: Path | None = None,
+    repo_root: Path | None = None,
+    artifact_root: Path | None = None,
+) -> dict[str, object]:
+    """Run graph-query evals against an already-built bounded live run."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    roots = StorageRoots.from_env(root)
+    artifacts = artifact_root or roots.artifact
+    if artifacts is None:
+        raise FileNotFoundError("CONNECTOR_ARTIFACT_ROOT is not configured")
+
+    index_receipt = _load_latest_or_named_receipt(artifacts, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    crawl_receipt = _load_latest_or_named_receipt(artifacts, run_id, "crawl")
+    normalize_receipt = _load_latest_or_named_receipt(artifacts, run_id, "normalize")
+    graph_receipt = _load_latest_or_named_receipt(artifacts, run_id, "graph")
+    index_path = Path(str(index_receipt["index_path"]))
+    graph_path = Path(str(graph_receipt["graph_path"]))
+    index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+    graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+    case_reports = [
+        _run_live_graph_query_case(case, index_path, graph_path, int(suite.get("default_limit", 5)))
+        for case in suite.get("cases", [])
+    ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    crawl_counts = crawl_receipt.get("counts", {})
+    normalize_counts = normalize_receipt.get("counts", {})
+    policy = crawl_receipt.get("policy", {})
+    dataset = suite.get("dataset", {})
+    expected_profile = dataset.get("expected_profile")
+    checks = {
+        "policy_preserved": policy.get("allowed_public_only") is True
+        and policy.get("internal_search_used") is False
+        and policy.get("attachments_downloaded") is False,
+        "profile_matches": True
+        if expected_profile is None
+        else crawl_receipt.get("profile_id") == expected_profile
+        and index_receipt.get("profile_id") == expected_profile
+        and graph_receipt.get("profile_id") == expected_profile,
+        "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
+        "graph_has_relation_edges": bool(
+            {
+                edge.get("kind")
+                for edge in graph_payload.get("edges", [])
+                if str(edge.get("kind", "")).endswith(("_targets_file", "_uses_tool", "_mentions_firmware"))
+            }
+        ),
+        "network_limited_to_source_crawl": crawl_receipt.get("network_touched") is True
+        and normalize_receipt.get("network_touched") is False
+        and index_receipt.get("network_touched") is False
+        and graph_receipt.get("network_touched") is False,
+    }
+    status = "ok" if not failed and all(checks.values()) else "error"
+    return {
+        "schema": "aoa_4pda_live_graph_query_eval_report_v1",
+        "status": status,
+        "suite_id": suite.get("suite_id"),
+        "suite_path": str(path.relative_to(root)) if path.is_relative_to(root) else str(path),
+        "run_id": run_id,
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+            "requested_topics": int(crawl_counts.get("requested_topics", crawl_counts.get("requested", 0))),
+            "requested_pages": int(crawl_counts.get("requested_pages", crawl_counts.get("requested", 0))),
+            "fetched_topics": int(crawl_counts.get("fetched_topics", crawl_counts.get("fetched", 0))),
+            "fetched_pages": int(crawl_counts.get("fetched_pages", crawl_counts.get("fetched", 0))),
+            "normalized_topics": int(normalize_counts.get("topics", 0)),
+            "normalized_pages": int(normalize_counts.get("pages", normalize_counts.get("topics", 0))),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+            "path": str(index_path),
+        },
+        "graph": {
+            "node_count": graph_payload.get("node_count"),
+            "edge_count": graph_payload.get("edge_count"),
+            "path": str(graph_path),
+        },
+        "checks": checks,
+        "network_touched": False,
+        "source_run_network_touched": bool(crawl_receipt.get("network_touched")),
+        "artifact_lifecycle": "read_existing_configured_storage",
+        "cases": case_reports,
+    }
+
+
 def _run_case(case: dict[str, object], index_path: Path) -> dict[str, object]:
     query = str(case.get("query", ""))
     expect = case.get("expect", {})
@@ -500,6 +602,79 @@ def _run_graph_query_case(case: dict[str, object], index_path: Path, graph_path:
         "status": "ok" if all(checks.values()) else "error",
         "query": query,
         "checks": checks,
+        "top_result": top_result,
+        "expected_relation_edges": expected_relation_edges,
+        "matched_relation_edges": matched_relation_edges,
+    }
+
+
+def _run_live_graph_query_case(
+    case: dict[str, object],
+    index_path: Path,
+    graph_path: Path,
+    default_limit: int,
+) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    limit = int(case.get("limit", default_limit))
+    packet = query_graph_packet(index_path, graph_path, query, limit=limit)
+    top_result = packet.get("results", [{}])[0] if packet.get("results") else {}
+    context = top_result.get("graph_context", {}) if isinstance(top_result, dict) else {}
+    relation_edges = context.get("relation_edges", []) if isinstance(context, dict) else []
+    query_report = packet.get("query_report", {})
+    graph_report = packet.get("graph_report", {})
+    expected_relation_edges = [
+        {
+            "kind": str(edge.get("kind", "")),
+            "from_node": str(edge.get("from_node", "")),
+            "to_node": str(edge.get("to_node", "")),
+        }
+        for edge in expect.get("relation_edges", [])
+    ]
+    source_url_contains = expect.get("source_url_contains")
+    matched_relation_edges = [
+        edge
+        for edge in expected_relation_edges
+        if _edge_exists(relation_edges, **edge)
+    ]
+    checks = {
+        "top_result_present": bool(top_result),
+        "top_post_id": _optional_equal(top_result.get("post_id"), expect.get("top_post_id")),
+        "graph_context_present": bool(context),
+        "graph_report_relation_edge_kinds_all": _optional_all_expected(
+            expect.get("graph_report_relation_edge_kinds_all"),
+            graph_report.get("relation_edge_kinds", []),
+        ),
+        "expected_relation_edges_present": len(matched_relation_edges) == len(expected_relation_edges),
+        "matched_terms_any": _optional_any_expected(
+            expect.get("matched_terms_any"),
+            top_result.get("matched_terms", []),
+        ),
+        "matched_specific_terms_all": _optional_all_expected(
+            expect.get("matched_specific_terms_all"),
+            top_result.get("matched_specific_terms", []),
+        ),
+        "query_report_technical_terms_all": _optional_all_expected(
+            expect.get("query_report_technical_terms_all"),
+            query_report.get("technical_terms", []),
+        ),
+        "source_url_contains": _optional_contains(top_result.get("source_url"), source_url_contains),
+        "source_refs_preserved": True
+        if source_url_contains is None
+        else all(
+            _source_refs_contain(_find_edge(relation_edges, **edge), str(source_url_contains))
+            for edge in expected_relation_edges
+        ),
+        "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
+        "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "query_report": query_report,
+        "graph_report": graph_report,
         "top_result": top_result,
         "expected_relation_edges": expected_relation_edges,
         "matched_relation_edges": matched_relation_edges,

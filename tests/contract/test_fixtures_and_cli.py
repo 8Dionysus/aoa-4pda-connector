@@ -9,6 +9,7 @@ from pathlib import Path
 
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
+from aoa_4pda_connector.normalize import normalize_snapshot
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -195,6 +196,7 @@ def test_cli_profile_inspect_reports_xiaomi_13t_route_without_network():
     assert payload["target"]["codename"] == "aristotle"
     assert "2306EPN60G" in payload["target"]["model_aliases"]
     assert payload["routes"]["seed_file"] == "connector/seeds/xiaomi_13t_topics.yaml"
+    assert payload["quality_gates"]["live_graph_query_suite"] == "evals/suites/live_xiaomi_13t_graph_query_quality.json"
     assert payload["seed"]["topic_count"] == 9
     assert "xiaomi-13t-firmware" in payload["seed"]["topic_ids"]
     assert "xiaomi-13t-firmware-boot-recovery-1800" in payload["seed"]["topic_ids"]
@@ -279,6 +281,161 @@ def test_cli_xiaomi_graph_eval_runs_public_safe_suite():
     assert payload["schema"] == "aoa_4pda_graph_eval_report_v1"
     assert payload["status"] == "ok"
     assert payload["suite_id"] == "xiaomi-13t-graph-relations"
+    assert payload["network_touched"] is False
+    assert payload["counts"]["failed"] == 0
+
+
+def test_cli_live_graph_query_eval_reads_configured_storage_without_network(tmp_path):
+    run_id = "cli-live-graph-query-eval-test"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    normalized_dir = data_root / "normalized" / run_id
+    normalize_snapshot(
+        REPO_ROOT / "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
+        "https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        normalized_dir,
+    )
+    index_path = build_keyword_index(normalized_dir, cache_root / "indexes" / run_id, "xiaomi-13t")
+    graph_path = build_graph(normalized_dir, artifact_root / "graphs" / run_id, "xiaomi-13t")
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "policy": {
+                "allowed_public_only": True,
+                "internal_search_used": False,
+                "attachments_downloaded": False,
+            },
+            "counts": {
+                "requested_topics": 1,
+                "requested_pages": 1,
+                "fetched_topics": 1,
+                "fetched_pages": 1,
+                "errors": 0,
+            },
+            "network_touched": True,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "normalize",
+        {
+            "schema": "aoa_4pda_normalize_receipt_v1",
+            "run_id": run_id,
+            "source_run_id": run_id,
+            "counts": {"topics": 1, "pages": 1},
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "source_run_ids": [run_id],
+            "index_kinds": ["keyword"],
+            "index_path": str(index_path),
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "graph",
+        {
+            "schema": "aoa_4pda_graph_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "graph_path": str(graph_path),
+            "network_touched": False,
+        },
+    )
+    suite_path = tmp_path / "live_graph_query_suite.json"
+    suite_path.write_text(
+        json.dumps(
+            {
+                "schema": "aoa_4pda_live_graph_query_eval_suite_v1",
+                "suite_id": "cli-live-graph-query-suite",
+                "owner_repo": "aoa-4pda-connector",
+                "proof_owner_repo": "aoa-evals",
+                "central_boundary": "local test suite only",
+                "default_limit": 3,
+                "dataset": {
+                    "kind": "bounded_live_run_keyword_index_plus_graph",
+                    "expected_profile": "xiaomi-13t",
+                },
+                "cases": [
+                    {
+                        "case_id": "recovery-context",
+                        "query": "Xiaomi 13T aristotle recovery.img fastboot",
+                        "expect": {
+                            "top_post_id": "128964413",
+                            "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+                            "query_report_unit": "chunk",
+                            "relation_edges": [
+                                {
+                                    "kind": "recovery_targets_file",
+                                    "from_node": "entity:recovery_action:flash recovery.img",
+                                    "to_node": "entity:file:recovery.img",
+                                },
+                                {
+                                    "kind": "recovery_uses_tool",
+                                    "from_node": "entity:recovery_action:flash recovery.img",
+                                    "to_node": "entity:tool:fastboot",
+                                },
+                            ],
+                        },
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "eval",
+            "live-graph-query-quality",
+            "--run",
+            run_id,
+            "--suite",
+            str(suite_path),
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_live_graph_query_eval_report_v1"
+    assert payload["status"] == "ok"
+    assert payload["suite_id"] == "cli-live-graph-query-suite"
     assert payload["network_touched"] is False
     assert payload["counts"]["failed"] == 0
 

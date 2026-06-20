@@ -33,6 +33,8 @@
 
 - focused-device profile route with Xiaomi 13T seed set, profile inspection,
   and a live-run eval suite
+  - focused Xiaomi 13T graph-query eval over already-built live index and graph
+    receipts
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms

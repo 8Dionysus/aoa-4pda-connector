@@ -1,0 +1,65 @@
+{
+  "schema": "aoa_4pda_live_graph_query_eval_suite_v1",
+  "suite_id": "live-xiaomi-13t-graph-query-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded Xiaomi 13T run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 5,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_index_plus_graph",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "xiaomi-13t",
+    "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
+    "notes": "Reads existing configured storage receipts, keyword index, and graph export for a named Xiaomi 13T run; does not crawl or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-live-recovery-graph-context",
+      "query": "Xiaomi 13T aristotle recovery.img fastboot",
+      "expect": {
+        "top_post_id": "128964413",
+        "matched_specific_terms_all": ["recovery.img"],
+        "query_report_technical_terms_all": ["recovery.img", "aristotle"],
+        "graph_report_relation_edge_kinds_all": ["recovery_targets_file", "recovery_uses_tool"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "relation_edges": [
+          {
+            "kind": "recovery_targets_file",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "recovery_uses_tool",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:tool:fastboot"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-root-graph-context",
+      "query": "2306EPN60G HyperOS boot.img Magisk KSU",
+      "expect": {
+        "top_post_id": "128449684",
+        "matched_specific_terms_all": ["boot.img", "magisk"],
+        "graph_report_relation_edge_kinds_all": ["root_targets_file", "root_uses_tool"],
+        "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "query_report_unit": "chunk",
+        "relation_edges": [
+          {
+            "kind": "root_targets_file",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:file:boot.img"
+          },
+          {
+            "kind": "root_uses_tool",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:tool:Magisk"
+          }
+        ]
+      }
+    }
+  ]
+}

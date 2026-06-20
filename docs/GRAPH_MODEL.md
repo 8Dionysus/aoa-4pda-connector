@@ -120,3 +120,9 @@ suite for the Xiaomi 13T profile. It checks public-safe fixture evidence for
 TWRP/OrangeFox/fastboot, boot/recovery image files, and the root/recovery
 relation edges that make those posts navigable without using 4PDA internal
 search.
+
+`evals/suites/live_xiaomi_13t_graph_query_quality.json` is the matching
+receipt-driven live gate. It does not build a new corpus; it reads an
+operator-materialized Xiaomi 13T run from configured storage and checks that
+`query-graph` returns cited root/recovery relation context from the existing
+keyword index and graph export.

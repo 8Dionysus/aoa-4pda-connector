@@ -24,3 +24,4 @@ artifacts:
   build_graph: true
 quality_gates:
   live_search_suite: evals/suites/live_xiaomi_13t_search_quality.json
+  live_graph_query_suite: evals/suites/live_xiaomi_13t_graph_query_quality.json

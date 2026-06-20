@@ -100,6 +100,14 @@ For an already-built Xiaomi 13T focused run, pass
 `aristotle`, split `2306 EPN60G`, `boot.img`, and `recovery.img` retrieval over
 configured local storage only.
 
+`aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json`
+runs the focused Xiaomi 13T graph-query gate against an already-built bounded
+run. It reads configured crawl, normalize, index, and graph receipts, then
+checks that local `query-graph` packets preserve root/recovery relation context
+such as `root_targets_file`, `root_uses_tool`, `recovery_targets_file`, and
+`recovery_uses_tool`. It does not crawl, rebuild the corpus, use 4PDA internal
+search, or commit generated artifacts.
+
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local
 index and graph artifacts from the sanitized live-shaped fixture and checks
