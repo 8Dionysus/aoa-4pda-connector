@@ -8,19 +8,33 @@ cd aoa-4pda-connector
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e ".[dev]"
+python scripts/verify_agent_install_route.py
 python scripts/validate_connector.py
 python -m pytest -q
 aoa-4pda doctor
 aoa-4pda storage status
 aoa-4pda ready
+aoa-4pda discovery audit xiaomi-13t
+aoa-4pda discovery review xiaomi-13t
+aoa-4pda coverage audit xiaomi-13t
+aoa-4pda refresh audit xiaomi-13t
 aoa-4pda proof starter
 aoa-4pda materialize fixture
 aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
+aoa-4pda eval hybrid-query-packets
 aoa-4pda eval answer-packets
 ```
+
+`python scripts/verify_agent_install_route.py` creates a temporary fresh copy
+of the repository, installs the package in an isolated virtual environment,
+routes generated state to temporary external storage roots, materializes the
+fixture database, runs the starter query/answer/eval route, and checks that
+generated connector data did not leak into the repo-local scaffold. Package
+installation may use the network for Python dependencies; the connector route
+itself does not crawl or use 4PDA internal search.
 
 ## Configure Storage
 
@@ -48,11 +62,17 @@ The skeleton does not run network crawls by default. First run the offline proof
 aoa-4pda proof starter
 aoa-4pda materialize fixture
 aoa-4pda ready
+aoa-4pda discovery audit xiaomi-13t
+aoa-4pda discovery review xiaomi-13t
+aoa-4pda coverage audit xiaomi-13t
+aoa-4pda refresh audit xiaomi-13t
 aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
+aoa-4pda query-hybrid "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
+aoa-4pda eval hybrid-query-packets
 aoa-4pda eval answer-packets
 ```
 
@@ -63,11 +83,13 @@ aoa-4pda policy check
 aoa-4pda crawl --profile starter
 aoa-4pda normalize --run latest
 aoa-4pda build-index --profile starter
+aoa-4pda build-vector --profile starter
 aoa-4pda build-graph --profile starter
 aoa-4pda proof live-starter --run latest --query "redmi note 10 twrp boot.img"
 aoa-4pda eval live-search-quality --run latest
 aoa-4pda query "redmi note 10 twrp bootloop"
 aoa-4pda query-graph "redmi note 10 twrp bootloop"
+aoa-4pda query-hybrid "redmi note 10 twrp bootloop"
 aoa-4pda answer "redmi note 10 twrp bootloop"
 ```
 
@@ -86,3 +108,22 @@ already-built graph export and checks root/recovery relation context in local
 `query-graph` packets. `eval live-answer-quality --run <run-id> --suite
 evals/suites/live_xiaomi_13t_answer_quality.json` checks the deterministic
 answer packet rendered from that same configured storage.
+`eval live-hybrid-query-quality --run <run-id> --suite
+evals/suites/live_xiaomi_13t_hybrid_query_quality.json` reads the already-built
+keyword index, deterministic vector index, and graph export and checks local
+hybrid retrieval without crawling.
+
+Run `aoa-4pda coverage audit xiaomi-13t --run <run-id>` before those live
+gates to see whether the selected Xiaomi 13T run actually covers the configured
+seed windows, focus areas, receipt chain, keyword index, vector index, and
+graph export.
+Run `aoa-4pda refresh audit xiaomi-13t --run <run-id>` to check whether the
+selected run is fresh enough for those gates or should be refreshed after
+operator confirmation.
+Run `aoa-4pda discovery audit xiaomi-13t --run <run-id>` before seed expansion
+to review public topic/window candidates already visible in stored snapshots.
+Treat `review_priority`, `anchor_texts`, and `evidence_contexts` as seed-review
+inputs. Do not add candidates that are only navigation noise, and do not treat
+already covered seed-plan windows as gaps.
+Run `aoa-4pda discovery review xiaomi-13t --run <run-id>` to compare current
+candidates with the review manifest before editing `connector/seeds`.

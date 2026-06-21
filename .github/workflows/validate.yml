@@ -35,6 +35,18 @@ jobs:
       - name: Run offline starter proof
         run: aoa-4pda proof starter
 
+      - name: Run no-network discovery audit
+        run: aoa-4pda discovery audit xiaomi-13t
+
+      - name: Run no-network discovery review
+        run: aoa-4pda discovery review xiaomi-13t
+
+      - name: Run no-network coverage audit
+        run: aoa-4pda coverage audit xiaomi-13t
+
+      - name: Run no-network refresh audit
+        run: aoa-4pda refresh audit xiaomi-13t
+
       - name: Materialize no-network fixture
         run: |
           aoa-4pda storage status
@@ -50,15 +62,21 @@ jobs:
       - name: Run starter graph query packet eval
         run: aoa-4pda eval graph-query-packets
 
+      - name: Run starter hybrid query packet eval
+        run: aoa-4pda eval hybrid-query-packets
+
       - name: Run starter answer packet eval
         run: aoa-4pda eval answer-packets
+
+      - name: Verify agent install route from fresh copy
+        run: python scripts/verify_agent_install_route.py --skip-pytest
 
       - name: Guard against committed heavy artifacts
         run: |
           python - <<'PY'
           import subprocess
 
-          forbidden = {"data", "cache", "artifacts", "raw", "indexes", "graphs"}
+          forbidden = {"data", "cache", "artifacts", "raw", "indexes", "vectors", "graphs"}
           allowed_scaffold = {
               ".connector-state/data/.gitkeep",
               ".connector-state/cache/.gitkeep",

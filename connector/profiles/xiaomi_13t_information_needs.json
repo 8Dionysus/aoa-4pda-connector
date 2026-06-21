@@ -1,0 +1,211 @@
+{
+  "schema": "aoa_4pda_information_need_matrix_v1",
+  "profile_id": "xiaomi-13t",
+  "target_label": "Xiaomi 13T",
+  "scope": "bounded reference-profile information-need coverage for local 4PDA evidence",
+  "notes": "This matrix separates page/receipt materialization from proof that useful classes of Xiaomi 13T questions have search, graph, or answer eval routes. Generated corpora and eval reports stay outside Git.",
+  "needs": [
+    {
+      "need_id": "device_identity_aliases",
+      "label": "Device identity, codename, model aliases, and HyperOS context",
+      "priority": "required",
+      "required_for_connector_ready": true,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "device_discussion",
+        "device_discussion_reviewed_window",
+        "firmware_root_tools_recovery"
+      ],
+      "eval_cases": {
+        "live_search_suite": [
+          "xiaomi-13t-split-model-hyperos"
+        ],
+        "live_hybrid_query_suite": [
+          "xiaomi-13t-live-hybrid-model-root-recall"
+        ]
+      }
+    },
+    {
+      "need_id": "root_boot_image",
+      "label": "Root path through boot.img, Magisk, and KernelSU",
+      "priority": "required",
+      "required_for_connector_ready": true,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "firmware_root_tools_recovery",
+        "boot_img_recovery_extract",
+        "boot_img_recovery_extract_adjacent",
+        "boot_img_magisk",
+        "boot_img_magisk_adjacent",
+        "hyperos_boot_img",
+        "hyperos_boot_img_adjacent",
+        "kernelsu_root_method"
+      ],
+      "eval_cases": {
+        "live_ranking_pressure_suite": [
+          "xiaomi-13t-kernelsu-root-recall"
+        ],
+        "live_hybrid_query_suite": [
+          "xiaomi-13t-live-hybrid-root-top",
+          "xiaomi-13t-live-hybrid-boot-installer-recall"
+        ],
+        "live_graph_query_suite": [
+          "xiaomi-13t-live-root-graph-context"
+        ],
+        "live_answer_suite": [
+          "xiaomi-13t-live-root-answer",
+          "xiaomi-13t-live-russian-root-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "recovery_fastboot_twrp",
+      "label": "Recovery.img, fastboot, TWRP, and OrangeFox path",
+      "priority": "required",
+      "required_for_connector_ready": true,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "firmware_root_tools_recovery",
+        "recovery_img_restore",
+        "recovery_img_restore_adjacent",
+        "twrp_orangefox_current",
+        "twrp_orangefox_current_adjacent"
+      ],
+      "eval_cases": {
+        "live_ranking_pressure_suite": [
+          "xiaomi-13t-orangefox-recovery-recall",
+          "xiaomi-13t-vendor-boot-recovery-recall",
+          "xiaomi-13t-hyperos-202-recovery-recall"
+        ],
+        "live_hybrid_query_suite": [
+          "xiaomi-13t-live-hybrid-recovery-top",
+          "xiaomi-13t-live-hybrid-orangefox-recovery-top"
+        ],
+        "live_graph_query_suite": [
+          "xiaomi-13t-live-recovery-graph-context",
+          "xiaomi-13t-live-orangefox-recovery-rerank",
+          "xiaomi-13t-live-vendor-boot-recovery-rerank",
+          "xiaomi-13t-live-hyperos-202-recovery-rerank"
+        ],
+        "live_answer_suite": [
+          "xiaomi-13t-live-recovery-answer",
+          "xiaomi-13t-live-russian-recovery-answer",
+          "xiaomi-13t-live-orangefox-recovery-rerank-answer",
+          "xiaomi-13t-live-vendor-boot-recovery-rerank-answer",
+          "xiaomi-13t-live-hyperos-202-recovery-rerank-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "accessories_compatibility",
+      "label": "Accessories and compatibility questions",
+      "priority": "required",
+      "required_for_connector_ready": true,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "accessories_peripherals_compatibility",
+        "accessories_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-accessory-snippet-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "hyperos_notifications_runtime",
+      "label": "Runtime issues such as HyperOS notifications and app behavior",
+      "priority": "required",
+      "required_for_connector_ready": true,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "power_notifications_runtime_issues",
+        "battery_late_window",
+        "firmware_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-hyperos-notification-snippet-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "battery_power_runtime",
+      "label": "Battery life, power use, and runtime behavior",
+      "priority": "expansion",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "power_notifications_runtime_issues",
+        "battery_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-battery-night-drain-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "camera_quality_issues",
+      "label": "Camera quality, bugs, and tuning discussions",
+      "priority": "expansion",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "camera_issues_quality"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-camera-gcam-config-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "purchase_variants_availability",
+      "label": "Purchase, variants, region availability, and seller questions",
+      "priority": "expansion",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "purchase_variants_availability"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-purchase-price-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "firmware_download_source",
+      "label": "Firmware download sources and package provenance",
+      "priority": "expansion",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "firmware_download_source",
+        "firmware_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-firmware-source-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "late_discussion_regression_watch",
+      "label": "Late-window general discussion and regression watch",
+      "priority": "expansion",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "device_discussion_late_window",
+        "firmware_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-late-update-reset-answer"
+        ]
+      }
+    }
+  ]
+}

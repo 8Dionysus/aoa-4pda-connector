@@ -23,6 +23,7 @@ cache/
 artifacts/
 raw/
 indexes/
+vectors/
 graphs/
 exports/full/
 *.sqlite

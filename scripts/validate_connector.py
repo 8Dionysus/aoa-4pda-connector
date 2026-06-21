@@ -18,6 +18,7 @@ REQUIRED_FILES = [
     "pyproject.toml",
     ".env.example",
     ".gitignore",
+    "scripts/verify_agent_install_route.py",
     ".connector-state/AGENTS.md",
     ".connector-state/README.md",
     "connector/SOURCE_POLICY.md",
@@ -27,8 +28,10 @@ REQUIRED_FILES = [
     "connector/profiles/xiaomi-13t.yaml",
     "connector/profiles/redmi-note-10-pro.yaml",
     "connector/profiles/full-public.yaml",
+    "connector/profiles/xiaomi_13t_information_needs.json",
     "connector/seeds/starter_topics.yaml",
     "connector/seeds/xiaomi_13t_topics.yaml",
+    "connector/seeds/reviews/xiaomi_13t_discovery_review.json",
     "connector/seeds/redmi_note_10_pro_topics.yaml",
     "connector/seeds/forum_sections.yaml",
     "connector/manifests/connector_manifest.yaml",
@@ -38,10 +41,12 @@ REQUIRED_FILES = [
     "evals/suites/starter_answer_packets.json",
     "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_graph_query_packets.json",
+    "evals/suites/starter_hybrid_query_packets.json",
     "evals/suites/starter_search_quality.json",
     "evals/suites/live_starter_search_quality.json",
     "evals/suites/live_xiaomi_13t_search_quality.json",
     "evals/suites/live_xiaomi_13t_ranking_pressure.json",
+    "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/live_xiaomi_13t_answer_quality.json",
     "evals/suites/live_redmi_note_10_pro_search_quality.json",
@@ -53,6 +58,10 @@ REQUIRED_FILES = [
     "docs/AGENT_INSTALL_ROUTE.md",
     "docs/EXTERNAL_STORAGE.md",
     "docs/CONNECTOR_READY.md",
+    "docs/DISCOVERY.md",
+    "docs/SEED_REVIEW.md",
+    "docs/COVERAGE.md",
+    "docs/REFRESH.md",
     "docs/RUNTIME_CONTRACT.md",
     "docs/STARTER_PROOF.md",
     "docs/QUERY_MODEL.md",
@@ -74,10 +83,14 @@ REQUIRED_DIRS = [
     "src/aoa_4pda_connector/normalize",
     "src/aoa_4pda_connector/chunk",
     "src/aoa_4pda_connector/index",
+    "src/aoa_4pda_connector/vector",
     "src/aoa_4pda_connector/graph",
     "src/aoa_4pda_connector/answer",
     "src/aoa_4pda_connector/query",
     "src/aoa_4pda_connector/readiness",
+    "src/aoa_4pda_connector/discovery",
+    "src/aoa_4pda_connector/coverage",
+    "src/aoa_4pda_connector/refresh",
     "src/aoa_4pda_connector/storage",
     "src/aoa_4pda_connector/export",
     "src/aoa_4pda_connector/serve",
@@ -88,6 +101,7 @@ REQUIRED_DIRS = [
     "evals/suites",
     "evals/intake",
     "evals/reports",
+    "connector/seeds/reviews",
     "generated",
     ".github/workflows",
 ]
@@ -100,6 +114,8 @@ REQUIRED_SCHEMAS = [
     "answer_packet.schema.json",
     "materialize_receipt.schema.json",
     "index_manifest.schema.json",
+    "vector_manifest.schema.json",
+    "vector_index.schema.json",
     "graph_node.schema.json",
     "graph_edge.schema.json",
 ]
@@ -115,6 +131,7 @@ REQUIRED_GITIGNORE = [
     "artifacts/",
     "raw/",
     "indexes/",
+    "vectors/",
     "graphs/",
     "exports/full/",
     "*.sqlite",
@@ -130,6 +147,7 @@ FORBIDDEN_HEAVY_ROOTS = [
     "artifacts",
     "raw",
     "indexes",
+    "vectors",
     "graphs",
     "exports/full",
 ]
@@ -140,6 +158,7 @@ FORBIDDEN_ARTIFACT_DIR_NAMES = {
     "artifacts",
     "raw",
     "indexes",
+    "vectors",
     "graphs",
 }
 
@@ -178,6 +197,7 @@ def main() -> int:
     for path in [
         *repo_root.glob("connector/fixtures/**/*.json"),
         *repo_root.glob("connector/examples/**/*.json"),
+        *repo_root.glob("connector/seeds/reviews/**/*.json"),
         *repo_root.glob("evals/suites/**/*.json"),
         *repo_root.glob("generated/**/*.json"),
     ]:
@@ -206,6 +226,7 @@ def main() -> int:
 
     _check_text(repo_root, errors, warnings)
     _check_eval_port(repo_root, errors)
+    _check_seed_review(repo_root, errors)
 
     payload = {
         "schema": "aoa_4pda_connector_validation_v1",
@@ -236,7 +257,13 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     storage_policy = (repo_root / "connector" / "STORAGE_POLICY.md").read_text(encoding="utf-8")
     env_example = (repo_root / ".env.example").read_text(encoding="utf-8")
     ready_doc = (repo_root / "docs" / "CONNECTOR_READY.md").read_text(encoding="utf-8")
+    discovery_doc = (repo_root / "docs" / "DISCOVERY.md").read_text(encoding="utf-8")
+    seed_review_doc = (repo_root / "docs" / "SEED_REVIEW.md").read_text(encoding="utf-8")
+    coverage_doc = (repo_root / "docs" / "COVERAGE.md").read_text(encoding="utf-8")
+    refresh_doc = (repo_root / "docs" / "REFRESH.md").read_text(encoding="utf-8")
     runtime_contract = (repo_root / "docs" / "RUNTIME_CONTRACT.md").read_text(encoding="utf-8")
+    install_doc = (repo_root / "docs" / "INSTALL.md").read_text(encoding="utf-8")
+    agent_install_doc = (repo_root / "docs" / "AGENT_INSTALL_ROUTE.md").read_text(encoding="utf-8")
 
     for token in ["act=search", "act=Search", "act=attach", "/forum/dl"]:
         if token not in source_policy or token not in route_policy:
@@ -250,13 +277,90 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
         if token not in storage_policy or token not in env_example:
             errors.append(f"repo-local storage token missing from docs/env: {token}")
 
-    for token in ["connector-ready-v1", "aoa-4pda ready", "achieved", "partial", "missing"]:
+    for token in [
+        "connector-ready-v1",
+        "aoa-4pda ready",
+        "achieved",
+        "partial",
+        "missing",
+        "reference_profile_seed_review_state",
+        "reference_profile_coverage_state",
+    ]:
         if token not in ready_doc:
             errors.append(f"connector-ready doc missing token: {token}")
 
-    for token in ["abyss-stack", "aoa-4pda", "JSON", "CONNECTOR_DATA_ROOT", "CONNECTOR_ARTIFACT_ROOT"]:
+    for token in [
+        "reference-profile-discovery-v1",
+        "aoa-4pda discovery audit xiaomi-13t",
+        "aoa-4pda discovery review xiaomi-13t",
+        "missing_run",
+        "needs_seed_review",
+        "no_new_candidates",
+        "covered_seed_window_link_count",
+        "review_priority",
+    ]:
+        if token not in discovery_doc:
+            errors.append(f"discovery doc missing token: {token}")
+        if token == "aoa-4pda discovery audit xiaomi-13t" and (
+            token not in install_doc or token not in agent_install_doc
+        ):
+            errors.append(f"install route missing discovery command token: {token}")
+
+    for token in [
+        "reference-profile-seed-review-v1",
+        "aoa-4pda discovery review xiaomi-13t",
+        "missing_review",
+        "needs_review",
+        "reviewed_pending_seed_update",
+        "reviewed",
+        "accepted_pending_seed_update",
+    ]:
+        if token not in seed_review_doc:
+            errors.append(f"seed review doc missing token: {token}")
+        if token == "aoa-4pda discovery review xiaomi-13t" and (
+            token not in install_doc or token not in agent_install_doc
+        ):
+            errors.append(f"install route missing seed review command token: {token}")
+
+    for token in ["reference-profile-coverage-v1", "aoa-4pda coverage audit xiaomi-13t", "no_run", "coverage_ready"]:
+        if token not in coverage_doc:
+            errors.append(f"coverage doc missing token: {token}")
+        if token == "aoa-4pda coverage audit xiaomi-13t" and (
+            token not in install_doc or token not in agent_install_doc
+        ):
+            errors.append(f"install route missing coverage command token: {token}")
+
+    for token in [
+        "information_need_matrix",
+        "aoa_4pda_information_need_matrix_v1",
+        "deep_information_needs_covered",
+        "reference_profile_information_need_coverage",
+    ]:
+        if token not in coverage_doc and token not in ready_doc:
+            errors.append(f"information-need coverage docs missing token: {token}")
+
+    for token in ["reference-profile-refresh-v1", "aoa-4pda refresh audit xiaomi-13t", "missing_run", "needs_refresh", "fresh"]:
+        if token not in refresh_doc:
+            errors.append(f"refresh doc missing token: {token}")
+        if token == "aoa-4pda refresh audit xiaomi-13t" and (
+            token not in install_doc or token not in agent_install_doc
+        ):
+            errors.append(f"install route missing refresh command token: {token}")
+
+    for token in [
+        "abyss-stack",
+        "aoa-4pda",
+        "JSON",
+        "CONNECTOR_DATA_ROOT",
+        "CONNECTOR_ARTIFACT_ROOT",
+        "aoa_4pda_agent_install_route_verify_v1",
+    ]:
         if token not in runtime_contract:
             errors.append(f"runtime contract missing token: {token}")
+
+    install_verifier = "python scripts/verify_agent_install_route.py"
+    if install_verifier not in install_doc or install_verifier not in agent_install_doc:
+        errors.append(f"install route missing agent install verifier token: {install_verifier}")
 
     for profile in (repo_root / "connector" / "profiles").glob("*.yaml"):
         text = profile.read_text(encoding="utf-8")
@@ -283,9 +387,11 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_search_quality.json": "aoa_4pda_search_eval_suite_v1",
         "starter_graph_relations.json": "aoa_4pda_graph_eval_suite_v1",
         "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
+        "starter_hybrid_query_packets.json": "aoa_4pda_hybrid_query_eval_suite_v1",
         "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_starter_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
         "live_xiaomi_13t_ranking_pressure.json": "aoa_4pda_live_search_eval_suite_v1",
+        "live_xiaomi_13t_hybrid_query_quality.json": "aoa_4pda_live_hybrid_query_eval_suite_v1",
         "live_redmi_note_10_pro_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
         "xiaomi_13t_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_xiaomi_13t_answer_quality.json": "aoa_4pda_live_answer_eval_suite_v1",
@@ -309,6 +415,13 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("relation_edges"):
                 errors.append("starter_graph_query_packets.json must include relation_edges expectations")
+        if suite_name == "starter_hybrid_query_packets.json":
+            first_case = suite.get("cases", [{}])[0]
+            expect = first_case.get("expect", {})
+            if expect.get("query_report_algorithm") != "hybrid_bm25_vector_graph_v1":
+                errors.append("starter_hybrid_query_packets.json must constrain the hybrid algorithm")
+            if not expect.get("top_post_id"):
+                errors.append("starter_hybrid_query_packets.json must name the expected top post")
         if suite_name == "starter_answer_packets.json":
             first_case = suite.get("cases", [{}])[0]
             expect = first_case.get("expect", {})
@@ -329,6 +442,18 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
                 errors.append("live_xiaomi_13t_ranking_pressure.json must constrain expected result rank")
             if not all(case.get("expect", {}).get("expected_result_post_id") for case in cases):
                 errors.append("live_xiaomi_13t_ranking_pressure.json must name expected result posts")
+        if suite_name == "live_xiaomi_13t_hybrid_query_quality.json":
+            cases = suite.get("cases", [])
+            if len(cases) < 3:
+                errors.append("live_xiaomi_13t_hybrid_query_quality.json must include at least three cases")
+            if not all(case.get("expect", {}).get("query_report_algorithm") == "hybrid_bm25_vector_graph_v1" for case in cases):
+                errors.append("live_xiaomi_13t_hybrid_query_quality.json must constrain the hybrid algorithm")
+            if not any(case.get("expect", {}).get("top_vector_score_present") is True for case in cases):
+                errors.append("live_xiaomi_13t_hybrid_query_quality.json must check top vector participation")
+            if not any(case.get("expect", {}).get("top_graph_score_present") is True for case in cases):
+                errors.append("live_xiaomi_13t_hybrid_query_quality.json must check top graph participation")
+            if not any(case.get("expect", {}).get("expected_result_rank_max") for case in cases):
+                errors.append("live_xiaomi_13t_hybrid_query_quality.json must include recall-pressure rank coverage")
         if suite_name == "live_redmi_note_10_pro_search_quality.json":
             cases = suite.get("cases", [])
             dataset = suite.get("dataset", {})
@@ -348,14 +473,79 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("recovery_action_labels") or not expect.get("target_file_labels"):
                 errors.append("live_xiaomi_13t_answer_quality.json must include recovery/file answer expectations")
-            if len(cases) < 6:
-                errors.append("live_xiaomi_13t_answer_quality.json must include at least six focused cases")
+            if len(cases) < 14:
+                errors.append("live_xiaomi_13t_answer_quality.json must include at least fourteen focused cases")
             if not any(case.get("expect", {}).get("answer_kind") == "snippet" for case in cases):
                 errors.append("live_xiaomi_13t_answer_quality.json must include snippet answer coverage")
             if not any("прош" in str(case.get("query", "")).casefold() for case in cases):
                 errors.append("live_xiaomi_13t_answer_quality.json must include a Russian recovery/root query")
             if not any(case.get("expect", {}).get("answer_context_labels_min") for case in cases):
                 errors.append("live_xiaomi_13t_answer_quality.json must constrain answer context label count")
+            case_ids = {str(case.get("case_id")) for case in cases}
+            for case_id in [
+                "xiaomi-13t-live-battery-night-drain-answer",
+                "xiaomi-13t-live-camera-gcam-config-answer",
+                "xiaomi-13t-live-purchase-price-answer",
+                "xiaomi-13t-live-firmware-source-answer",
+                "xiaomi-13t-live-late-update-reset-answer",
+            ]:
+                if case_id not in case_ids:
+                    errors.append(f"live_xiaomi_13t_answer_quality.json missing information-need case: {case_id}")
+
+
+def _check_seed_review(repo_root: Path, errors: list[str]) -> None:
+    manifest_path = repo_root / "connector" / "seeds" / "reviews" / "xiaomi_13t_discovery_review.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    seed_text = (repo_root / "connector" / "seeds" / "xiaomi_13t_topics.yaml").read_text(encoding="utf-8")
+    profile_text = (repo_root / "connector" / "profiles" / "xiaomi-13t.yaml").read_text(encoding="utf-8")
+    if manifest.get("schema") != "aoa_4pda_discovery_review_manifest_v1":
+        errors.append("xiaomi_13t_discovery_review.json has unexpected schema")
+    if manifest.get("profile_id") != "xiaomi-13t":
+        errors.append("xiaomi_13t_discovery_review.json must target xiaomi-13t")
+    policy = manifest.get("policy", {})
+    if not isinstance(policy, dict):
+        errors.append("xiaomi_13t_discovery_review.json policy must be an object")
+    elif policy.get("network_touched") is not False or policy.get("review_is_crawl_permission") is not False:
+        errors.append("xiaomi_13t_discovery_review.json must keep review no-network and non-crawl")
+    if not manifest.get("rules"):
+        errors.append("xiaomi_13t_discovery_review.json must include review rules")
+    if not manifest.get("decisions"):
+        errors.append("xiaomi_13t_discovery_review.json must include explicit decisions")
+    if "max_topics: 23" not in profile_text:
+        errors.append("xiaomi-13t profile must include the reviewed seed expansion max_topics")
+    if "information_need_matrix: connector/profiles/xiaomi_13t_information_needs.json" not in profile_text:
+        errors.append("xiaomi-13t profile must name the information-need matrix")
+    if seed_text.count("- id:") < 23:
+        errors.append("xiaomi_13t_topics.yaml must include the reviewed seed expansion")
+    for token in ["accepted_candidate_count: 48", "accepted_pending_crawl", "xiaomi-13t-firmware-window-7140"]:
+        if token not in seed_text:
+            errors.append(f"xiaomi_13t_topics.yaml missing reviewed expansion token: {token}")
+
+    matrix_path = repo_root / "connector" / "profiles" / "xiaomi_13t_information_needs.json"
+    matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
+    if matrix.get("schema") != "aoa_4pda_information_need_matrix_v1":
+        errors.append("xiaomi_13t_information_needs.json has unexpected schema")
+    if matrix.get("profile_id") != "xiaomi-13t":
+        errors.append("xiaomi_13t_information_needs.json must target xiaomi-13t")
+    needs = matrix.get("needs", [])
+    if not isinstance(needs, list) or len(needs) < 10:
+        errors.append("xiaomi_13t_information_needs.json must include at least ten needs")
+    else:
+        need_ids = {str(need.get("need_id")) for need in needs if isinstance(need, dict)}
+        for need_id in [
+            "root_boot_image",
+            "recovery_fastboot_twrp",
+            "battery_power_runtime",
+            "camera_quality_issues",
+            "firmware_download_source",
+        ]:
+            if need_id not in need_ids:
+                errors.append(f"xiaomi_13t_information_needs.json missing need: {need_id}")
+        for need in needs:
+            if not isinstance(need, dict):
+                continue
+            if need.get("required_for_deep_profile") is True and not need.get("eval_cases"):
+                errors.append(f"xiaomi_13t_information_needs.json deep need lacks eval route: {need.get('need_id')}")
 
 
 if __name__ == "__main__":

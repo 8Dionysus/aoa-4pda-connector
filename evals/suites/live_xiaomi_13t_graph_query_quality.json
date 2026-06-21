@@ -120,10 +120,10 @@
       "case_id": "xiaomi-13t-live-root-graph-context",
       "query": "2306EPN60G HyperOS boot.img Magisk KSU",
       "expect": {
-        "top_post_id": "128449684",
+        "top_post_id": "128398172",
         "matched_specific_terms_all": ["boot.img", "magisk"],
         "graph_report_relation_edge_kinds_all": ["root_targets_file", "root_uses_tool"],
-        "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "source_url_contains": "showtopic=1076859&st=1780#entry128398172",
         "query_report_unit": "chunk",
         "relation_edges": [
           {
@@ -135,6 +135,11 @@
             "kind": "root_uses_tool",
             "from_node": "entity:root_action:patch boot.img",
             "to_node": "entity:tool:Magisk"
+          },
+          {
+            "kind": "root_uses_tool",
+            "from_node": "entity:root_action:patch boot.img",
+            "to_node": "entity:tool:KSU"
           }
         ]
       }

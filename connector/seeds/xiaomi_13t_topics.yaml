@@ -1,14 +1,18 @@
 schema: aoa_4pda_seed_list_v1
 seed_id: xiaomi-13t-topics
-description: Bounded public seed set for Xiaomi 13T focused-device runs. Found through external web search, not 4PDA internal search.
+description: Bounded public seed set for Xiaomi 13T focused-device runs. Expanded through reviewed discovery candidates, not 4PDA internal search.
 network_default: disabled
 target_device_id: xiaomi-13t
 target_label: Xiaomi 13T
 target_codename: aristotle
 target_model_aliases: 2306EPN60G, 2306EPN60R, XIG04
 source_discovery:
-  method: external_web_search
-  checked_at: 2026-06-20
+  method: external_web_search_and_discovery_review
+  checked_at: 2026-06-21
+  review_manifest: connector/seeds/reviews/xiaomi_13t_discovery_review.json
+  accepted_candidate_count: 48
+  deferred_candidate_count: 12
+  rejected_candidate_count: 3
   internal_4pda_search_used: false
 topics:
   - id: xiaomi-13t-discussion
@@ -16,52 +20,136 @@ topics:
     label: Xiaomi 13T - discussion
     status: public_topic_seed
     focus: device_discussion
-    max_pages: 4
+    max_pages: 7
   - id: xiaomi-13t-firmware
     url: https://4pda.to/forum/index.php?showtopic=1076859
     label: Xiaomi 13T - firmware
     status: public_topic_seed
     focus: firmware_root_tools_recovery
-    max_pages: 4
+    max_pages: 7
   - id: xiaomi-13t-firmware-boot-recovery-1800
     url: https://4pda.to/forum/index.php?showtopic=1076859&st=1800
     label: Xiaomi 13T - firmware boot/recovery window
     status: public_topic_seed
     focus: boot_img_recovery_extract
-    max_pages: 2
+    max_pages: 5
   - id: xiaomi-13t-firmware-recovery-2140
     url: https://4pda.to/forum/index.php?showtopic=1076859&st=2140
     label: Xiaomi 13T - recovery.img window
     status: public_topic_seed
     focus: recovery_img_restore
-    max_pages: 2
+    max_pages: 5
   - id: xiaomi-13t-firmware-boot-3580
     url: https://4pda.to/forum/index.php?showtopic=1076859&st=3580
     label: Xiaomi 13T - boot.img window
     status: public_topic_seed
     focus: boot_img_magisk
-    max_pages: 2
+    max_pages: 5
   - id: xiaomi-13t-firmware-hyperos-boot-5400
     url: https://4pda.to/forum/index.php?showtopic=1076859&st=5400
     label: Xiaomi 13T - HyperOS boot.img window
     status: public_topic_seed
     focus: hyperos_boot_img
-    max_pages: 2
+    max_pages: 5
   - id: xiaomi-13t-firmware-current-recovery-6780
     url: https://4pda.to/forum/index.php?showtopic=1076859&st=6780
     label: Xiaomi 13T - current recovery/TWRP window
     status: public_topic_seed
     focus: twrp_orangefox_current
-    max_pages: 2
+    max_pages: 5
   - id: xiaomi-13t-battery
     url: https://4pda.to/forum/index.php?showtopic=1078716
     label: Xiaomi 13T - battery life
     status: public_topic_seed
     focus: power_notifications_runtime_issues
-    max_pages: 2
+    max_pages: 6
   - id: xiaomi-13t-accessories
     url: https://4pda.to/forum/index.php?showtopic=1076961
     label: Xiaomi 13T - accessories
     status: public_topic_seed
     focus: accessories_peripherals_compatibility
+    max_pages: 6
+  - id: xiaomi-13t-purchase
+    url: https://4pda.to/forum/index.php?showtopic=1076958
+    label: Xiaomi 13T - purchase
+    status: accepted_pending_crawl
+    focus: purchase_variants_availability
+    max_pages: 1
+  - id: xiaomi-13t-kernelsu-instruction
+    url: https://4pda.to/forum/index.php?showtopic=1055910
+    label: Xiaomi 13T - KernelSU instruction background
+    status: accepted_pending_crawl
+    focus: kernelsu_root_method
+    max_pages: 1
+  - id: xiaomi-13t-firmware-download-source
+    url: https://4pda.to/forum/index.php?showtopic=1102753
+    label: Xiaomi 13T - Xiaomi firmware download source
+    status: accepted_pending_crawl
+    focus: firmware_download_source
+    max_pages: 1
+  - id: xiaomi-13t-camera-discussion
+    url: https://4pda.to/forum/index.php?showtopic=1077044
+    label: Xiaomi 13T - camera discussion
+    status: accepted_pending_crawl
+    focus: camera_issues_quality
+    max_pages: 1
+  - id: xiaomi-13t-discussion-window-440
+    url: https://4pda.to/forum/index.php?showtopic=1074451&st=440
+    label: Xiaomi 13T - discussion window 440
+    status: accepted_pending_crawl
+    focus: device_discussion_reviewed_window
+    max_pages: 1
+  - id: xiaomi-13t-discussion-window-19140
+    url: https://4pda.to/forum/index.php?showtopic=1074451&st=19140
+    label: Xiaomi 13T - discussion late window
+    status: accepted_pending_crawl
+    focus: device_discussion_late_window
+    max_pages: 1
+  - id: xiaomi-13t-firmware-window-7140
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=7140
+    label: Xiaomi 13T - firmware late window
+    status: accepted_pending_crawl
+    focus: firmware_late_window
+    max_pages: 1
+  - id: xiaomi-13t-firmware-boot-recovery-1760
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=1760
+    label: Xiaomi 13T - firmware pre boot/recovery window
+    status: accepted_pending_crawl
+    focus: boot_img_recovery_extract_adjacent
     max_pages: 2
+  - id: xiaomi-13t-firmware-recovery-2100
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=2100
+    label: Xiaomi 13T - recovery.img adjacent window
+    status: accepted_pending_crawl
+    focus: recovery_img_restore_adjacent
+    max_pages: 2
+  - id: xiaomi-13t-firmware-boot-3540
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=3540
+    label: Xiaomi 13T - boot.img adjacent window
+    status: accepted_pending_crawl
+    focus: boot_img_magisk_adjacent
+    max_pages: 2
+  - id: xiaomi-13t-firmware-hyperos-boot-5360
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=5360
+    label: Xiaomi 13T - HyperOS boot.img adjacent window
+    status: accepted_pending_crawl
+    focus: hyperos_boot_img_adjacent
+    max_pages: 2
+  - id: xiaomi-13t-firmware-current-recovery-6740
+    url: https://4pda.to/forum/index.php?showtopic=1076859&st=6740
+    label: Xiaomi 13T - current recovery/TWRP adjacent window
+    status: accepted_pending_crawl
+    focus: twrp_orangefox_current_adjacent
+    max_pages: 2
+  - id: xiaomi-13t-battery-window-2280
+    url: https://4pda.to/forum/index.php?showtopic=1078716&st=2280
+    label: Xiaomi 13T - battery late window
+    status: accepted_pending_crawl
+    focus: battery_late_window
+    max_pages: 1
+  - id: xiaomi-13t-accessories-window-2160
+    url: https://4pda.to/forum/index.php?showtopic=1076961&st=2160
+    label: Xiaomi 13T - accessories late window
+    status: accepted_pending_crawl
+    focus: accessories_late_window
+    max_pages: 1

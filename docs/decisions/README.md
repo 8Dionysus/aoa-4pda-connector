@@ -27,3 +27,13 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0018` | [Connector ready audit](AOA-4PDA-D-0018-connector-ready-audit.md) |
 | `AOA-4PDA-D-0019` | [Answer freshness context](AOA-4PDA-D-0019-answer-freshness-context.md) |
 | `AOA-4PDA-D-0020` | [Second representative profile](AOA-4PDA-D-0020-second-representative-profile.md) |
+| `AOA-4PDA-D-0021` | [Reference profile coverage audit](AOA-4PDA-D-0021-reference-profile-coverage-audit.md) |
+| `AOA-4PDA-D-0022` | [Reference profile refresh audit](AOA-4PDA-D-0022-reference-profile-refresh-audit.md) |
+| `AOA-4PDA-D-0023` | [Reference profile discovery audit](AOA-4PDA-D-0023-reference-profile-discovery-audit.md) |
+| `AOA-4PDA-D-0024` | [Review-ready discovery candidates](AOA-4PDA-D-0024-review-ready-discovery-candidates.md) |
+| `AOA-4PDA-D-0025` | [Discovery review manifest](AOA-4PDA-D-0025-discovery-review-manifest.md) |
+| `AOA-4PDA-D-0026` | [Xiaomi 13T reviewed seed expansion](AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md) |
+| `AOA-4PDA-D-0027` | [Discovery pagination defer rule](AOA-4PDA-D-0027-discovery-pagination-defer-rule.md) |
+| `AOA-4PDA-D-0028` | [Deterministic vector hybrid index](AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md) |
+| `AOA-4PDA-D-0029` | [Agent install route verifier](AOA-4PDA-D-0029-agent-install-route-verifier.md) |
+| `AOA-4PDA-D-0030` | [Information need coverage](AOA-4PDA-D-0030-information-need-coverage.md) |

@@ -8,7 +8,7 @@ target_codename: aristotle
 target_model_aliases: 2306EPN60G, 2306EPN60R, XIG04
 target_search_terms: Xiaomi 13T, 13T, aristotle, 2306EPN60G, 2306EPN60R, XIG04, HyperOS, MIUI, TWRP, boot.img, recovery.img
 network_default: disabled
-max_topics: 9
+max_topics: 23
 max_pages_per_topic: 2
 max_posts_per_topic: 400
 politeness:
@@ -17,12 +17,15 @@ politeness:
 routes:
   seed_file: connector/seeds/xiaomi_13t_topics.yaml
   allowlist_manifest: connector/manifests/route_allowlist.yaml
+  information_need_matrix: connector/profiles/xiaomi_13t_information_needs.json
 artifacts:
   write_raw_snapshots: true
   build_bm25: true
-  build_vector: optional
+  build_vector: true
   build_graph: true
 quality_gates:
   live_search_suite: evals/suites/live_xiaomi_13t_search_quality.json
+  live_ranking_pressure_suite: evals/suites/live_xiaomi_13t_ranking_pressure.json
+  live_hybrid_query_suite: evals/suites/live_xiaomi_13t_hybrid_query_quality.json
   live_graph_query_suite: evals/suites/live_xiaomi_13t_graph_query_quality.json
   live_answer_suite: evals/suites/live_xiaomi_13t_answer_quality.json

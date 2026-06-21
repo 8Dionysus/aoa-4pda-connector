@@ -1,0 +1,228 @@
+{
+  "schema": "aoa_4pda_discovery_review_manifest_v1",
+  "profile_id": "xiaomi-13t",
+  "review_id": "xiaomi-13t-discovery-review-2026-06-21-materialized",
+  "reviewed_at": "2026-06-21",
+  "source_discovery_run": "20260621T194521Z__crawl",
+  "source_discovery_command": "aoa-4pda discovery audit xiaomi-13t --run 20260621T194521Z__crawl",
+  "policy": {
+    "network_touched": false,
+    "internal_4pda_search_used": false,
+    "review_is_crawl_permission": false,
+    "accepted_candidates_require_operator_confirmed_crawl": true
+  },
+  "rules": [
+    {
+      "id": "seed-topic-navigation-window-defer",
+      "candidate_kind": "seed_topic_new_window",
+      "decision": "defer",
+      "rationale": "Additional page-window links inside already seeded topics are usually pagination/navigation evidence. They are reviewed as deferred by default and require an exact accept decision before changing seed scope."
+    }
+  ],
+  "decisions": [
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1076958&st=0",
+      "decision": "accept",
+      "suggested_seed_status": "accepted_pending_seed_update",
+      "rationale": "Repeated purchase-topic link from Xiaomi 13T discussion, battery, and accessories snapshots; useful for device-specific availability, variants, and owner context."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1055910&st=0",
+      "decision": "accept",
+      "suggested_seed_status": "accepted_pending_seed_update",
+      "rationale": "Repeated KernelSU instruction link from Xiaomi 13T firmware/root windows; useful root-method background for answer grounding."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1102753&st=0",
+      "decision": "accept",
+      "suggested_seed_status": "accepted_pending_seed_update",
+      "rationale": "Repeated Xiaomi firmware download link from Xiaomi 13T firmware/root windows; useful firmware-source background for retrieval."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1077044&st=0",
+      "decision": "accept",
+      "suggested_seed_status": "accepted_pending_seed_update",
+      "rationale": "Repeated camera-discussion link from Xiaomi 13T discussion snapshots; useful for device camera issue coverage."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1067485&st=0",
+      "decision": "defer",
+      "rationale": "Related Xiaomi 13T Pro / Redmi K60 Ultra topic, but not the Xiaomi 13T target profile. Keep as sibling-device context until the reference profile needs cross-device comparison."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1060594&st=0",
+      "decision": "defer",
+      "rationale": "Generic PWM/display topic linked from Xiaomi 13T discussion. Potentially useful for display issue research, but not accepted into the first device-focused seed expansion."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=469624&st=0",
+      "decision": "defer",
+      "rationale": "Generic Xiaomi club topic. Keep as broad ecosystem context rather than reference-profile seed scope."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=117304&st=0",
+      "decision": "defer",
+      "rationale": "Generic reupload/help topic linked from recovery windows. Useful only if attachment/link recovery becomes a separate workflow."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=320910&st=0",
+      "decision": "defer",
+      "rationale": "BetterBatteryStats tool topic may help battery diagnosis, but it is not Xiaomi 13T-specific seed scope yet."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=439160&st=0",
+      "decision": "defer",
+      "rationale": "Wakelock Detector tool topic may help battery diagnosis, but it is not Xiaomi 13T-specific seed scope yet."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1033117&st=0",
+      "decision": "defer",
+      "rationale": "Unclear low-frequency firmware-linked candidate. Keep out of seed scope until stronger evidence appears."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1071413&st=0",
+      "decision": "defer",
+      "rationale": "DSU Loader tool topic may become useful for GSI workflows, but it is not accepted into the first Xiaomi 13T seed expansion."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1097307&st=0",
+      "decision": "defer",
+      "rationale": "Low-frequency instruction link from a HyperOS boot window; defer until the target relevance is clearer."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=496786&st=0",
+      "decision": "defer",
+      "rationale": "Generic image-processing topic may help advanced firmware image work, but it is not device-specific seed scope yet."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=892755&st=0",
+      "decision": "defer",
+      "rationale": "Generic GSI development topic may help future ROM work, but it is not accepted into the first reference-profile seed expansion."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=994653&st=0",
+      "decision": "defer",
+      "rationale": "Low-frequency RW candidate with weak local context; keep out of seed scope until stronger evidence appears."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=996832&st=0",
+      "decision": "reject",
+      "rationale": "MiBand NFC ownership link is unrelated to Xiaomi 13T reference-profile retrieval."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1069904&st=0",
+      "decision": "reject",
+      "rationale": "Camera discussion for POCO F5 / Redmi Note 12 Turbo is an off-device topic for this profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=353146&st=0",
+      "decision": "reject",
+      "rationale": "Forum image-handling help topic is platform mechanics, not Xiaomi 13T device knowledge."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1083527&st=0",
+      "decision": "defer",
+      "rationale": "Generic HyperOS club topic is relevant ecosystem context, but not Xiaomi 13T-specific seed scope for this materialized profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=721838&st=0",
+      "decision": "defer",
+      "rationale": "Xiaomi bootloader unlock topic is relevant background for root workflows, but it is broad Xiaomi guidance and needs a separate cross-device/tool profile before seeding."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1055807&st=0",
+      "decision": "reject",
+      "rationale": "Linked discussion topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1056458&st=0",
+      "decision": "reject",
+      "rationale": "Linked accessories topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1056459&st=0",
+      "decision": "reject",
+      "rationale": "Linked purchase topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1059968&st=0",
+      "decision": "reject",
+      "rationale": "Linked camera discussion comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1059970&st=0",
+      "decision": "reject",
+      "rationale": "Linked modification topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1060232&st=0",
+      "decision": "reject",
+      "rationale": "Linked battery topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1063625&st=0",
+      "decision": "reject",
+      "rationale": "Linked unofficial firmware topic comes from Xiaomi 12T firmware context and is off-device for the Xiaomi 13T reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=220983&st=0",
+      "decision": "defer",
+      "rationale": "SGA CLUB appears from firmware/root windows, but it is a broad community topic and not accepted into this device-focused seed plan."
+    },
+    {
+      "url": "https://4pda.ru/forum/index.php?showtopic=499063&st=0",
+      "decision": "reject",
+      "rationale": "Google Nexus 7 club topic is unrelated to Xiaomi 13T device retrieval."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=792504&st=0",
+      "decision": "defer",
+      "rationale": "Mi Account may matter for Xiaomi account or unlock workflows, but it is broad platform context outside this reference profile."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=949619&st=0",
+      "decision": "defer",
+      "rationale": "Generic Xiaomi FAQ may support future cross-device guidance, but it is not part of the current Xiaomi 13T seed plan."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1059565&st=0",
+      "decision": "defer",
+      "rationale": "Mirror/reupload topic may help future link-recovery workflows, but it is not Xiaomi 13T-specific retrieval scope."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1084044&st=0",
+      "decision": "reject",
+      "rationale": "Redmi Note 13 Pro Plus topic is an off-device comparison link, not Xiaomi 13T reference-profile scope."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=1098075&st=0",
+      "decision": "reject",
+      "rationale": "Samsung Galaxy S25 club topic is unrelated to Xiaomi 13T retrieval."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=334520&st=0",
+      "decision": "defer",
+      "rationale": "Mi Launcher may become useful for launcher-specific troubleshooting, but the observed link is not enough to seed it into the device corpus."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=765349&st=0",
+      "decision": "reject",
+      "rationale": "Curator school/profile topic is forum metadata, not Xiaomi 13T device knowledge."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=889822&st=0",
+      "decision": "defer",
+      "rationale": "MiFlashPro is relevant tooling background, but it needs an explicit tool-profile expansion before becoming a Xiaomi 13T seed."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=900084&st=0",
+      "decision": "defer",
+      "rationale": "Unpacker Kitchen is relevant firmware tooling background, but it belongs to a future tool-oriented expansion."
+    },
+    {
+      "url": "https://4pda.to/forum/index.php?showtopic=913731&st=0",
+      "decision": "reject",
+      "rationale": "OnePlus club topic is unrelated to Xiaomi 13T retrieval."
+    }
+  ]
+}

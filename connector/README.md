@@ -9,7 +9,7 @@ schemas, seed routes, or fixture expectations.
 | Folder | Role |
 | --- | --- |
 | `profiles/` | bounded crawl/index build profiles |
-| `seeds/` | small seed lists used by profiles |
+| `seeds/` | small seed lists and seed-review manifests used by profiles |
 | `manifests/` | connector metadata, artifact classes, route allowlist/denylist |
 | `schemas/` | JSON schemas for normalized and generated packets |
 | `fixtures/` | tiny synthetic examples safe for Git |
@@ -17,5 +17,6 @@ schemas, seed routes, or fixture expectations.
 
 ## Rule
 
-Keep this source home small and reproducible. Real captures, indexes, graphs,
-and full exports belong in configured storage roots outside Git history.
+Keep this source home small and reproducible. Real captures, indexes, vectors,
+graphs, and full exports belong in configured storage roots outside Git
+history.

@@ -12,10 +12,14 @@ from pathlib import Path
 
 from aoa_4pda_connector.answer import render_answer_packet
 from aoa_4pda_connector.config import LOCAL_STATE_DIR, StorageRoots, find_repo_root
+from aoa_4pda_connector.coverage import audit_profile_coverage
+from aoa_4pda_connector.discovery import audit_profile_discovery, audit_profile_seed_review
 from aoa_4pda_connector.evaluation import (
     DEFAULT_ANSWER_EVAL_SUITE,
     DEFAULT_GRAPH_EVAL_SUITE,
     DEFAULT_GRAPH_QUERY_EVAL_SUITE,
+    DEFAULT_HYBRID_QUERY_EVAL_SUITE,
+    DEFAULT_LIVE_HYBRID_QUERY_EVAL_SUITE,
     DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE,
     DEFAULT_LIVE_ANSWER_EVAL_SUITE,
     DEFAULT_LIVE_SEARCH_EVAL_SUITE,
@@ -23,8 +27,10 @@ from aoa_4pda_connector.evaluation import (
     run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
+    run_hybrid_query_eval_suite,
     run_live_answer_eval_suite,
     run_live_graph_query_eval_suite,
+    run_live_hybrid_query_eval_suite,
     run_live_search_eval_suite,
     run_search_eval_suite,
 )
@@ -33,9 +39,11 @@ from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.policy import is_url_allowed
-from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
+from aoa_4pda_connector.query import query_graph_packet, query_hybrid_packet, query_keyword_index
 from aoa_4pda_connector.readiness import audit_connector_ready
+from aoa_4pda_connector.refresh import audit_profile_refresh
 from aoa_4pda_connector.storage import create_storage_roots, storage_status, storage_warnings
+from aoa_4pda_connector.vector import build_vector_index
 
 
 LIVE_SHAPE_FIXTURE_URL = "https://4pda.to/forum/index.php?showtopic=42&st=0"
@@ -98,6 +106,66 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ready.set_defaults(func=cmd_ready)
 
+    coverage = sub.add_parser("coverage", help="Audit bounded profile coverage without touching the network.")
+    coverage_sub = coverage.add_subparsers(dest="coverage_command", required=True)
+    coverage_audit = coverage_sub.add_parser(
+        "audit",
+        help="Compare profile seeds with stored receipts, indexes, graph, and quality gates.",
+    )
+    coverage_audit.add_argument("profile", nargs="?", default="xiaomi-13t")
+    coverage_audit.add_argument("--run", default="latest", help="Receipt run id to inspect, or latest.")
+    coverage_audit.add_argument(
+        "--strict",
+        action="store_true",
+        help="Return non-zero unless the profile reaches reference-profile coverage.",
+    )
+    coverage_audit.set_defaults(func=cmd_coverage_audit)
+
+    refresh = sub.add_parser("refresh", help="Audit profile freshness and refresh needs without crawling.")
+    refresh_sub = refresh.add_subparsers(dest="refresh_command", required=True)
+    refresh_audit = refresh_sub.add_parser(
+        "audit",
+        help="Inspect receipt age, derived artifact freshness, coverage, and bounded refresh plan.",
+    )
+    refresh_audit.add_argument("profile", nargs="?", default="xiaomi-13t")
+    refresh_audit.add_argument("--run", default="latest", help="Receipt run id to inspect, or latest.")
+    refresh_audit.add_argument(
+        "--max-age-hours",
+        type=int,
+        default=168,
+        help="Maximum acceptable crawl receipt age before refresh is recommended.",
+    )
+    refresh_audit.add_argument(
+        "--strict",
+        action="store_true",
+        help="Return non-zero unless the selected profile run is fresh and coverage-ready.",
+    )
+    refresh_audit.set_defaults(func=cmd_refresh_audit)
+
+    discovery = sub.add_parser("discovery", help="Audit public topic discovery candidates without crawling.")
+    discovery_sub = discovery.add_subparsers(dest="discovery_command", required=True)
+    discovery_audit = discovery_sub.add_parser(
+        "audit",
+        help="Extract public topic candidates from already-stored crawl snapshots.",
+    )
+    discovery_audit.add_argument("profile", nargs="?", default="xiaomi-13t")
+    discovery_audit.add_argument("--run", default="latest", help="Receipt run id to inspect, or latest.")
+    discovery_audit.add_argument("--limit", type=int, default=25, help="Maximum candidates and denied links to emit.")
+    discovery_audit.set_defaults(func=cmd_discovery_audit)
+    discovery_review = discovery_sub.add_parser(
+        "review",
+        help="Compare discovery candidates with a seed-review manifest without crawling.",
+    )
+    discovery_review.add_argument("profile", nargs="?", default="xiaomi-13t")
+    discovery_review.add_argument("--run", default="latest", help="Receipt run id to inspect, or latest.")
+    discovery_review.add_argument(
+        "--manifest",
+        default=None,
+        help="Review manifest path. Defaults to the profile's repo-local review manifest.",
+    )
+    discovery_review.add_argument("--limit", type=int, default=25, help="Maximum review entries to emit.")
+    discovery_review.set_defaults(func=cmd_discovery_review)
+
     crawl = sub.add_parser("crawl", help="Bounded public topic crawl.")
     crawl.add_argument("--profile", default="starter")
     crawl.add_argument("--max-topics", type=int, default=None)
@@ -113,6 +181,12 @@ def build_parser() -> argparse.ArgumentParser:
     build_index.add_argument("--run", default="latest")
     build_index.set_defaults(func=cmd_build_index)
 
+    build_vector = sub.add_parser("build-vector", help="Build deterministic local vector index.")
+    build_vector.add_argument("--profile", default="starter")
+    build_vector.add_argument("--run", default="latest")
+    build_vector.add_argument("--dimensions", type=int, default=256)
+    build_vector.set_defaults(func=cmd_build_vector)
+
     build_graph = sub.add_parser("build-graph", help="Build starter graph export.")
     build_graph.add_argument("--profile", default="starter")
     build_graph.add_argument("--run", default="latest")
@@ -127,6 +201,12 @@ def build_parser() -> argparse.ArgumentParser:
     query_graph.add_argument("--run", default="latest")
     query_graph.add_argument("--limit", type=int, default=5)
     query_graph.set_defaults(func=cmd_query_graph)
+
+    query_hybrid = sub.add_parser("query-hybrid", help="Query local keyword, vector, and graph evidence.")
+    query_hybrid.add_argument("query")
+    query_hybrid.add_argument("--run", default="latest")
+    query_hybrid.add_argument("--limit", type=int, default=5)
+    query_hybrid.set_defaults(func=cmd_query_hybrid)
 
     answer = sub.add_parser("answer", help="Render a structured answer from local keyword and graph evidence.")
     answer.add_argument("query")
@@ -164,6 +244,13 @@ def build_parser() -> argparse.ArgumentParser:
     live_search_quality.add_argument("--suite", default=str(DEFAULT_LIVE_SEARCH_EVAL_SUITE))
     live_search_quality.add_argument("--run", default="latest")
     live_search_quality.set_defaults(func=cmd_eval_live_search_quality)
+    live_hybrid_query_quality = eval_sub.add_parser(
+        "live-hybrid-query-quality",
+        help="Run hybrid query quality eval against an already-built bounded live run.",
+    )
+    live_hybrid_query_quality.add_argument("--suite", default=str(DEFAULT_LIVE_HYBRID_QUERY_EVAL_SUITE))
+    live_hybrid_query_quality.add_argument("--run", default="latest")
+    live_hybrid_query_quality.set_defaults(func=cmd_eval_live_hybrid_query_quality)
     live_graph_query_quality = eval_sub.add_parser(
         "live-graph-query-quality",
         help="Run graph-query quality eval against an already-built bounded live run.",
@@ -184,6 +271,9 @@ def build_parser() -> argparse.ArgumentParser:
     graph_query_packets = eval_sub.add_parser("graph-query-packets", help="Run the starter graph query packet eval.")
     graph_query_packets.add_argument("--suite", default=str(DEFAULT_GRAPH_QUERY_EVAL_SUITE))
     graph_query_packets.set_defaults(func=cmd_eval_graph_query_packets)
+    hybrid_query_packets = eval_sub.add_parser("hybrid-query-packets", help="Run the starter hybrid query packet eval.")
+    hybrid_query_packets.add_argument("--suite", default=str(DEFAULT_HYBRID_QUERY_EVAL_SUITE))
+    hybrid_query_packets.set_defaults(func=cmd_eval_hybrid_query_packets)
     answer_packets = eval_sub.add_parser("answer-packets", help="Run the starter rendered answer packet eval.")
     answer_packets.add_argument("--suite", default=str(DEFAULT_ANSWER_EVAL_SUITE))
     answer_packets.set_defaults(func=cmd_eval_answer_packets)
@@ -213,6 +303,8 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "answer_packet.schema.json",
         "materialize_receipt.schema.json",
         "index_manifest.schema.json",
+        "vector_manifest.schema.json",
+        "vector_index.schema.json",
         "graph_node.schema.json",
         "graph_edge.schema.json",
     ]
@@ -227,6 +319,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "artifacts/",
         "raw/",
         "indexes/",
+        "vectors/",
         "graphs/",
         "exports/full/",
         "*.sqlite",
@@ -235,7 +328,7 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "*.qdrant/",
         "*.lancedb/",
     ]
-    forbidden_heavy_dirs = ["data", "cache", "artifacts", "raw", "indexes", "graphs"]
+    forbidden_heavy_dirs = ["data", "cache", "artifacts", "raw", "indexes", "vectors", "graphs"]
     missing = [str(path.relative_to(repo_root)) for path in required if not path.exists()]
     missing.extend(
         f"connector/schemas/{name}"
@@ -388,9 +481,12 @@ def cmd_profile_inspect(args: argparse.Namespace) -> int:
             "routes": {
                 "seed_file": profile.get("seed_file"),
                 "allowlist_manifest": profile.get("allowlist_manifest"),
+                "information_need_matrix": profile.get("information_need_matrix"),
             },
             "quality_gates": {
                 "live_search_suite": profile.get("live_search_suite"),
+                "live_ranking_pressure_suite": profile.get("live_ranking_pressure_suite"),
+                "live_hybrid_query_suite": profile.get("live_hybrid_query_suite"),
                 "live_graph_query_suite": profile.get("live_graph_query_suite"),
                 "live_answer_suite": profile.get("live_answer_suite"),
             },
@@ -420,6 +516,57 @@ def cmd_ready(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_coverage_audit(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    report = audit_profile_coverage(args.profile, repo_root, roots, run=args.run)
+    _emit(report)
+    if report.get("status") == "error":
+        return 1
+    if args.strict and report.get("status") != "coverage_ready":
+        return 1
+    return 0
+
+
+def cmd_refresh_audit(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    report = audit_profile_refresh(
+        args.profile,
+        repo_root,
+        roots,
+        run=args.run,
+        max_age_hours=args.max_age_hours,
+    )
+    _emit(report)
+    if args.strict and report.get("strict_ready") is not True:
+        return 1
+    return 0
+
+
+def cmd_discovery_audit(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    report = audit_profile_discovery(args.profile, repo_root, roots, run=args.run, limit=args.limit)
+    _emit(report)
+    return 1 if report.get("status") == "error" else 0
+
+
+def cmd_discovery_review(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    report = audit_profile_seed_review(
+        args.profile,
+        repo_root,
+        roots,
+        run=args.run,
+        manifest=args.manifest,
+        limit=args.limit,
+    )
+    _emit(report)
+    return 1 if report.get("status") in {"error", "invalid_review"} else 0
+
+
 def cmd_materialize_fixture(args: argparse.Namespace) -> int:
     repo_root = find_repo_root()
     roots = StorageRoots.from_env(repo_root)
@@ -432,9 +579,11 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
     fixture_path = repo_root / "connector" / "fixtures" / "html" / "live_shape_topic.html"
     normalized_path = normalize_snapshot(fixture_path, LIVE_SHAPE_FIXTURE_URL, normalized_dir)
     index_path = build_keyword_index(normalized_dir, roots.cache / "indexes" / run_id, args.profile)
+    vector_path = build_vector_index(normalized_dir, roots.cache / "vectors" / run_id, args.profile)
     graph_path = build_graph(normalized_dir, roots.artifact / "graphs" / run_id, args.profile)
 
     index = json.loads(index_path.read_text(encoding="utf-8"))
+    vector = json.loads(vector_path.read_text(encoding="utf-8"))
     graph = json.loads(graph_path.read_text(encoding="utf-8"))
     receipt_dir = roots.artifact / "receipts"
     normalized_receipt = {
@@ -457,6 +606,18 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
         "index_path": str(index_path),
         "network_touched": False,
     }
+    vector_receipt = {
+        "schema": "aoa_4pda_vector_manifest_v1",
+        "vector_id": run_id,
+        "profile_id": args.profile,
+        "built_at": _now(),
+        "source_run_ids": [run_id],
+        "index_kinds": ["vector"],
+        "vector_algorithm": vector.get("algorithm"),
+        "artifact_root": str(vector_path.parent),
+        "vector_path": str(vector_path),
+        "network_touched": False,
+    }
     graph_receipt = {
         "schema": "aoa_4pda_graph_receipt_v1",
         "run_id": run_id,
@@ -476,11 +637,14 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
         "storage_roots": roots.as_dict(),
         "normalized_path": str(normalized_path),
         "index_path": str(index_path),
+        "vector_path": str(vector_path),
         "graph_path": str(graph_path),
         "counts": {
             "topics": 1,
             "index_docs": int(index.get("doc_count", 0)),
             "index_terms": int(index.get("term_count", 0)),
+            "vector_docs": int(vector.get("doc_count", 0)),
+            "vector_features": int(vector.get("feature_count", 0)),
             "graph_nodes": int(graph.get("node_count", 0)),
             "graph_edges": int(graph.get("edge_count", 0)),
         },
@@ -493,6 +657,7 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
     }
     normalize_receipt_path = _write_receipt(receipt_dir, run_id, "normalize", normalized_receipt)
     index_receipt_path = _write_receipt(receipt_dir, run_id, "index", index_receipt)
+    vector_receipt_path = _write_receipt(receipt_dir, run_id, "vector", vector_receipt)
     graph_receipt_path = _write_receipt(receipt_dir, run_id, "graph", graph_receipt)
     materialize_receipt_path = _write_receipt(receipt_dir, run_id, "materialize", materialize_receipt)
     _emit(
@@ -502,6 +667,7 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
             "receipts": {
                 "normalize": str(normalize_receipt_path),
                 "index": str(index_receipt_path),
+                "vector": str(vector_receipt_path),
                 "graph": str(graph_receipt_path),
                 "materialize": str(materialize_receipt_path),
             },
@@ -648,6 +814,35 @@ def cmd_build_index(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_build_vector(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env(find_repo_root())
+    error = _require_roots(roots, ["data", "cache", "artifact"])
+    if error:
+        return error
+    receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
+    run_id = receipt["run_id"]
+    normalized_dir = roots.data / "normalized" / run_id
+    output_dir = roots.cache / "vectors" / run_id
+    vector_path = build_vector_index(normalized_dir, output_dir, args.profile, dimensions=args.dimensions)
+    vector = json.loads(vector_path.read_text(encoding="utf-8"))
+    payload = {
+        "schema": "aoa_4pda_vector_manifest_v1",
+        "vector_id": run_id,
+        "profile_id": args.profile,
+        "built_at": _now(),
+        "source_run_ids": [run_id],
+        "index_kinds": ["vector"],
+        "vector_algorithm": vector.get("algorithm"),
+        "dimensions": vector.get("dimensions"),
+        "artifact_root": str(output_dir),
+        "vector_path": str(vector_path),
+        "network_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "vector", payload)
+    _emit({"status": "ok", "receipt": str(receipt_path), **payload})
+    return 0
+
+
 def cmd_build_graph(args: argparse.Namespace) -> int:
     roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["data", "artifact"])
@@ -724,6 +919,28 @@ def cmd_query_graph(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_query_hybrid(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env(find_repo_root())
+    error = _require_roots(roots, ["cache", "artifact"])
+    if error:
+        return error
+    try:
+        packet = _query_hybrid_packet_from_roots(roots.artifact, args.run, args.query, args.limit)
+    except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_hybrid_query_error_v1",
+                "status": "error",
+                "run": args.run,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+    _emit({"status": "ok", **packet, "network_touched": False})
+    return 0
+
+
 def cmd_answer(args: argparse.Namespace) -> int:
     roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["cache", "artifact"])
@@ -779,21 +996,29 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
         shutil.copy2(fixture, normalized_dir / "topic-synthetic-topic-1.json")
 
         index_path = build_keyword_index(normalized_dir, proof_root / "cache" / "indexes", "starter")
+        vector_path = build_vector_index(normalized_dir, proof_root / "cache" / "vectors", "starter")
         graph_path = build_graph(normalized_dir, proof_root / "artifacts" / "graphs", "starter")
         packet = query_keyword_index(index_path, args.query, limit=3)
+        hybrid_packet = query_hybrid_packet(index_path, vector_path, graph_path, args.query, limit=3)
 
         index = json.loads(index_path.read_text(encoding="utf-8"))
+        vector = json.loads(vector_path.read_text(encoding="utf-8"))
         graph = json.loads(graph_path.read_text(encoding="utf-8"))
         first_result = packet["results"][0] if packet.get("results") else {}
+        first_hybrid_result = hybrid_packet["results"][0] if hybrid_packet.get("results") else {}
         topic = json.loads(fixture.read_text(encoding="utf-8"))
         checks = {
             "fixture_topic_loaded": fixture.is_file(),
             "index_doc_count_is_2": index.get("doc_count") == 2,
             "term_count_positive": int(index.get("term_count", 0)) > 0,
+            "vector_doc_count_is_2": vector.get("doc_count") == 2,
+            "vector_feature_count_positive": int(vector.get("feature_count", 0)) > 0,
             "graph_has_topic_post_entity_nodes": int(graph.get("node_count", 0)) >= 5,
             "graph_has_edges": int(graph.get("edge_count", 0)) >= 4,
             "query_returns_bootloop_post": first_result.get("post_id") == "1002",
-            "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+            "hybrid_query_returns_bootloop_post": first_hybrid_result.get("post_id") == "1002",
+            "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False
+            and hybrid_packet.get("policy", {}).get("internal_search_used") is False,
         }
 
     status = "ok" if all(checks.values()) else "error"
@@ -812,12 +1037,16 @@ def cmd_proof_starter(args: argparse.Namespace) -> int:
                 "posts": len(topic.get("posts", [])),
                 "index_docs": index.get("doc_count", 0),
                 "terms": index.get("term_count", 0),
+                "vector_docs": vector.get("doc_count", 0),
+                "vector_features": vector.get("feature_count", 0),
                 "graph_nodes": graph.get("node_count", 0),
                 "graph_edges": graph.get("edge_count", 0),
                 "query_results": len(packet.get("results", [])),
+                "hybrid_query_results": len(hybrid_packet.get("results", [])),
             },
             "checks": checks,
             "top_result": first_result,
+            "top_hybrid_result": first_hybrid_result,
         }
     )
     return 0 if status == "ok" else 1
@@ -969,6 +1198,29 @@ def cmd_eval_live_graph_query_quality(args: argparse.Namespace) -> int:
     return 0 if report.get("status") == "ok" else 1
 
 
+def cmd_eval_live_hybrid_query_quality(args: argparse.Namespace) -> int:
+    roots = StorageRoots.from_env(find_repo_root())
+    error = _require_roots(roots, ["artifact"])
+    if error:
+        return error
+    try:
+        report = run_live_hybrid_query_eval_suite(args.run, Path(args.suite), find_repo_root(), roots.artifact)
+    except Exception as exc:  # noqa: BLE001 - CLI report should preserve setup failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_live_hybrid_query_eval_error_v1",
+                "status": "error",
+                "run": args.run,
+                "suite": args.suite,
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
 def cmd_eval_live_answer_quality(args: argparse.Namespace) -> int:
     roots = StorageRoots.from_env(find_repo_root())
     error = _require_roots(roots, ["artifact"])
@@ -1000,6 +1252,12 @@ def cmd_eval_graph_relations(args: argparse.Namespace) -> int:
 
 def cmd_eval_graph_query_packets(args: argparse.Namespace) -> int:
     report = run_graph_query_eval_suite(Path(args.suite), find_repo_root())
+    _emit(report)
+    return 0 if report.get("status") == "ok" else 1
+
+
+def cmd_eval_hybrid_query_packets(args: argparse.Namespace) -> int:
+    report = run_hybrid_query_eval_suite(Path(args.suite), find_repo_root())
     _emit(report)
     return 0 if report.get("status") == "ok" else 1
 
@@ -1058,7 +1316,10 @@ def _read_profile(repo_root: Path, profile_id: str) -> dict[str, object]:
         "network_default",
         "seed_file",
         "allowlist_manifest",
+        "information_need_matrix",
         "live_search_suite",
+        "live_ranking_pressure_suite",
+        "live_hybrid_query_suite",
         "live_graph_query_suite",
         "live_answer_suite",
     }
@@ -1147,6 +1408,20 @@ def _query_graph_packet_from_roots(artifact_root: Path, run: str, query: str, li
     graph_receipt = _load_graph_receipt_for_query(artifact_root, run, run_id)
     return query_graph_packet(
         Path(str(index_receipt["index_path"])),
+        Path(str(graph_receipt["graph_path"])),
+        query,
+        limit=limit,
+    )
+
+
+def _query_hybrid_packet_from_roots(artifact_root: Path, run: str, query: str, limit: int) -> dict[str, object]:
+    index_receipt = _load_latest_or_named_receipt(artifact_root, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    vector_receipt = _load_latest_or_named_receipt(artifact_root, run_id, "vector")
+    graph_receipt = _load_graph_receipt_for_query(artifact_root, run, run_id)
+    return query_hybrid_packet(
+        Path(str(index_receipt["index_path"])),
+        Path(str(vector_receipt["vector_path"])),
         Path(str(graph_receipt["graph_path"])),
         query,
         limit=limit,
