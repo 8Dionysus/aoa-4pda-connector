@@ -56,3 +56,5 @@
 - Added a Xiaomi 13T live ranking-pressure suite and optional expected-result
   rank diagnostics for hard OrangeFox, vendor_boot, KernelSU, and HyperOS
   recovery queries over existing configured-storage indexes.
+- Added KernelSU alias extraction for Xiaomi root evidence so `boot.img`
+  mentions near KernelSU produce KSU tool nodes and root relation edges.

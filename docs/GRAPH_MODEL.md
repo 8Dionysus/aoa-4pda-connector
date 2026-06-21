@@ -57,8 +57,8 @@ Entity extraction v1 is heuristic and local:
   issue words
 - bounded fix/warning patterns around technical files such as `boot.img`
 - focused Xiaomi firmware/root/recovery action patterns around `boot.img`,
-  `vendor_boot*.img`, `recovery.img`, Magisk, KSU, TWRP, OrangeFox, and
-  fastboot
+  `vendor_boot*.img`, `recovery.img`, Magisk, KSU/KernelSU, TWRP, OrangeFox,
+  and fastboot
 
 It is a navigation layer, not a final classifier.
 
@@ -71,8 +71,8 @@ Relation edges v1 are heuristic and post-local:
 - `warns_about` links a `warning` entity to file, codename, device, firmware,
   or build entities explicitly named inside the warning text.
 - `root_targets_file`, `root_uses_tool`, and `root_mentions_firmware` link a
-  root action in a post to boot/init_boot image files, Magisk/KSU tools, and
-  firmware entities mentioned in the same evidence.
+  root action in a post to boot/init_boot image files, Magisk/KSU/KernelSU
+  tools, and firmware entities mentioned in the same evidence.
 - `recovery_targets_file`, `recovery_uses_tool`, and
   `recovery_mentions_firmware` link a recovery flash action in a post to
   recovery/vendor_boot image files, fastboot/TWRP/OrangeFox tools, and
@@ -117,7 +117,7 @@ labels into a handoff surface for agents.
 
 `evals/suites/xiaomi_13t_graph_relations.json` is a focused graph relation
 suite for the Xiaomi 13T profile. It checks public-safe fixture evidence for
-`Xiaomi 13T`, `2306EPN60G`, `aristotle`, `HyperOS 2.0.2`, Magisk/KSU,
+`Xiaomi 13T`, `2306EPN60G`, `aristotle`, `HyperOS 2.0.2`, Magisk/KSU/KernelSU,
 TWRP/OrangeFox/fastboot, boot/recovery image files, and the root/recovery
 relation edges that make those posts navigable without using 4PDA internal
 search.

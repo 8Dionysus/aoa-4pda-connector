@@ -49,6 +49,7 @@
   - focused Xiaomi 13T extraction for model numbers, codenames, HyperOS
     versions, root actions, recovery actions, image files, and
     Magisk/KSU/TWRP/OrangeFox/fastboot evidence
+  - KernelSU spelling alias for KSU root evidence near `boot.img`
 - vector search adapter behind an optional dependency
 - broader retrieval eval expansion against bounded external-storage runs
 
