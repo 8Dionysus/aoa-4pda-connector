@@ -390,16 +390,77 @@ def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):
             "network_touched": False,
         },
     )
+    suite_path = tmp_path / "live_answer_suite.json"
+    suite_path.write_text(
+        json.dumps(
+            {
+                "schema": "aoa_4pda_live_answer_eval_suite_v1",
+                "suite_id": "unit-live-answer-quality",
+                "owner_repo": "aoa-4pda-connector",
+                "proof_owner_repo": "aoa-evals",
+                "central_boundary": "local unit suite only",
+                "default_limit": 5,
+                "dataset": {
+                    "kind": "bounded_live_run_keyword_index_plus_graph_answer",
+                    "expected_profile": "xiaomi-13t",
+                },
+                "cases": [
+                    {
+                        "case_id": "recovery-answer",
+                        "query": "Xiaomi 13T aristotle recovery.img fastboot",
+                        "expect": {
+                            "top_post_id": "128964413",
+                            "answer_kind": "recovery",
+                            "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+                            "query_report_unit": "chunk",
+                            "matched_specific_terms_all": ["recovery.img"],
+                            "query_report_technical_terms_all": ["recovery.img", "aristotle"],
+                            "graph_report_relation_edge_kinds_all": [
+                                "recovery_targets_file",
+                                "recovery_uses_tool",
+                            ],
+                            "recovery_action_labels": ["flash recovery.img"],
+                            "target_file_labels": ["recovery.img"],
+                            "tool_labels": ["fastboot"],
+                            "answer_context_labels_min": 3,
+                        },
+                    },
+                    {
+                        "case_id": "root-answer",
+                        "query": "2306EPN60G HyperOS boot.img Magisk KSU",
+                        "expect": {
+                            "top_post_id": "128449684",
+                            "answer_kind": "root",
+                            "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+                            "query_report_unit": "chunk",
+                            "matched_specific_terms_all": ["boot.img", "magisk"],
+                            "query_report_technical_terms_all": ["boot.img"],
+                            "graph_report_relation_edge_kinds_all": [
+                                "root_targets_file",
+                                "root_uses_tool",
+                            ],
+                            "root_action_labels": ["patch boot.img"],
+                            "target_file_labels": ["boot.img"],
+                            "tool_labels": ["Magisk"],
+                            "answer_context_labels_min": 3,
+                        },
+                    },
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
 
     report = run_live_answer_eval_suite(
         run_id,
-        REPO_ROOT / "evals/suites/live_xiaomi_13t_answer_quality.json",
+        suite_path,
         REPO_ROOT,
         artifact_root,
     )
 
     assert report["schema"] == "aoa_4pda_live_answer_eval_report_v1"
-    assert report["suite_id"] == "live-xiaomi-13t-answer-quality"
+    assert report["suite_id"] == "unit-live-answer-quality"
     assert report["status"] == "ok"
     assert report["run_id"] == run_id
     assert report["network_touched"] is False
@@ -415,9 +476,15 @@ def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):
     recovery_case = report["cases"][0]
     assert recovery_case["checks"]["answer_kind"] is True
     assert recovery_case["checks"]["expected_labels_present"] is True
+    assert recovery_case["checks"]["matched_specific_terms_all"] is True
+    assert recovery_case["diagnostics"]["failed_checks"] == []
+    assert "recovery.img" in recovery_case["diagnostics"]["top_result_matches"]["matched_specific_terms"]
+    assert recovery_case["top_evidence_result"]["post_id"] == "128964413"
     assert recovery_case["top_answer"]["recovery_action_labels"] == ["flash recovery.img"]
     root_case = report["cases"][1]
     assert root_case["checks"]["answer_kind"] is True
+    assert root_case["checks"]["answer_context_labels_min"] is True
+    assert root_case["diagnostics"]["answer_context"]["label_count"] >= 3
     assert root_case["top_answer"]["root_action_labels"] == ["patch boot.img"]
 
 

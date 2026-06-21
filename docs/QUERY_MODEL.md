@@ -115,7 +115,10 @@ search, or commit generated artifacts.
 runs the focused Xiaomi 13T answer gate against the same existing receipts. It
 renders local graph-query packets into answer packets and checks that
 root/recovery actions, target files, tools, firmware context, source refs, and
-the internal-search boundary survive the answer renderer.
+the internal-search boundary survive the answer renderer. Each live answer case
+also returns compact diagnostics: failed check names, matched terms, score
+breakdown, top evidence refs, answer context label counts, and relation edges
+that reached the answer.
 
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local

@@ -301,10 +301,19 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             if not expect.get("root_action_labels") or not expect.get("recovery_action_labels"):
                 errors.append("xiaomi_13t_answer_packets.json must include root/recovery answer expectations")
         if suite_name == "live_xiaomi_13t_answer_quality.json":
-            first_case = suite.get("cases", [{}])[0]
+            cases = suite.get("cases", [])
+            first_case = cases[0] if cases else {}
             expect = first_case.get("expect", {})
             if not expect.get("recovery_action_labels") or not expect.get("target_file_labels"):
                 errors.append("live_xiaomi_13t_answer_quality.json must include recovery/file answer expectations")
+            if len(cases) < 6:
+                errors.append("live_xiaomi_13t_answer_quality.json must include at least six focused cases")
+            if not any(case.get("expect", {}).get("answer_kind") == "snippet" for case in cases):
+                errors.append("live_xiaomi_13t_answer_quality.json must include snippet answer coverage")
+            if not any("прош" in str(case.get("query", "")).casefold() for case in cases):
+                errors.append("live_xiaomi_13t_answer_quality.json must include a Russian recovery/root query")
+            if not any(case.get("expect", {}).get("answer_context_labels_min") for case in cases):
+                errors.append("live_xiaomi_13t_answer_quality.json must constrain answer context label count")
 
 
 if __name__ == "__main__":

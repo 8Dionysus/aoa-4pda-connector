@@ -49,3 +49,7 @@
 - Added root/recovery answer packet rendering with public-safe Xiaomi 13T
   answer eval coverage and a receipt-driven live answer-quality gate over
   existing configured-storage index and graph artifacts.
+- Expanded the Xiaomi 13T live answer-quality suite across root, recovery,
+  Russian-language, accessory, and HyperOS notification queries, with compact
+  per-case diagnostics for top evidence, matched terms, scores, answer labels,
+  and relation edges.
