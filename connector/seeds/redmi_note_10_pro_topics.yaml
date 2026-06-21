@@ -1,0 +1,37 @@
+schema: aoa_4pda_seed_list_v1
+seed_id: redmi-note-10-pro-topics
+description: Bounded public seed windows for Redmi Note 10 Pro representative focused-device runs, derived from reviewed starter seeds.
+network_default: disabled
+target_device_id: redmi-note-10-pro
+target_label: Redmi Note 10 Pro
+target_codename: sweet
+target_model_aliases: sweetin
+source_discovery:
+  method: reviewed_existing_starter_seed
+  checked_at: 2026-06-21
+  internal_4pda_search_used: false
+topics:
+  - id: redmi-note-10-pro-miui
+    url: https://4pda.to/forum/index.php?showtopic=1019304
+    label: Redmi Note 10 Pro - MIUI firmware
+    status: public_topic_seed
+    focus: miui_firmware_root_tools
+    max_pages: 2
+  - id: redmi-note-10-pro-miui-root-window-0
+    url: https://4pda.to/forum/index.php?showtopic=1019304&st=0
+    label: Redmi Note 10 Pro - root/TWRP starter window
+    status: public_topic_seed
+    focus: boot_img_magisk_twrp
+    max_pages: 2
+  - id: redmi-note-10-pro-unofficial
+    url: https://4pda.to/forum/index.php?showtopic=1021534
+    label: Redmi Note 10 Pro - unofficial firmware
+    status: public_topic_seed
+    focus: unofficial_firmware_recovery
+    max_pages: 2
+  - id: redmi-note-10-pro-unofficial-recovery-window-0
+    url: https://4pda.to/forum/index.php?showtopic=1021534&st=0
+    label: Redmi Note 10 Pro - recovery/bootloop starter window
+    status: public_topic_seed
+    focus: recovery_img_bootloop
+    max_pages: 2

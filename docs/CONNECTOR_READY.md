@@ -35,7 +35,8 @@ The audit maps the active loop goal into concrete repository-local checks:
   starter eval surfaces exist
 - Xiaomi 13T focused-device profile has profile, seed, suite, and receipt
   evidence
-- a second representative profile is prepared or explicitly deferred
+- a second representative focused-device profile has bounded seed windows and
+  at least a local live-search quality gate
 - crawl, normalize, index, and graph receipts form a reproducible run chain
 - search quality covers exact/BM25 technical retrieval and ranking-pressure
   cases

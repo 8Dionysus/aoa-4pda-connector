@@ -130,7 +130,8 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     assert criteria["answer_quality_gates"]["status"] == "achieved"
     assert criteria["answer_quality_gates"]["evidence"]["answer_contract_mentions_freshness"] is True
     assert criteria["answer_quality_gates"]["evidence"]["freshness_field_or_note_present"] is True
-    assert criteria["next_representative_profile_prepared"]["status"] == "partial"
+    assert criteria["next_representative_profile_prepared"]["status"] == "achieved"
+    assert "redmi-note-10-pro" in criteria["next_representative_profile_prepared"]["evidence"]["prepared_profiles"]
 
     strict = subprocess.run(
         [sys.executable, "-m", "aoa_4pda_connector.cli", "ready", "--strict"],
@@ -244,6 +245,33 @@ def test_cli_profile_inspect_reports_xiaomi_13t_route_without_network():
     assert payload["seed"]["topic_count"] == 9
     assert "xiaomi-13t-firmware" in payload["seed"]["topic_ids"]
     assert "xiaomi-13t-firmware-boot-recovery-1800" in payload["seed"]["topic_ids"]
+    assert payload["checks"]["seed_urls_allowed_public_topics"] is True
+    assert payload["network_touched"] is False
+
+
+def test_cli_profile_inspect_reports_redmi_note_10_pro_route_without_network():
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "profile", "inspect", "redmi-note-10-pro"],
+        cwd=REPO_ROOT,
+        env=_env_with_src_without_storage(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_profile_inspect_v1"
+    assert payload["status"] == "ok"
+    assert payload["profile_id"] == "redmi-note-10-pro"
+    assert payload["profile_kind"] == "focused-device"
+    assert payload["target"]["device_id"] == "redmi-note-10-pro"
+    assert payload["target"]["codename"] == "sweet"
+    assert "sweetin" in payload["target"]["model_aliases"]
+    assert payload["routes"]["seed_file"] == "connector/seeds/redmi_note_10_pro_topics.yaml"
+    assert payload["quality_gates"]["live_search_suite"] == "evals/suites/live_redmi_note_10_pro_search_quality.json"
+    assert payload["seed"]["topic_count"] == 4
+    assert "redmi-note-10-pro-miui-root-window-0" in payload["seed"]["topic_ids"]
+    assert "redmi-note-10-pro-unofficial-recovery-window-0" in payload["seed"]["topic_ids"]
     assert payload["checks"]["seed_urls_allowed_public_topics"] is True
     assert payload["network_touched"] is False
 

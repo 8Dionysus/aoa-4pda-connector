@@ -25,9 +25,11 @@ REQUIRED_FILES = [
     "connector/profiles/starter.yaml",
     "connector/profiles/focused-device.yaml",
     "connector/profiles/xiaomi-13t.yaml",
+    "connector/profiles/redmi-note-10-pro.yaml",
     "connector/profiles/full-public.yaml",
     "connector/seeds/starter_topics.yaml",
     "connector/seeds/xiaomi_13t_topics.yaml",
+    "connector/seeds/redmi_note_10_pro_topics.yaml",
     "connector/seeds/forum_sections.yaml",
     "connector/manifests/connector_manifest.yaml",
     "connector/manifests/artifact_classes.yaml",
@@ -42,6 +44,7 @@ REQUIRED_FILES = [
     "evals/suites/live_xiaomi_13t_ranking_pressure.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/live_xiaomi_13t_answer_quality.json",
+    "evals/suites/live_redmi_note_10_pro_search_quality.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
     "evals/suites/xiaomi_13t_answer_packets.json",
     "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
@@ -283,6 +286,7 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_starter_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
         "live_xiaomi_13t_ranking_pressure.json": "aoa_4pda_live_search_eval_suite_v1",
+        "live_redmi_note_10_pro_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
         "xiaomi_13t_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_xiaomi_13t_answer_quality.json": "aoa_4pda_live_answer_eval_suite_v1",
     }
@@ -325,6 +329,19 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
                 errors.append("live_xiaomi_13t_ranking_pressure.json must constrain expected result rank")
             if not all(case.get("expect", {}).get("expected_result_post_id") for case in cases):
                 errors.append("live_xiaomi_13t_ranking_pressure.json must name expected result posts")
+        if suite_name == "live_redmi_note_10_pro_search_quality.json":
+            cases = suite.get("cases", [])
+            dataset = suite.get("dataset", {})
+            if dataset.get("expected_profile") != "redmi-note-10-pro":
+                errors.append("live_redmi_note_10_pro_search_quality.json must target redmi-note-10-pro")
+            if dataset.get("seed_file") != "connector/seeds/redmi_note_10_pro_topics.yaml":
+                errors.append("live_redmi_note_10_pro_search_quality.json must name the Redmi seed file")
+            if len(cases) < 3:
+                errors.append("live_redmi_note_10_pro_search_quality.json must include at least three cases")
+            if not any("sweet" in str(case.get("query", "")).casefold() for case in cases):
+                errors.append("live_redmi_note_10_pro_search_quality.json must include sweet codename coverage")
+            if not any("recovery" in str(case.get("query", "")).casefold() for case in cases):
+                errors.append("live_redmi_note_10_pro_search_quality.json must include recovery coverage")
         if suite_name == "live_xiaomi_13t_answer_quality.json":
             cases = suite.get("cases", [])
             first_case = cases[0] if cases else {}

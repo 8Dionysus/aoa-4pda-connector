@@ -44,6 +44,8 @@
   - relation-intent rerank for graph/answer packets with original keyword rank
     diagnostics
   - answer packet freshness/capture context for cited local evidence
+  - second representative Redmi Note 10 Pro profile with bounded seed windows
+    and live search gate prepared for the next focused run
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms

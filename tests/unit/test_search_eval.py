@@ -221,6 +221,91 @@ def test_live_search_eval_suite_checks_named_run_without_network(tmp_path):
     assert sweet_case["checks"]["query_report_technical_terms_all"] is True
 
 
+def test_live_redmi_note_10_pro_search_eval_suite_checks_prepared_profile_without_network(tmp_path):
+    run_id = "live-redmi-note-10-pro-eval-test"
+    artifact_root = tmp_path / "artifacts"
+    normalized_dir = tmp_path / "data" / "normalized" / run_id
+    normalized_dir.mkdir(parents=True)
+    _write_live_search_eval_topics(normalized_dir)
+    index_path = build_keyword_index(normalized_dir, tmp_path / "cache" / "indexes" / run_id, "redmi-note-10-pro")
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "redmi-note-10-pro",
+            "policy": {
+                "allowed_public_only": True,
+                "internal_search_used": False,
+                "attachments_downloaded": False,
+            },
+            "counts": {
+                "requested_topics": 2,
+                "requested_pages": 2,
+                "fetched_topics": 2,
+                "fetched_pages": 2,
+                "errors": 0,
+            },
+            "network_touched": True,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "normalize",
+        {
+            "schema": "aoa_4pda_normalize_receipt_v1",
+            "run_id": run_id,
+            "source_run_id": run_id,
+            "counts": {"topics": 2, "pages": 2},
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": run_id,
+            "profile_id": "redmi-note-10-pro",
+            "source_run_ids": [run_id],
+            "index_kinds": ["keyword"],
+            "index_path": str(index_path),
+            "network_touched": False,
+        },
+    )
+
+    report = run_live_search_eval_suite(
+        run_id,
+        REPO_ROOT / "evals/suites/live_redmi_note_10_pro_search_quality.json",
+        REPO_ROOT,
+        artifact_root,
+    )
+
+    assert report["schema"] == "aoa_4pda_live_search_eval_report_v1"
+    assert report["suite_id"] == "live-redmi-note-10-pro-search-quality"
+    assert report["status"] == "ok"
+    assert report["run_id"] == run_id
+    assert report["network_touched"] is False
+    assert report["source_run_network_touched"] is True
+    assert report["counts"]["cases"] == 3
+    assert report["counts"]["passed"] == 3
+    assert report["counts"]["failed"] == 0
+    assert report["checks"]["policy_preserved"] is True
+
+    sweet_case = next(case for case in report["cases"] if case["case_id"] == "redmi-note-10-pro-sweet-split-boot-image")
+    assert sweet_case["checks"]["top_post_id"] is True
+    assert sweet_case["checks"]["query_report_technical_terms_all"] is True
+    recovery_case = next(case for case in report["cases"] if case["case_id"] == "redmi-note-10-pro-recovery-bootloop")
+    assert recovery_case["checks"]["top_post_id"] is True
+    assert recovery_case["checks"]["query_report_specific_terms_all"] is True
+
+
 def test_live_search_eval_suite_reports_expected_result_rank_without_network(tmp_path):
     run_id = "live-ranking-pressure-test"
     artifact_root = tmp_path / "artifacts"
