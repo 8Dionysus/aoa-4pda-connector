@@ -8,7 +8,8 @@ The connector should answer through local evidence packets.
 - BM25 keyword search over evidence chunks from public topic/post text
 - exact-term and exact-phrase boosts for tokens such as `boot.img`,
   `V14.0.7.0`, device model numbers, and model phrases
-- optional vector search for paraphrase recall
+- deterministic local vector search for lightweight similarity recall without
+  a model download or API dependency
 - entity search for devices, apps, firmware, versions, issues, fixes, warnings
 - graph traversal for relations between topics, posts, fixes, and warnings
 
@@ -18,7 +19,7 @@ actions, issues, fixes, and warnings through local heuristics.
 
 ## Local Scoring
 
-The starter and focused-device query paths use `bm25_exact_v1`:
+The starter and focused-device keyword query paths use `bm25_exact_v1`:
 
 - split normalized posts into deterministic overlapping evidence chunks
 - tokenize public topic titles and post text with Cyrillic/Latin/digit support
@@ -39,6 +40,34 @@ The starter and focused-device query paths use `bm25_exact_v1`:
   `chunk:*` and `post:*` evidence refs
 - derive default packet ids from a stable SHA-256 query digest so repeated
   processes export the same packet id for the same query
+
+## Deterministic Hybrid Query Packets
+
+`aoa-4pda build-vector` builds a compact `aoa_4pda_vector_index_v1` artifact
+from normalized evidence chunks. The starter algorithm is
+`hashed_char_ngram_vector_v1`: it hashes token and character n-gram features
+into a fixed-size normalized sparse vector. It is deliberately model-free so a
+fresh clone can build and test vector participation without downloading
+embeddings, calling an API, or committing a vector store.
+
+`aoa-4pda query-hybrid` reads the keyword index, deterministic vector index,
+and graph export for the same run. When graph receipts are available it scores
+with `hybrid_bm25_vector_graph_v1`: normalized keyword and vector scores remain
+visible, while matching root/recovery relation evidence contributes a bounded
+`relation_intent_saturation_v1` boost. `score_breakdown` preserves
+`keyword_raw`, `vector_raw`, `graph_raw`, normalized components, graph boost,
+and the pre-graph hybrid score so ranking changes stay auditable.
+
+The graph boost is intentionally narrow. It is derived from `relation_rerank`
+evidence: matching relation edge count, distinct relation kinds, and confidence
+for the query intent. A post that merely has graph context does not receive a
+boost; a post must match root/recovery relation evidence such as
+`root_targets_file`, `root_uses_tool`, `recovery_targets_file`, or
+`recovery_uses_tool`.
+
+This vector layer is a portable recall contract, not a claim of production
+semantic quality. A later embedding backend can replace or supplement it if the
+adapter writes compatible receipts and remains outside Git-tracked heavy data.
 
 ## Starter Graph Query Packets
 
@@ -113,6 +142,15 @@ bounded top-N window for harder OrangeFox, vendor_boot, KernelSU, and HyperOS
 recovery queries, and returns compact diagnostics with the top result plus the
 ranked expected result. It does not crawl or rebuild the run.
 
+`aoa-4pda eval live-hybrid-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json`
+runs the focused Xiaomi 13T hybrid gate against an already-built bounded run.
+It reads configured crawl, normalize, index, vector, and graph receipts, then
+checks that local `query-hybrid` packets preserve keyword/vector/graph score
+participation, promote relation-rich root and recovery evidence, preserve
+source URLs and graph context, and keep the internal-search boundary. It does
+not crawl, rebuild the corpus, use 4PDA internal search, or commit generated
+artifacts.
+
 `aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json`
 runs the focused Xiaomi 13T graph-query gate against an already-built bounded
 run. It reads configured crawl, normalize, index, and graph receipts, then
@@ -138,6 +176,13 @@ freshness context, and relation edges that reached the answer.
 index and graph artifacts from the sanitized live-shaped fixture and checks
 that graph-enriched query packets preserve expected relation context and source
 refs without touching the network.
+
+`aoa-4pda eval hybrid-query-packets` runs
+`evals/suites/starter_hybrid_query_packets.json`. It builds temporary keyword,
+deterministic vector, and graph artifacts from the sanitized live-shaped
+fixture and checks that a hybrid packet returns the expected cited post,
+preserves vector and graph score participation, graph context, source refs, and
+the internal-search boundary.
 
 `aoa-4pda eval graph-relations --suite evals/suites/xiaomi_13t_graph_relations.json`
 runs the focused Xiaomi 13T graph suite. It checks that sanitized firmware
@@ -165,6 +210,7 @@ Every answer should carry:
 - observed/captured timestamps
 - matched chunks or post refs
 - graph context when relation traversal was requested
+- vector report and hybrid score breakdown when hybrid retrieval was requested
 - deterministic answer text when answer rendering was requested
 - query report and score breakdown when produced by a local index
 - freshness note

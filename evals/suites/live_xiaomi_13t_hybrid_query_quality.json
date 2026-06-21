@@ -1,0 +1,101 @@
+{
+  "schema": "aoa_4pda_live_hybrid_query_eval_suite_v1",
+  "suite_id": "live-xiaomi-13t-hybrid-query-quality",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded Xiaomi 13T run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 5,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_vector_graph",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "xiaomi-13t",
+    "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
+    "notes": "Reads existing configured storage receipts, keyword index, deterministic vector index, and graph export for a named Xiaomi 13T run; does not crawl, rebuild, or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-live-hybrid-root-top",
+      "query": "Xiaomi 13T boot.img Magisk KSU",
+      "expect": {
+        "top_post_id": "128449684",
+        "top_keyword_score_present": true,
+        "top_vector_score_present": true,
+        "top_graph_score_present": true,
+        "top_graph_context_present": true,
+        "matched_specific_terms_all": ["boot.img", "magisk"],
+        "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "hybrid_report_algorithm": "weighted_normalized_keyword_vector_relation_boost_v1",
+        "vector_report_algorithm": "hashed_char_ngram_vector_v1"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-hybrid-model-root-recall",
+      "query": "2306EPN60G HyperOS boot.img Magisk KSU",
+      "expect": {
+        "expected_result_post_id": "128449684",
+        "expected_result_source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "expected_result_rank_max": 3,
+        "expected_result_keyword_score_present": true,
+        "expected_result_vector_score_present": true,
+        "expected_result_graph_score_present": true,
+        "expected_result_matched_specific_terms_all": ["boot.img", "magisk"],
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "hybrid_report_algorithm": "weighted_normalized_keyword_vector_relation_boost_v1",
+        "vector_report_algorithm": "hashed_char_ngram_vector_v1"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-hybrid-boot-installer-recall",
+      "query": "boot installer boot img magisk aristotle",
+      "expect": {
+        "expected_result_post_id": "128449684",
+        "expected_result_source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "expected_result_rank_max": 2,
+        "expected_result_keyword_score_present": true,
+        "expected_result_vector_score_present": true,
+        "expected_result_graph_score_present": true,
+        "expected_result_matched_specific_terms_all": ["boot.img", "magisk"],
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "hybrid_report_algorithm": "weighted_normalized_keyword_vector_relation_boost_v1",
+        "vector_report_algorithm": "hashed_char_ngram_vector_v1"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-hybrid-recovery-top",
+      "query": "Xiaomi 13T aristotle recovery.img fastboot",
+      "expect": {
+        "top_post_id": "128964413",
+        "top_keyword_score_present": true,
+        "top_graph_score_present": true,
+        "top_graph_context_present": true,
+        "matched_specific_terms_all": ["recovery.img"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "hybrid_report_algorithm": "weighted_normalized_keyword_vector_relation_boost_v1",
+        "vector_report_algorithm": "hashed_char_ngram_vector_v1"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-hybrid-orangefox-recovery-top",
+      "query": "OrangeFox TWRP Xiaomi 13T fastboot recovery",
+      "expect": {
+        "top_post_id": "128964413",
+        "top_keyword_score_present": true,
+        "top_graph_score_present": true,
+        "top_graph_context_present": true,
+        "matched_specific_terms_all": ["recovery", "twrp"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "hybrid_report_algorithm": "weighted_normalized_keyword_vector_relation_boost_v1",
+        "vector_report_algorithm": "hashed_char_ngram_vector_v1"
+      }
+    }
+  ]
+}

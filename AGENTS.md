@@ -67,6 +67,10 @@ Run from the repository root:
 python scripts/validate_connector.py
 python -m pytest -q
 PYTHONPATH=src python -m aoa_4pda_connector.cli ready
+PYTHONPATH=src python -m aoa_4pda_connector.cli discovery audit xiaomi-13t
+PYTHONPATH=src python -m aoa_4pda_connector.cli discovery review xiaomi-13t
+PYTHONPATH=src python -m aoa_4pda_connector.cli coverage audit xiaomi-13t
+PYTHONPATH=src python -m aoa_4pda_connector.cli refresh audit xiaomi-13t
 ```
 
 The validator must stay safe on a fresh clone with no external storage mounted.

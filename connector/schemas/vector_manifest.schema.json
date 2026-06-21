@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-4pda/vector_manifest.schema.json",
+  "title": "AoA 4PDA Vector Manifest",
+  "type": "object",
+  "required": ["schema", "vector_id", "profile_id", "built_at", "source_run_ids", "index_kinds", "vector_path"],
+  "properties": {
+    "schema": { "const": "aoa_4pda_vector_manifest_v1" },
+    "vector_id": { "type": "string", "minLength": 1 },
+    "profile_id": { "type": "string", "minLength": 1 },
+    "built_at": { "type": "string" },
+    "source_run_ids": { "type": "array", "items": { "type": "string" } },
+    "index_kinds": { "type": "array", "items": { "type": "string" } },
+    "vector_algorithm": { "type": ["string", "null"] },
+    "dimensions": { "type": ["integer", "null"], "minimum": 1 },
+    "artifact_root": { "type": ["string", "null"] },
+    "vector_path": { "type": "string", "minLength": 1 },
+    "network_touched": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

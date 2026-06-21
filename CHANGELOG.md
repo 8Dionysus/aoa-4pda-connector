@@ -70,3 +70,55 @@
 - Added the prepared Redmi Note 10 Pro representative focused-device profile,
   bounded seed windows, local live-search quality suite, readiness checks, and
   profile inspection coverage.
+- Added `aoa-4pda coverage audit` for no-network reference-profile coverage
+  checks over seed windows, receipts, indexes, graph artifacts, quality gates,
+  and explicit Xiaomi 13T gap reporting.
+- Added `aoa-4pda refresh audit` for no-network run freshness checks, stale
+  receipt detection, derived artifact timestamp checks, and bounded refresh
+  planning.
+- Added `aoa-4pda discovery audit` for no-network, review-priority public
+  topic/window candidate extraction from already-stored raw snapshots before
+  seed expansion, with seed-plan-covered windows excluded from candidate gaps.
+- Added a readiness seed-review gate so `aoa-4pda ready` stays `not_ready`
+  while the Xiaomi 13T reference run still has unreviewed discovery candidates.
+- Added the Xiaomi 13T `information_need_matrix` and deep information-need
+  coverage checks so materialized seed windows are not mistaken for full
+  answerable device coverage.
+- Added answer eval coverage for the five Xiaomi 13T expansion classes:
+  battery/power, camera, purchase/variants, firmware source, and late-window
+  regression watch.
+- Added `aoa-4pda discovery review` and the first Xiaomi 13T review manifest
+  for no-network accept/reject/defer classification before seed updates.
+- Applied the reviewed Xiaomi 13T seed expansion, growing the profile to 23
+  bounded seed entries and 70 expected public pages pending the next bounded
+  crawl/rebuild.
+- Materialized the reviewed Xiaomi 13T seed expansion in local configured
+  storage with run `20260621T194521Z__crawl`: 23 fetched seeds, 70 fetched
+  public pages, 1,448 normalized posts, a 1,559-document keyword index, and a
+  1,508-node/2,855-edge graph export.
+- Added the discovery pagination defer rule for ordinary numbered page-window
+  links inside already seeded topics, plus a refreshed Xiaomi 13T review
+  manifest covering 105/105 current discovery candidates.
+- Updated Xiaomi 13T live eval expectations against the materialized run:
+  KSU+Magisk root evidence now resolves to the more specific post, while
+  ranking-pressure remains a keyword top-N recall gate and graph-query/answer
+  gates own relation-aware top ranking.
+- Reached local `connector-ready-v1` on the materialized Xiaomi 13T run with
+  strict coverage, refresh, discovery-review, search, ranking-pressure, graph,
+  answer, validator, pytest, compile, and diff checks green.
+- The information-need gate now reports the current Xiaomi 13T matrix as 10/10
+  covered on run `20260621T194521Z__crawl`, while still making future
+  expansion gaps explicit.
+- Added a deterministic no-model vector index, `build-vector`, `query-hybrid`,
+  vector receipts/schemas, and a starter hybrid query eval so keyword/vector
+  merging is reproducible in a fresh clone without external embeddings.
+- Added a receipt-driven Xiaomi 13T live hybrid query quality gate over
+  existing keyword, vector, and graph artifacts.
+- Upgraded `query-hybrid` to `hybrid_bm25_vector_graph_v1` when graph receipts
+  are present: matching root/recovery relation evidence now contributes an
+  auditable bounded score boost, and the Xiaomi 13T live hybrid suite protects
+  recovery top-ranking cases such as `recovery.img fastboot` and OrangeFox/TWRP.
+- Added `scripts/verify_agent_install_route.py`, a fresh-copy agent install
+  verifier that creates an isolated temporary checkout, installs the package,
+  routes generated state to temporary external storage roots, materializes the
+  fixture database, and runs the no-network starter query/answer/eval route.

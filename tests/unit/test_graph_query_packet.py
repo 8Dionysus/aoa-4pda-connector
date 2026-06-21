@@ -9,7 +9,8 @@ from pathlib import Path
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import extract_entities, normalize_snapshot
-from aoa_4pda_connector.query import query_graph_packet
+from aoa_4pda_connector.query import query_graph_packet, query_hybrid_packet
+from aoa_4pda_connector.vector import build_vector_index
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -245,6 +246,74 @@ def test_query_graph_packet_relation_reranks_recovery_intent(tmp_path):
     }.issubset(set(top["relation_rerank"]["matching_relation_kinds"]))
     assert packet["results"][1]["post_id"] == "2001"
     assert packet["results"][1]["keyword_rank"] == 1
+
+
+def test_query_hybrid_packet_boosts_matching_graph_relations(tmp_path):
+    normalized_dir = tmp_path / "normalized-hybrid-rerank"
+    normalized_dir.mkdir()
+    noisy_text = (
+        "OrangeFox OrangeFox OrangeFox Xiaomi 13T TWRP fastboot recovery. "
+        "General index notes without a concrete recovery image flashing relation."
+    )
+    structured_text = (
+        "Xiaomi 13T aristotle recovery guide. TWRP build uses vendor_boot. "
+        "Прошить recovery.img можно через fastboot."
+    )
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "1076859",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-21T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "3001",
+                "topic_id": "1076859",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry3001",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": noisy_text,
+                "entities": extract_entities(noisy_text),
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "3002",
+                "topic_id": "1076859",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry3002",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": structured_text,
+                "entities": extract_entities(structured_text),
+            },
+        ],
+    }
+    (normalized_dir / "topic-1076859-st2140.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index-hybrid-rerank", "xiaomi-13t")
+    vector_path = build_vector_index(normalized_dir, tmp_path / "vector-hybrid-rerank", "xiaomi-13t")
+    graph_path = build_graph(normalized_dir, tmp_path / "graph-hybrid-rerank", "xiaomi-13t")
+
+    packet = query_hybrid_packet(
+        index_path,
+        vector_path,
+        graph_path,
+        "OrangeFox TWRP Xiaomi 13T fastboot recovery",
+        limit=2,
+    )
+
+    top = packet["results"][0]
+    assert packet["query_report"]["algorithm"] == "hybrid_bm25_vector_graph_v1"
+    assert packet["hybrid_report"]["algorithm"] == "weighted_normalized_keyword_vector_relation_boost_v1"
+    assert packet["hybrid_report"]["graph_relation_boost"]["algorithm"] == "relation_intent_saturation_v1"
+    assert top["post_id"] == "3002"
+    assert top["keyword_rank"] == 2
+    assert top["score_breakdown"]["graph_raw"] > 0
+    assert top["score_breakdown"]["graph_relation_boost"] > 0
+    assert packet["results"][1]["post_id"] == "3001"
 
 
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:

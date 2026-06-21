@@ -39,13 +39,30 @@
     receipts
   - expanded Xiaomi 13T answer-quality diagnostics across root, recovery,
     accessory, and HyperOS notification cases
-  - Xiaomi 13T ranking-pressure gate for top-N recall on harder OrangeFox,
-    vendor_boot, KernelSU, and HyperOS recovery queries
+  - Xiaomi 13T ranking-pressure gate for keyword top-N recall on harder
+    OrangeFox, vendor_boot, KernelSU, and HyperOS recovery queries
   - relation-intent rerank for graph/answer packets with original keyword rank
     diagnostics
   - answer packet freshness/capture context for cited local evidence
   - second representative Redmi Note 10 Pro profile with bounded seed windows
     and live search gate prepared for the next focused run
+  - reference-profile discovery audit for review-priority public topic/window
+    candidates visible in stored snapshots before seed expansion, excluding
+    already covered seed-plan windows from candidate gaps
+  - reference-profile seed-review audit and Xiaomi 13T review manifest for
+    accept/reject/defer classification before seed updates
+  - reviewed Xiaomi 13T seed expansion applied to the profile seed plan and
+    materialized in local configured storage as 23 seeds, 70 public pages,
+    1,448 normalized posts, a 1,559-document keyword index, and a
+    1,508-node/2,855-edge graph export
+  - discovery pagination defer rule so ordinary numbered page windows stay
+    reviewed future expansion pressure unless exact review accepts them
+  - reference-profile coverage audit for Xiaomi 13T seed windows, receipt
+    chain, index, graph, quality gates, and explicit gap reporting
+  - reference-profile refresh audit for crawl age, derived artifact freshness,
+    and bounded operator-confirmed refresh planning
+  - deterministic no-model vector index and graph-aware hybrid keyword/vector
+    query route with starter and Xiaomi 13T live eval coverage
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms
@@ -55,7 +72,8 @@
     versions, root actions, recovery actions, image files, and
     Magisk/KSU/TWRP/OrangeFox/fastboot evidence
   - KernelSU spelling alias for KSU root evidence near `boot.img`
-- vector search adapter behind an optional dependency
+- optional external embedding/vector-store adapter behind an explicit
+  dependency and receipt-compatible contract
 - broader retrieval eval expansion against bounded external-storage runs
 
 ## Wave 3: Graph Evidence
@@ -70,5 +88,9 @@
 
 - no-network `connector-ready-v1` maturity audit for install, storage,
   receipt, quality-gate, heavy-data, and runtime-contract readiness
+  - local materialized Xiaomi 13T run proves the retrieval path while
+    information-need coverage keeps future deep-profile expansion gaps visible
+  - current Xiaomi 13T matrix has 10/10 classes covered by local eval routes
+    before strict ready can honestly claim the reference profile is useful
 - `abyss-stack` MCP/runtime adapter that consumes installed connector roots
   without moving corpora into Git

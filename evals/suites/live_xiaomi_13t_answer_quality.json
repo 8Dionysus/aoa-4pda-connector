@@ -41,21 +41,21 @@
       "case_id": "xiaomi-13t-live-root-answer",
       "query": "2306EPN60G HyperOS boot.img Magisk KSU",
       "expect": {
-        "top_post_id": "128449684",
+        "top_post_id": "128398172",
         "answer_kind": "root",
-        "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "source_url_contains": "showtopic=1076859&st=1780#entry128398172",
         "query_report_unit": "chunk",
         "matched_specific_terms_all": ["boot.img", "magisk"],
         "query_report_technical_terms_all": ["boot.img"],
         "graph_report_relation_edge_kinds_all": ["root_targets_file", "root_uses_tool"],
         "root_action_labels": ["patch boot.img"],
         "target_file_labels": ["boot.img"],
-        "tool_labels": ["Magisk"],
+        "tool_labels": ["KSU", "Magisk"],
         "answer_context_labels_min": 3,
         "answer_text_contains": [
           "Root actions: patch boot.img.",
           "Target files: boot.img.",
-          "Tools: Magisk."
+          "Tools: KSU; Magisk."
         ]
       }
     },
@@ -195,6 +195,81 @@
         "answer_text_contains": [
           "уведомления HyperOS",
           "Mi Home"
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-battery-night-drain-answer",
+      "query": "Xiaomi 13T батарея ночь расход экран",
+      "expect": {
+        "top_post_id": "143774991",
+        "answer_kind": "snippet",
+        "source_url_contains": "showtopic=1078716&st=2280#entry143774991",
+        "query_report_unit": "chunk",
+        "matched_terms_any": ["батарея", "ночь", "расход"],
+        "answer_text_contains": [
+          "батарея в 0",
+          "RU прошивка"
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-camera-gcam-config-answer",
+      "query": "Xiaomi 13T камера AGC BSG конфиг",
+      "expect": {
+        "top_post_id": "125391444",
+        "answer_kind": "snippet",
+        "source_url_contains": "showtopic=1077044&st=0#entry125391444",
+        "query_report_unit": "chunk",
+        "matched_terms_any": ["камера", "agc", "bsg"],
+        "answer_text_contains": [
+          "AGC 8.8",
+          "BSG 8.7"
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-purchase-price-answer",
+      "query": "Xiaomi 13T покупка цена версия озон",
+      "expect": {
+        "top_post_id": "125345232",
+        "answer_kind": "snippet",
+        "source_url_contains": "showtopic=1076958&st=0#entry125345232",
+        "query_report_unit": "chunk",
+        "matched_terms_any": ["покупка", "цена", "озон"],
+        "answer_text_contains": [
+          "45 999",
+          "50 999"
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-firmware-source-answer",
+      "query": "Xiaomi 13T скачать прошивку firmware HyperOS источник",
+      "expect": {
+        "top_post_id": "135562496",
+        "answer_kind": "snippet",
+        "source_url_contains": "showtopic=1102753&st=0#entry135562496",
+        "query_report_unit": "chunk",
+        "matched_terms_any": ["прошивку", "firmware", "hyperos"],
+        "answer_text_contains": [
+          "прошивку можно скачать",
+          "серверах бигота"
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-late-update-reset-answer",
+      "query": "Xiaomi 13T после обновления сброс настроек заводских",
+      "expect": {
+        "top_post_id": "143942761",
+        "answer_kind": "snippet",
+        "source_url_contains": "showtopic=1074451&st=19140#entry143942761",
+        "query_report_unit": "chunk",
+        "matched_terms_any": ["обновления", "сброс", "заводских"],
+        "answer_text_contains": [
+          "после обновления системы",
+          "сброс настроек до заводских"
         ]
       }
     }

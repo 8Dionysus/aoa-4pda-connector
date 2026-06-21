@@ -9,12 +9,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from aoa_4pda_connector.index import extract_exact_terms, technical_alias_tokens, tokenize
+from aoa_4pda_connector.vector import query_vector_index
 
 
 BM25_K1 = 1.5
 BM25_B = 0.75
 EXACT_TERM_BOOST = 1.75
 PHRASE_BOOST = 2.5
+GRAPH_RELATION_WEIGHT = 0.85
 RELATION_EDGE_KINDS = (
     "fixes_issue",
     "recovery_mentions_firmware",
@@ -189,6 +191,141 @@ def query_graph_packet(index_path: Path, graph_path: Path, query: str, limit: in
     return packet
 
 
+def query_hybrid_packet(
+    index_path: Path,
+    vector_path: Path,
+    graph_path: Path | None,
+    query: str,
+    limit: int = 5,
+    *,
+    keyword_weight: float = 0.65,
+    vector_weight: float = 0.35,
+    graph_weight: float = GRAPH_RELATION_WEIGHT,
+) -> dict[str, object]:
+    """Return keyword+vector evidence results, optionally enriched with graph context."""
+
+    candidate_limit = max(limit * 4, 80)
+    keyword_packet = (
+        query_graph_packet(index_path, graph_path, query, limit=candidate_limit)
+        if graph_path is not None
+        else query_keyword_index(index_path, query, limit=candidate_limit)
+    )
+    vector_packet = query_vector_index(vector_path, query, limit=candidate_limit)
+    keyword_results = _ranked_result_map(keyword_packet.get("results", []), "keyword_rank")
+    vector_results = _ranked_result_map(vector_packet.get("results", []), "vector_rank")
+    keyword_max = max([float(result.get("score") or 0.0) for result in keyword_results.values()] or [1.0])
+    vector_max = max([float(result.get("score") or 0.0) for result in vector_results.values()] or [1.0])
+
+    graph_enabled = graph_path is not None
+    effective_graph_weight = graph_weight if graph_enabled else 0.0
+    pending: list[dict[str, object]] = []
+    for key in sorted(set(keyword_results) | set(vector_results)):
+        keyword_result = keyword_results.get(key, {})
+        vector_result = vector_results.get(key, {})
+        base = dict(keyword_result or vector_result)
+        keyword_score = float(keyword_result.get("score") or 0.0)
+        vector_score = float(vector_result.get("score") or 0.0)
+        keyword_normalized = keyword_score / keyword_max if keyword_max else 0.0
+        vector_normalized = vector_score / vector_max if vector_max else 0.0
+        graph_raw = _graph_relation_score(keyword_result)
+        pending.append(
+            {
+                "base": base,
+                "keyword_score": keyword_score,
+                "vector_score": vector_score,
+                "keyword_normalized": keyword_normalized,
+                "vector_normalized": vector_normalized,
+                "graph_raw": graph_raw,
+                "keyword_result": keyword_result,
+                "vector_result": vector_result,
+            }
+        )
+
+    graph_max = max([float(item["graph_raw"]) for item in pending] or [0.0])
+    combined: list[dict[str, object]] = []
+    for item in pending:
+        base = item["base"]
+        keyword_score = float(item["keyword_score"])
+        vector_score = float(item["vector_score"])
+        keyword_normalized = float(item["keyword_normalized"])
+        vector_normalized = float(item["vector_normalized"])
+        graph_raw = float(item["graph_raw"])
+        graph_normalized = graph_raw / graph_max if graph_max else 0.0
+        relation_boost = effective_graph_weight * graph_normalized
+        hybrid_without_graph = keyword_weight * keyword_normalized + vector_weight * vector_normalized
+        hybrid_score = hybrid_without_graph + relation_boost
+        base["score"] = round(hybrid_score, 6)
+        base["score_breakdown"] = {
+            "hybrid": round(hybrid_score, 6),
+            "hybrid_without_graph": round(hybrid_without_graph, 6),
+            "keyword_raw": round(keyword_score, 6),
+            "keyword_normalized": round(keyword_normalized, 6),
+            "vector_raw": round(vector_score, 6),
+            "vector_normalized": round(vector_normalized, 6),
+            "graph_raw": round(graph_raw, 6),
+            "graph_normalized": round(graph_normalized, 6),
+            "graph_relation_boost": round(relation_boost, 6),
+            "keyword_weight": keyword_weight,
+            "vector_weight": vector_weight,
+            "graph_weight": effective_graph_weight,
+        }
+        keyword_result = item["keyword_result"]
+        vector_result = item["vector_result"]
+        base["keyword_rank"] = keyword_result.get("keyword_rank")
+        base["vector_rank"] = vector_result.get("vector_rank")
+        base["vector_algorithm"] = vector_result.get("vector_algorithm")
+        if vector_result.get("sample_features") and not base.get("vector_sample_features"):
+            base["vector_sample_features"] = vector_result.get("sample_features")
+        combined.append(base)
+
+    ranked = sorted(combined, key=_hybrid_ranking_key)
+    for rank, result in enumerate(ranked, start=1):
+        result["hybrid_rank"] = rank
+
+    packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": packet_id_for_query(query),
+        "query": query,
+        "created_at": datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "query_report": {
+            "algorithm": "hybrid_bm25_vector_graph_v1" if graph_enabled else "hybrid_bm25_vector_v1",
+            "unit": keyword_packet.get("query_report", {}).get("unit", "chunk"),
+            "keyword_weight": keyword_weight,
+            "vector_weight": vector_weight,
+            "graph_weight": effective_graph_weight,
+            "keyword": keyword_packet.get("query_report", {}),
+            "vector": vector_packet.get("query_report", {}),
+        },
+        "hybrid_report": {
+            "algorithm": (
+                "weighted_normalized_keyword_vector_relation_boost_v1"
+                if graph_enabled
+                else "weighted_normalized_keyword_vector_v1"
+            ),
+            "keyword_path": str(index_path),
+            "vector_path": str(vector_path),
+            "graph_path": str(graph_path) if graph_path else None,
+            "candidate_limit": candidate_limit,
+            "result_count": len(ranked[:limit]),
+            "graph_relation_boost": {
+                "algorithm": "relation_intent_saturation_v1",
+                "enabled": graph_enabled,
+                "weight": effective_graph_weight,
+                "max_raw": round(graph_max, 6),
+            },
+        },
+        "vector_report": vector_packet.get("vector_report", {}),
+        "results": ranked[:limit],
+        "policy": {
+            "source": "local_keyword_vector_index_plus_graph" if graph_path else "local_keyword_vector_index",
+            "internal_search_used": False,
+        },
+    }
+    if graph_path is not None and "graph_report" in keyword_packet:
+        packet["graph_report"] = keyword_packet["graph_report"]
+    return packet
+
+
 def _relation_intents(query_report: object) -> set[str]:
     if not isinstance(query_report, dict):
         return set()
@@ -203,6 +340,54 @@ def _relation_intents(query_report: object) -> set[str]:
     if values.intersection(RECOVERY_INTENT_TERMS):
         intents.add("recovery")
     return intents
+
+
+def _ranked_result_map(results: object, rank_field: str) -> dict[str, dict[str, object]]:
+    if not isinstance(results, list):
+        return {}
+    mapped: dict[str, dict[str, object]] = {}
+    for rank, result in enumerate(results, start=1):
+        if not isinstance(result, dict):
+            continue
+        key = str(result.get("chunk_id") or result.get("post_id") or "")
+        if not key:
+            continue
+        value = dict(result)
+        value.setdefault(rank_field, rank)
+        mapped[key] = value
+    return mapped
+
+
+def _hybrid_ranking_key(result: dict[str, object]) -> tuple[object, ...]:
+    breakdown = result.get("score_breakdown", {})
+    if not isinstance(breakdown, dict):
+        breakdown = {}
+    keyword_rank = result.get("keyword_rank")
+    vector_rank = result.get("vector_rank")
+    return (
+        -float(result.get("score") or 0.0),
+        -float(breakdown.get("graph_normalized") or 0.0),
+        int(keyword_rank) if keyword_rank else 999999,
+        int(vector_rank) if vector_rank else 999999,
+        -float(breakdown.get("keyword_raw") or 0.0),
+        -float(breakdown.get("vector_raw") or 0.0),
+    )
+
+
+def _graph_relation_score(result: dict[str, object]) -> float:
+    summary = result.get("relation_rerank", {})
+    if not isinstance(summary, dict):
+        return 0.0
+    edge_count = int(summary.get("matching_edge_count") or 0)
+    relation_kinds = summary.get("matching_relation_kinds", [])
+    kind_count = len(relation_kinds) if isinstance(relation_kinds, list) else 0
+    if edge_count <= 0 or kind_count <= 0:
+        return 0.0
+    confidence_sum = float(summary.get("matching_relation_confidence_sum") or 0.0)
+    edge_component = min(edge_count, 2) / 2
+    kind_component = min(kind_count, 2) / 2
+    confidence_component = min(confidence_sum, 1.0)
+    return round(0.4 * edge_component + 0.4 * kind_component + 0.2 * confidence_component, 6)
 
 
 def _relation_query_values(query_report: object) -> set[str]:

@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 
 from aoa_4pda_connector.config import LOCAL_STATE_DIR, StorageRoots, find_repo_root
+from aoa_4pda_connector.coverage import audit_profile_coverage
+from aoa_4pda_connector.discovery import audit_profile_seed_review
 from aoa_4pda_connector.storage import storage_status
 
 
@@ -13,15 +15,21 @@ READY_TARGET = "connector-ready-v1"
 
 REQUIRED_INSTALL_TOKENS = [
     'python -m pip install -e ".[dev]"',
+    "python scripts/verify_agent_install_route.py",
     "python scripts/validate_connector.py",
     "python -m pytest -q",
     "aoa-4pda doctor",
     "aoa-4pda storage status",
     "aoa-4pda proof starter",
     "aoa-4pda materialize fixture",
+    "aoa-4pda discovery audit xiaomi-13t",
+    "aoa-4pda discovery review xiaomi-13t",
+    "aoa-4pda coverage audit xiaomi-13t",
+    "aoa-4pda refresh audit xiaomi-13t",
     "aoa-4pda eval search-quality",
     "aoa-4pda eval graph-relations",
     "aoa-4pda eval graph-query-packets",
+    "aoa-4pda eval hybrid-query-packets",
     "aoa-4pda eval answer-packets",
 ]
 
@@ -31,6 +39,7 @@ REQUIRED_STARTER_SURFACES = [
     "evals/suites/starter_search_quality.json",
     "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_graph_query_packets.json",
+    "evals/suites/starter_hybrid_query_packets.json",
     "evals/suites/starter_answer_packets.json",
 ]
 
@@ -39,6 +48,7 @@ REQUIRED_FOCUSED_SURFACES = [
     "connector/seeds/xiaomi_13t_topics.yaml",
     "evals/suites/live_xiaomi_13t_search_quality.json",
     "evals/suites/live_xiaomi_13t_ranking_pressure.json",
+    "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/live_xiaomi_13t_answer_quality.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
@@ -53,6 +63,7 @@ REQUIRED_HEAVY_PATTERNS = [
     "artifacts/",
     "raw/",
     "indexes/",
+    "vectors/",
     "graphs/",
     "exports/full/",
     "*.sqlite",
@@ -68,6 +79,7 @@ FORBIDDEN_HEAVY_ROOTS = [
     "artifacts",
     "raw",
     "indexes",
+    "vectors",
     "graphs",
     "exports/full",
 ]
@@ -87,6 +99,12 @@ def audit_connector_ready(
         _fresh_clone_install_route(root),
         _offline_starter_gates(root),
         _focused_profile_gate(root, storage_roots, run),
+        _discovery_audit_gate(root),
+        _reference_profile_seed_review_gate(root, storage_roots, run),
+        _coverage_audit_gate(root),
+        _reference_profile_coverage_state_gate(root, storage_roots, run),
+        _reference_profile_information_need_gate(root, storage_roots, run),
+        _refresh_audit_gate(root),
         _next_profile_gate(root),
         _receipt_pipeline_gate(root, storage_roots, run),
         _search_quality_gate(root),
@@ -156,7 +174,7 @@ def _fresh_clone_install_route(repo_root: Path) -> dict[str, object]:
     return _criterion(
         "fresh_clone_install_route",
         status,
-        "Fresh clone install route is documented and exposes the aoa-4pda CLI entrypoint.",
+        "Fresh clone install route is documented, exposes the aoa-4pda CLI entrypoint, and includes a fresh-copy verifier.",
         {
             "install_doc": _exists(install_doc),
             "agent_install_doc": _exists(agent_doc),
@@ -205,7 +223,227 @@ def _focused_profile_gate(repo_root: Path, roots: StorageRoots, run: str) -> dic
             "receipt_profile_id": receipt_profile,
             "receipt_chain_present": receipts_ok,
         },
-        "Materialize or restore a Xiaomi 13T crawl/normalize/index/graph receipt chain and run focused live gates.",
+        "Materialize or restore a Xiaomi 13T crawl/normalize/index/vector/graph receipt chain and run focused live gates.",
+    )
+
+
+def _discovery_audit_gate(repo_root: Path) -> dict[str, object]:
+    discovery_doc = repo_root / "docs" / "DISCOVERY.md"
+    cli = repo_root / "src" / "aoa_4pda_connector" / "cli.py"
+    discovery_module = repo_root / "src" / "aoa_4pda_connector" / "discovery" / "__init__.py"
+    doc_text = _read_text(discovery_doc)
+    cli_text = _read_text(cli)
+    module_text = _read_text(discovery_module)
+    required_doc_tokens = [
+        "reference-profile-discovery-v1",
+        "aoa-4pda discovery audit xiaomi-13t",
+        "missing_run",
+        "needs_seed_review",
+        "no_new_candidates",
+        "covered_seed_window_link_count",
+        "review_priority",
+    ]
+    missing_doc_tokens = [token for token in required_doc_tokens if token not in doc_text]
+    cli_wired = "discovery" in cli_text and "cmd_discovery_audit" in cli_text
+    module_wired = (
+        "audit_profile_discovery" in module_text
+        and "candidate_kind" in module_text
+        and "covered_seed_window_link_count" in module_text
+        and "review_priority" in module_text
+    )
+    status = "achieved" if discovery_doc.is_file() and not missing_doc_tokens and cli_wired and module_wired else "missing"
+    return _criterion(
+        "reference_profile_discovery_audit",
+        status,
+        "A no-network discovery audit exists for review-ready public topic candidates visible in stored snapshots.",
+        {
+            "discovery_doc": _exists(discovery_doc),
+            "missing_doc_tokens": missing_doc_tokens,
+            "cli_command_wired": cli_wired,
+            "discovery_module_wired": module_wired,
+        },
+        "Add and document aoa-4pda discovery audit before expanding profile seeds.",
+    )
+
+
+def _reference_profile_seed_review_gate(repo_root: Path, roots: StorageRoots, run: str) -> dict[str, object]:
+    report = audit_profile_seed_review("xiaomi-13t", repo_root, roots, run=run, limit=0)
+    status = str(report.get("status", "error"))
+    discovery = report.get("discovery", {}) if isinstance(report.get("discovery"), dict) else {}
+    checks = report.get("checks", {}) if isinstance(report.get("checks"), dict) else {}
+    if status == "reviewed":
+        gate_status = "achieved"
+        next_action = ""
+    elif status in {"missing_run", "missing_review", "needs_review", "reviewed_pending_seed_update"}:
+        gate_status = "partial"
+        next_action = "Complete Xiaomi 13T seed review and seed update before claiming reference-profile seed maturity."
+    else:
+        gate_status = "missing"
+        next_action = "Restore the Xiaomi 13T discovery review route and rerun it against a named run."
+    return _criterion(
+        "reference_profile_seed_review_state",
+        gate_status,
+        "Xiaomi 13T discovery candidates are reviewed or absent before claiming reference-profile seed maturity.",
+        {
+            "review_status": status,
+            "candidate_count": discovery.get("candidate_count", 0),
+            "reviewed_candidate_count": discovery.get("reviewed_candidate_count", 0),
+            "unreviewed_count": discovery.get("unreviewed_count", 0),
+            "accepted_missing_from_seed_count": discovery.get("accepted_missing_from_seed_count", 0),
+            "accepted_seeded_count": discovery.get("accepted_seeded_count", 0),
+            "decision_counts": discovery.get("decision_counts", {}),
+            "manifest_exists": checks.get("manifest_exists"),
+            "all_current_candidates_reviewed": checks.get("all_current_candidates_reviewed"),
+            "accepted_candidates_seeded": checks.get("accepted_candidates_seeded"),
+            "network_touched": report.get("network_touched"),
+        },
+        next_action,
+    )
+
+
+def _coverage_audit_gate(repo_root: Path) -> dict[str, object]:
+    coverage_doc = repo_root / "docs" / "COVERAGE.md"
+    cli = repo_root / "src" / "aoa_4pda_connector" / "cli.py"
+    coverage_module = repo_root / "src" / "aoa_4pda_connector" / "coverage" / "__init__.py"
+    doc_text = _read_text(coverage_doc)
+    cli_text = _read_text(cli)
+    module_text = _read_text(coverage_module)
+    required_doc_tokens = [
+        "reference-profile-coverage-v1",
+        "aoa-4pda coverage audit xiaomi-13t",
+        "no_run",
+        "partial",
+        "coverage_ready",
+        "information_need_matrix",
+        "deep_information_needs_covered",
+    ]
+    missing_doc_tokens = [token for token in required_doc_tokens if token not in doc_text]
+    cli_wired = "coverage" in cli_text and "cmd_coverage_audit" in cli_text
+    module_wired = (
+        "audit_profile_coverage" in module_text
+        and "network_touched" in module_text
+        and "_information_need_coverage" in module_text
+    )
+    status = "achieved" if coverage_doc.is_file() and not missing_doc_tokens and cli_wired and module_wired else "missing"
+    return _criterion(
+        "reference_profile_coverage_audit",
+        status,
+        "A no-network coverage audit exists for bounded reference-profile materialization and gaps.",
+        {
+            "coverage_doc": _exists(coverage_doc),
+            "missing_doc_tokens": missing_doc_tokens,
+            "cli_command_wired": cli_wired,
+            "coverage_module_wired": module_wired,
+        },
+        "Add and document aoa-4pda coverage audit before claiming reference-profile coverage maturity.",
+    )
+
+
+def _reference_profile_coverage_state_gate(repo_root: Path, roots: StorageRoots, run: str) -> dict[str, object]:
+    report = audit_profile_coverage("xiaomi-13t", repo_root, roots, run=run)
+    status = str(report.get("status", "error"))
+    coverage = report.get("coverage", {}) if isinstance(report.get("coverage"), dict) else {}
+    materialized = report.get("materialized", {}) if isinstance(report.get("materialized"), dict) else {}
+    seed_pages = coverage.get("seed_pages", {}) if isinstance(coverage.get("seed_pages"), dict) else {}
+    focus_areas = coverage.get("focus_areas", {}) if isinstance(coverage.get("focus_areas"), dict) else {}
+    if status == "coverage_ready":
+        gate_status = "achieved"
+        next_action = ""
+    elif status in {"no_run", "partial"}:
+        gate_status = "partial"
+        next_action = "Materialize the current Xiaomi 13T seed plan before claiming reference-profile coverage maturity."
+    else:
+        gate_status = "missing"
+        next_action = "Restore the Xiaomi 13T coverage audit route and rerun it against a named run."
+    return _criterion(
+        "reference_profile_coverage_state",
+        gate_status,
+        "Current Xiaomi 13T seed plan is materialized by crawl, normalize, index, vector, and graph receipts.",
+        {
+            "coverage_status": status,
+            "seed_pages": seed_pages,
+            "focus_areas": focus_areas,
+            "receipt_run_ids": report.get("materialized", {}).get("receipt_run_ids", {}),
+            "index_doc_count": materialized.get("index", {}).get("doc_count") if isinstance(materialized.get("index"), dict) else None,
+            "vector_doc_count": materialized.get("vector", {}).get("doc_count") if isinstance(materialized.get("vector"), dict) else None,
+            "graph_edge_count": materialized.get("graph", {}).get("edge_count") if isinstance(materialized.get("graph"), dict) else None,
+            "network_touched": report.get("network_touched"),
+        },
+        next_action,
+    )
+
+
+def _reference_profile_information_need_gate(repo_root: Path, roots: StorageRoots, run: str) -> dict[str, object]:
+    report = audit_profile_coverage("xiaomi-13t", repo_root, roots, run=run)
+    information_needs = report.get("information_needs", {}) if isinstance(report.get("information_needs"), dict) else {}
+    summary = information_needs.get("summary", {}) if isinstance(information_needs.get("summary"), dict) else {}
+    matrix_exists = bool(information_needs.get("matrix_exists"))
+    connector_ready_complete = bool(summary.get("connector_ready_complete"))
+    deep_profile_complete = bool(summary.get("deep_profile_complete"))
+    if matrix_exists and deep_profile_complete:
+        status = "achieved"
+        next_action = ""
+    elif matrix_exists and connector_ready_complete:
+        status = "partial"
+        next_action = "Add eval routes for the remaining Xiaomi 13T expansion information needs before claiming deep profile coverage."
+    elif matrix_exists:
+        status = "partial"
+        next_action = "Materialize the named run and restore required eval routes for Xiaomi 13T information needs."
+    else:
+        status = "missing"
+        next_action = "Add the Xiaomi 13T information-need matrix and wire it into coverage audit."
+    return _criterion(
+        "reference_profile_information_need_coverage",
+        status,
+        "Xiaomi 13T coverage distinguishes seed/window materialization from covered classes of useful questions.",
+        {
+            "matrix_exists": matrix_exists,
+            "matrix_path": information_needs.get("matrix_path"),
+            "coverage_status": report.get("status"),
+            "connector_ready_complete": connector_ready_complete,
+            "connector_ready_required": summary.get("connector_ready_required", 0),
+            "connector_ready_covered": summary.get("connector_ready_covered", 0),
+            "connector_ready_missing_need_ids": summary.get("connector_ready_missing_need_ids", []),
+            "deep_profile_complete": deep_profile_complete,
+            "deep_profile_required": summary.get("deep_profile_required", 0),
+            "deep_profile_covered": summary.get("deep_profile_covered", 0),
+            "deep_profile_missing_need_ids": summary.get("deep_profile_missing_need_ids", []),
+            "status_counts": summary.get("status_counts", {}),
+            "network_touched": report.get("network_touched"),
+        },
+        next_action,
+    )
+
+
+def _refresh_audit_gate(repo_root: Path) -> dict[str, object]:
+    refresh_doc = repo_root / "docs" / "REFRESH.md"
+    cli = repo_root / "src" / "aoa_4pda_connector" / "cli.py"
+    refresh_module = repo_root / "src" / "aoa_4pda_connector" / "refresh" / "__init__.py"
+    doc_text = _read_text(refresh_doc)
+    cli_text = _read_text(cli)
+    module_text = _read_text(refresh_module)
+    required_doc_tokens = [
+        "reference-profile-refresh-v1",
+        "aoa-4pda refresh audit xiaomi-13t",
+        "missing_run",
+        "needs_refresh",
+        "fresh",
+    ]
+    missing_doc_tokens = [token for token in required_doc_tokens if token not in doc_text]
+    cli_wired = "refresh" in cli_text and "cmd_refresh_audit" in cli_text
+    module_wired = "audit_profile_refresh" in module_text and "strict_ready" in module_text
+    status = "achieved" if refresh_doc.is_file() and not missing_doc_tokens and cli_wired and module_wired else "missing"
+    return _criterion(
+        "reference_profile_refresh_audit",
+        status,
+        "A no-network refresh audit exists for receipt age, derived artifacts, and bounded update planning.",
+        {
+            "refresh_doc": _exists(refresh_doc),
+            "missing_doc_tokens": missing_doc_tokens,
+            "cli_command_wired": cli_wired,
+            "refresh_module_wired": module_wired,
+        },
+        "Add and document aoa-4pda refresh audit before relying on long-lived profile runs.",
     )
 
 
@@ -283,6 +521,7 @@ def _receipt_pipeline_gate(repo_root: Path, roots: StorageRoots, run: str) -> di
     chain_ok = _receipts_share_run(receipts)
     artifacts = {
         "index_path_exists": _receipt_path_exists(receipts.get("index", {}), "index_path"),
+        "vector_path_exists": _receipt_path_exists(receipts.get("vector", {}), "vector_path"),
         "graph_path_exists": _receipt_path_exists(receipts.get("graph", {}), "graph_path"),
     }
     storage = storage_status(repo_root, roots)
@@ -296,13 +535,13 @@ def _receipt_pipeline_gate(repo_root: Path, roots: StorageRoots, run: str) -> di
     )
     derived_no_network = all(
         receipts.get(kind, {}).get("network_touched") is False
-        for kind in ["normalize", "index", "graph"]
+        for kind in ["normalize", "index", "vector", "graph"]
     )
     status = "achieved" if chain_ok and all(artifacts.values()) and storage_ok and policy_ok and derived_no_network else "partial"
     return _criterion(
         "receipt_reproducible_pipeline",
         status,
-        "Bounded crawl/normalize/index/graph/query/answer pipeline is reproducible from receipts and storage roots.",
+        "Bounded crawl/normalize/index/vector/graph/query/answer pipeline is reproducible from receipts and storage roots.",
         {
             "storage_status": storage.get("status"),
             "receipt_run_ids": _receipt_run_ids(receipts),
@@ -310,33 +549,41 @@ def _receipt_pipeline_gate(repo_root: Path, roots: StorageRoots, run: str) -> di
             "public_only_policy_preserved": policy_ok,
             "derived_stages_network_free": derived_no_network,
         },
-        "Run or restore crawl -> normalize -> build-index -> build-graph for a bounded profile and keep receipts together.",
+        "Run or restore crawl -> normalize -> build-index -> build-vector -> build-graph for a bounded profile and keep receipts together.",
     )
 
 
 def _search_quality_gate(repo_root: Path) -> dict[str, object]:
     search_suite = _load_json(repo_root / "evals" / "suites" / "live_xiaomi_13t_search_quality.json")
     pressure_suite = _load_json(repo_root / "evals" / "suites" / "live_xiaomi_13t_ranking_pressure.json")
+    hybrid_suite = _load_json(repo_root / "evals" / "suites" / "live_xiaomi_13t_hybrid_query_quality.json")
     pressure_cases = pressure_suite.get("cases", []) if isinstance(pressure_suite, dict) else []
+    hybrid_cases = hybrid_suite.get("cases", []) if isinstance(hybrid_suite, dict) else []
     docs = _read_text(repo_root / "docs" / "QUERY_MODEL.md")
     ok = (
         isinstance(search_suite, dict)
         and isinstance(pressure_suite, dict)
+        and isinstance(hybrid_suite, dict)
         and len(pressure_cases) >= 4
+        and len(hybrid_cases) >= 3
         and "BM25" in docs
         and "ranking-pressure" in docs
+        and "live-hybrid-query-quality" in docs
     )
     return _criterion(
         "search_quality_gates",
         "achieved" if ok else "missing",
-        "Search quality covers exact/BM25 technical retrieval and hard rank-pressure cases.",
+        "Search quality covers exact/BM25 technical retrieval, deterministic hybrid retrieval, and hard rank-pressure cases.",
         {
             "live_search_suite": bool(search_suite),
             "ranking_pressure_case_count": len(pressure_cases),
+            "live_hybrid_suite": bool(hybrid_suite),
+            "live_hybrid_case_count": len(hybrid_cases),
             "query_model_mentions_bm25": "BM25" in docs,
             "query_model_mentions_ranking_pressure": "ranking-pressure" in docs,
+            "query_model_mentions_live_hybrid": "live-hybrid-query-quality" in docs,
         },
-        "Restore live search and ranking-pressure suites with technical retrieval coverage.",
+        "Restore live search, live hybrid, and ranking-pressure suites with technical retrieval coverage.",
     )
 
 
@@ -433,7 +680,15 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
     validator_text = _read_text(validator)
     local_contract_ok = all(
         token in workflow_text
-        for token in ["python scripts/validate_connector.py", "python -m pytest -q"]
+        for token in [
+            "python scripts/validate_connector.py",
+            "python -m pytest -q",
+            "aoa-4pda discovery audit",
+            "aoa-4pda coverage audit",
+            "aoa-4pda refresh audit",
+            "aoa-4pda discovery review",
+            "python scripts/verify_agent_install_route.py",
+        ]
     )
     validator_mentions_ready = "docs/CONNECTOR_READY.md" in validator_text and "docs/RUNTIME_CONTRACT.md" in validator_text
     status = "achieved" if workflow.is_file() and local_contract_ok and validator_mentions_ready else "partial"
@@ -445,6 +700,11 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
             "workflow": _exists(workflow),
             "workflow_runs_validator": "python scripts/validate_connector.py" in workflow_text,
             "workflow_runs_pytest": "python -m pytest -q" in workflow_text,
+            "workflow_runs_discovery_audit": "aoa-4pda discovery audit" in workflow_text,
+            "workflow_runs_discovery_review": "aoa-4pda discovery review" in workflow_text,
+            "workflow_runs_coverage_audit": "aoa-4pda coverage audit" in workflow_text,
+            "workflow_runs_refresh_audit": "aoa-4pda refresh audit" in workflow_text,
+            "workflow_runs_agent_install_verifier": "python scripts/verify_agent_install_route.py" in workflow_text,
             "validator_checks_ready_docs": validator_mentions_ready,
         },
         "Wire connector-ready docs into the validator and confirm GitHub CI during landing.",
@@ -456,22 +716,22 @@ def _receipt_chain(roots: StorageRoots, run: str) -> dict[str, dict[str, object]
     if roots.artifact is None:
         return receipts
     receipt_dir = roots.artifact / "receipts"
-    for kind in ["crawl", "normalize", "index", "graph"]:
+    for kind in ["crawl", "normalize", "index", "vector", "graph"]:
         path = receipt_dir / f"latest_{kind}.json" if run == "latest" else receipt_dir / f"{run}.{kind}.json"
         receipts[kind] = _load_json(path)
     return receipts
 
 
 def _receipts_share_run(receipts: dict[str, dict[str, object]]) -> bool:
-    if set(receipts) != {"crawl", "normalize", "index", "graph"}:
+    if set(receipts) != {"crawl", "normalize", "index", "vector", "graph"}:
         return False
     run_ids = [value for value in _receipt_run_ids(receipts).values() if value]
-    return len(run_ids) == 4 and len(set(run_ids)) == 1
+    return len(run_ids) == 5 and len(set(run_ids)) == 1
 
 
 def _receipt_run_ids(receipts: dict[str, dict[str, object]]) -> dict[str, object]:
     return {
-        kind: receipt.get("run_id") or receipt.get("index_id")
+        kind: receipt.get("run_id") or receipt.get("index_id") or receipt.get("vector_id")
         for kind, receipt in sorted(receipts.items())
     }
 

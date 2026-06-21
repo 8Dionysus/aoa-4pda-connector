@@ -1,0 +1,26 @@
+{
+  "schema": "aoa_4pda_hybrid_query_eval_suite_v1",
+  "suite_id": "starter-hybrid-query-packets",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "sanitized_live_shape_fixture_keyword_vector_graph",
+    "html_fixture": "connector/fixtures/html/live_shape_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=42&st=0",
+    "requires_committed_corpus": false,
+    "notes": "Builds temporary keyword, deterministic vector, and graph artifacts from the sanitized fixture; does not crawl or commit generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "starter-hybrid-bootloop-recovery",
+      "query": "bootloop recovery.img camellia",
+      "expect": {
+        "top_post_id": "9001",
+        "query_report_algorithm": "hybrid_bm25_vector_graph_v1",
+        "query_report_unit": "chunk",
+        "source_url_contains": "showtopic=42&st=0#entry9001"
+      }
+    }
+  ]
+}

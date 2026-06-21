@@ -4,6 +4,12 @@
 proves that the local search and graph path works without touching the network
 and without requiring configured storage roots.
 
+`python scripts/verify_agent_install_route.py` wraps the broader agent-install
+route around this proof. It creates a temporary fresh copy, installs the package
+in an isolated virtual environment, points generated data at temporary external
+storage roots, materializes the fixture database, runs starter query/answer/eval
+commands, and checks that generated state did not leak into the copied repo.
+
 ## What It Checks
 
 The command uses `connector/fixtures/normalized/synthetic_topic.json` and builds
@@ -13,8 +19,9 @@ temporary artifacts in a system temp directory:
 synthetic normalized topic
 -> evidence chunks
 -> BM25 + exact keyword index
+-> deterministic local vector index
 -> graph export
--> local query
+-> local keyword/graph/hybrid queries
 -> evidence packet checks
 ```
 
@@ -32,6 +39,7 @@ Expected posture:
 - `external_storage_required: false`
 - `internal_search_unused: true`
 - query result returns the synthetic bootloop post
+- hybrid query result returns the synthetic bootloop post
 - evidence packet includes matched terms, score breakdowns, and chunk refs
 
 ## Why This Exists
@@ -49,12 +57,14 @@ configured storage roots without touching the network:
 aoa-4pda init --apply
 aoa-4pda materialize fixture
 aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
+aoa-4pda query-hybrid "bootloop recovery.img camellia" --run starter-fixture
 aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
 ```
 
 This is the first durable local database route for fresh clones. It writes
-normalized data, a keyword index, a graph export, and receipts to configured
-storage roots while leaving generated files ignored by Git.
+normalized data, a keyword index, a deterministic vector index, a graph export,
+and receipts to configured storage roots while leaving generated files ignored
+by Git.
 
 ## Starter Search Eval
 
@@ -79,6 +89,12 @@ uses the same sanitized live-shaped fixture, builds temporary local index and
 graph artifacts, runs a graph-enriched query packet, and verifies that expected
 relation context and source refs survive into the answer surface.
 
+`aoa-4pda eval hybrid-query-packets` is the companion hybrid retrieval check.
+It builds temporary keyword, deterministic vector, and graph artifacts from the
+same sanitized fixture and verifies that the hybrid packet preserves vector
+score participation, graph context, source refs, and the internal-search
+boundary.
+
 `aoa-4pda eval answer-packets` checks the deterministic rendered answer packet.
 It verifies that issue, fix, warning, warned-target labels, answer text
 fragments, and source refs survive the full local query -> graph context ->
@@ -92,7 +108,8 @@ verdicts, broad regression scores, or full-corpus quality claims.
 - live 4PDA availability
 - public topic crawl behavior
 - full-corpus quality
-- vector search
+- production embedding/model quality beyond the deterministic starter vector
+  contract
 - production graph extraction quality
 
 Those belong to later bounded runs with configured storage roots.
@@ -109,6 +126,7 @@ Run the live stages in order:
 aoa-4pda crawl --profile starter --max-topics 3
 aoa-4pda normalize --run latest
 aoa-4pda build-index --profile starter --run latest
+aoa-4pda build-vector --profile starter --run latest
 aoa-4pda build-graph --profile starter --run latest
 aoa-4pda proof live-starter --run latest --query "Redmi Note 10 Pro TWRP boot.img"
 ```
@@ -116,23 +134,25 @@ aoa-4pda proof live-starter --run latest --query "Redmi Note 10 Pro TWRP boot.im
 For an already-built Xiaomi 13T focused run, use the matching graph-query gate:
 
 ```bash
+aoa-4pda eval live-hybrid-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json
 aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
 aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json
 ```
 
-Those evals read configured crawl, normalize, index, and graph receipts and
-check that cited root/recovery relation context survives into `query-graph`
-packets and deterministic answer packets. They do not crawl, rebuild a corpus,
-or commit generated artifacts.
+Those evals read configured crawl, normalize, index, vector, and graph receipts
+as applicable and check that cited root/recovery relation context survives into
+`query-graph` packets and deterministic answer packets. They do not crawl,
+rebuild a corpus, or commit generated artifacts.
 
-Do not parallelize `normalize`, `build-index`, and `build-graph`; each stage
-depends on the receipt written by the previous stage. A successful live starter
-proof checks:
+Do not parallelize `normalize`, `build-index`, `build-vector`, and
+`build-graph`; each stage depends on the receipt written by the previous
+stage. A successful live starter proof checks:
 
 - configured storage roots exist and are Git-ignored when repo-local
 - crawl policy preserved public-topic-only intake
 - internal search and attachments were not used
 - normalized page count matches fetched public topic pages
-- keyword index and graph artifacts exist and are non-empty
+- keyword index, deterministic vector index, and graph artifacts exist and are
+  non-empty
 - local query returns at least one evidence result
 - only the crawl stage touched the network

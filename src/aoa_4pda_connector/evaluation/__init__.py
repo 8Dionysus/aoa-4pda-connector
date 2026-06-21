@@ -12,14 +12,17 @@ from aoa_4pda_connector.config import StorageRoots, find_repo_root
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
-from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
+from aoa_4pda_connector.query import query_graph_packet, query_hybrid_packet, query_keyword_index
+from aoa_4pda_connector.vector import build_vector_index
 
 
 DEFAULT_SEARCH_EVAL_SUITE = Path("evals/suites/starter_search_quality.json")
 DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
 DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.json")
+DEFAULT_HYBRID_QUERY_EVAL_SUITE = Path("evals/suites/starter_hybrid_query_packets.json")
 DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
 DEFAULT_LIVE_SEARCH_EVAL_SUITE = Path("evals/suites/live_starter_search_quality.json")
+DEFAULT_LIVE_HYBRID_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_hybrid_query_quality.json")
 DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_graph_query_quality.json")
 DEFAULT_LIVE_ANSWER_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_answer_quality.json")
 
@@ -231,6 +234,69 @@ def run_answer_eval_suite(suite_path: Path | None = None, repo_root: Path | None
     }
 
 
+def run_hybrid_query_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
+    """Run a small public-safe hybrid query packet eval without touching the network."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_HYBRID_QUERY_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    dataset = suite.get("dataset", {})
+    fixture_path = _resolve_repo_path(root, Path(str(dataset.get("html_fixture", ""))))
+    source_url = str(dataset.get("source_url", ""))
+
+    with tempfile.TemporaryDirectory(prefix="aoa-4pda-hybrid-query-eval-") as tmp:
+        eval_root = Path(tmp)
+        normalized_dir = eval_root / "normalized"
+        normalize_snapshot(fixture_path, source_url, normalized_dir)
+        index_path = build_keyword_index(normalized_dir, eval_root / "index", "eval")
+        vector_path = build_vector_index(normalized_dir, eval_root / "vector", "eval")
+        graph_path = build_graph(normalized_dir, eval_root / "graph", "eval")
+        index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+        vector_payload = json.loads(vector_path.read_text(encoding="utf-8"))
+        graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+        case_reports = [
+            _run_hybrid_query_case(case, index_path, vector_path, graph_path)
+            for case in suite.get("cases", [])
+        ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    return {
+        "schema": "aoa_4pda_hybrid_query_eval_report_v1",
+        "status": "ok" if not failed else "error",
+        "suite_id": suite.get("suite_id"),
+        "suite_path": _display_suite_path(root, path),
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+        },
+        "vector": {
+            "unit": vector_payload.get("unit"),
+            "doc_count": vector_payload.get("doc_count"),
+            "feature_count": vector_payload.get("feature_count"),
+            "algorithm": vector_payload.get("algorithm"),
+        },
+        "graph": {
+            "node_count": graph_payload.get("node_count"),
+            "edge_count": graph_payload.get("edge_count"),
+        },
+        "network_touched": False,
+        "artifact_lifecycle": "temporary_deleted_after_run",
+        "cases": case_reports,
+    }
+
+
 def run_live_search_eval_suite(
     run: str = "latest",
     suite_path: Path | None = None,
@@ -396,6 +462,114 @@ def run_live_graph_query_eval_suite(
             "doc_count": index_payload.get("doc_count"),
             "term_count": index_payload.get("term_count"),
             "path": str(index_path),
+        },
+        "graph": {
+            "node_count": graph_payload.get("node_count"),
+            "edge_count": graph_payload.get("edge_count"),
+            "path": str(graph_path),
+        },
+        "checks": checks,
+        "network_touched": False,
+        "source_run_network_touched": bool(crawl_receipt.get("network_touched")),
+        "artifact_lifecycle": "read_existing_configured_storage",
+        "cases": case_reports,
+    }
+
+
+def run_live_hybrid_query_eval_suite(
+    run: str = "latest",
+    suite_path: Path | None = None,
+    repo_root: Path | None = None,
+    artifact_root: Path | None = None,
+) -> dict[str, object]:
+    """Run hybrid query evals against an already-built bounded live run."""
+
+    root = find_repo_root(repo_root)
+    path = _resolve_repo_path(root, suite_path or DEFAULT_LIVE_HYBRID_QUERY_EVAL_SUITE)
+    suite = json.loads(path.read_text(encoding="utf-8"))
+    roots = StorageRoots.from_env(root)
+    artifacts = artifact_root or roots.artifact
+    if artifacts is None:
+        raise FileNotFoundError("CONNECTOR_ARTIFACT_ROOT is not configured")
+
+    index_receipt = _load_latest_or_named_receipt(artifacts, run, "index")
+    run_id = str(index_receipt.get("index_id") or index_receipt.get("run_id") or run)
+    crawl_receipt = _load_latest_or_named_receipt(artifacts, run_id, "crawl")
+    normalize_receipt = _load_latest_or_named_receipt(artifacts, run_id, "normalize")
+    vector_receipt = _load_latest_or_named_receipt(artifacts, run_id, "vector")
+    graph_receipt = _load_latest_or_named_receipt(artifacts, run_id, "graph")
+    index_path = Path(str(index_receipt["index_path"]))
+    vector_path = Path(str(vector_receipt["vector_path"]))
+    graph_path = Path(str(graph_receipt["graph_path"]))
+    index_payload = json.loads(index_path.read_text(encoding="utf-8"))
+    vector_payload = json.loads(vector_path.read_text(encoding="utf-8"))
+    graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+    case_reports = [
+        _run_live_hybrid_query_case(case, index_path, vector_path, graph_path, int(suite.get("default_limit", 5)))
+        for case in suite.get("cases", [])
+    ]
+
+    failed = [case for case in case_reports if case["status"] != "ok"]
+    crawl_counts = crawl_receipt.get("counts", {})
+    normalize_counts = normalize_receipt.get("counts", {})
+    policy = crawl_receipt.get("policy", {})
+    dataset = suite.get("dataset", {})
+    expected_profile = dataset.get("expected_profile")
+    checks = {
+        "policy_preserved": policy.get("allowed_public_only") is True
+        and policy.get("internal_search_used") is False
+        and policy.get("attachments_downloaded") is False,
+        "profile_matches": True
+        if expected_profile is None
+        else crawl_receipt.get("profile_id") == expected_profile
+        and index_receipt.get("profile_id") == expected_profile
+        and vector_receipt.get("profile_id") == expected_profile
+        and graph_receipt.get("profile_id") == expected_profile,
+        "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
+        "vector_has_docs": int(vector_payload.get("doc_count", 0)) > 0,
+        "graph_has_edges": int(graph_payload.get("edge_count", 0)) > 0,
+        "network_limited_to_source_crawl": crawl_receipt.get("network_touched") is True
+        and normalize_receipt.get("network_touched") is False
+        and index_receipt.get("network_touched") is False
+        and vector_receipt.get("network_touched") is False
+        and graph_receipt.get("network_touched") is False,
+    }
+    status = "ok" if not failed and all(checks.values()) else "error"
+    return {
+        "schema": "aoa_4pda_live_hybrid_query_eval_report_v1",
+        "status": status,
+        "suite_id": suite.get("suite_id"),
+        "suite_path": _display_suite_path(root, path),
+        "run_id": run_id,
+        "dataset": dataset,
+        "owner_boundary": {
+            "local_eval_port_owner": suite.get("owner_repo"),
+            "proof_owner_repo": suite.get("proof_owner_repo"),
+            "central_boundary": suite.get("central_boundary"),
+        },
+        "counts": {
+            "cases": len(case_reports),
+            "passed": len(case_reports) - len(failed),
+            "failed": len(failed),
+            "requested_topics": int(crawl_counts.get("requested_topics", crawl_counts.get("requested", 0))),
+            "requested_pages": int(crawl_counts.get("requested_pages", crawl_counts.get("requested", 0))),
+            "fetched_topics": int(crawl_counts.get("fetched_topics", crawl_counts.get("fetched", 0))),
+            "fetched_pages": int(crawl_counts.get("fetched_pages", crawl_counts.get("fetched", 0))),
+            "normalized_topics": int(normalize_counts.get("topics", 0)),
+            "normalized_pages": int(normalize_counts.get("pages", normalize_counts.get("topics", 0))),
+        },
+        "index": {
+            "unit": index_payload.get("unit"),
+            "doc_count": index_payload.get("doc_count"),
+            "term_count": index_payload.get("term_count"),
+            "path": str(index_path),
+        },
+        "vector": {
+            "unit": vector_payload.get("unit"),
+            "doc_count": vector_payload.get("doc_count"),
+            "feature_count": vector_payload.get("feature_count"),
+            "algorithm": vector_payload.get("algorithm"),
+            "path": str(vector_path),
         },
         "graph": {
             "node_count": graph_payload.get("node_count"),
@@ -736,6 +910,143 @@ def _run_graph_query_case(case: dict[str, object], index_path: Path, graph_path:
     }
 
 
+def _run_hybrid_query_case(
+    case: dict[str, object],
+    index_path: Path,
+    vector_path: Path,
+    graph_path: Path,
+) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    packet = query_hybrid_packet(index_path, vector_path, graph_path, query, limit=3)
+    top_result = packet.get("results", [{}])[0] if packet.get("results") else {}
+    context = top_result.get("graph_context", {}) if isinstance(top_result, dict) else {}
+    breakdown = top_result.get("score_breakdown", {}) if isinstance(top_result, dict) else {}
+    source_url_contains = str(expect.get("source_url_contains", ""))
+    checks = {
+        "top_result_present": bool(top_result),
+        "top_post_id": top_result.get("post_id") == expect.get("top_post_id"),
+        "hybrid_algorithm": packet.get("query_report", {}).get("algorithm") == expect.get("query_report_algorithm"),
+        "query_report_unit": packet.get("query_report", {}).get("unit") == expect.get("query_report_unit"),
+        "vector_score_present": float(breakdown.get("vector_raw") or 0.0) > 0,
+        "keyword_score_present": float(breakdown.get("keyword_raw") or 0.0) > 0,
+        "graph_context_present": bool(context),
+        "source_refs_preserved": source_url_contains in str(top_result.get("source_url", "")),
+        "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "top_result": top_result,
+        "hybrid_report": packet.get("hybrid_report", {}),
+        "vector_report": packet.get("vector_report", {}),
+    }
+
+
+def _run_live_hybrid_query_case(
+    case: dict[str, object],
+    index_path: Path,
+    vector_path: Path,
+    graph_path: Path,
+    default_limit: int,
+) -> dict[str, object]:
+    query = str(case.get("query", ""))
+    expect = case.get("expect", {})
+    limit = int(case.get("limit", default_limit))
+    packet = query_hybrid_packet(index_path, vector_path, graph_path, query, limit=limit)
+    results = packet.get("results", [])
+    top_result = packet.get("results", [{}])[0] if packet.get("results") else {}
+    query_report = packet.get("query_report", {})
+    hybrid_report = packet.get("hybrid_report", {})
+    vector_report = packet.get("vector_report", {})
+    expected_result_rank, expected_result = _find_expected_result(results, expect)
+    checks = {
+        "top_result_present": bool(top_result),
+        "top_post_id": _optional_equal(top_result.get("post_id"), expect.get("top_post_id")),
+        "top_keyword_score_present": _optional_score_component_positive(
+            top_result,
+            "keyword_raw",
+            expect.get("top_keyword_score_present"),
+        ),
+        "top_vector_score_present": _optional_score_component_positive(
+            top_result,
+            "vector_raw",
+            expect.get("top_vector_score_present"),
+        ),
+        "top_graph_score_present": _optional_score_component_positive(
+            top_result,
+            "graph_raw",
+            expect.get("top_graph_score_present"),
+        ),
+        "top_graph_context_present": _optional_bool(
+            bool(top_result.get("graph_context")),
+            expect.get("top_graph_context_present"),
+        ),
+        "expected_result_present": _optional_expected_result_present(expected_result, expect),
+        "expected_result_rank_max": _optional_rank_at_most(
+            expected_result_rank,
+            expect.get("expected_result_rank_max"),
+        ),
+        "expected_result_keyword_score_present": _optional_score_component_positive(
+            expected_result,
+            "keyword_raw",
+            expect.get("expected_result_keyword_score_present"),
+        ),
+        "expected_result_vector_score_present": _optional_score_component_positive(
+            expected_result,
+            "vector_raw",
+            expect.get("expected_result_vector_score_present"),
+        ),
+        "expected_result_graph_score_present": _optional_score_component_positive(
+            expected_result,
+            "graph_raw",
+            expect.get("expected_result_graph_score_present"),
+        ),
+        "expected_result_matched_specific_terms_all": _optional_all_expected(
+            expect.get("expected_result_matched_specific_terms_all"),
+            expected_result.get("matched_specific_terms", []),
+        ),
+        "matched_specific_terms_all": _optional_all_expected(
+            expect.get("matched_specific_terms_all"),
+            top_result.get("matched_specific_terms", []),
+        ),
+        "source_url_contains": _optional_contains(top_result.get("source_url"), expect.get("source_url_contains")),
+        "query_report_algorithm": _optional_equal(
+            query_report.get("algorithm"),
+            expect.get("query_report_algorithm"),
+        ),
+        "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
+        "query_report_technical_terms_all": _optional_all_expected(
+            expect.get("query_report_technical_terms_all"),
+            query_report.get("technical_terms", []),
+        ),
+        "hybrid_report_algorithm": _optional_equal(
+            hybrid_report.get("algorithm"),
+            expect.get("hybrid_report_algorithm"),
+        ),
+        "vector_report_algorithm": _optional_equal(
+            vector_report.get("algorithm"),
+            expect.get("vector_report_algorithm"),
+        ),
+        "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
+    }
+    return {
+        "case_id": case.get("case_id"),
+        "status": "ok" if all(checks.values()) else "error",
+        "query": query,
+        "checks": checks,
+        "query_report": query_report,
+        "hybrid_report": hybrid_report,
+        "vector_report": vector_report,
+        "top_result": top_result,
+        "expected_result_rank": expected_result_rank,
+        "expected_result": _compact_ranked_result(expected_result_rank, expected_result),
+        "diagnostics": _live_hybrid_diagnostics(checks, top_result, expected_result_rank, expected_result, query_report),
+    }
+
+
 def _run_live_graph_query_case(
     case: dict[str, object],
     index_path: Path,
@@ -1010,6 +1321,10 @@ def _optional_minimum(actual: int, expected: object) -> bool:
         return False
 
 
+def _optional_bool(actual: bool, expected: object) -> bool:
+    return True if expected is None else actual is bool(expected)
+
+
 def _optional_rank_at_most(actual_rank: int | None, expected: object) -> bool:
     if expected is None:
         return True
@@ -1027,6 +1342,24 @@ def _optional_expected_result_present(expected_result: dict[str, object], expect
     if expect.get("expected_result_post_id") is None and expect.get("expected_result_source_url_contains") is None:
         return True
     return bool(expected_result)
+
+
+def _optional_score_component_positive(result: object, component: str, expected: object) -> bool:
+    if expected is None:
+        return True
+    return _score_component_positive(result, component) is bool(expected)
+
+
+def _score_component_positive(result: object, component: str) -> bool:
+    if not isinstance(result, dict):
+        return False
+    breakdown = result.get("score_breakdown", {})
+    if not isinstance(breakdown, dict):
+        return False
+    try:
+        return float(breakdown.get(component) or 0.0) > 0.0
+    except (TypeError, ValueError):
+        return False
 
 
 def _list_or_empty(value: object) -> list[object]:
@@ -1077,7 +1410,9 @@ def _compact_top_result(result: object) -> dict[str, object]:
         "post_id": result.get("post_id"),
         "chunk_id": result.get("chunk_id"),
         "keyword_rank": result.get("keyword_rank"),
+        "vector_rank": result.get("vector_rank"),
         "graph_rank": result.get("graph_rank"),
+        "hybrid_rank": result.get("hybrid_rank"),
         "score": result.get("score"),
         "score_breakdown": result.get("score_breakdown", {}),
         "relation_rerank": result.get("relation_rerank", {}),
@@ -1172,6 +1507,25 @@ def _live_answer_diagnostics(
         },
         "freshness": top_answer.get("freshness", {}),
         "graph_relation_edges": compact_result.get("graph_relation_edges", []),
+    }
+
+
+def _live_hybrid_diagnostics(
+    checks: dict[str, bool],
+    top_result: object,
+    expected_result_rank: int | None,
+    expected_result: object,
+    query_report: object,
+) -> dict[str, object]:
+    report = query_report if isinstance(query_report, dict) else {}
+    return {
+        "failed_checks": sorted(name for name, ok in checks.items() if not ok),
+        "query_terms": report.get("terms", []),
+        "query_exact_terms": report.get("exact_terms", []),
+        "query_specific_terms": report.get("specific_terms", []),
+        "query_technical_terms": report.get("technical_terms", []),
+        "top_result": _compact_top_result(top_result),
+        "expected_result": _compact_ranked_result(expected_result_rank, expected_result),
     }
 
 
