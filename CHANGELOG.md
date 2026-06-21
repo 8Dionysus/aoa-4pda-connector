@@ -58,3 +58,6 @@
   recovery queries over existing configured-storage indexes.
 - Added KernelSU alias extraction for Xiaomi root evidence so `boot.img`
   mentions near KernelSU produce KSU tool nodes and root relation edges.
+- Added relation-intent rerank for graph-query/answer packets so hard
+  root/recovery queries can promote cited relation-rich evidence while keeping
+  original keyword ranks in diagnostics.

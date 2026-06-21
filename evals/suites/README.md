@@ -41,11 +41,12 @@ Together they verify:
 - live-run Xiaomi 13T top-N recall for hard OrangeFox, vendor_boot, KernelSU,
   and HyperOS recovery queries
 - live-run Xiaomi 13T graph-query packets with root/recovery relation context
+  and relation-intent rerank diagnostics
 - Xiaomi 13T root/recovery/file/tool/firmware labels in deterministic answer
   packets
 - live answer diagnostics with failed checks, matched query terms, score
-  breakdowns, compact top evidence, answer context label counts, and relation
-  edges
+  breakdowns, compact top evidence, keyword/graph ranks, answer context label
+  counts, and relation edges
 
 Run it with:
 

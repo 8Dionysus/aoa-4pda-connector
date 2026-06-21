@@ -41,6 +41,8 @@
     accessory, and HyperOS notification cases
   - Xiaomi 13T ranking-pressure gate for top-N recall on harder OrangeFox,
     vendor_boot, KernelSU, and HyperOS recovery queries
+  - relation-intent rerank for graph/answer packets with original keyword rank
+    diagnostics
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms

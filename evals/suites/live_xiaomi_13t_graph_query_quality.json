@@ -39,6 +39,84 @@
       }
     },
     {
+      "case_id": "xiaomi-13t-live-orangefox-recovery-rerank",
+      "query": "OrangeFox TWRP Xiaomi 13T fastboot recovery",
+      "expect": {
+        "top_post_id": "128964413",
+        "top_keyword_rank_min": 2,
+        "matched_specific_terms_all": ["recovery", "twrp"],
+        "query_report_technical_terms_all": ["aristotle"],
+        "graph_report_rerank_intents_all": ["recovery"],
+        "graph_report_relation_edge_kinds_all": ["recovery_targets_file", "recovery_uses_tool"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "relation_edges": [
+          {
+            "kind": "recovery_targets_file",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "recovery_uses_tool",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:tool:fastboot"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-vendor-boot-recovery-rerank",
+      "query": "vendor_boot aristotle TWRP Xiaomi 13T",
+      "expect": {
+        "top_post_id": "128964413",
+        "top_keyword_rank_min": 2,
+        "matched_specific_terms_all": ["twrp"],
+        "query_report_technical_terms_all": ["aristotle"],
+        "graph_report_rerank_intents_all": ["recovery"],
+        "graph_report_relation_edge_kinds_all": ["recovery_targets_file", "recovery_uses_tool"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "relation_edges": [
+          {
+            "kind": "recovery_targets_file",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "recovery_uses_tool",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:tool:fastboot"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-hyperos-202-recovery-rerank",
+      "query": "Xiaomi 13T HyperOS 2.0.2 recovery.img",
+      "expect": {
+        "top_post_id": "128964413",
+        "top_keyword_rank_min": 2,
+        "matched_specific_terms_all": ["recovery.img"],
+        "query_report_technical_terms_all": ["recovery.img", "v2.0.2", "aristotle"],
+        "graph_report_rerank_intents_all": ["recovery"],
+        "graph_report_relation_edge_kinds_all": ["recovery_targets_file", "recovery_uses_tool"],
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "relation_edges": [
+          {
+            "kind": "recovery_targets_file",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:file:recovery.img"
+          },
+          {
+            "kind": "recovery_uses_tool",
+            "from_node": "entity:recovery_action:flash recovery.img",
+            "to_node": "entity:tool:fastboot"
+          }
+        ]
+      }
+    },
+    {
       "case_id": "xiaomi-13t-live-root-graph-context",
       "query": "2306EPN60G HyperOS boot.img Magisk KSU",
       "expect": {

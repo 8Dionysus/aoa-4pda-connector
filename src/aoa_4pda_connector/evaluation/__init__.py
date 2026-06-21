@@ -773,6 +773,10 @@ def _run_live_graph_query_case(
             expect.get("graph_report_relation_edge_kinds_all"),
             graph_report.get("relation_edge_kinds", []),
         ),
+        "graph_report_rerank_intents_all": _optional_all_expected(
+            expect.get("graph_report_rerank_intents_all"),
+            graph_report.get("rerank", {}).get("intents", []) if isinstance(graph_report.get("rerank"), dict) else [],
+        ),
         "expected_relation_edges_present": len(matched_relation_edges) == len(expected_relation_edges),
         "matched_terms_any": _optional_any_expected(
             expect.get("matched_terms_any"),
@@ -785,6 +789,10 @@ def _run_live_graph_query_case(
         "query_report_technical_terms_all": _optional_all_expected(
             expect.get("query_report_technical_terms_all"),
             query_report.get("technical_terms", []),
+        ),
+        "top_keyword_rank_min": _optional_minimum(
+            int(top_result.get("keyword_rank", 0) or 0),
+            expect.get("top_keyword_rank_min"),
         ),
         "source_url_contains": _optional_contains(top_result.get("source_url"), source_url_contains),
         "source_refs_preserved": True
@@ -875,6 +883,14 @@ def _run_live_answer_case(
         "graph_report_relation_edge_kinds_all": _optional_all_expected(
             expect.get("graph_report_relation_edge_kinds_all"),
             graph_report.get("relation_edge_kinds", []),
+        ),
+        "graph_report_rerank_intents_all": _optional_all_expected(
+            expect.get("graph_report_rerank_intents_all"),
+            graph_report.get("rerank", {}).get("intents", []) if isinstance(graph_report.get("rerank"), dict) else [],
+        ),
+        "top_keyword_rank_min": _optional_minimum(
+            int(top_result.get("keyword_rank", 0) or 0),
+            expect.get("top_keyword_rank_min"),
         ),
     }
     return {
@@ -1055,8 +1071,11 @@ def _compact_top_result(result: object) -> dict[str, object]:
         "topic_id": result.get("topic_id"),
         "post_id": result.get("post_id"),
         "chunk_id": result.get("chunk_id"),
+        "keyword_rank": result.get("keyword_rank"),
+        "graph_rank": result.get("graph_rank"),
         "score": result.get("score"),
         "score_breakdown": result.get("score_breakdown", {}),
+        "relation_rerank": result.get("relation_rerank", {}),
         "matched_terms": result.get("matched_terms", []),
         "matched_exact_terms": result.get("matched_exact_terms", []),
         "matched_specific_terms": result.get("matched_specific_terms", []),
