@@ -3,6 +3,7 @@ owner_repo: aoa-4pda-connector
 status: active
 proof_owner_repo: aoa-evals
 default_intake_schema: eval_need_v1
+local_role: connector-specific retrieval, graph, answer, profile-coverage, and live-run quality pressure for bounded public 4PDA evidence
 central_boundary: no verdict, scoring, regression, or proof doctrine authority
 local_authority:
   - connector-specific query suites
