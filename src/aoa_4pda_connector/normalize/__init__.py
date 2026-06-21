@@ -25,6 +25,7 @@ DEVICE_RE = re.compile(
 KNOWN_TOOLS = {
     "adb": "ADB",
     "fastboot": "fastboot",
+    "kernelsu": "KSU",
     "ksu": "KSU",
     "kernel su": "KSU",
     "magisk": "Magisk",
@@ -165,12 +166,14 @@ def _canonical_warning(lowered_text: str, file_value: str, codename: str) -> str
 def _add_root_and_recovery_actions(entities: list[dict[str, str]], lowered: str) -> None:
     files = {entity["value"] for entity in entities if entity["kind"] == "file"}
     tools = {entity["value"] for entity in entities if entity["kind"] == "tool"}
+    root_tool_pattern = r"(?:magisk|ksu|kernel\s*su)"
 
     for file_value in sorted(files):
         file_pattern = re.escape(file_value)
         if file_value in {"boot.img", "init_boot.img"} and (
             re.search(rf"\b(?:patch|patched|патч(?:ить|енный)?|пропатч(?:ить|енный)?)\b[^.?!]{{0,120}}{file_pattern}", lowered)
-            or re.search(rf"{file_pattern}[^.?!]{{0,120}}\b(?:magisk|ksu|kernel\s+su)\b", lowered)
+            or re.search(rf"{file_pattern}.{{0,160}}\b{root_tool_pattern}\b", lowered)
+            or re.search(rf"\b{root_tool_pattern}\b.{{0,160}}{file_pattern}", lowered)
         ):
             _add_entity(entities, "root_action", f"patch {file_value}")
 

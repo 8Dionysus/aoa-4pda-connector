@@ -61,6 +61,19 @@ def test_extract_entities_finds_xiaomi_13t_firmware_root_recovery_terms():
     assert ("recovery_action", "flash recovery.img") in pairs
 
 
+def test_extract_entities_links_kernelsu_boot_image_root_action():
+    text = (
+        "Xiaomi 13T HyperOS: у кого-то есть boot.img из прошивки "
+        "OS2.0.207.0_Repack_by_greeshan? KernelSU не могу никак установить."
+    )
+
+    pairs = _entity_pairs(text)
+
+    assert ("tool", "KSU") in pairs
+    assert ("file", "boot.img") in pairs
+    assert ("root_action", "patch boot.img") in pairs
+
+
 def test_extract_entities_deduplicates_by_kind_and_value():
     entities = extract_entities("boot.img boot.img Boot.img fastboot Fastboot")
     pairs = [(entity["kind"], entity["value"]) for entity in entities]
@@ -234,4 +247,55 @@ def test_graph_adds_xiaomi_root_and_recovery_relation_edges(tmp_path):
         "recovery_uses_tool",
         "entity:recovery_action:flash recovery.img",
         "entity:tool:fastboot",
+    ) in relation_edges
+
+
+def test_graph_adds_kernelsu_root_relation_edges(tmp_path):
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    text = (
+        "Xiaomi 13T HyperOS: у кого-то есть boot.img из прошивки "
+        "OS2.0.207.0_Repack_by_greeshan? KernelSU не могу никак установить."
+    )
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "xiaomi-13t-kernelsu",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=6800",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-21T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "140946180",
+                "topic_id": "xiaomi-13t-kernelsu",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=6800#entry140946180",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": text,
+                "entities": extract_entities(text),
+            }
+        ],
+    }
+    (normalized_dir / "topic-xiaomi-13t-kernelsu.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+    graph_path = build_graph(normalized_dir, tmp_path / "graph", "xiaomi-13t")
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    relation_edges = {
+        (edge["kind"], edge["from_node"], edge["to_node"]): edge
+        for edge in graph["edges"]
+        if edge["kind"] in {"root_targets_file", "root_uses_tool"}
+    }
+
+    assert (
+        "root_targets_file",
+        "entity:root_action:patch boot.img",
+        "entity:file:boot.img",
+    ) in relation_edges
+    assert (
+        "root_uses_tool",
+        "entity:root_action:patch boot.img",
+        "entity:tool:KSU",
     ) in relation_edges
