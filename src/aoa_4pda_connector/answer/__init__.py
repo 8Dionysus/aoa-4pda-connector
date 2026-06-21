@@ -3,15 +3,61 @@
 from __future__ import annotations
 
 
+DEVICE_ANCHOR_TERMS = {
+    "10",
+    "13t",
+    "2306epn60g",
+    "2306epn60r",
+    "aristotle",
+    "note",
+    "pro",
+    "redmi",
+    "sweet",
+    "xiaomi",
+    "xig04",
+}
+WEAK_QUERY_TERMS = {
+    "about",
+    "help",
+    "info",
+    "question",
+    "what",
+    "where",
+    "абсолютно",
+    "вообще",
+    "вопрос",
+    "инфа",
+    "информация",
+    "какая",
+    "какой",
+    "какую",
+    "кто",
+    "несуществующий",
+    "полностью",
+    "почему",
+    "совершенно",
+    "такой",
+    "такая",
+    "что",
+}
+
+
 def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> dict[str, object]:
     """Render a compact answer packet from a graph-enriched evidence packet."""
 
     policy = evidence_packet.get("policy", {})
     internal_search_used = bool(policy.get("internal_search_used")) if isinstance(policy, dict) else False
     packet_created_at = evidence_packet.get("created_at")
+    evidence_results = [
+        result
+        for result in evidence_packet.get("results", [])[:limit]
+        if isinstance(result, dict)
+    ]
+    grounding = _grounding_report(evidence_packet, evidence_results)
     answers = [
         _answer_for_result(result, packet_created_at=packet_created_at)
-        for result in evidence_packet.get("results", [])[:limit]
+        for result in evidence_results
+        if grounding["answer_status"] == "answered"
     ]
     return {
         "schema": "aoa_4pda_answer_packet_v1",
@@ -27,6 +73,7 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
             else None,
             "graph_context_required": True,
             "freshness_context": "source_post_and_capture_metadata",
+            **grounding,
         },
         "answers": answers,
         "policy": {
@@ -34,6 +81,143 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
             "internal_search_used": internal_search_used,
         },
     }
+
+
+def _grounding_report(evidence_packet: dict[str, object], results: list[dict[str, object]]) -> dict[str, object]:
+    query_report = evidence_packet.get("query_report", {})
+    if not isinstance(query_report, dict):
+        query_report = {}
+    top_result = results[0] if results else {}
+    metrics = _grounding_metrics(query_report, top_result)
+    answered = _is_grounded(metrics)
+    gap_reason = None if answered else _gap_reason(results, metrics)
+    return {
+        "answer_status": "answered" if answered else "insufficient_evidence",
+        "gap_reason": gap_reason,
+        "missing_evidence_note": None if answered else _missing_evidence_note(gap_reason),
+        "candidate_result_count": len(results),
+        "top_evidence_grounding": metrics,
+    }
+
+
+def _grounding_metrics(query_report: dict[str, object], result: dict[str, object]) -> dict[str, object]:
+    content_terms = _content_query_terms(query_report)
+    matched_values = _matched_values(result)
+    matched_content_terms = sorted(content_terms.intersection(matched_values))
+    unmatched_structured_terms = sorted(_required_structured_terms(query_report).difference(matched_values))
+    relation_supported = _relation_supported(result)
+    content_phrase_supported = _content_phrase_supported(result, content_terms)
+    return {
+        "content_terms": sorted(content_terms),
+        "matched_content_terms": matched_content_terms,
+        "matched_content_term_count": len(matched_content_terms),
+        "unmatched_structured_terms": unmatched_structured_terms,
+        "relation_supported": relation_supported,
+        "content_phrase_supported": content_phrase_supported,
+    }
+
+
+def _is_grounded(metrics: dict[str, object]) -> bool:
+    if bool(metrics.get("relation_supported")):
+        return True
+    matched_count = int(metrics.get("matched_content_term_count") or 0)
+    unmatched_structured = metrics.get("unmatched_structured_terms", [])
+    has_unmatched_structured = bool(unmatched_structured) if isinstance(unmatched_structured, list) else False
+    if has_unmatched_structured:
+        return matched_count >= 3
+    if matched_count >= 2:
+        return True
+    return matched_count >= 1 and bool(metrics.get("content_phrase_supported"))
+
+
+def _gap_reason(results: list[dict[str, object]], metrics: dict[str, object]) -> str:
+    if not results:
+        return "no_candidate_evidence"
+    if metrics.get("unmatched_structured_terms"):
+        return "unmatched_structured_query_terms"
+    return "candidate_evidence_below_grounding_threshold"
+
+
+def _missing_evidence_note(gap_reason: object) -> str:
+    reason = str(gap_reason or "candidate_evidence_below_grounding_threshold")
+    return (
+        "В базе недостаточно данных для надежного ответа. "
+        f"Причина: {reason}; проверьте coverage/refresh или расширьте локальный корпус."
+    )
+
+
+def _content_query_terms(query_report: dict[str, object]) -> set[str]:
+    values: set[str] = set()
+    for field in ["terms", "exact_terms", "specific_terms", "technical_terms"]:
+        for value in _strings(query_report.get(field, [])):
+            normalized = _normalize_term(value)
+            if _is_content_term(normalized):
+                values.add(normalized)
+    return values
+
+
+def _required_structured_terms(query_report: dict[str, object]) -> set[str]:
+    values: set[str] = set()
+    for value in _strings(query_report.get("exact_terms", [])):
+        normalized = _normalize_term(value)
+        if _is_content_term(normalized) and _is_structured_term(normalized):
+            values.add(normalized)
+    return values
+
+
+def _matched_values(result: dict[str, object]) -> set[str]:
+    values: set[str] = set()
+    for field in ["matched_terms", "matched_exact_terms", "matched_specific_terms"]:
+        values.update(_normalize_term(value) for value in _strings(result.get(field, [])))
+    for phrase in _strings(result.get("matched_phrases", [])):
+        values.update(_normalize_term(value) for value in phrase.split())
+        normalized_phrase = _normalize_term(phrase)
+        if normalized_phrase:
+            values.add(normalized_phrase)
+    return {value for value in values if value}
+
+
+def _relation_supported(result: dict[str, object]) -> bool:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return False
+    relation_edges = context.get("relation_edges", [])
+    if isinstance(relation_edges, list) and any(isinstance(edge, dict) for edge in relation_edges):
+        return True
+    for field in ["fixes", "warnings"]:
+        values = context.get(field, [])
+        if isinstance(values, list) and values:
+            return True
+    rerank = result.get("relation_rerank", {})
+    return isinstance(rerank, dict) and int(rerank.get("matching_edge_count") or 0) > 0
+
+
+def _content_phrase_supported(result: dict[str, object], content_terms: set[str]) -> bool:
+    for phrase in _strings(result.get("matched_phrases", [])):
+        phrase_terms = {_normalize_term(value) for value in phrase.split()}
+        if phrase_terms.intersection(content_terms):
+            return True
+    return False
+
+
+def _is_content_term(value: str) -> bool:
+    if len(value) < 3:
+        return False
+    return value not in DEVICE_ANCHOR_TERMS and value not in WEAK_QUERY_TERMS
+
+
+def _is_structured_term(value: str) -> bool:
+    return any(char.isdigit() for char in value) and any(char.isalpha() for char in value)
+
+
+def _normalize_term(value: object) -> str:
+    return str(value or "").strip().casefold()
+
+
+def _strings(items: object) -> list[str]:
+    if not isinstance(items, list):
+        return []
+    return [str(item).strip() for item in items if str(item).strip()]
 
 
 def _answer_for_result(result: dict[str, object], *, packet_created_at: object) -> dict[str, object]:

@@ -11,14 +11,43 @@
     "created_at": { "type": ["string", "null"] },
     "answer_report": {
       "type": "object",
-      "required": ["renderer", "source_packet_id", "source_packet_schema"],
+      "required": [
+        "renderer",
+        "source_packet_id",
+        "source_packet_schema",
+        "answer_status",
+        "candidate_result_count"
+      ],
       "properties": {
         "renderer": { "enum": ["starter_graph_context_v1", "starter_graph_context_v2"] },
         "source_packet_id": { "type": ["string", "null"] },
         "source_packet_schema": { "type": ["string", "null"] },
         "query_algorithm": { "type": ["string", "null"] },
         "graph_context_required": { "type": "boolean" },
-        "freshness_context": { "type": "string" }
+        "freshness_context": { "type": "string" },
+        "answer_status": { "enum": ["answered", "insufficient_evidence"] },
+        "gap_reason": {
+          "type": ["string", "null"],
+          "enum": [
+            "no_candidate_evidence",
+            "unmatched_structured_query_terms",
+            "candidate_evidence_below_grounding_threshold",
+            null
+          ]
+        },
+        "missing_evidence_note": { "type": ["string", "null"] },
+        "candidate_result_count": { "type": "integer", "minimum": 0 },
+        "top_evidence_grounding": {
+          "type": "object",
+          "properties": {
+            "content_terms": { "type": "array", "items": { "type": "string" } },
+            "matched_content_terms": { "type": "array", "items": { "type": "string" } },
+            "matched_content_term_count": { "type": "integer", "minimum": 0 },
+            "unmatched_structured_terms": { "type": "array", "items": { "type": "string" } },
+            "relation_supported": { "type": "boolean" },
+            "content_phrase_supported": { "type": "boolean" }
+          }
+        }
       }
     },
     "answers": {

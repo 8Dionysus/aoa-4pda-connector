@@ -87,6 +87,66 @@ def test_render_answer_packet_preserves_xiaomi_root_recovery_relation_context(tm
     assert answer["freshness"]["basis"] == "source_post_and_capture_metadata"
 
 
+def test_render_answer_packet_reports_insufficient_evidence_for_weak_candidates():
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-weak",
+        "query": "совершенно несуществующий вопрос xyznotfound123 Xiaomi 13T",
+        "created_at": "2026-06-21T21:40:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": [
+                "совершенно",
+                "несуществующий",
+                "вопрос",
+                "xyznotfound123",
+                "xiaomi",
+                "13t",
+                "aristotle",
+            ],
+            "exact_terms": ["xyznotfound123", "13t"],
+            "technical_terms": ["aristotle"],
+            "specific_terms": ["совершенно", "несуществующий", "вопрос"],
+        },
+        "results": [
+            {
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry1",
+                "topic_id": "1076859",
+                "post_id": "1",
+                "posted_at": "18.03.24, 11:57",
+                "captured_at": "2026-06-21T19:57:53Z",
+                "chunk_id": "1076859:1:chunk-000",
+                "snippet": "Случайное сообщение про Xiaomi 13T и вопрос.",
+                "score": 9.5,
+                "score_breakdown": {"bm25": 5.25, "exact": 1.75, "phrase": 2.5},
+                "matched_terms": ["13t", "aristotle", "xiaomi", "вопрос"],
+                "matched_exact_terms": ["13t"],
+                "matched_specific_terms": ["вопрос"],
+                "matched_phrases": ["xiaomi 13t"],
+                "evidence_refs": ["chunk:1076859:1:chunk-000", "post:1"],
+                "graph_context": {
+                    "source_refs": ["https://4pda.to/forum/index.php?showtopic=1076859#entry1"],
+                    "entity_node_ids": [],
+                    "relation_edges": [],
+                    "issues": [],
+                    "fixes": [],
+                    "warnings": [],
+                    "warned_targets": [],
+                },
+            }
+        ],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answers"] == []
+    assert answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert answer_packet["answer_report"]["gap_reason"] == "unmatched_structured_query_terms"
+    assert answer_packet["answer_report"]["candidate_result_count"] == 1
+    assert "В базе недостаточно данных" in answer_packet["answer_report"]["missing_evidence_note"]
+
+
 def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     run_id = "answer-test"
     data_root = tmp_path / "data"

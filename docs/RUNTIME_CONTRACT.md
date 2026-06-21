@@ -68,9 +68,12 @@ evidence:
 Evidence and answer packets carry source URLs, topic/post ids when known,
 observed post timestamps, local capture timestamps when available, evidence
 refs, query diagnostics, score details, vector/hybrid diagnostics when
-requested, graph context when requested, and answer freshness notes. Runtime
-layers may summarize or display them, but source URLs and receipts remain the
-authority.
+requested, graph context when requested, answer freshness notes, and answer
+grounding status. `answer_report.answer_status=insufficient_evidence` with an
+empty `answers` array is a successful local answer packet that says the
+configured database does not yet support a reliable answer; it is not a crawl
+request or runtime failure. Runtime layers may summarize or display packets,
+but source URLs and receipts remain the authority.
 
 `query-hybrid` requires keyword, vector, and graph receipts for the selected
 run. The starter vector route is deterministic and model-free; external

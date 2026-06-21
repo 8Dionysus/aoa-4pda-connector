@@ -1229,6 +1229,9 @@ def _answer_checks(
     freshness = top_answer.get("freshness", {})
     if not isinstance(freshness, dict):
         freshness = {}
+    answer_report = answer_packet.get("answer_report", {})
+    if not isinstance(answer_report, dict):
+        answer_report = {}
     label_fields = [
         "issue_labels",
         "fix_labels",
@@ -1242,6 +1245,7 @@ def _answer_checks(
     ]
     return {
         "top_answer_present": bool(top_answer),
+        "answer_status_answered": answer_report.get("answer_status") == "answered",
         "top_post_id": _optional_equal(top_answer.get("post_id"), expected.get("top_post_id")),
         "answer_kind": _optional_equal(top_answer.get("answer_kind"), expected.get("answer_kind")),
         "expected_labels_present": all(

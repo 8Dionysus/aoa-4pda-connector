@@ -132,6 +132,7 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     assert criteria["answer_quality_gates"]["status"] == "achieved"
     assert criteria["answer_quality_gates"]["evidence"]["answer_contract_mentions_freshness"] is True
     assert criteria["answer_quality_gates"]["evidence"]["freshness_field_or_note_present"] is True
+    assert criteria["answer_quality_gates"]["evidence"]["gap_awareness_field_or_note_present"] is True
     assert criteria["reference_profile_seed_review_state"]["status"] == "partial"
     assert criteria["reference_profile_seed_review_state"]["evidence"]["review_status"] == "missing_run"
     assert criteria["reference_profile_coverage_state"]["status"] == "partial"
@@ -217,7 +218,33 @@ def test_cli_materialize_fixture_writes_queryable_local_state_without_network(tm
     packet = json.loads(answer.stdout)
     assert packet["schema"] == "aoa_4pda_answer_packet_v1"
     assert packet["network_touched"] is False
+    assert packet["answer_report"]["answer_status"] == "answered"
     assert packet["answers"][0]["post_id"] == "9001"
+
+    no_answer = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "answer",
+            "xyznotfound123 no-such-token",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert no_answer.returncode == 0, no_answer.stdout + no_answer.stderr
+    no_answer_packet = json.loads(no_answer.stdout)
+    assert no_answer_packet["schema"] == "aoa_4pda_answer_packet_v1"
+    assert no_answer_packet["network_touched"] is False
+    assert no_answer_packet["answers"] == []
+    assert no_answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert no_answer_packet["answer_report"]["gap_reason"] == "no_candidate_evidence"
+    assert "В базе недостаточно данных" in no_answer_packet["answer_report"]["missing_evidence_note"]
 
     hybrid = subprocess.run(
         [
