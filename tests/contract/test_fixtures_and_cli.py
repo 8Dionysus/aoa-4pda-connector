@@ -133,6 +133,7 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     assert criteria["answer_quality_gates"]["evidence"]["answer_contract_mentions_freshness"] is True
     assert criteria["answer_quality_gates"]["evidence"]["freshness_field_or_note_present"] is True
     assert criteria["answer_quality_gates"]["evidence"]["gap_awareness_field_or_note_present"] is True
+    assert criteria["answer_quality_gates"]["evidence"]["chain_awareness_field_or_note_present"] is True
     assert criteria["reference_profile_seed_review_state"]["status"] == "partial"
     assert criteria["reference_profile_seed_review_state"]["evidence"]["review_status"] == "missing_run"
     assert criteria["reference_profile_coverage_state"]["status"] == "partial"

@@ -69,8 +69,12 @@ Evidence and answer packets carry source URLs, topic/post ids when known,
 observed post timestamps, local capture timestamps when available, evidence
 refs, query diagnostics, score details, vector/hybrid diagnostics when
 requested, graph context when requested, answer freshness notes, and answer
-grounding status. `answer_report.answer_status=insufficient_evidence` with an
-empty `answers` array is a successful local answer packet that says the
+grounding status. Answer packets also expose `evidence_chain` and
+`nuance_report`; runtime layers should use those fields as the primary
+agent-handoff surface when composing a user-facing answer. `answers` is a
+filtered and same-post-deduplicated answer list, not a raw top-N dump.
+`answer_report.answer_status=insufficient_evidence` with empty `answers` and
+`evidence_chain` arrays is a successful local answer packet that says the
 configured database does not yet support a reliable answer; it is not a crawl
 request or runtime failure. Runtime layers may summarize or display packets,
 but source URLs and receipts remain the authority.

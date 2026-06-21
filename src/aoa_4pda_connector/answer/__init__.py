@@ -53,12 +53,16 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         for result in evidence_packet.get("results", [])[:limit]
         if isinstance(result, dict)
     ]
-    grounding = _grounding_report(evidence_packet, evidence_results)
+    query_report = _query_report(evidence_packet)
+    grounding_entries = _grounding_entries(query_report, evidence_results)
+    grounded_entries = [entry for entry in grounding_entries if entry["grounded"] is True]
+    answer_entries, deduplicated_count = _dedupe_grounded_entries(grounded_entries)
+    grounding = _grounding_report(evidence_results, grounding_entries, answer_entries, deduplicated_count)
     answers = [
-        _answer_for_result(result, packet_created_at=packet_created_at)
-        for result in evidence_results
-        if grounding["answer_status"] == "answered"
+        _answer_for_result(entry["result"], packet_created_at=packet_created_at)
+        for entry in answer_entries
     ]
+    evidence_chain = _evidence_chain(answers, answer_entries)
     return {
         "schema": "aoa_4pda_answer_packet_v1",
         "answer_id": str(evidence_packet.get("packet_id", "query")).replace("query-", "answer-", 1),
@@ -68,14 +72,14 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
             "renderer": "starter_graph_context_v2",
             "source_packet_id": evidence_packet.get("packet_id"),
             "source_packet_schema": evidence_packet.get("schema"),
-            "query_algorithm": evidence_packet.get("query_report", {}).get("algorithm")
-            if isinstance(evidence_packet.get("query_report"), dict)
-            else None,
+            "query_algorithm": query_report.get("algorithm"),
             "graph_context_required": True,
             "freshness_context": "source_post_and_capture_metadata",
             **grounding,
         },
         "answers": answers,
+        "evidence_chain": evidence_chain,
+        "nuance_report": _nuance_report(evidence_chain, grounding),
         "policy": {
             "source": "local_keyword_index_plus_graph_answer_renderer",
             "internal_search_used": internal_search_used,
@@ -83,21 +87,188 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
     }
 
 
-def _grounding_report(evidence_packet: dict[str, object], results: list[dict[str, object]]) -> dict[str, object]:
+def _query_report(evidence_packet: dict[str, object]) -> dict[str, object]:
     query_report = evidence_packet.get("query_report", {})
     if not isinstance(query_report, dict):
-        query_report = {}
-    top_result = results[0] if results else {}
-    metrics = _grounding_metrics(query_report, top_result)
-    answered = _is_grounded(metrics)
-    gap_reason = None if answered else _gap_reason(results, metrics)
+        return {}
+    return query_report
+
+
+def _grounding_entries(query_report: dict[str, object], results: list[dict[str, object]]) -> list[dict[str, object]]:
+    entries: list[dict[str, object]] = []
+    for result in results:
+        metrics = _grounding_metrics(query_report, result)
+        entries.append(
+            {
+                "result": result,
+                "grounding": metrics,
+                "grounded": _is_grounded(metrics),
+            }
+        )
+    return entries
+
+
+def _dedupe_grounded_entries(entries: list[dict[str, object]]) -> tuple[list[dict[str, object]], int]:
+    seen: set[str] = set()
+    deduped: list[dict[str, object]] = []
+    duplicate_count = 0
+    for entry in entries:
+        result = entry.get("result", {})
+        key = _dedupe_key(result) if isinstance(result, dict) else ""
+        if key and key in seen:
+            duplicate_count += 1
+            continue
+        if key:
+            seen.add(key)
+        deduped.append(entry)
+    return deduped, duplicate_count
+
+
+def _dedupe_key(result: dict[str, object]) -> str:
+    post_id = _non_empty(result.get("post_id"))
+    if post_id:
+        return f"post:{post_id}"
+    source_url = _non_empty(result.get("source_url"))
+    if source_url:
+        return f"url:{source_url}"
+    chunk_id = _non_empty(result.get("chunk_id"))
+    return f"chunk:{chunk_id}" if chunk_id else ""
+
+
+def _grounding_report(
+    results: list[dict[str, object]],
+    entries: list[dict[str, object]],
+    answer_entries: list[dict[str, object]],
+    deduplicated_count: int,
+) -> dict[str, object]:
+    top_metrics = entries[0]["grounding"] if entries else _grounding_metrics({}, {})
+    primary_metrics = answer_entries[0]["grounding"] if answer_entries else None
+    grounded_count = sum(1 for entry in entries if entry.get("grounded") is True)
+    filtered_count = max(0, len(results) - grounded_count)
+    answered = bool(answer_entries)
+    gap_reason = None if answered else _gap_reason(results, top_metrics)
     return {
         "answer_status": "answered" if answered else "insufficient_evidence",
         "gap_reason": gap_reason,
         "missing_evidence_note": None if answered else _missing_evidence_note(gap_reason),
         "candidate_result_count": len(results),
-        "top_evidence_grounding": metrics,
+        "grounded_candidate_count": grounded_count,
+        "filtered_candidate_count": filtered_count,
+        "deduplicated_candidate_count": deduplicated_count,
+        "top_evidence_grounding": top_metrics,
+        "primary_evidence_grounding": primary_metrics,
     }
+
+
+def _evidence_chain(answers: list[dict[str, object]], entries: list[dict[str, object]]) -> list[dict[str, object]]:
+    chain: list[dict[str, object]] = []
+    for index, (answer, entry) in enumerate(zip(answers, entries, strict=True), start=1):
+        result = entry.get("result", {})
+        grounding = entry.get("grounding", {})
+        if not isinstance(result, dict):
+            result = {}
+        if not isinstance(grounding, dict):
+            grounding = {}
+        relation_kinds = _relation_kinds_for_result(result)
+        freshness = answer.get("freshness", {})
+        chain.append(
+            {
+                "chain_step": index,
+                "role": _chain_role(index, answer, relation_kinds),
+                "answer_kind": answer.get("answer_kind"),
+                "summary": answer.get("answer_text"),
+                "source_url": answer.get("source_url"),
+                "topic_id": answer.get("topic_id"),
+                "post_id": answer.get("post_id"),
+                "chunk_id": answer.get("chunk_id"),
+                "posted_at": answer.get("posted_at"),
+                "captured_at": answer.get("captured_at"),
+                "freshness": freshness if isinstance(freshness, dict) else {},
+                "evidence_refs": answer.get("evidence_refs", []),
+                "source_refs": answer.get("source_refs", []),
+                "matched_terms": _strings(result.get("matched_terms", [])),
+                "matched_exact_terms": _strings(result.get("matched_exact_terms", [])),
+                "matched_specific_terms": _strings(result.get("matched_specific_terms", [])),
+                "matched_content_terms": _strings(grounding.get("matched_content_terms", [])),
+                "relation_kinds": relation_kinds,
+                "score": answer.get("score"),
+            }
+        )
+    return chain
+
+
+def _chain_role(index: int, answer: dict[str, object], relation_kinds: list[str]) -> str:
+    if index == 1:
+        return "primary"
+    if answer.get("warning_labels"):
+        return "caution"
+    if relation_kinds:
+        return "supporting"
+    return "related_context"
+
+
+def _nuance_report(chain: list[dict[str, object]], grounding: dict[str, object]) -> dict[str, object]:
+    limitations: list[dict[str, object]] = []
+    filtered_count = int(grounding.get("filtered_candidate_count") or 0)
+    deduplicated_count = int(grounding.get("deduplicated_candidate_count") or 0)
+    if filtered_count:
+        limitations.append({"kind": "filtered_weak_candidates", "count": filtered_count})
+    if deduplicated_count:
+        limitations.append({"kind": "deduplicated_same_post_chunks", "count": deduplicated_count})
+    if not chain and grounding.get("answer_status") == "insufficient_evidence":
+        limitations.append({"kind": str(grounding.get("gap_reason") or "insufficient_evidence"), "count": 1})
+
+    return {
+        "chain_step_count": len(chain),
+        "topic_count": len({step.get("topic_id") for step in chain if step.get("topic_id")}),
+        "post_count": len({step.get("post_id") for step in chain if step.get("post_id")}),
+        "source_count": len({step.get("source_url") for step in chain if step.get("source_url")}),
+        "answer_kinds": _unique_sorted(step.get("answer_kind") for step in chain),
+        "relation_kinds": _unique_sorted(
+            relation_kind
+            for step in chain
+            for relation_kind in step.get("relation_kinds", [])
+            if isinstance(step.get("relation_kinds"), list)
+        ),
+        "matched_content_terms": _unique_sorted(
+            term
+            for step in chain
+            for term in step.get("matched_content_terms", [])
+            if isinstance(step.get("matched_content_terms"), list)
+        ),
+        "freshness": _chain_freshness(chain),
+        "limitations": limitations,
+    }
+
+
+def _chain_freshness(chain: list[dict[str, object]]) -> dict[str, object]:
+    captured_at_values = _unique_sorted(step.get("captured_at") for step in chain)
+    posted_at_values = _unique_sorted(step.get("posted_at") for step in chain)
+    return {
+        "basis": "source_post_and_capture_metadata" if captured_at_values else "no_answer_evidence",
+        "latest_captured_at": max(captured_at_values) if captured_at_values else None,
+        "captured_at_values": captured_at_values,
+        "posted_at_values": posted_at_values,
+    }
+
+
+def _relation_kinds_for_result(result: dict[str, object]) -> list[str]:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return []
+    relation_edges = context.get("relation_edges", [])
+    if not isinstance(relation_edges, list):
+        return []
+    return _unique_sorted(
+        edge.get("kind")
+        for edge in relation_edges
+        if isinstance(edge, dict)
+    )
+
+
+def _unique_sorted(values: object) -> list[str]:
+    unique = {str(value).strip() for value in values if str(value or "").strip()}
+    return sorted(unique)
 
 
 def _grounding_metrics(query_report: dict[str, object], result: dict[str, object]) -> dict[str, object]:
