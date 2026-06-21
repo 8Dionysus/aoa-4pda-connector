@@ -65,5 +65,7 @@
 
 ## Wave 4: Runtime Access
 
+- no-network `connector-ready-v1` maturity audit for install, storage,
+  receipt, quality-gate, heavy-data, and runtime-contract readiness
 - `abyss-stack` MCP/runtime adapter that consumes installed connector roots
   without moving corpora into Git

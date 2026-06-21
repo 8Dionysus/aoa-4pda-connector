@@ -66,9 +66,12 @@ Run from the repository root:
 ```bash
 python scripts/validate_connector.py
 python -m pytest -q
+PYTHONPATH=src python -m aoa_4pda_connector.cli ready
 ```
 
 The validator must stay safe on a fresh clone with no external storage mounted.
+The readiness audit must stay no-network and may report `not_ready` while the
+long connector-ready loop is still active.
 
 ## Closeout
 

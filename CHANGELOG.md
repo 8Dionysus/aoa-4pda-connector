@@ -61,3 +61,6 @@
 - Added relation-intent rerank for graph-query/answer packets so hard
   root/recovery queries can promote cited relation-rich evidence while keeping
   original keyword ranks in diagnostics.
+- Added a no-network `aoa-4pda ready` maturity audit for the
+  `connector-ready-v1` loop target, plus connector-ready/runtime contract docs
+  and validator coverage for those surfaces.

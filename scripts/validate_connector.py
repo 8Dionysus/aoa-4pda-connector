@@ -49,6 +49,8 @@ REQUIRED_FILES = [
     "docs/INSTALL.md",
     "docs/AGENT_INSTALL_ROUTE.md",
     "docs/EXTERNAL_STORAGE.md",
+    "docs/CONNECTOR_READY.md",
+    "docs/RUNTIME_CONTRACT.md",
     "docs/STARTER_PROOF.md",
     "docs/QUERY_MODEL.md",
     "docs/GRAPH_MODEL.md",
@@ -72,6 +74,7 @@ REQUIRED_DIRS = [
     "src/aoa_4pda_connector/graph",
     "src/aoa_4pda_connector/answer",
     "src/aoa_4pda_connector/query",
+    "src/aoa_4pda_connector/readiness",
     "src/aoa_4pda_connector/storage",
     "src/aoa_4pda_connector/export",
     "src/aoa_4pda_connector/serve",
@@ -229,6 +232,8 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     route_policy = (repo_root / "connector" / "manifests" / "route_allowlist.yaml").read_text(encoding="utf-8")
     storage_policy = (repo_root / "connector" / "STORAGE_POLICY.md").read_text(encoding="utf-8")
     env_example = (repo_root / ".env.example").read_text(encoding="utf-8")
+    ready_doc = (repo_root / "docs" / "CONNECTOR_READY.md").read_text(encoding="utf-8")
+    runtime_contract = (repo_root / "docs" / "RUNTIME_CONTRACT.md").read_text(encoding="utf-8")
 
     for token in ["act=search", "act=Search", "act=attach", "/forum/dl"]:
         if token not in source_policy or token not in route_policy:
@@ -241,6 +246,14 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     for token in [".connector-state", "repo-local", "external storage"]:
         if token not in storage_policy or token not in env_example:
             errors.append(f"repo-local storage token missing from docs/env: {token}")
+
+    for token in ["connector-ready-v1", "aoa-4pda ready", "achieved", "partial", "missing"]:
+        if token not in ready_doc:
+            errors.append(f"connector-ready doc missing token: {token}")
+
+    for token in ["abyss-stack", "aoa-4pda", "JSON", "CONNECTOR_DATA_ROOT", "CONNECTOR_ARTIFACT_ROOT"]:
+        if token not in runtime_contract:
+            errors.append(f"runtime contract missing token: {token}")
 
     for profile in (repo_root / "connector" / "profiles").glob("*.yaml"):
         text = profile.read_text(encoding="utf-8")
