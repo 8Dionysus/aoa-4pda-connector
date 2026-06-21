@@ -53,3 +53,6 @@
   Russian-language, accessory, and HyperOS notification queries, with compact
   per-case diagnostics for top evidence, matched terms, scores, answer labels,
   and relation edges.
+- Added a Xiaomi 13T live ranking-pressure suite and optional expected-result
+  rank diagnostics for hard OrangeFox, vendor_boot, KernelSU, and HyperOS
+  recovery queries over existing configured-storage indexes.

@@ -103,6 +103,13 @@ For an already-built Xiaomi 13T focused run, pass
 `aristotle`, split `2306 EPN60G`, `boot.img`, and `recovery.img` retrieval over
 configured local storage only.
 
+`aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_ranking_pressure.json`
+runs a Xiaomi 13T ranking-pressure gate over the same existing keyword index.
+It checks that known high-signal root/recovery posts remain present within a
+bounded top-N window for harder OrangeFox, vendor_boot, KernelSU, and HyperOS
+recovery queries, and returns compact diagnostics with the top result plus the
+ranked expected result. It does not crawl or rebuild the run.
+
 `aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json`
 runs the focused Xiaomi 13T graph-query gate against an already-built bounded
 run. It reads configured crawl, normalize, index, and graph receipts, then

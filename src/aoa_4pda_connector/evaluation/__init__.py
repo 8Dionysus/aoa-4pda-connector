@@ -53,7 +53,7 @@ def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None
         "schema": "aoa_4pda_search_eval_report_v1",
         "status": "ok" if not failed else "error",
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)),
+        "suite_path": _display_suite_path(root, path),
         "dataset": dataset,
         "owner_boundary": {
             "local_eval_port_owner": suite.get("owner_repo"),
@@ -99,7 +99,7 @@ def run_graph_eval_suite(suite_path: Path | None = None, repo_root: Path | None 
         "schema": "aoa_4pda_graph_eval_report_v1",
         "status": "ok" if not failed else "error",
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)),
+        "suite_path": _display_suite_path(root, path),
         "dataset": dataset,
         "owner_boundary": {
             "local_eval_port_owner": suite.get("owner_repo"),
@@ -149,7 +149,7 @@ def run_graph_query_eval_suite(suite_path: Path | None = None, repo_root: Path |
         "schema": "aoa_4pda_graph_query_eval_report_v1",
         "status": "ok" if not failed else "error",
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)),
+        "suite_path": _display_suite_path(root, path),
         "dataset": dataset,
         "owner_boundary": {
             "local_eval_port_owner": suite.get("owner_repo"),
@@ -204,7 +204,7 @@ def run_answer_eval_suite(suite_path: Path | None = None, repo_root: Path | None
         "schema": "aoa_4pda_answer_eval_report_v1",
         "status": "ok" if not failed else "error",
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)),
+        "suite_path": _display_suite_path(root, path),
         "dataset": dataset,
         "owner_boundary": {
             "local_eval_port_owner": suite.get("owner_repo"),
@@ -276,7 +276,7 @@ def run_live_search_eval_suite(
         "schema": "aoa_4pda_live_search_eval_report_v1",
         "status": status,
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)),
+        "suite_path": _display_suite_path(root, path),
         "run_id": run_id,
         "dataset": suite.get("dataset", {}),
         "owner_boundary": {
@@ -372,7 +372,7 @@ def run_live_graph_query_eval_suite(
         "schema": "aoa_4pda_live_graph_query_eval_report_v1",
         "status": status,
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)) if path.is_relative_to(root) else str(path),
+        "suite_path": _display_suite_path(root, path),
         "run_id": run_id,
         "dataset": dataset,
         "owner_boundary": {
@@ -473,7 +473,7 @@ def run_live_answer_eval_suite(
         "schema": "aoa_4pda_live_answer_eval_report_v1",
         "status": status,
         "suite_id": suite.get("suite_id"),
-        "suite_path": str(path.relative_to(root)) if path.is_relative_to(root) else str(path),
+        "suite_path": _display_suite_path(root, path),
         "run_id": run_id,
         "dataset": dataset,
         "owner_boundary": {
@@ -548,9 +548,11 @@ def _run_live_search_case(case: dict[str, object], index_path: Path, default_lim
     expect = case.get("expect", {})
     limit = int(case.get("limit", default_limit))
     packet = query_keyword_index(index_path, query, limit=limit)
+    results = packet.get("results", [])
     top_result = packet.get("results", [{}])[0] if packet.get("results") else {}
     evidence_refs = [str(ref) for ref in top_result.get("evidence_refs", [])]
     query_report = packet.get("query_report", {})
+    expected_result_rank, expected_result = _find_expected_result(results, expect)
     checks = {
         "top_result_present": bool(top_result),
         "top_post_id": _optional_equal(top_result.get("post_id"), expect.get("top_post_id")),
@@ -583,6 +585,27 @@ def _run_live_search_case(case: dict[str, object], index_path: Path, default_lim
             expect.get("query_report_technical_terms_all"),
             query_report.get("technical_terms", []),
         ),
+        "expected_result_present": _optional_expected_result_present(expected_result, expect),
+        "expected_result_rank_max": _optional_rank_at_most(
+            expected_result_rank,
+            expect.get("expected_result_rank_max"),
+        ),
+        "expected_result_matched_terms_any": _optional_any_expected(
+            expect.get("expected_result_matched_terms_any"),
+            expected_result.get("matched_terms", []),
+        ),
+        "expected_result_matched_terms_all": _optional_all_expected(
+            expect.get("expected_result_matched_terms_all"),
+            expected_result.get("matched_terms", []),
+        ),
+        "expected_result_matched_specific_terms_any": _optional_any_expected(
+            expect.get("expected_result_matched_specific_terms_any"),
+            expected_result.get("matched_specific_terms", []),
+        ),
+        "expected_result_matched_specific_terms_all": _optional_all_expected(
+            expect.get("expected_result_matched_specific_terms_all"),
+            expected_result.get("matched_specific_terms", []),
+        ),
         "source_url_contains": _optional_contains(top_result.get("source_url"), expect.get("source_url_contains")),
         "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
         "internal_search_unused": packet.get("policy", {}).get("internal_search_used") is False,
@@ -594,6 +617,9 @@ def _run_live_search_case(case: dict[str, object], index_path: Path, default_lim
         "checks": checks,
         "query_report": query_report,
         "top_result": top_result,
+        "expected_result_rank": expected_result_rank,
+        "expected_result": _compact_ranked_result(expected_result_rank, expected_result),
+        "diagnostics": _live_search_diagnostics(checks, top_result, expected_result_rank, expected_result, query_report),
     }
 
 
@@ -908,6 +934,10 @@ def _resolve_repo_path(repo_root: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo_root / path
 
 
+def _display_suite_path(repo_root: Path, path: Path) -> str:
+    return str(path.relative_to(repo_root)) if path.is_relative_to(repo_root) else str(path)
+
+
 def _load_latest_or_named_receipt(artifact_root: Path, run: str, kind: str) -> dict[str, object]:
     receipt_dir = artifact_root / "receipts"
     path = receipt_dir / f"latest_{kind}.json" if run == "latest" else receipt_dir / f"{run}.{kind}.json"
@@ -959,8 +989,45 @@ def _optional_minimum(actual: int, expected: object) -> bool:
         return False
 
 
+def _optional_rank_at_most(actual_rank: int | None, expected: object) -> bool:
+    if expected is None:
+        return True
+    if actual_rank is None:
+        return False
+    try:
+        return actual_rank <= int(expected)
+    except (TypeError, ValueError):
+        return False
+
+
+def _optional_expected_result_present(expected_result: dict[str, object], expect: object) -> bool:
+    if not isinstance(expect, dict):
+        return True
+    if expect.get("expected_result_post_id") is None and expect.get("expected_result_source_url_contains") is None:
+        return True
+    return bool(expected_result)
+
+
 def _list_or_empty(value: object) -> list[object]:
     return value if isinstance(value, list) else []
+
+
+def _find_expected_result(results: object, expect: object) -> tuple[int | None, dict[str, object]]:
+    if not isinstance(results, list) or not isinstance(expect, dict):
+        return None, {}
+    expected_post_id = expect.get("expected_result_post_id")
+    expected_source_url = expect.get("expected_result_source_url_contains")
+    if expected_post_id is None and expected_source_url is None:
+        return None, {}
+    for rank, result in enumerate(results, start=1):
+        if not isinstance(result, dict):
+            continue
+        if expected_post_id is not None and str(result.get("post_id")) != str(expected_post_id):
+            continue
+        if expected_source_url is not None and str(expected_source_url) not in str(result.get("source_url", "")):
+            continue
+        return rank, result
+    return None, {}
 
 
 def _answer_context_label_count(answer: dict[str, object]) -> int:
@@ -1005,6 +1072,32 @@ def _compact_top_result(result: object) -> dict[str, object]:
             for edge in relation_edges
             if isinstance(edge, dict)
         ],
+    }
+
+
+def _compact_ranked_result(rank: int | None, result: object) -> dict[str, object]:
+    compact = _compact_top_result(result)
+    if compact:
+        compact["rank"] = rank
+    return compact
+
+
+def _live_search_diagnostics(
+    checks: dict[str, bool],
+    top_result: object,
+    expected_result_rank: int | None,
+    expected_result: object,
+    query_report: object,
+) -> dict[str, object]:
+    report = query_report if isinstance(query_report, dict) else {}
+    return {
+        "failed_checks": sorted(name for name, ok in checks.items() if not ok),
+        "query_terms": report.get("terms", []),
+        "query_exact_terms": report.get("exact_terms", []),
+        "query_specific_terms": report.get("specific_terms", []),
+        "query_technical_terms": report.get("technical_terms", []),
+        "top_result": _compact_top_result(top_result),
+        "expected_result": _compact_ranked_result(expected_result_rank, expected_result),
     }
 
 

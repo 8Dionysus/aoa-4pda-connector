@@ -39,6 +39,7 @@ REQUIRED_FILES = [
     "evals/suites/starter_search_quality.json",
     "evals/suites/live_starter_search_quality.json",
     "evals/suites/live_xiaomi_13t_search_quality.json",
+    "evals/suites/live_xiaomi_13t_ranking_pressure.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/live_xiaomi_13t_answer_quality.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
@@ -268,6 +269,7 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
         "starter_graph_query_packets.json": "aoa_4pda_graph_query_eval_suite_v1",
         "starter_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_starter_search_quality.json": "aoa_4pda_live_search_eval_suite_v1",
+        "live_xiaomi_13t_ranking_pressure.json": "aoa_4pda_live_search_eval_suite_v1",
         "xiaomi_13t_answer_packets.json": "aoa_4pda_answer_eval_suite_v1",
         "live_xiaomi_13t_answer_quality.json": "aoa_4pda_live_answer_eval_suite_v1",
     }
@@ -300,6 +302,16 @@ def _check_eval_port(repo_root: Path, errors: list[str]) -> None:
             expect = first_case.get("expect", {})
             if not expect.get("root_action_labels") or not expect.get("recovery_action_labels"):
                 errors.append("xiaomi_13t_answer_packets.json must include root/recovery answer expectations")
+        if suite_name == "live_xiaomi_13t_ranking_pressure.json":
+            cases = suite.get("cases", [])
+            if len(cases) < 4:
+                errors.append("live_xiaomi_13t_ranking_pressure.json must include at least four pressure cases")
+            if not any("OrangeFox" in str(case.get("query", "")) for case in cases):
+                errors.append("live_xiaomi_13t_ranking_pressure.json must include OrangeFox/TWRP pressure")
+            if not all(case.get("expect", {}).get("expected_result_rank_max") for case in cases):
+                errors.append("live_xiaomi_13t_ranking_pressure.json must constrain expected result rank")
+            if not all(case.get("expect", {}).get("expected_result_post_id") for case in cases):
+                errors.append("live_xiaomi_13t_ranking_pressure.json must name expected result posts")
         if suite_name == "live_xiaomi_13t_answer_quality.json":
             cases = suite.get("cases", [])
             first_case = cases[0] if cases else {}
