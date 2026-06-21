@@ -811,11 +811,40 @@ def _run_live_answer_case(
     limit = int(case.get("limit", default_limit))
     evidence_packet = query_graph_packet(index_path, graph_path, query, limit=limit)
     answer_packet = render_answer_packet(evidence_packet, limit=limit)
+    top_result = evidence_packet.get("results", [{}])[0] if evidence_packet.get("results") else {}
     top_answer = answer_packet.get("answers", [{}])[0] if answer_packet.get("answers") else {}
     query_report = evidence_packet.get("query_report", {})
     graph_report = evidence_packet.get("graph_report", {})
     checks = {
         **_answer_checks(top_answer, answer_packet, expect),
+        "matched_terms_any": _optional_any_expected(
+            expect.get("matched_terms_any"),
+            top_result.get("matched_terms", []),
+        ),
+        "matched_terms_all": _optional_all_expected(
+            expect.get("matched_terms_all"),
+            top_result.get("matched_terms", []),
+        ),
+        "matched_exact_terms_any": _optional_any_expected(
+            expect.get("matched_exact_terms_any"),
+            top_result.get("matched_exact_terms", []),
+        ),
+        "matched_specific_terms_all": _optional_all_expected(
+            expect.get("matched_specific_terms_all"),
+            top_result.get("matched_specific_terms", []),
+        ),
+        "query_report_specific_terms_all": _optional_all_expected(
+            expect.get("query_report_specific_terms_all"),
+            query_report.get("specific_terms", []),
+        ),
+        "query_report_technical_terms_all": _optional_all_expected(
+            expect.get("query_report_technical_terms_all"),
+            query_report.get("technical_terms", []),
+        ),
+        "answer_context_labels_min": _optional_minimum(
+            _answer_context_label_count(top_answer),
+            expect.get("answer_context_labels_min"),
+        ),
         "query_report_unit": _optional_equal(query_report.get("unit"), expect.get("query_report_unit")),
         "graph_report_relation_edge_kinds_all": _optional_all_expected(
             expect.get("graph_report_relation_edge_kinds_all"),
@@ -830,6 +859,8 @@ def _run_live_answer_case(
         "query_report": query_report,
         "graph_report": graph_report,
         "answer_report": answer_packet.get("answer_report", {}),
+        "diagnostics": _live_answer_diagnostics(checks, top_result, top_answer, query_report),
+        "top_evidence_result": _compact_top_result(top_result),
         "top_answer": top_answer,
         "expected": expect,
     }
@@ -919,8 +950,111 @@ def _optional_all_expected(expected: object, actual: object) -> bool:
     return True if expected is None else _all_expected(expected, actual)
 
 
+def _optional_minimum(actual: int, expected: object) -> bool:
+    if expected is None:
+        return True
+    try:
+        return actual >= int(expected)
+    except (TypeError, ValueError):
+        return False
+
+
 def _list_or_empty(value: object) -> list[object]:
     return value if isinstance(value, list) else []
+
+
+def _answer_context_label_count(answer: dict[str, object]) -> int:
+    fields = [
+        "issue_labels",
+        "fix_labels",
+        "warning_labels",
+        "warned_target_labels",
+        "root_action_labels",
+        "recovery_action_labels",
+        "target_file_labels",
+        "tool_labels",
+        "firmware_context_labels",
+    ]
+    return sum(len(answer.get(field, [])) for field in fields if isinstance(answer.get(field), list))
+
+
+def _compact_top_result(result: object) -> dict[str, object]:
+    if not isinstance(result, dict):
+        return {}
+    context = result.get("graph_context", {})
+    relation_edges = context.get("relation_edges", []) if isinstance(context, dict) else []
+    return {
+        "source_url": result.get("source_url"),
+        "topic_id": result.get("topic_id"),
+        "post_id": result.get("post_id"),
+        "chunk_id": result.get("chunk_id"),
+        "score": result.get("score"),
+        "score_breakdown": result.get("score_breakdown", {}),
+        "matched_terms": result.get("matched_terms", []),
+        "matched_exact_terms": result.get("matched_exact_terms", []),
+        "matched_specific_terms": result.get("matched_specific_terms", []),
+        "matched_phrases": result.get("matched_phrases", []),
+        "evidence_refs": result.get("evidence_refs", []),
+        "graph_relation_edges": [
+            {
+                "kind": edge.get("kind"),
+                "from_node": edge.get("from_node"),
+                "to_node": edge.get("to_node"),
+                "confidence": edge.get("confidence"),
+            }
+            for edge in relation_edges
+            if isinstance(edge, dict)
+        ],
+    }
+
+
+def _live_answer_diagnostics(
+    checks: dict[str, bool],
+    top_result: object,
+    top_answer: dict[str, object],
+    query_report: object,
+) -> dict[str, object]:
+    report = query_report if isinstance(query_report, dict) else {}
+    compact_result = _compact_top_result(top_result)
+    label_fields = [
+        "issue_labels",
+        "fix_labels",
+        "warning_labels",
+        "warned_target_labels",
+        "root_action_labels",
+        "recovery_action_labels",
+        "target_file_labels",
+        "tool_labels",
+        "firmware_context_labels",
+    ]
+    return {
+        "failed_checks": sorted(name for name, ok in checks.items() if not ok),
+        "query_terms": report.get("terms", []),
+        "query_exact_terms": report.get("exact_terms", []),
+        "query_specific_terms": report.get("specific_terms", []),
+        "query_technical_terms": report.get("technical_terms", []),
+        "top_result_score": compact_result.get("score"),
+        "top_result_score_breakdown": compact_result.get("score_breakdown", {}),
+        "top_result_matches": {
+            "matched_terms": compact_result.get("matched_terms", []),
+            "matched_exact_terms": compact_result.get("matched_exact_terms", []),
+            "matched_specific_terms": compact_result.get("matched_specific_terms", []),
+            "matched_phrases": compact_result.get("matched_phrases", []),
+        },
+        "answer_context": {
+            "answer_kind": top_answer.get("answer_kind"),
+            "label_count": _answer_context_label_count(top_answer),
+            "label_counts": {
+                field: len(top_answer.get(field, []))
+                for field in label_fields
+                if isinstance(top_answer.get(field), list)
+            },
+            "relation_confidence_min": top_answer.get("confidence", {}).get("relation_confidence_min")
+            if isinstance(top_answer.get("confidence"), dict)
+            else None,
+        },
+        "graph_relation_edges": compact_result.get("graph_relation_edges", []),
+    }
 
 
 def _any_source_ref_contains(values: object, needle: str) -> bool:

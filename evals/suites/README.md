@@ -39,6 +39,9 @@ Together they verify:
 - live-run Xiaomi 13T graph-query packets with root/recovery relation context
 - Xiaomi 13T root/recovery/file/tool/firmware labels in deterministic answer
   packets
+- live answer diagnostics with failed checks, matched query terms, score
+  breakdowns, compact top evidence, answer context label counts, and relation
+  edges
 
 Run it with:
 

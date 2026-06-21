@@ -37,6 +37,8 @@
     receipts
   - focused Xiaomi 13T answer eval over already-built live index and graph
     receipts
+  - expanded Xiaomi 13T answer-quality diagnostics across root, recovery,
+    accessory, and HyperOS notification cases
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms
