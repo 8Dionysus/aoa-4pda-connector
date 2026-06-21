@@ -626,11 +626,21 @@ def _answer_quality_gate(repo_root: Path) -> dict[str, object]:
         and "missing_evidence_note" in answer_code
         and "insufficient evidence" in answer_doc.casefold()
     )
-    status = "achieved" if answer_suite and deterministic and cited and freshness and gap_aware else "partial"
+    chain_aware = (
+        "evidence_chain" in json.dumps(answer_schema, ensure_ascii=False).casefold()
+        and "nuance_report" in answer_code
+        and "evidence_chain" in answer_doc
+        and "nuance_report" in answer_doc
+    )
+    status = (
+        "achieved"
+        if answer_suite and deterministic and cited and freshness and gap_aware and chain_aware
+        else "partial"
+    )
     return _criterion(
         "answer_quality_gates",
         status,
-        "Answer quality returns cited, deterministic, freshness-aware, gap-aware answer packets.",
+        "Answer quality returns cited, deterministic, freshness-aware, gap-aware, chain-aware answer packets.",
         {
             "live_answer_suite": bool(answer_suite),
             "deterministic_renderer": deterministic,
@@ -638,8 +648,9 @@ def _answer_quality_gate(repo_root: Path) -> dict[str, object]:
             "freshness_field_or_note_present": freshness,
             "answer_contract_mentions_freshness": "freshness note" in answer_doc,
             "gap_awareness_field_or_note_present": gap_aware,
+            "chain_awareness_field_or_note_present": chain_aware,
         },
-        "Add freshness/capture/gap context to answer packets and protect it with schema/tests/evals.",
+        "Add freshness/capture/gap/chain context to answer packets and protect it with schema/tests/evals.",
     )
 
 

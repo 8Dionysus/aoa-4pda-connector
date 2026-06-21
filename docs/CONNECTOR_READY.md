@@ -57,9 +57,10 @@ The audit maps the active loop goal into concrete repository-local checks:
   retrieval, and ranking-pressure cases
 - graph quality covers issue/fix/warning/root/recovery/tool/file/firmware
   relations with source refs and confidence
-- answer packets are cited, deterministic, freshness-aware, and gap-aware: weak
-  evidence returns an explicit insufficient-evidence report instead of a
-  fabricated snippet answer
+- answer packets are cited, deterministic, freshness-aware, gap-aware, and
+  chain-aware: weak evidence returns an explicit insufficient-evidence report
+  instead of a fabricated snippet answer, while grounded answers carry
+  `evidence_chain` and `nuance_report`
 - heavy generated data remains ignored and outside tracked Git surfaces
 - runtime/API contract is documented for future `abyss-stack` consumption
 - validator, pytest, evals, and GitHub CI remain wired into the repo route

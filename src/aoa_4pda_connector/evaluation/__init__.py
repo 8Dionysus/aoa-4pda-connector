@@ -1212,7 +1212,7 @@ def _run_live_answer_case(
         "query_report": query_report,
         "graph_report": graph_report,
         "answer_report": answer_packet.get("answer_report", {}),
-        "diagnostics": _live_answer_diagnostics(checks, top_result, top_answer, query_report),
+        "diagnostics": _live_answer_diagnostics(checks, top_result, top_answer, answer_packet, query_report),
         "top_evidence_result": _compact_top_result(top_result),
         "top_answer": top_answer,
         "expected": expect,
@@ -1232,6 +1232,13 @@ def _answer_checks(
     answer_report = answer_packet.get("answer_report", {})
     if not isinstance(answer_report, dict):
         answer_report = {}
+    evidence_chain = answer_packet.get("evidence_chain", [])
+    if not isinstance(evidence_chain, list):
+        evidence_chain = []
+    top_chain_step = evidence_chain[0] if evidence_chain and isinstance(evidence_chain[0], dict) else {}
+    nuance_report = answer_packet.get("nuance_report", {})
+    if not isinstance(nuance_report, dict):
+        nuance_report = {}
     label_fields = [
         "issue_labels",
         "fix_labels",
@@ -1262,6 +1269,11 @@ def _answer_checks(
         and _any_source_ref_contains(top_answer.get("source_refs", []), str(source_url_contains)),
         "freshness_present": bool(freshness),
         "freshness_note_present": bool(str(freshness.get("note", "")).strip()),
+        "evidence_chain_present": bool(evidence_chain),
+        "evidence_chain_top_post_id": top_chain_step.get("post_id") == top_answer.get("post_id"),
+        "evidence_chain_top_source_url": top_chain_step.get("source_url") == top_answer.get("source_url"),
+        "nuance_report_present": bool(nuance_report),
+        "nuance_chain_step_count_matches": nuance_report.get("chain_step_count") == len(evidence_chain),
         "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
     }
 
@@ -1438,6 +1450,27 @@ def _compact_top_result(result: object) -> dict[str, object]:
     }
 
 
+def _compact_evidence_chain(chain: object) -> list[dict[str, object]]:
+    if not isinstance(chain, list):
+        return []
+    compact: list[dict[str, object]] = []
+    for step in chain:
+        if not isinstance(step, dict):
+            continue
+        compact.append(
+            {
+                "chain_step": step.get("chain_step"),
+                "role": step.get("role"),
+                "post_id": step.get("post_id"),
+                "chunk_id": step.get("chunk_id"),
+                "matched_content_terms": step.get("matched_content_terms", []),
+                "relation_kinds": step.get("relation_kinds", []),
+                "captured_at": step.get("captured_at"),
+            }
+        )
+    return compact
+
+
 def _compact_ranked_result(rank: int | None, result: object) -> dict[str, object]:
     compact = _compact_top_result(result)
     if compact:
@@ -1468,6 +1501,7 @@ def _live_answer_diagnostics(
     checks: dict[str, bool],
     top_result: object,
     top_answer: dict[str, object],
+    answer_packet: dict[str, object],
     query_report: object,
 ) -> dict[str, object]:
     report = query_report if isinstance(query_report, dict) else {}
@@ -1510,6 +1544,8 @@ def _live_answer_diagnostics(
             else None,
         },
         "freshness": top_answer.get("freshness", {}),
+        "evidence_chain": _compact_evidence_chain(answer_packet.get("evidence_chain", [])),
+        "nuance_report": answer_packet.get("nuance_report", {}),
         "graph_relation_edges": compact_result.get("graph_relation_edges", []),
     }
 

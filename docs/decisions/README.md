@@ -38,3 +38,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0029` | [Agent install route verifier](AOA-4PDA-D-0029-agent-install-route-verifier.md) |
 | `AOA-4PDA-D-0030` | [Information need coverage](AOA-4PDA-D-0030-information-need-coverage.md) |
 | `AOA-4PDA-D-0031` | [Answer gap awareness](AOA-4PDA-D-0031-answer-gap-awareness.md) |
+| `AOA-4PDA-D-0032` | [Answer evidence chain](AOA-4PDA-D-0032-answer-evidence-chain.md) |

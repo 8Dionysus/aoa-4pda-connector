@@ -3,7 +3,17 @@
   "$id": "https://example.invalid/aoa-4pda/answer_packet.schema.json",
   "title": "AoA 4PDA Answer Packet",
   "type": "object",
-  "required": ["schema", "answer_id", "query", "created_at", "answer_report", "answers", "policy"],
+  "required": [
+    "schema",
+    "answer_id",
+    "query",
+    "created_at",
+    "answer_report",
+    "answers",
+    "evidence_chain",
+    "nuance_report",
+    "policy"
+  ],
   "properties": {
     "schema": { "const": "aoa_4pda_answer_packet_v1" },
     "answer_id": { "type": "string", "minLength": 1 },
@@ -16,7 +26,10 @@
         "source_packet_id",
         "source_packet_schema",
         "answer_status",
-        "candidate_result_count"
+        "candidate_result_count",
+        "grounded_candidate_count",
+        "filtered_candidate_count",
+        "deduplicated_candidate_count"
       ],
       "properties": {
         "renderer": { "enum": ["starter_graph_context_v1", "starter_graph_context_v2"] },
@@ -37,8 +50,22 @@
         },
         "missing_evidence_note": { "type": ["string", "null"] },
         "candidate_result_count": { "type": "integer", "minimum": 0 },
+        "grounded_candidate_count": { "type": "integer", "minimum": 0 },
+        "filtered_candidate_count": { "type": "integer", "minimum": 0 },
+        "deduplicated_candidate_count": { "type": "integer", "minimum": 0 },
         "top_evidence_grounding": {
           "type": "object",
+          "properties": {
+            "content_terms": { "type": "array", "items": { "type": "string" } },
+            "matched_content_terms": { "type": "array", "items": { "type": "string" } },
+            "matched_content_term_count": { "type": "integer", "minimum": 0 },
+            "unmatched_structured_terms": { "type": "array", "items": { "type": "string" } },
+            "relation_supported": { "type": "boolean" },
+            "content_phrase_supported": { "type": "boolean" }
+          }
+        },
+        "primary_evidence_grounding": {
+          "type": ["object", "null"],
           "properties": {
             "content_terms": { "type": "array", "items": { "type": "string" } },
             "matched_content_terms": { "type": "array", "items": { "type": "string" } },
@@ -97,6 +124,98 @@
             }
           },
           "confidence": { "type": "object" }
+        }
+      }
+    },
+    "evidence_chain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "chain_step",
+          "role",
+          "answer_kind",
+          "summary",
+          "source_url",
+          "topic_id",
+          "post_id",
+          "chunk_id",
+          "posted_at",
+          "captured_at",
+          "freshness",
+          "evidence_refs",
+          "source_refs",
+          "matched_terms",
+          "matched_exact_terms",
+          "matched_specific_terms",
+          "matched_content_terms",
+          "relation_kinds",
+          "score"
+        ],
+        "properties": {
+          "chain_step": { "type": "integer", "minimum": 1 },
+          "role": { "enum": ["primary", "supporting", "caution", "related_context"] },
+          "answer_kind": { "type": ["string", "null"] },
+          "summary": { "type": ["string", "null"] },
+          "source_url": { "type": ["string", "null"] },
+          "topic_id": { "type": ["string", "null"] },
+          "post_id": { "type": ["string", "null"] },
+          "chunk_id": { "type": ["string", "null"] },
+          "posted_at": { "type": ["string", "null"] },
+          "captured_at": { "type": ["string", "null"] },
+          "freshness": { "type": "object" },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "source_refs": { "type": "array", "items": { "type": ["string", "null"] } },
+          "matched_terms": { "type": "array", "items": { "type": "string" } },
+          "matched_exact_terms": { "type": "array", "items": { "type": "string" } },
+          "matched_specific_terms": { "type": "array", "items": { "type": "string" } },
+          "matched_content_terms": { "type": "array", "items": { "type": "string" } },
+          "relation_kinds": { "type": "array", "items": { "type": "string" } },
+          "score": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "nuance_report": {
+      "type": "object",
+      "required": [
+        "chain_step_count",
+        "topic_count",
+        "post_count",
+        "source_count",
+        "answer_kinds",
+        "relation_kinds",
+        "matched_content_terms",
+        "freshness",
+        "limitations"
+      ],
+      "properties": {
+        "chain_step_count": { "type": "integer", "minimum": 0 },
+        "topic_count": { "type": "integer", "minimum": 0 },
+        "post_count": { "type": "integer", "minimum": 0 },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "answer_kinds": { "type": "array", "items": { "type": "string" } },
+        "relation_kinds": { "type": "array", "items": { "type": "string" } },
+        "matched_content_terms": { "type": "array", "items": { "type": "string" } },
+        "freshness": {
+          "type": "object",
+          "required": ["basis", "latest_captured_at", "captured_at_values", "posted_at_values"],
+          "properties": {
+            "basis": { "type": "string" },
+            "latest_captured_at": { "type": ["string", "null"] },
+            "captured_at_values": { "type": "array", "items": { "type": "string" } },
+            "posted_at_values": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "count"],
+            "properties": {
+              "kind": { "type": "string" },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
         }
       }
     },

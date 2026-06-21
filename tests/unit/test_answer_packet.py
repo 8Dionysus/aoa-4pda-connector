@@ -147,6 +147,127 @@ def test_render_answer_packet_reports_insufficient_evidence_for_weak_candidates(
     assert "В базе недостаточно данных" in answer_packet["answer_report"]["missing_evidence_note"]
 
 
+def test_render_answer_packet_builds_deduped_evidence_chain_with_nuance_report():
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-chain",
+        "query": "Xiaomi 13T recovery.img fastboot TWRP",
+        "created_at": "2026-06-21T22:10:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["xiaomi", "13t", "recovery.img", "fastboot", "twrp", "aristotle"],
+            "exact_terms": ["13t", "recovery.img"],
+            "technical_terms": ["recovery.img", "aristotle"],
+            "specific_terms": ["recovery.img", "fastboot", "twrp"],
+        },
+        "results": [
+            _answer_result(
+                post_id="128964413",
+                chunk_id="1076859:128964413:chunk-000",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+                posted_at="12.03.24, 12:36",
+                captured_at="2026-06-21T19:57:53Z",
+                snippet="TWRP прошивается через fastboot, recovery.img нужен для Xiaomi 13T.",
+                matched_terms=["13t", "aristotle", "fastboot", "recovery.img", "twrp", "xiaomi"],
+                matched_exact_terms=["13t", "recovery.img"],
+                matched_specific_terms=["fastboot", "recovery.img", "twrp"],
+                relation_edges=[
+                    {
+                        "kind": "recovery_targets_file",
+                        "from_node": "entity:recovery_action:flash recovery.img",
+                        "to_node": "entity:file:recovery.img",
+                        "confidence": 0.5,
+                    },
+                    {
+                        "kind": "recovery_uses_tool",
+                        "from_node": "entity:recovery_action:flash recovery.img",
+                        "to_node": "entity:tool:fastboot",
+                        "confidence": 0.45,
+                    },
+                ],
+                entity_node_ids=[
+                    "entity:recovery_action:flash recovery.img",
+                    "entity:file:recovery.img",
+                    "entity:tool:fastboot",
+                    "entity:tool:TWRP",
+                ],
+            ),
+            _answer_result(
+                post_id="128964413",
+                chunk_id="1076859:128964413:chunk-001",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+                posted_at="12.03.24, 12:36",
+                captured_at="2026-06-21T19:57:53Z",
+                snippet="Duplicate chunk from the same post with recovery.img and fastboot.",
+                matched_terms=["13t", "fastboot", "recovery.img", "xiaomi"],
+                matched_exact_terms=["13t", "recovery.img"],
+                matched_specific_terms=["fastboot", "recovery.img"],
+                relation_edges=[
+                    {
+                        "kind": "recovery_targets_file",
+                        "from_node": "entity:recovery_action:flash recovery.img",
+                        "to_node": "entity:file:recovery.img",
+                        "confidence": 0.5,
+                    }
+                ],
+                entity_node_ids=["entity:recovery_action:flash recovery.img", "entity:file:recovery.img"],
+            ),
+            _answer_result(
+                post_id="129061756",
+                chunk_id="1076859:129061756:chunk-000",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2160#entry129061756",
+                posted_at="16.03.24, 18:26",
+                captured_at="2026-06-21T19:57:54Z",
+                snippet="Будьте осторожны при использовании TWRP, recovery.img и fastboot.",
+                matched_terms=["13t", "fastboot", "recovery.img", "twrp", "xiaomi"],
+                matched_exact_terms=["13t", "recovery.img"],
+                matched_specific_terms=["fastboot", "recovery.img", "twrp"],
+            ),
+            _answer_result(
+                post_id="143886187",
+                chunk_id="1076859:143886187:chunk-000",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=7140#entry143886187",
+                posted_at="17.06.26, 08:36",
+                captured_at="2026-06-21T19:57:54Z",
+                snippet="Случайное сообщение только про Xiaomi 13T.",
+                matched_terms=["13t", "aristotle", "xiaomi"],
+                matched_exact_terms=["13t"],
+                matched_specific_terms=[],
+            ),
+        ],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=4)
+
+    assert answer_packet["answer_report"]["answer_status"] == "answered"
+    assert answer_packet["answer_report"]["candidate_result_count"] == 4
+    assert answer_packet["answer_report"]["grounded_candidate_count"] == 3
+    assert answer_packet["answer_report"]["deduplicated_candidate_count"] == 1
+    assert answer_packet["answer_report"]["filtered_candidate_count"] == 1
+    assert [answer["post_id"] for answer in answer_packet["answers"]] == ["128964413", "129061756"]
+
+    chain = answer_packet["evidence_chain"]
+    assert [step["post_id"] for step in chain] == ["128964413", "129061756"]
+    assert chain[0]["role"] == "primary"
+    assert chain[0]["relation_kinds"] == ["recovery_targets_file", "recovery_uses_tool"]
+    assert chain[0]["matched_content_terms"] == ["fastboot", "recovery.img", "twrp"]
+    assert chain[1]["role"] == "related_context"
+    assert chain[1]["matched_content_terms"] == ["fastboot", "recovery.img", "twrp"]
+
+    nuance = answer_packet["nuance_report"]
+    assert nuance["chain_step_count"] == 2
+    assert nuance["post_count"] == 2
+    assert nuance["topic_count"] == 1
+    assert nuance["relation_kinds"] == ["recovery_targets_file", "recovery_uses_tool"]
+    assert nuance["matched_content_terms"] == ["fastboot", "recovery.img", "twrp"]
+    assert nuance["freshness"]["latest_captured_at"] == "2026-06-21T19:57:54Z"
+    assert nuance["limitations"] == [
+        {"kind": "filtered_weak_candidates", "count": 1},
+        {"kind": "deduplicated_same_post_chunks", "count": 1},
+    ]
+
+
 def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     run_id = "answer-test"
     data_root = tmp_path / "data"
@@ -223,6 +344,8 @@ def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     assert payload["answers"][0]["fix_labels"] == ["flash recovery.img", "restore boot.img"]
     assert payload["answers"][0]["freshness"]["basis"] == "source_post_and_capture_metadata"
     assert payload["answers"][0]["captured_at"]
+    assert payload["evidence_chain"][0]["post_id"] == "9001"
+    assert payload["nuance_report"]["chain_step_count"] == len(payload["evidence_chain"])
 
 
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:
@@ -243,6 +366,49 @@ def _build_xiaomi_13t_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:
     index_path = build_keyword_index(normalized_dir, tmp_path / "index-xiaomi", "xiaomi-13t")
     graph_path = build_graph(normalized_dir, tmp_path / "graph-xiaomi", "xiaomi-13t")
     return index_path, graph_path
+
+
+def _answer_result(
+    *,
+    post_id: str,
+    chunk_id: str,
+    source_url: str,
+    posted_at: str,
+    captured_at: str,
+    snippet: str,
+    matched_terms: list[str],
+    matched_exact_terms: list[str],
+    matched_specific_terms: list[str],
+    relation_edges: list[dict[str, object]] | None = None,
+    entity_node_ids: list[str] | None = None,
+) -> dict[str, object]:
+    relation_edges = relation_edges or []
+    entity_node_ids = entity_node_ids or []
+    return {
+        "source_url": source_url,
+        "topic_id": "1076859",
+        "post_id": post_id,
+        "posted_at": posted_at,
+        "captured_at": captured_at,
+        "chunk_id": chunk_id,
+        "snippet": snippet,
+        "score": 10.0,
+        "score_breakdown": {"bm25": 6.0, "exact": 1.75, "phrase": 2.5},
+        "matched_terms": matched_terms,
+        "matched_exact_terms": matched_exact_terms,
+        "matched_specific_terms": matched_specific_terms,
+        "matched_phrases": ["xiaomi 13t"] if "13t" in matched_terms else [],
+        "evidence_refs": [f"chunk:{chunk_id}", f"post:{post_id}"],
+        "graph_context": {
+            "source_refs": [source_url],
+            "entity_node_ids": entity_node_ids,
+            "relation_edges": relation_edges,
+            "issues": [],
+            "fixes": [],
+            "warnings": [],
+            "warned_targets": [],
+        },
+    }
 
 
 def _write_receipt(receipts_dir: Path, run_id: str, kind: str, payload: dict[str, object]) -> None:

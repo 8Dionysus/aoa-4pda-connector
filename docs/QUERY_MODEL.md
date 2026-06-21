@@ -109,12 +109,21 @@ not an LLM:
   indexes do not yet include capture metadata.
 - `confidence` names the starter graph context as the basis and keeps relation
   confidence visible.
-- `answer_report.answer_status` is `answered` only when the top local evidence
-  has enough content grounding or relation support. When candidates are empty or
-  below the grounding threshold, `answers` stays empty and
-  `answer_report.missing_evidence_note` says `В базе недостаточно данных...`.
-  This is the connector's starter insufficient evidence guard, not an LLM
-  refusal layer.
+- `answer_report.answer_status` is `answered` only when local candidates have
+  enough content grounding or relation support. Weak device-anchor candidates
+  are filtered out, duplicate chunks from the same post are collapsed, and
+  `answer_report` reports candidate, grounded, filtered, and deduplicated
+  counts.
+- `evidence_chain` mirrors the grounded answer handoff as ordered chain steps
+  with role, source URL, topic/post/chunk ids, matched content terms, relation
+  kinds, evidence refs, and freshness.
+- `nuance_report` summarizes the chain breadth, relation kinds, matched
+  content terms, freshness spread, and limitations such as weak filtered
+  candidates or duplicate same-post chunks.
+- When candidates are empty or below the grounding threshold, `answers` and
+  `evidence_chain` stay empty and `answer_report.missing_evidence_note` says
+  `В базе недостаточно данных...`. This is the connector's starter
+  insufficient evidence guard, not an LLM refusal layer.
 
 Answer packets are for agent handoff and UI/API ergonomics. They do not replace
 the evidence packet, graph export, or source URL as the truth surface.
@@ -172,7 +181,10 @@ artifacts.
 runs the focused Xiaomi 13T answer gate against the same existing receipts. It
 renders local graph-query packets into answer packets and checks that
 root/recovery actions, target files, tools, firmware context, source refs, and
-freshness notes, and the internal-search boundary survive the answer renderer.
+freshness notes, answer grounding, and the internal-search boundary survive the
+answer renderer. The rendered packet is chain-aware: weak candidates are
+filtered, duplicate post chunks are collapsed, and downstream agents can follow
+`evidence_chain` plus `nuance_report` before composing a user-facing answer.
 Each live answer case also returns compact diagnostics: failed check names,
 matched terms, score breakdown, top evidence refs, answer context label counts,
 freshness context, and relation edges that reached the answer.
@@ -218,6 +230,9 @@ Every answer should carry:
 - graph context when relation traversal was requested
 - vector report and hybrid score breakdown when hybrid retrieval was requested
 - deterministic answer text when answer rendering was requested
+- ordered `evidence_chain` steps for grounded answer handoff
+- `nuance_report` with filtered/deduplicated candidate counts and chain
+  freshness context
 - `answer_status`, gap reason, and missing-evidence note when answer grounding
   is insufficient
 - query report and score breakdown when produced by a local index
