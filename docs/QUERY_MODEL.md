@@ -109,6 +109,12 @@ not an LLM:
   indexes do not yet include capture metadata.
 - `confidence` names the starter graph context as the basis and keeps relation
   confidence visible.
+- `answer_report.answer_status` is `answered` only when the top local evidence
+  has enough content grounding or relation support. When candidates are empty or
+  below the grounding threshold, `answers` stays empty and
+  `answer_report.missing_evidence_note` says `В базе недостаточно данных...`.
+  This is the connector's starter insufficient evidence guard, not an LLM
+  refusal layer.
 
 Answer packets are for agent handoff and UI/API ergonomics. They do not replace
 the evidence packet, graph export, or source URL as the truth surface.
@@ -212,6 +218,8 @@ Every answer should carry:
 - graph context when relation traversal was requested
 - vector report and hybrid score breakdown when hybrid retrieval was requested
 - deterministic answer text when answer rendering was requested
+- `answer_status`, gap reason, and missing-evidence note when answer grounding
+  is insufficient
 - query report and score breakdown when produced by a local index
 - freshness note
 - policy route note

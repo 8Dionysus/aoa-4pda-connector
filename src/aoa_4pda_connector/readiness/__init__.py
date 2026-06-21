@@ -621,19 +621,25 @@ def _answer_quality_gate(repo_root: Path) -> dict[str, object]:
     deterministic = "starter_graph_context_v2" in answer_code and "source_url" in answer_code
     cited = "source_refs" in answer_code and "evidence_refs" in answer_code
     freshness = "freshness" in json.dumps(answer_schema, ensure_ascii=False).casefold() or "freshness" in answer_code.casefold()
-    status = "achieved" if answer_suite and deterministic and cited and freshness else "partial"
+    gap_aware = (
+        "insufficient_evidence" in json.dumps(answer_schema, ensure_ascii=False).casefold()
+        and "missing_evidence_note" in answer_code
+        and "insufficient evidence" in answer_doc.casefold()
+    )
+    status = "achieved" if answer_suite and deterministic and cited and freshness and gap_aware else "partial"
     return _criterion(
         "answer_quality_gates",
         status,
-        "Answer quality returns cited, deterministic, freshness-aware answer packets.",
+        "Answer quality returns cited, deterministic, freshness-aware, gap-aware answer packets.",
         {
             "live_answer_suite": bool(answer_suite),
             "deterministic_renderer": deterministic,
             "cited_answer_fields": cited,
             "freshness_field_or_note_present": freshness,
             "answer_contract_mentions_freshness": "freshness note" in answer_doc,
+            "gap_awareness_field_or_note_present": gap_aware,
         },
-        "Add freshness/capture context to answer packets and protect it with schema/tests/evals.",
+        "Add freshness/capture/gap context to answer packets and protect it with schema/tests/evals.",
     )
 
 
