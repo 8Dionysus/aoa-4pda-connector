@@ -403,16 +403,92 @@ def test_live_graph_query_eval_suite_checks_named_run_without_network(tmp_path):
             "network_touched": False,
         },
     )
+    suite_path = tmp_path / "live_graph_query_suite.json"
+    suite_path.write_text(
+        json.dumps(
+            {
+                "schema": "aoa_4pda_live_graph_query_eval_suite_v1",
+                "suite_id": "unit-live-graph-query-quality",
+                "owner_repo": "aoa-4pda-connector",
+                "proof_owner_repo": "aoa-evals",
+                "central_boundary": "local unit suite only",
+                "default_limit": 5,
+                "dataset": {
+                    "kind": "bounded_live_run_keyword_index_plus_graph",
+                    "expected_profile": "xiaomi-13t",
+                },
+                "cases": [
+                    {
+                        "case_id": "recovery-graph-context",
+                        "query": "Xiaomi 13T aristotle recovery.img fastboot",
+                        "expect": {
+                            "top_post_id": "128964413",
+                            "matched_specific_terms_all": ["recovery.img"],
+                            "query_report_technical_terms_all": ["recovery.img", "aristotle"],
+                            "graph_report_rerank_intents_all": ["recovery"],
+                            "graph_report_relation_edge_kinds_all": [
+                                "recovery_targets_file",
+                                "recovery_uses_tool",
+                            ],
+                            "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+                            "query_report_unit": "chunk",
+                            "relation_edges": [
+                                {
+                                    "kind": "recovery_targets_file",
+                                    "from_node": "entity:recovery_action:flash recovery.img",
+                                    "to_node": "entity:file:recovery.img",
+                                },
+                                {
+                                    "kind": "recovery_uses_tool",
+                                    "from_node": "entity:recovery_action:flash recovery.img",
+                                    "to_node": "entity:tool:fastboot",
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        "case_id": "root-graph-context",
+                        "query": "2306EPN60G HyperOS boot.img Magisk KSU",
+                        "expect": {
+                            "top_post_id": "128449684",
+                            "matched_specific_terms_all": ["boot.img", "magisk"],
+                            "graph_report_rerank_intents_all": ["root"],
+                            "graph_report_relation_edge_kinds_all": [
+                                "root_targets_file",
+                                "root_uses_tool",
+                            ],
+                            "source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+                            "query_report_unit": "chunk",
+                            "relation_edges": [
+                                {
+                                    "kind": "root_targets_file",
+                                    "from_node": "entity:root_action:patch boot.img",
+                                    "to_node": "entity:file:boot.img",
+                                },
+                                {
+                                    "kind": "root_uses_tool",
+                                    "from_node": "entity:root_action:patch boot.img",
+                                    "to_node": "entity:tool:Magisk",
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
 
     report = run_live_graph_query_eval_suite(
         run_id,
-        REPO_ROOT / "evals/suites/live_xiaomi_13t_graph_query_quality.json",
+        suite_path,
         REPO_ROOT,
         artifact_root,
     )
 
     assert report["schema"] == "aoa_4pda_live_graph_query_eval_report_v1"
-    assert report["suite_id"] == "live-xiaomi-13t-graph-query-quality"
+    assert report["suite_id"] == "unit-live-graph-query-quality"
     assert report["status"] == "ok"
     assert report["run_id"] == run_id
     assert report["network_touched"] is False
@@ -428,10 +504,12 @@ def test_live_graph_query_eval_suite_checks_named_run_without_network(tmp_path):
     recovery_case = report["cases"][0]
     assert recovery_case["checks"]["top_post_id"] is True
     assert recovery_case["checks"]["expected_relation_edges_present"] is True
+    assert recovery_case["checks"]["graph_report_rerank_intents_all"] is True
     assert recovery_case["checks"]["source_refs_preserved"] is True
     root_case = report["cases"][1]
     assert root_case["checks"]["top_post_id"] is True
     assert root_case["checks"]["graph_report_relation_edge_kinds_all"] is True
+    assert root_case["checks"]["graph_report_rerank_intents_all"] is True
 
 
 def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):

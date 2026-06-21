@@ -25,6 +25,14 @@ RELATION_EDGE_KINDS = (
     "root_uses_tool",
     "warns_about",
 )
+ROOT_INTENT_TERMS = {"boot.img", "init_boot.img", "kernelsu", "ksu", "magisk", "root"}
+ROOT_RELATION_EDGE_KINDS = {"root_mentions_firmware", "root_targets_file", "root_uses_tool"}
+RECOVERY_INTENT_TERMS = {"orangefox", "recovery", "recovery.img", "twrp", "vendor_boot"}
+RECOVERY_RELATION_EDGE_KINDS = {
+    "recovery_mentions_firmware",
+    "recovery_targets_file",
+    "recovery_uses_tool",
+}
 
 
 def packet_id_for_query(query: str) -> str:
@@ -146,14 +154,28 @@ def query_graph_packet(index_path: Path, graph_path: Path, query: str, limit: in
     nodes = {str(node.get("node_id")): node for node in graph.get("nodes", [])}
     edges = [edge for edge in graph.get("edges", [])]
 
-    for result in packet.get("results", []):
+    results = packet.get("results", [])
+    for rank, result in enumerate(results, start=1):
+        result["keyword_rank"] = rank
         result["graph_context"] = _graph_context_for_result(result, nodes, edges)
+
+    query_report = packet.get("query_report", {})
+    intents = _relation_intents(query_report)
+    reranked_results = _rerank_graph_results(results, intents, _relation_query_values(query_report))
+    for rank, result in enumerate(reranked_results, start=1):
+        result["graph_rank"] = rank
+    packet["results"] = reranked_results
 
     packet["policy"]["source"] = "local_keyword_index_plus_graph"
     packet["graph_report"] = {
         "graph_path": str(graph_path),
         "node_count": graph.get("node_count", 0),
         "edge_count": graph.get("edge_count", 0),
+        "rerank": {
+            "algorithm": "relation_intent_v1",
+            "applied": bool(intents),
+            "intents": sorted(intents),
+        },
         "relation_edge_kinds": sorted(
             {
                 str(edge.get("kind"))
@@ -163,6 +185,123 @@ def query_graph_packet(index_path: Path, graph_path: Path, query: str, limit: in
         ),
     }
     return packet
+
+
+def _relation_intents(query_report: object) -> set[str]:
+    if not isinstance(query_report, dict):
+        return set()
+    values = {
+        str(value).casefold()
+        for field in ["terms", "exact_terms", "specific_terms", "technical_terms"]
+        for value in query_report.get(field, [])
+    }
+    intents: set[str] = set()
+    if values.intersection(ROOT_INTENT_TERMS):
+        intents.add("root")
+    if values.intersection(RECOVERY_INTENT_TERMS):
+        intents.add("recovery")
+    return intents
+
+
+def _relation_query_values(query_report: object) -> set[str]:
+    if not isinstance(query_report, dict):
+        return set()
+    values = {
+        _normalize_relation_value(value)
+        for field in ["exact_terms", "specific_terms", "technical_terms"]
+        for value in query_report.get(field, [])
+    }
+    return {value for value in values if len(value) >= 3}
+
+
+def _rerank_graph_results(
+    results: object,
+    intents: set[str],
+    query_values: set[str],
+) -> list[dict[str, object]]:
+    if not isinstance(results, list):
+        return []
+    typed_results = [result for result in results if isinstance(result, dict)]
+    if not intents:
+        for result in typed_results:
+            result["relation_rerank"] = _relation_rerank_summary(result, intents, query_values)
+        return typed_results
+    for result in typed_results:
+        result["relation_rerank"] = _relation_rerank_summary(result, intents, query_values)
+    return sorted(typed_results, key=_relation_rerank_key)
+
+
+def _relation_rerank_summary(
+    result: dict[str, object],
+    intents: set[str],
+    query_values: set[str],
+) -> dict[str, object]:
+    desired_kinds = _desired_relation_kinds(intents)
+    relation_edges = _result_relation_edges(result)
+    matching_edges = [
+        edge
+        for edge in relation_edges
+        if edge.get("kind") in desired_kinds
+        and _relation_edge_matches_query(edge, query_values)
+    ]
+    confidence_sum = sum(float(edge.get("confidence") or 0.0) for edge in matching_edges)
+    return {
+        "intents": sorted(intents),
+        "query_values": sorted(query_values),
+        "matching_edge_count": len(matching_edges),
+        "matching_relation_kinds": sorted({str(edge.get("kind")) for edge in matching_edges}),
+        "matching_relation_confidence_sum": round(confidence_sum, 6),
+    }
+
+
+def _relation_rerank_key(result: dict[str, object]) -> tuple[object, ...]:
+    summary = result.get("relation_rerank", {})
+    if not isinstance(summary, dict):
+        summary = {}
+    keyword_rank = int(result.get("keyword_rank") or 0)
+    return (
+        -int(summary.get("matching_edge_count") or 0),
+        -len(summary.get("matching_relation_kinds", [])),
+        -float(summary.get("matching_relation_confidence_sum") or 0.0),
+        -len(result.get("matched_specific_terms", [])),
+        -len(result.get("matched_exact_terms", [])),
+        -float(result.get("score") or 0.0),
+        keyword_rank,
+    )
+
+
+def _desired_relation_kinds(intents: set[str]) -> set[str]:
+    kinds: set[str] = set()
+    if "root" in intents:
+        kinds.update(ROOT_RELATION_EDGE_KINDS)
+    if "recovery" in intents:
+        kinds.update(RECOVERY_RELATION_EDGE_KINDS)
+    return kinds
+
+
+def _result_relation_edges(result: dict[str, object]) -> list[dict[str, object]]:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return []
+    edges = context.get("relation_edges", [])
+    return [edge for edge in edges if isinstance(edge, dict)]
+
+
+def _relation_edge_matches_query(edge: dict[str, object], query_values: set[str]) -> bool:
+    if not query_values:
+        return True
+    kind = str(edge.get("kind", ""))
+    if kind.endswith("_uses_tool") or kind.endswith("_targets_file") or kind.endswith("_mentions_firmware"):
+        edge_text = _normalize_relation_value(edge.get("to_node", ""))
+    else:
+        edge_text = _normalize_relation_value(
+            f"{edge.get('kind', '')} {edge.get('from_node', '')} {edge.get('to_node', '')}"
+        )
+    return any(value in edge_text for value in query_values)
+
+
+def _normalize_relation_value(value: object) -> str:
+    return str(value).casefold().replace("_", " ").replace("-", " ")
 
 
 def _average_doc_length(docs: object) -> float:

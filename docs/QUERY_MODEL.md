@@ -115,8 +115,11 @@ runs the focused Xiaomi 13T graph-query gate against an already-built bounded
 run. It reads configured crawl, normalize, index, and graph receipts, then
 checks that local `query-graph` packets preserve root/recovery relation context
 such as `root_targets_file`, `root_uses_tool`, `recovery_targets_file`, and
-`recovery_uses_tool`. It does not crawl, rebuild the corpus, use 4PDA internal
-search, or commit generated artifacts.
+`recovery_uses_tool`. For root/recovery-intent queries, graph packets preserve
+the original `keyword_rank` and may rerank candidates by matching
+tool/file/firmware relation endpoints to concrete query terms. It does not
+crawl, rebuild the corpus, use 4PDA internal search, or commit generated
+artifacts.
 
 `aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json`
 runs the focused Xiaomi 13T answer gate against the same existing receipts. It

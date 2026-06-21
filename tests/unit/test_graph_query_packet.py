@@ -179,6 +179,74 @@ def test_query_graph_packet_carries_xiaomi_root_and_recovery_relations(tmp_path)
     ) in relation_edges
 
 
+def test_query_graph_packet_relation_reranks_recovery_intent(tmp_path):
+    normalized_dir = tmp_path / "normalized-rerank"
+    normalized_dir.mkdir()
+    noisy_text = (
+        "OrangeFox OrangeFox OrangeFox for Xiaomi 13T. "
+        "TWRP fastboot recovery notes and general discussion."
+    )
+    structured_text = (
+        "Xiaomi 13T aristotle recovery guide. TWRP build uses vendor_boot. "
+        "Прошить recovery.img можно через fastboot."
+    )
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "1076859",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-21T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "2001",
+                "topic_id": "1076859",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry2001",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": noisy_text,
+                "entities": extract_entities(noisy_text),
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "2002",
+                "topic_id": "1076859",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry2002",
+                "author_label": None,
+                "posted_at": None,
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": structured_text,
+                "entities": extract_entities(structured_text),
+            },
+        ],
+    }
+    (normalized_dir / "topic-1076859-st2140.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+    index_path = build_keyword_index(normalized_dir, tmp_path / "index-rerank", "xiaomi-13t")
+    graph_path = build_graph(normalized_dir, tmp_path / "graph-rerank", "xiaomi-13t")
+
+    packet = query_graph_packet(index_path, graph_path, "OrangeFox TWRP Xiaomi 13T fastboot recovery", limit=2)
+
+    assert packet["graph_report"]["rerank"] == {
+        "algorithm": "relation_intent_v1",
+        "applied": True,
+        "intents": ["recovery"],
+    }
+    top = packet["results"][0]
+    assert top["post_id"] == "2002"
+    assert top["keyword_rank"] == 2
+    assert top["graph_rank"] == 1
+    assert top["relation_rerank"]["matching_edge_count"] >= 2
+    assert {
+        "recovery_targets_file",
+        "recovery_uses_tool",
+    }.issubset(set(top["relation_rerank"]["matching_relation_kinds"]))
+    assert packet["results"][1]["post_id"] == "2001"
+    assert packet["results"][1]["keyword_rank"] == 1
+
+
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:
     normalized_dir = tmp_path / "normalized"
     normalize_snapshot(REPO_ROOT / "connector/fixtures/html/live_shape_topic.html", LIVE_FIXTURE_URL, normalized_dir)

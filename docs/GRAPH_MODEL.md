@@ -90,6 +90,14 @@ then attaches source-ref-matching relation edges that touch those entities.
 The starter relation set currently includes issue/fix, warning/target,
 root/file/tool/firmware, and recovery/file/tool/firmware hints.
 
+For root/recovery-intent queries, `query-graph` applies a small
+relation-intent rerank after keyword retrieval and graph enrichment. The raw
+keyword order is preserved as `keyword_rank`; the graph order is exposed as
+`graph_rank`. Relation edges only contribute to this rerank when their
+tool/file/firmware endpoint matches the concrete query terms, so a generic
+`boot.img` root relation does not outrank a Magisk-specific relation for a
+Magisk query.
+
 The resulting `graph_context` stays inside the evidence packet result. It is
 not a standalone graph verdict and does not make relation edges stronger than
 their cited source refs and confidence values.
@@ -126,7 +134,8 @@ search.
 receipt-driven live gate. It does not build a new corpus; it reads an
 operator-materialized Xiaomi 13T run from configured storage and checks that
 `query-graph` returns cited root/recovery relation context from the existing
-keyword index and graph export.
+keyword index and graph export, including relation-intent rerank for hard
+recovery queries whose rich evidence starts below keyword rank 1.
 
 `evals/suites/live_xiaomi_13t_answer_quality.json` renders those existing local
 graph-query packets into answer packets and checks the same root/recovery
