@@ -63,6 +63,7 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         for entry in answer_entries
     ]
     evidence_chain = _evidence_chain(answers, answer_entries)
+    nuance_report = _nuance_report(evidence_chain, grounding)
     return {
         "schema": "aoa_4pda_answer_packet_v1",
         "answer_id": str(evidence_packet.get("packet_id", "query")).replace("query-", "answer-", 1),
@@ -79,7 +80,8 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         },
         "answers": answers,
         "evidence_chain": evidence_chain,
-        "nuance_report": _nuance_report(evidence_chain, grounding),
+        "nuance_report": nuance_report,
+        "agent_answer": _agent_answer(evidence_packet.get("query", ""), evidence_chain, nuance_report, grounding),
         "policy": {
             "source": "local_keyword_index_plus_graph_answer_renderer",
             "internal_search_used": internal_search_used,
@@ -250,6 +252,149 @@ def _chain_freshness(chain: list[dict[str, object]]) -> dict[str, object]:
         "captured_at_values": captured_at_values,
         "posted_at_values": posted_at_values,
     }
+
+
+def _agent_answer(
+    query: object,
+    chain: list[dict[str, object]],
+    nuance_report: dict[str, object],
+    grounding: dict[str, object],
+) -> dict[str, object]:
+    status = str(grounding.get("answer_status") or "insufficient_evidence")
+    citations = _agent_citations(chain)
+    freshness = nuance_report.get("freshness", {})
+    if not isinstance(freshness, dict):
+        freshness = {}
+    limitations = nuance_report.get("limitations", [])
+    if not isinstance(limitations, list):
+        limitations = []
+
+    if status != "answered" or not chain:
+        text = _non_empty(grounding.get("missing_evidence_note")) or _missing_evidence_note(
+            grounding.get("gap_reason")
+        )
+        return {
+            "format": "deterministic_cited_brief_v1",
+            "status": "insufficient_evidence",
+            "language": "ru",
+            "query": str(query or ""),
+            "text": text,
+            "citations": [],
+            "freshness": freshness,
+            "limitations": limitations,
+        }
+
+    text_parts = []
+    primary = chain[0]
+    text_parts.append(f"По локальной базе 4PDA: {_brief_sentence(primary.get('summary'))} [1].")
+    additional_context = _additional_context_brief(chain[1:])
+    if additional_context:
+        text_parts.append(additional_context)
+    freshness_text = _freshness_brief(freshness)
+    if freshness_text:
+        text_parts.append(freshness_text)
+    limitation_text = _limitations_brief(limitations)
+    if limitation_text:
+        text_parts.append(limitation_text)
+
+    return {
+        "format": "deterministic_cited_brief_v1",
+        "status": "answered",
+        "language": "ru",
+        "query": str(query or ""),
+        "text": " ".join(text_parts),
+        "citations": citations,
+        "freshness": freshness,
+        "limitations": limitations,
+    }
+
+
+def _agent_citations(chain: list[dict[str, object]]) -> list[dict[str, object]]:
+    citations: list[dict[str, object]] = []
+    for index, step in enumerate(chain, start=1):
+        citations.append(
+            {
+                "ref": f"[{index}]",
+                "role": step.get("role"),
+                "topic_id": step.get("topic_id"),
+                "post_id": step.get("post_id"),
+                "chunk_id": step.get("chunk_id"),
+                "source_url": step.get("source_url"),
+                "posted_at": step.get("posted_at"),
+                "captured_at": step.get("captured_at"),
+                "evidence_refs": step.get("evidence_refs", []),
+            }
+        )
+    return citations
+
+
+def _sentence_text(value: object) -> str:
+    text = str(value or "").strip()
+    return text[:-1] if text.endswith(".") else text
+
+
+def _brief_sentence(value: object, max_chars: int = 260) -> str:
+    text = " ".join(str(value or "").split())
+    if len(text) > max_chars:
+        text = text[:max_chars].rsplit(" ", 1)[0].rstrip(".,;: ") + "..."
+    return _sentence_text(text)
+
+
+def _additional_context_brief(steps: list[dict[str, object]]) -> str:
+    if not steps:
+        return ""
+    refs = [f"[{index}]" for index in range(2, len(steps) + 2)]
+    matched_terms = _unique_sorted(
+        term
+        for step in steps
+        for term in step.get("matched_content_terms", [])
+        if isinstance(step.get("matched_content_terms"), list)
+    )
+    relation_kinds = _unique_sorted(
+        relation_kind
+        for step in steps
+        for relation_kind in step.get("relation_kinds", [])
+        if isinstance(step.get("relation_kinds"), list)
+    )
+    details = []
+    if matched_terms:
+        details.append(f"matched terms: {', '.join(matched_terms)}")
+    if relation_kinds:
+        details.append(f"relation kinds: {', '.join(relation_kinds)}")
+    suffix = f" ({'; '.join(details)})" if details else ""
+    return f"Дополнительный контекст: см. {', '.join(refs)}{suffix}."
+
+
+def _freshness_brief(freshness: dict[str, object]) -> str:
+    latest = _non_empty(freshness.get("latest_captured_at"))
+    if latest:
+        return f"Свежесть: последнее локальное сохранение источников {latest}."
+    basis = _non_empty(freshness.get("basis"))
+    if basis == "no_answer_evidence":
+        return "Свежесть: в пакете нет подтвержденной ответной цепочки."
+    return ""
+
+
+def _limitations_brief(limitations: list[object]) -> str:
+    parts: list[str] = []
+    labels = {
+        "filtered_weak_candidates": "отфильтровано слабых кандидатов",
+        "deduplicated_same_post_chunks": "схлопнуто дублей постов",
+        "no_candidate_evidence": "нет кандидатной выдачи",
+        "unmatched_structured_query_terms": "не совпали структурные термины запроса",
+        "candidate_evidence_below_grounding_threshold": "кандидаты ниже порога grounding",
+        "insufficient_evidence": "недостаточно подтвержденной evidence",
+    }
+    for limitation in limitations:
+        if not isinstance(limitation, dict):
+            continue
+        kind = str(limitation.get("kind") or "").strip()
+        count = limitation.get("count")
+        if not kind or count is None:
+            continue
+        label = labels.get(kind, kind)
+        parts.append(f"{label}: {count}")
+    return f"Ограничения: {'; '.join(parts)}." if parts else ""
 
 
 def _relation_kinds_for_result(result: dict[str, object]) -> list[str]:

@@ -134,6 +134,7 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     assert criteria["answer_quality_gates"]["evidence"]["freshness_field_or_note_present"] is True
     assert criteria["answer_quality_gates"]["evidence"]["gap_awareness_field_or_note_present"] is True
     assert criteria["answer_quality_gates"]["evidence"]["chain_awareness_field_or_note_present"] is True
+    assert criteria["answer_quality_gates"]["evidence"]["synthesis_field_or_note_present"] is True
     assert criteria["reference_profile_seed_review_state"]["status"] == "partial"
     assert criteria["reference_profile_seed_review_state"]["evidence"]["review_status"] == "missing_run"
     assert criteria["reference_profile_coverage_state"]["status"] == "partial"
@@ -221,6 +222,8 @@ def test_cli_materialize_fixture_writes_queryable_local_state_without_network(tm
     assert packet["network_touched"] is False
     assert packet["answer_report"]["answer_status"] == "answered"
     assert packet["answers"][0]["post_id"] == "9001"
+    assert packet["agent_answer"]["status"] == "answered"
+    assert packet["agent_answer"]["citations"][0]["post_id"] == "9001"
 
     no_answer = subprocess.run(
         [

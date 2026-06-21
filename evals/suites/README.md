@@ -50,8 +50,8 @@ Together they verify:
   packets
 - live answer diagnostics with failed checks, matched query terms, score
   breakdowns, compact top evidence, keyword/graph ranks, answer context label
-  counts, freshness context, evidence-chain handoff, nuance report, and
-  relation edges
+  counts, freshness context, deterministic cited agent-answer brief,
+  evidence-chain handoff, nuance report, and relation edges
 
 Run it with:
 
