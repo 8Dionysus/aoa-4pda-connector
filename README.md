@@ -25,6 +25,7 @@ databases.
 | Local eval port | `evals/PORT.yaml`, `evals/suites/` |
 | Starter profiles and seeds | `connector/profiles/`, `connector/seeds/` |
 | Install and proof routes | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md`, `docs/STARTER_PROOF.md` |
+| Readiness and runtime handoff | `docs/CONNECTOR_READY.md`, `docs/RUNTIME_CONTRACT.md` |
 | Validation | `scripts/validate_connector.py`, `tests/` |
 
 ## Safe Quickstart
@@ -39,6 +40,7 @@ aoa-4pda doctor
 aoa-4pda storage status
 aoa-4pda policy check
 aoa-4pda profile inspect xiaomi-13t
+aoa-4pda ready
 aoa-4pda proof starter
 aoa-4pda materialize fixture
 aoa-4pda eval search-quality
@@ -130,8 +132,11 @@ answer labels. Starter graph query packets can enrich top local search results
 with post-local `fixes_issue`, `warns_about`, root, recovery, file, tool, and
 firmware context from the graph. Starter answer packets render that graph
 context into deterministic issue/fix/warning and root/recovery summaries for
-agents. It remains starter-grade: no attachment downloads, no internal 4PDA
-search, no broad section discovery, no vector index, and no full-corpus mode.
+agents. `aoa-4pda ready` audits the repository against the
+`connector-ready-v1` maturity target and reports remaining gaps without
+touching the network. It remains starter-grade: no attachment downloads, no
+internal 4PDA search, no broad section discovery, no vector index, and no
+full-corpus mode.
 
 ## Local Eval Route
 

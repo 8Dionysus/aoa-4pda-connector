@@ -71,3 +71,7 @@ run, and writes generated state only to configured storage roots.
 
 Future MCP/runtime exposure belongs in `abyss-stack` and should consume an
 installed connector through configured data/artifact roots.
+
+`docs/RUNTIME_CONTRACT.md` names the current CLI, JSON, and storage handoff
+surfaces. `aoa-4pda ready` audits whether those surfaces and the broader
+`connector-ready-v1` maturity target are present without touching the network.

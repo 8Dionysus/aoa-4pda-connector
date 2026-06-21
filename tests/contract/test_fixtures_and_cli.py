@@ -100,6 +100,47 @@ def test_cli_storage_status_reports_repo_local_default_without_network():
     assert payload["measure"] is True
 
 
+def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(tmp_path / "data"),
+            "CONNECTOR_CACHE_ROOT": str(tmp_path / "cache"),
+            "CONNECTOR_ARTIFACT_ROOT": str(tmp_path / "artifacts"),
+        }
+    )
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "ready"],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_connector_ready_audit_v1"
+    assert payload["target_status"] == "connector-ready-v1"
+    assert payload["status"] == "not_ready"
+    assert payload["network_touched"] is False
+    assert payload["ready"] is False
+    criteria = {item["id"]: item for item in payload["criteria"]}
+    assert criteria["fresh_clone_install_route"]["status"] == "achieved"
+    assert criteria["runtime_api_contract"]["status"] == "achieved"
+    assert criteria["answer_quality_gates"]["status"] == "partial"
+    assert criteria["next_representative_profile_prepared"]["status"] == "partial"
+
+    strict = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "ready", "--strict"],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert strict.returncode == 1, strict.stdout + strict.stderr
+
+
 def test_cli_materialize_fixture_writes_queryable_local_state_without_network(tmp_path):
     run_id = "materialize-fixture-test"
     data_root = tmp_path / "data"

@@ -34,6 +34,7 @@ from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
 from aoa_4pda_connector.policy import is_url_allowed
 from aoa_4pda_connector.query import query_graph_packet, query_keyword_index
+from aoa_4pda_connector.readiness import audit_connector_ready
 from aoa_4pda_connector.storage import create_storage_roots, storage_status, storage_warnings
 
 
@@ -87,6 +88,15 @@ def build_parser() -> argparse.ArgumentParser:
     profile_inspect = profile_sub.add_parser("inspect", help="Inspect a profile, its seed file, and storage route.")
     profile_inspect.add_argument("profile", nargs="?", default="focused-device")
     profile_inspect.set_defaults(func=cmd_profile_inspect)
+
+    ready = sub.add_parser("ready", help="Audit connector-ready-v1 maturity status.")
+    ready.add_argument("--run", default="latest", help="Receipt run id to inspect, or latest.")
+    ready.add_argument(
+        "--strict",
+        action="store_true",
+        help="Return non-zero when connector-ready-v1 is not fully achieved.",
+    )
+    ready.set_defaults(func=cmd_ready)
 
     crawl = sub.add_parser("crawl", help="Bounded public topic crawl.")
     crawl.add_argument("--profile", default="starter")
@@ -398,6 +408,16 @@ def cmd_profile_inspect(args: argparse.Namespace) -> int:
         }
     )
     return 0 if status == "ok" else 1
+
+
+def cmd_ready(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    report = audit_connector_ready(repo_root, roots, run=args.run)
+    _emit(report)
+    if args.strict and report.get("status") != "ready":
+        return 1
+    return 0
 
 
 def cmd_materialize_fixture(args: argparse.Namespace) -> int:
