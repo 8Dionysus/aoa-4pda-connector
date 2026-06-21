@@ -67,3 +67,6 @@
 - Added freshness/capture context to evidence and answer packets, including
   schema coverage, deterministic answer eval checks, and live answer
   diagnostics.
+- Added the prepared Redmi Note 10 Pro representative focused-device profile,
+  bounded seed windows, local live-search quality suite, readiness checks, and
+  profile inspection coverage.

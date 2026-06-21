@@ -26,3 +26,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0017` | [Root/recovery answer packets](AOA-4PDA-D-0017-root-recovery-answer-packets.md) |
 | `AOA-4PDA-D-0018` | [Connector ready audit](AOA-4PDA-D-0018-connector-ready-audit.md) |
 | `AOA-4PDA-D-0019` | [Answer freshness context](AOA-4PDA-D-0019-answer-freshness-context.md) |
+| `AOA-4PDA-D-0020` | [Second representative profile](AOA-4PDA-D-0020-second-representative-profile.md) |

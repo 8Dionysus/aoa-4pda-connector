@@ -40,6 +40,7 @@ aoa-4pda doctor
 aoa-4pda storage status
 aoa-4pda policy check
 aoa-4pda profile inspect xiaomi-13t
+aoa-4pda profile inspect redmi-note-10-pro
 aoa-4pda ready
 aoa-4pda proof starter
 aoa-4pda materialize fixture
@@ -104,6 +105,19 @@ accessories. Firmware seeds include high-signal `st=` offsets for
 first pages of the topic. It preserves aliases such as `aristotle`,
 `2306EPN60G`, `2306EPN60R`, and `XIG04` for local deep search. It does not
 crawl until the operator explicitly runs `aoa-4pda crawl --profile xiaomi-13t`.
+
+The second representative focused-device profile is prepared for Redmi Note
+10 Pro:
+
+```bash
+aoa-4pda profile inspect redmi-note-10-pro
+```
+
+It reuses reviewed public starter-topic routes as its own bounded seed windows
+for `sweet`, `boot.img`, `recovery.img`, Magisk, TWRP, and MIUI retrieval
+coverage. Its local quality gate is
+`evals/suites/live_redmi_note_10_pro_search_quality.json`, which reads an
+already-materialized run and does not crawl or commit generated artifacts.
 
 ## Search Posture
 

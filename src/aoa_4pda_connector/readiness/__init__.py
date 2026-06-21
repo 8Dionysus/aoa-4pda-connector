@@ -212,6 +212,7 @@ def _focused_profile_gate(repo_root: Path, roots: StorageRoots, run: str) -> dic
 def _next_profile_gate(repo_root: Path) -> dict[str, object]:
     profile_dir = repo_root / "connector" / "profiles"
     focused_profiles = []
+    prepared_routes = []
     deferred_profiles = []
     for path in sorted(profile_dir.glob("*.yaml")):
         text = _read_text(path)
@@ -220,9 +221,40 @@ def _next_profile_gate(repo_root: Path) -> dict[str, object]:
             continue
         if "profile_kind: focused-device" in text and "network_default: disabled" in text:
             focused_profiles.append(profile_id or path.stem)
+            seed_rel = _line_value(text, "seed_file")
+            live_search_rel = _line_value(text, "live_search_suite")
+            seed_path = repo_root / seed_rel if seed_rel else None
+            live_search_path = repo_root / live_search_rel if live_search_rel else None
+            seed_text = _read_text(seed_path) if seed_path else ""
+            live_search_suite = _load_json(live_search_path) if live_search_path else {}
+            dataset = live_search_suite.get("dataset", {}) if isinstance(live_search_suite, dict) else {}
+            seed_count = seed_text.count("- id:")
+            seed_window_count = seed_text.count("max_pages:") + seed_text.count("&st=")
+            suite_expected_profile = dataset.get("expected_profile") if isinstance(dataset, dict) else None
+            route = {
+                "profile_id": profile_id or path.stem,
+                "profile_path": str(path.relative_to(repo_root)),
+                "seed_file": seed_rel,
+                "seed_file_exists": bool(seed_path and seed_path.is_file()),
+                "seed_count": seed_count,
+                "seed_window_count": seed_window_count,
+                "live_search_suite": live_search_rel,
+                "live_search_suite_exists": bool(live_search_path and live_search_path.is_file()),
+                "suite_expected_profile": suite_expected_profile,
+                "suite_profile_matches": suite_expected_profile == profile_id,
+            }
+            route["prepared"] = (
+                route["seed_file_exists"]
+                and route["live_search_suite_exists"]
+                and route["suite_profile_matches"]
+                and seed_count >= 2
+                and seed_window_count >= 2
+            )
+            prepared_routes.append(route)
         if "activation_status: deferred" in text and "network_default: disabled" in text:
             deferred_profiles.append(profile_id or path.stem)
-    if focused_profiles:
+    prepared_profiles = [str(route["profile_id"]) for route in prepared_routes if route.get("prepared")]
+    if prepared_profiles:
         status = "achieved"
         next_action = ""
     elif deferred_profiles:
@@ -237,6 +269,8 @@ def _next_profile_gate(repo_root: Path) -> dict[str, object]:
         "At least one more representative profile exists or is explicitly prepared as the next profile.",
         {
             "focused_profiles_beyond_xiaomi": focused_profiles,
+            "prepared_profiles": prepared_profiles,
+            "prepared_profile_routes": prepared_routes,
             "deferred_profiles": deferred_profiles,
             "forum_sections_seed": _exists(repo_root / "connector" / "seeds" / "forum_sections.yaml"),
         },
@@ -473,6 +507,7 @@ def _load_json(path: Path) -> dict[str, object]:
 def _line_value(text: str, key: str) -> str:
     prefix = f"{key}:"
     for line in text.splitlines():
-        if line.startswith(prefix):
-            return line.split(":", 1)[1].strip()
+        stripped = line.strip()
+        if stripped.startswith(prefix):
+            return stripped.split(":", 1)[1].strip()
     return ""

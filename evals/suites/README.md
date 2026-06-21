@@ -16,6 +16,8 @@ The active starter suites are:
   ranking/recall pressure suite for already-built Xiaomi 13T indexes
 - `live_xiaomi_13t_graph_query_quality.json`, a focused named-run graph-query
   suite for already-built Xiaomi 13T index and graph artifacts
+- `live_redmi_note_10_pro_search_quality.json`, a prepared second focused
+  named-run search suite for already-built Redmi Note 10 Pro indexes
 - `xiaomi_13t_graph_relations.json`, a focused public-safe graph relation
   suite for Xiaomi 13T firmware/root/recovery evidence
 - `xiaomi_13t_answer_packets.json`, a focused public-safe rendered answer
@@ -42,6 +44,8 @@ Together they verify:
   and HyperOS recovery queries
 - live-run Xiaomi 13T graph-query packets with root/recovery relation context
   and relation-intent rerank diagnostics
+- prepared Redmi Note 10 Pro search over `sweet`, `boot.img`, `recovery.img`,
+  Magisk/TWRP-oriented seed windows
 - Xiaomi 13T root/recovery/file/tool/firmware labels in deterministic answer
   packets
 - live answer diagnostics with failed checks, matched query terms, score
@@ -58,6 +62,7 @@ aoa-4pda eval answer-packets
 aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
 aoa-4pda eval live-search-quality --run <run-id>
 aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_search_quality.json
+aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_redmi_note_10_pro_search_quality.json
 aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_ranking_pressure.json
 aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
 aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json

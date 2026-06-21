@@ -1,0 +1,26 @@
+schema: aoa_4pda_profile_v1
+profile_id: redmi-note-10-pro
+profile_kind: focused-device
+description: Bounded focused-device profile prepared as the second representative device route.
+target_device_id: redmi-note-10-pro
+target_label: Redmi Note 10 Pro
+target_codename: sweet
+target_model_aliases: sweetin
+target_search_terms: Redmi Note 10 Pro, sweet, sweetin, TWRP, Magisk, boot.img, recovery.img, MIUI
+network_default: disabled
+max_topics: 4
+max_pages_per_topic: 2
+max_posts_per_topic: 240
+politeness:
+  min_delay_seconds: 10
+  max_concurrency: 1
+routes:
+  seed_file: connector/seeds/redmi_note_10_pro_topics.yaml
+  allowlist_manifest: connector/manifests/route_allowlist.yaml
+artifacts:
+  write_raw_snapshots: true
+  build_bm25: true
+  build_vector: optional
+  build_graph: true
+quality_gates:
+  live_search_suite: evals/suites/live_redmi_note_10_pro_search_quality.json

@@ -47,6 +47,9 @@ Use this when a user asks an agent to install the connector.
 24. Then run
     `aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json`
     to verify deterministic answer packets over the same stored run.
+25. Inspect `aoa-4pda profile inspect redmi-note-10-pro` as the prepared next
+    representative focused-device route. Do not crawl it unless the operator
+    explicitly chooses that second profile and confirms storage.
 
 ## Do Not
 
@@ -62,3 +65,5 @@ Use this when a user asks an agent to install the connector.
   rebuild a corpus; it reads existing index and graph receipts only
 - do not treat `eval live-answer-quality` as permission to crawl or rebuild a
   corpus; it renders answers from existing index and graph receipts only
+- do not treat the prepared Redmi Note 10 Pro profile as already receipt-proven;
+  it is the next bounded representative route

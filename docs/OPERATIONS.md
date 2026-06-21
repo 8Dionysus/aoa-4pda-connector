@@ -86,6 +86,30 @@ it includes high-signal firmware `st=` windows for `boot.img`,
 `recovery.img`, TWRP, and HyperOS material. Expand it through reviewed seed
 files and eval cases before increasing topic scope.
 
+## Prepared Redmi Note 10 Pro Route
+
+Inspect the second representative profile before any live request:
+
+```bash
+aoa-4pda profile inspect redmi-note-10-pro
+```
+
+The Redmi Note 10 Pro profile is prepared for the next focused run, but it is
+not deeply proven by receipts yet. It uses reviewed starter-topic public seed
+windows for MIUI/unofficial firmware, `sweet`, `boot.img`, `recovery.img`,
+Magisk, and TWRP coverage. After explicit operator intent and storage review,
+the intended run sequence is:
+
+```bash
+aoa-4pda crawl --profile redmi-note-10-pro
+aoa-4pda normalize --run latest
+aoa-4pda build-index --profile redmi-note-10-pro --run latest
+aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_redmi_note_10_pro_search_quality.json
+```
+
+Do not treat the prepared profile as a broad crawl permission; it is a bounded
+next-device route.
+
 ## Receipts
 
 Fixture materialization and future crawl/index/graph runs should write receipts
