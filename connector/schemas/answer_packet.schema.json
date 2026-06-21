@@ -17,20 +17,32 @@
         "source_packet_id": { "type": ["string", "null"] },
         "source_packet_schema": { "type": ["string", "null"] },
         "query_algorithm": { "type": ["string", "null"] },
-        "graph_context_required": { "type": "boolean" }
+        "graph_context_required": { "type": "boolean" },
+        "freshness_context": { "type": "string" }
       }
     },
     "answers": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["answer_kind", "answer_text", "source_url", "evidence_refs", "confidence"],
+        "required": [
+          "answer_kind",
+          "answer_text",
+          "source_url",
+          "posted_at",
+          "captured_at",
+          "evidence_refs",
+          "freshness",
+          "confidence"
+        ],
         "properties": {
           "answer_kind": { "type": "string" },
           "answer_text": { "type": "string" },
           "source_url": { "type": ["string", "null"] },
           "topic_id": { "type": ["string", "null"] },
           "post_id": { "type": ["string", "null"] },
+          "posted_at": { "type": ["string", "null"] },
+          "captured_at": { "type": ["string", "null"] },
           "chunk_id": { "type": ["string", "null"] },
           "score": { "type": ["number", "null"] },
           "issue_labels": { "type": "array", "items": { "type": "string" } },
@@ -44,6 +56,17 @@
           "firmware_context_labels": { "type": "array", "items": { "type": "string" } },
           "evidence_refs": { "type": "array", "items": { "type": "string" } },
           "source_refs": { "type": "array", "items": { "type": ["string", "null"] } },
+          "freshness": {
+            "type": "object",
+            "required": ["basis", "posted_at", "captured_at", "packet_created_at", "note"],
+            "properties": {
+              "basis": { "type": "string" },
+              "posted_at": { "type": ["string", "null"] },
+              "captured_at": { "type": ["string", "null"] },
+              "packet_created_at": { "type": ["string", "null"] },
+              "note": { "type": "string" }
+            }
+          },
           "confidence": { "type": "object" }
         }
       }

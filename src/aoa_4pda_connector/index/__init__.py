@@ -96,6 +96,8 @@ def build_keyword_index(normalized_dir: Path, output_dir: Path, profile_id: str 
                         "topic_id": post.get("topic_id"),
                         "post_id": post.get("post_id"),
                         "source_url": post.get("source_url"),
+                        "posted_at": post.get("posted_at"),
+                        "captured_at": post.get("captured_at"),
                         "title": title,
                         "text": text,
                         "search_text": search_text,

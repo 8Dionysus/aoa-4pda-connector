@@ -106,6 +106,8 @@ def test_answer_eval_suite_reports_rendered_answer_without_network():
     assert case["checks"]["answer_kind"] is True
     assert case["checks"]["expected_labels_present"] is True
     assert case["checks"]["source_refs_preserved"] is True
+    assert case["checks"]["freshness_present"] is True
+    assert case["checks"]["freshness_note_present"] is True
     assert case["checks"]["internal_search_unused"] is True
 
 
@@ -125,6 +127,8 @@ def test_xiaomi_answer_eval_suite_reports_root_recovery_context_without_network(
     assert case["checks"]["answer_kind"] is True
     assert case["checks"]["expected_labels_present"] is True
     assert case["checks"]["answer_text_contains"] is True
+    assert case["checks"]["freshness_present"] is True
+    assert case["checks"]["freshness_note_present"] is True
     assert case["top_answer"]["root_action_labels"] == ["patch boot.img"]
     assert case["top_answer"]["recovery_action_labels"] == ["flash recovery.img"]
 
@@ -674,11 +678,16 @@ def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):
     assert "recovery.img" in recovery_case["diagnostics"]["top_result_matches"]["matched_specific_terms"]
     assert recovery_case["top_evidence_result"]["post_id"] == "128964413"
     assert recovery_case["top_answer"]["recovery_action_labels"] == ["flash recovery.img"]
+    assert recovery_case["checks"]["freshness_present"] is True
+    assert recovery_case["checks"]["freshness_note_present"] is True
+    assert recovery_case["diagnostics"]["freshness"]["basis"] == "source_post_and_capture_metadata"
     root_case = report["cases"][1]
     assert root_case["checks"]["answer_kind"] is True
     assert root_case["checks"]["answer_context_labels_min"] is True
     assert root_case["diagnostics"]["answer_context"]["label_count"] >= 3
     assert root_case["top_answer"]["root_action_labels"] == ["patch boot.img"]
+    assert root_case["checks"]["freshness_present"] is True
+    assert root_case["checks"]["freshness_note_present"] is True
 
 
 def _write_live_search_eval_topics(normalized_dir: Path) -> None:

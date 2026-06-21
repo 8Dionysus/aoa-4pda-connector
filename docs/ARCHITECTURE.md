@@ -57,7 +57,8 @@ policy receipts.
 
 Current answer packets can summarize starter issue/fix/warning context and
 focused Xiaomi root/recovery/file/tool/firmware relation labels from cited graph
-context.
+context. They also preserve public post timestamps, local capture timestamps
+when available, and fallback packet-created freshness context for older indexes.
 
 Configured storage may be the ignored repo-local `.connector-state/` scaffold
 for small starter runs or an external storage root for larger materialization.

@@ -18,6 +18,8 @@
           "source_url": { "type": "string" },
           "topic_id": { "type": "string" },
           "post_id": { "type": "string" },
+          "posted_at": { "type": ["string", "null"] },
+          "captured_at": { "type": ["string", "null"] },
           "snippet": { "type": "string" },
           "score": { "type": "number" },
           "evidence_refs": { "type": "array", "items": { "type": "string" } }
@@ -35,4 +37,3 @@
   },
   "additionalProperties": true
 }
-

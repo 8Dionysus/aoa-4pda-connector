@@ -51,9 +51,10 @@ evidence:
 - `aoa_4pda_live_answer_eval_report_v1`
 
 Evidence and answer packets carry source URLs, topic/post ids when known,
-evidence refs, query diagnostics, score details, and graph context when
-requested. Runtime layers may summarize or display them, but source URLs and
-receipts remain the authority.
+observed post timestamps, local capture timestamps when available, evidence
+refs, query diagnostics, score details, graph context when requested, and
+answer freshness notes. Runtime layers may summarize or display them, but
+source URLs and receipts remain the authority.
 
 ## Stop Line
 

@@ -127,7 +127,9 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     criteria = {item["id"]: item for item in payload["criteria"]}
     assert criteria["fresh_clone_install_route"]["status"] == "achieved"
     assert criteria["runtime_api_contract"]["status"] == "achieved"
-    assert criteria["answer_quality_gates"]["status"] == "partial"
+    assert criteria["answer_quality_gates"]["status"] == "achieved"
+    assert criteria["answer_quality_gates"]["evidence"]["answer_contract_mentions_freshness"] is True
+    assert criteria["answer_quality_gates"]["evidence"]["freshness_field_or_note_present"] is True
     assert criteria["next_representative_profile_prepared"]["status"] == "partial"
 
     strict = subprocess.run(

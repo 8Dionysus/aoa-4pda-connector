@@ -43,6 +43,7 @@
     vendor_boot, KernelSU, and HyperOS recovery queries
   - relation-intent rerank for graph/answer packets with original keyword rank
     diagnostics
+  - answer packet freshness/capture context for cited local evidence
 - stronger exact-token search for device models, firmware versions, and error
   strings
   - starter technical token aliases for split file/version/model forms

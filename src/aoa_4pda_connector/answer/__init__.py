@@ -8,15 +8,16 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
 
     policy = evidence_packet.get("policy", {})
     internal_search_used = bool(policy.get("internal_search_used")) if isinstance(policy, dict) else False
+    packet_created_at = evidence_packet.get("created_at")
     answers = [
-        _answer_for_result(result)
+        _answer_for_result(result, packet_created_at=packet_created_at)
         for result in evidence_packet.get("results", [])[:limit]
     ]
     return {
         "schema": "aoa_4pda_answer_packet_v1",
         "answer_id": str(evidence_packet.get("packet_id", "query")).replace("query-", "answer-", 1),
         "query": evidence_packet.get("query", ""),
-        "created_at": evidence_packet.get("created_at"),
+        "created_at": packet_created_at,
         "answer_report": {
             "renderer": "starter_graph_context_v2",
             "source_packet_id": evidence_packet.get("packet_id"),
@@ -25,6 +26,7 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
             if isinstance(evidence_packet.get("query_report"), dict)
             else None,
             "graph_context_required": True,
+            "freshness_context": "source_post_and_capture_metadata",
         },
         "answers": answers,
         "policy": {
@@ -34,7 +36,7 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
     }
 
 
-def _answer_for_result(result: dict[str, object]) -> dict[str, object]:
+def _answer_for_result(result: dict[str, object], *, packet_created_at: object) -> dict[str, object]:
     context = result.get("graph_context", {})
     if not isinstance(context, dict):
         context = {}
@@ -79,6 +81,8 @@ def _answer_for_result(result: dict[str, object]) -> dict[str, object]:
         "source_url": result.get("source_url"),
         "topic_id": result.get("topic_id"),
         "post_id": result.get("post_id"),
+        "posted_at": result.get("posted_at"),
+        "captured_at": result.get("captured_at"),
         "chunk_id": result.get("chunk_id"),
         "score": result.get("score"),
         "score_breakdown": result.get("score_breakdown", {}),
@@ -93,6 +97,7 @@ def _answer_for_result(result: dict[str, object]) -> dict[str, object]:
         "firmware_context_labels": firmware_context_labels,
         "evidence_refs": result.get("evidence_refs", []),
         "source_refs": context.get("source_refs", []) or ([result.get("source_url")] if result.get("source_url") else []),
+        "freshness": _freshness(result, packet_created_at=packet_created_at),
         "confidence": {
             "basis": "starter_graph_context" if context else "keyword_result",
             "relation_confidence_min": _min_confidence(relation_edges),
@@ -240,3 +245,30 @@ def _min_confidence(items: list[object]) -> object:
         if isinstance(item, dict) and isinstance(item.get("confidence"), int | float)
     ]
     return min(values) if values else None
+
+
+def _freshness(result: dict[str, object], *, packet_created_at: object) -> dict[str, object]:
+    posted_at = _non_empty(result.get("posted_at"))
+    captured_at = _non_empty(result.get("captured_at"))
+    packet_time = _non_empty(packet_created_at)
+    basis = "source_post_and_capture_metadata" if captured_at else "packet_created_at_fallback"
+    if posted_at and captured_at:
+        note = "Public post timestamp and local capture timestamp are available for this evidence."
+    elif captured_at:
+        note = "Local capture timestamp is available; public post timestamp was not parsed for this evidence."
+    else:
+        note = "Source capture timestamp is not present in this index; packet creation time is retained as fallback context."
+    return {
+        "basis": basis,
+        "posted_at": posted_at,
+        "captured_at": captured_at,
+        "packet_created_at": packet_time,
+        "note": note,
+    }
+
+
+def _non_empty(value: object) -> object:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
