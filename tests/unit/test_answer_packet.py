@@ -145,6 +145,9 @@ def test_render_answer_packet_reports_insufficient_evidence_for_weak_candidates(
     assert answer_packet["answer_report"]["gap_reason"] == "unmatched_structured_query_terms"
     assert answer_packet["answer_report"]["candidate_result_count"] == 1
     assert "В базе недостаточно данных" in answer_packet["answer_report"]["missing_evidence_note"]
+    assert answer_packet["agent_answer"]["status"] == "insufficient_evidence"
+    assert answer_packet["agent_answer"]["citations"] == []
+    assert "В базе недостаточно данных" in answer_packet["agent_answer"]["text"]
 
 
 def test_render_answer_packet_builds_deduped_evidence_chain_with_nuance_report():
@@ -267,6 +270,22 @@ def test_render_answer_packet_builds_deduped_evidence_chain_with_nuance_report()
         {"kind": "deduplicated_same_post_chunks", "count": 1},
     ]
 
+    agent_answer = answer_packet["agent_answer"]
+    assert agent_answer["format"] == "deterministic_cited_brief_v1"
+    assert agent_answer["status"] == "answered"
+    assert agent_answer["language"] == "ru"
+    assert "Recovery actions: flash recovery.img." in agent_answer["text"]
+    assert "Дополнительный контекст: см. [2] (matched terms: fastboot, recovery.img, twrp)." in agent_answer["text"]
+    assert "[1]" in agent_answer["text"]
+    assert "[2]" in agent_answer["text"]
+    assert "Свежесть: последнее локальное сохранение источников 2026-06-21T19:57:54Z." in agent_answer["text"]
+    assert "Ограничения: отфильтровано слабых кандидатов: 1; схлопнуто дублей постов: 1." in agent_answer["text"]
+    assert [citation["ref"] for citation in agent_answer["citations"]] == ["[1]", "[2]"]
+    assert [citation["post_id"] for citation in agent_answer["citations"]] == ["128964413", "129061756"]
+    assert agent_answer["citations"][0]["source_url"].endswith("#entry128964413")
+    assert agent_answer["freshness"] == nuance["freshness"]
+    assert agent_answer["limitations"] == nuance["limitations"]
+
 
 def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     run_id = "answer-test"
@@ -346,6 +365,8 @@ def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     assert payload["answers"][0]["captured_at"]
     assert payload["evidence_chain"][0]["post_id"] == "9001"
     assert payload["nuance_report"]["chain_step_count"] == len(payload["evidence_chain"])
+    assert payload["agent_answer"]["status"] == "answered"
+    assert payload["agent_answer"]["citations"][0]["post_id"] == "9001"
 
 
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:

@@ -12,6 +12,7 @@
     "answers",
     "evidence_chain",
     "nuance_report",
+    "agent_answer",
     "policy"
   ],
   "properties": {
@@ -206,6 +207,56 @@
             "posted_at_values": { "type": "array", "items": { "type": "string" } }
           }
         },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "count"],
+            "properties": {
+              "kind": { "type": "string" },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "agent_answer": {
+      "type": "object",
+      "required": [
+        "format",
+        "status",
+        "language",
+        "query",
+        "text",
+        "citations",
+        "freshness",
+        "limitations"
+      ],
+      "properties": {
+        "format": { "const": "deterministic_cited_brief_v1" },
+        "status": { "enum": ["answered", "insufficient_evidence"] },
+        "language": { "type": "string" },
+        "query": { "type": "string" },
+        "text": { "type": "string" },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["ref", "role", "topic_id", "post_id", "chunk_id", "source_url", "posted_at", "captured_at"],
+            "properties": {
+              "ref": { "type": "string" },
+              "role": { "type": ["string", "null"] },
+              "topic_id": { "type": ["string", "null"] },
+              "post_id": { "type": ["string", "null"] },
+              "chunk_id": { "type": ["string", "null"] },
+              "source_url": { "type": ["string", "null"] },
+              "posted_at": { "type": ["string", "null"] },
+              "captured_at": { "type": ["string", "null"] },
+              "evidence_refs": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "freshness": { "type": "object" },
         "limitations": {
           "type": "array",
           "items": {

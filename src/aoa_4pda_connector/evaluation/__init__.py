@@ -1239,6 +1239,13 @@ def _answer_checks(
     nuance_report = answer_packet.get("nuance_report", {})
     if not isinstance(nuance_report, dict):
         nuance_report = {}
+    agent_answer = answer_packet.get("agent_answer", {})
+    if not isinstance(agent_answer, dict):
+        agent_answer = {}
+    agent_citations = agent_answer.get("citations", [])
+    if not isinstance(agent_citations, list):
+        agent_citations = []
+    agent_text = str(agent_answer.get("text") or "")
     label_fields = [
         "issue_labels",
         "fix_labels",
@@ -1274,6 +1281,13 @@ def _answer_checks(
         "evidence_chain_top_source_url": top_chain_step.get("source_url") == top_answer.get("source_url"),
         "nuance_report_present": bool(nuance_report),
         "nuance_chain_step_count_matches": nuance_report.get("chain_step_count") == len(evidence_chain),
+        "agent_answer_present": bool(agent_answer),
+        "agent_answer_status_answered": agent_answer.get("status") == "answered",
+        "agent_answer_text_cites_primary": "[1]" in agent_text,
+        "agent_answer_cites_top_post": any(
+            isinstance(citation, dict) and citation.get("post_id") == top_answer.get("post_id")
+            for citation in agent_citations
+        ),
         "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
     }
 
@@ -1471,6 +1485,31 @@ def _compact_evidence_chain(chain: object) -> list[dict[str, object]]:
     return compact
 
 
+def _compact_agent_answer(agent_answer: object) -> dict[str, object]:
+    if not isinstance(agent_answer, dict):
+        return {}
+    citations = agent_answer.get("citations", [])
+    if not isinstance(citations, list):
+        citations = []
+    text = str(agent_answer.get("text") or "")
+    return {
+        "format": agent_answer.get("format"),
+        "status": agent_answer.get("status"),
+        "language": agent_answer.get("language"),
+        "text_prefix": text[:240],
+        "citation_count": len(citations),
+        "citation_refs": [
+            {
+                "ref": citation.get("ref"),
+                "post_id": citation.get("post_id"),
+                "source_url": citation.get("source_url"),
+            }
+            for citation in citations
+            if isinstance(citation, dict)
+        ],
+    }
+
+
 def _compact_ranked_result(rank: int | None, result: object) -> dict[str, object]:
     compact = _compact_top_result(result)
     if compact:
@@ -1544,6 +1583,7 @@ def _live_answer_diagnostics(
             else None,
         },
         "freshness": top_answer.get("freshness", {}),
+        "agent_answer": _compact_agent_answer(answer_packet.get("agent_answer", {})),
         "evidence_chain": _compact_evidence_chain(answer_packet.get("evidence_chain", [])),
         "nuance_report": answer_packet.get("nuance_report", {}),
         "graph_relation_edges": compact_result.get("graph_relation_edges", []),

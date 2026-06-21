@@ -120,10 +120,15 @@ not an LLM:
 - `nuance_report` summarizes the chain breadth, relation kinds, matched
   content terms, freshness spread, and limitations such as weak filtered
   candidates or duplicate same-post chunks.
+- `agent_answer` is a deterministic cited brief built from `evidence_chain`
+  and `nuance_report`. It is not LLM synthesis: it carries bracket citations,
+  freshness, limitations, and insufficient-evidence text directly from the
+  local answer packet.
 - When candidates are empty or below the grounding threshold, `answers` and
-  `evidence_chain` stay empty and `answer_report.missing_evidence_note` says
-  `В базе недостаточно данных...`. This is the connector's starter
-  insufficient evidence guard, not an LLM refusal layer.
+  `evidence_chain` stay empty, `agent_answer.citations` stays empty, and
+  `answer_report.missing_evidence_note` says `В базе недостаточно данных...`.
+  This is the connector's starter insufficient evidence guard, not an LLM
+  refusal layer.
 
 Answer packets are for agent handoff and UI/API ergonomics. They do not replace
 the evidence packet, graph export, or source URL as the truth surface.
@@ -184,7 +189,8 @@ root/recovery actions, target files, tools, firmware context, source refs, and
 freshness notes, answer grounding, and the internal-search boundary survive the
 answer renderer. The rendered packet is chain-aware: weak candidates are
 filtered, duplicate post chunks are collapsed, and downstream agents can follow
-`evidence_chain` plus `nuance_report` before composing a user-facing answer.
+`agent_answer`, `evidence_chain`, and `nuance_report` before composing a
+user-facing answer.
 Each live answer case also returns compact diagnostics: failed check names,
 matched terms, score breakdown, top evidence refs, answer context label counts,
 freshness context, and relation edges that reached the answer.
@@ -233,6 +239,8 @@ Every answer should carry:
 - ordered `evidence_chain` steps for grounded answer handoff
 - `nuance_report` with filtered/deduplicated candidate counts and chain
   freshness context
+- deterministic `agent_answer` brief with bracket citations and no extra facts
+  beyond the answer chain
 - `answer_status`, gap reason, and missing-evidence note when answer grounding
   is insufficient
 - query report and score breakdown when produced by a local index
