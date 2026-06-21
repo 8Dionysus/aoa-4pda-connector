@@ -1,0 +1,66 @@
+{
+  "schema": "aoa_4pda_live_search_eval_suite_v1",
+  "suite_id": "live-xiaomi-13t-ranking-pressure",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases over an operator-materialized bounded Xiaomi 13T run only; no central verdict, scoring, regression, or proof doctrine authority",
+  "default_limit": 10,
+  "dataset": {
+    "kind": "bounded_live_run_keyword_index",
+    "requires_run": true,
+    "requires_committed_corpus": false,
+    "expected_profile": "xiaomi-13t",
+    "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
+    "notes": "Reads existing configured storage receipts and keyword index for a named Xiaomi 13T run; checks rank pressure for known high-signal root/recovery posts without crawling or committing generated artifacts."
+  },
+  "cases": [
+    {
+      "case_id": "xiaomi-13t-orangefox-recovery-recall",
+      "query": "OrangeFox TWRP Xiaomi 13T fastboot recovery",
+      "expect": {
+        "expected_result_post_id": "128964413",
+        "expected_result_source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "expected_result_rank_max": 3,
+        "expected_result_matched_specific_terms_all": ["twrp", "recovery"],
+        "query_report_technical_terms_all": ["aristotle"],
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-vendor-boot-recovery-recall",
+      "query": "vendor_boot aristotle TWRP Xiaomi 13T",
+      "expect": {
+        "expected_result_post_id": "128964413",
+        "expected_result_source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "expected_result_rank_max": 3,
+        "expected_result_matched_specific_terms_all": ["twrp"],
+        "query_report_technical_terms_all": ["aristotle"],
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-kernelsu-root-recall",
+      "query": "boot.img KernelSU Xiaomi 13T HyperOS",
+      "expect": {
+        "expected_result_post_id": "128449684",
+        "expected_result_source_url_contains": "showtopic=1076859&st=1820#entry128449684",
+        "expected_result_rank_max": 8,
+        "expected_result_matched_specific_terms_all": ["boot.img"],
+        "query_report_technical_terms_all": ["boot.img", "aristotle"],
+        "query_report_unit": "chunk"
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-hyperos-202-recovery-recall",
+      "query": "Xiaomi 13T HyperOS 2.0.2 recovery.img",
+      "expect": {
+        "expected_result_post_id": "128964413",
+        "expected_result_source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "expected_result_rank_max": 5,
+        "expected_result_matched_specific_terms_all": ["recovery.img"],
+        "query_report_technical_terms_all": ["recovery.img", "v2.0.2", "aristotle"],
+        "query_report_unit": "chunk"
+      }
+    }
+  ]
+}

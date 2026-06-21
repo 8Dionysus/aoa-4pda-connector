@@ -217,6 +217,121 @@ def test_live_search_eval_suite_checks_named_run_without_network(tmp_path):
     assert sweet_case["checks"]["query_report_technical_terms_all"] is True
 
 
+def test_live_search_eval_suite_reports_expected_result_rank_without_network(tmp_path):
+    run_id = "live-ranking-pressure-test"
+    artifact_root = tmp_path / "artifacts"
+    normalized_dir = tmp_path / "data" / "normalized" / run_id
+    normalized_dir.mkdir(parents=True)
+    _write_live_ranking_pressure_topics(normalized_dir)
+    index_path = build_keyword_index(normalized_dir, tmp_path / "cache" / "indexes" / run_id, "xiaomi-13t")
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "policy": {
+                "allowed_public_only": True,
+                "internal_search_used": False,
+                "attachments_downloaded": False,
+            },
+            "counts": {
+                "requested_topics": 1,
+                "requested_pages": 1,
+                "fetched_topics": 1,
+                "fetched_pages": 1,
+                "errors": 0,
+            },
+            "network_touched": True,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "normalize",
+        {
+            "schema": "aoa_4pda_normalize_receipt_v1",
+            "run_id": run_id,
+            "source_run_id": run_id,
+            "counts": {"topics": 1, "pages": 1},
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "source_run_ids": [run_id],
+            "index_kinds": ["keyword"],
+            "index_path": str(index_path),
+            "network_touched": False,
+        },
+    )
+    suite_path = tmp_path / "ranking_pressure_suite.json"
+    suite_path.write_text(
+        json.dumps(
+            {
+                "schema": "aoa_4pda_live_search_eval_suite_v1",
+                "suite_id": "unit-ranking-pressure",
+                "owner_repo": "aoa-4pda-connector",
+                "proof_owner_repo": "aoa-evals",
+                "central_boundary": "local unit suite only",
+                "default_limit": 5,
+                "dataset": {
+                    "kind": "bounded_live_run_keyword_index",
+                    "expected_profile": "xiaomi-13t",
+                },
+                "cases": [
+                    {
+                        "case_id": "recovery-rich-result-in-top-n",
+                        "query": "OrangeFox TWRP Xiaomi 13T fastboot recovery",
+                        "expect": {
+                            "expected_result_post_id": "2002",
+                            "expected_result_source_url_contains": "showtopic=1076859&st=0#entry2002",
+                            "expected_result_rank_max": 2,
+                            "expected_result_matched_specific_terms_all": ["twrp", "fastboot", "recovery"],
+                            "query_report_unit": "chunk",
+                        },
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    report = run_live_search_eval_suite(
+        run_id,
+        suite_path,
+        REPO_ROOT,
+        artifact_root,
+    )
+
+    assert report["schema"] == "aoa_4pda_live_search_eval_report_v1"
+    assert report["suite_id"] == "unit-ranking-pressure"
+    assert report["status"] == "ok"
+    assert report["network_touched"] is False
+    assert report["counts"]["failed"] == 0
+
+    case = report["cases"][0]
+    assert case["top_result"]["post_id"] == "2001"
+    assert case["checks"]["expected_result_present"] is True
+    assert case["checks"]["expected_result_rank_max"] is True
+    assert case["checks"]["expected_result_matched_specific_terms_all"] is True
+    assert case["expected_result_rank"] == 2
+    assert case["expected_result"]["post_id"] == "2002"
+    assert case["diagnostics"]["expected_result"]["rank"] == 2
+    assert case["diagnostics"]["failed_checks"] == []
+
+
 def test_live_graph_query_eval_suite_checks_named_run_without_network(tmp_path):
     run_id = "live-graph-query-eval-test"
     artifact_root = tmp_path / "artifacts"
@@ -608,6 +723,52 @@ def _write_live_graph_query_eval_topics(normalized_dir: Path) -> None:
         ],
     }
     (normalized_dir / "topic-1076859-st2140.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def _write_live_ranking_pressure_topics(normalized_dir: Path) -> None:
+    posts = [
+        {
+            "post_id": "2001",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=0#entry2001",
+            "text": (
+                "OrangeFox OrangeFox OrangeFox discussion for Xiaomi 13T. "
+                "TWRP fastboot recovery notes and general recovery chatter."
+            ),
+        },
+        {
+            "post_id": "2002",
+            "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=0#entry2002",
+            "text": (
+                "Xiaomi 13T aristotle recovery guide. Use TWRP and fastboot to "
+                "flash recovery.img when a recovery image is needed."
+            ),
+        },
+    ]
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "1076859",
+        "page_start": "0",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=0",
+        "title": "Xiaomi 13T - Firmware",
+        "captured_at": "2026-06-20T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": post["post_id"],
+                "topic_id": "1076859",
+                "source_url": post["source_url"],
+                "captured_at": "2026-06-20T00:00:00Z",
+                "author_label": None,
+                "posted_at": None,
+                "text": post["text"],
+                "entities": extract_entities(post["text"]),
+            }
+            for post in posts
+        ],
+    }
+    (normalized_dir / "topic-1076859-st0.json").write_text(
         json.dumps(topic, ensure_ascii=False), encoding="utf-8"
     )
 
