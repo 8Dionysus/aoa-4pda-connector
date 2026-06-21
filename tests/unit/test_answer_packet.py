@@ -28,6 +28,7 @@ def test_render_answer_packet_summarizes_graph_context_without_network(tmp_path)
     assert answer_packet["policy"]["internal_search_used"] is False
     assert answer_packet["answer_report"]["renderer"] == "starter_graph_context_v2"
     assert answer_packet["answer_report"]["source_packet_id"] == evidence_packet["packet_id"]
+    assert answer_packet["answer_report"]["freshness_context"] == "source_post_and_capture_metadata"
 
     answer = answer_packet["answers"][0]
     assert answer["answer_kind"] == "issue_fix_warning"
@@ -46,6 +47,13 @@ def test_render_answer_packet_summarizes_graph_context_without_network(tmp_path)
     assert answer["tool_labels"] == ["fastboot", "TWRP"]
     assert answer["confidence"]["basis"] == "starter_graph_context"
     assert answer["evidence_refs"] == ["chunk:42:9001:chunk-000", "post:9001"]
+    assert answer["posted_at"] == "01.04.21, 09:32"
+    assert answer["captured_at"]
+    assert answer["freshness"]["basis"] == "source_post_and_capture_metadata"
+    assert answer["freshness"]["posted_at"] == answer["posted_at"]
+    assert answer["freshness"]["captured_at"] == answer["captured_at"]
+    assert answer["freshness"]["packet_created_at"] == answer_packet["created_at"]
+    assert "Public post timestamp" in answer["freshness"]["note"]
 
 
 def test_render_answer_packet_preserves_xiaomi_root_recovery_relation_context(tmp_path):
@@ -74,6 +82,9 @@ def test_render_answer_packet_preserves_xiaomi_root_recovery_relation_context(tm
     assert answer["source_refs"] == [
         "https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413"
     ]
+    assert answer["posted_at"] == "20.06.26, 12:00"
+    assert answer["captured_at"]
+    assert answer["freshness"]["basis"] == "source_post_and_capture_metadata"
 
 
 def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
@@ -150,6 +161,8 @@ def test_cli_answer_uses_external_index_and_graph_without_network(tmp_path):
     assert payload["network_touched"] is False
     assert payload["answers"][0]["post_id"] == "9001"
     assert payload["answers"][0]["fix_labels"] == ["flash recovery.img", "restore boot.img"]
+    assert payload["answers"][0]["freshness"]["basis"] == "source_post_and_capture_metadata"
+    assert payload["answers"][0]["captured_at"]
 
 
 def _build_live_shape_index_and_graph(tmp_path: Path) -> tuple[Path, Path]:

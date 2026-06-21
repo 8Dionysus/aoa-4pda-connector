@@ -36,6 +36,8 @@ def chunk_post(
                 "topic_id": topic_id,
                 "post_id": post_id,
                 "source_url": source_url,
+                "posted_at": post.get("posted_at"),
+                "captured_at": post.get("captured_at"),
                 "chunk_index": index,
                 "char_start": start,
                 "char_end": end,

@@ -915,6 +915,9 @@ def _answer_checks(
 ) -> dict[str, bool]:
     expected = expect if isinstance(expect, dict) else {}
     source_url_contains = expected.get("source_url_contains")
+    freshness = top_answer.get("freshness", {})
+    if not isinstance(freshness, dict):
+        freshness = {}
     label_fields = [
         "issue_labels",
         "fix_labels",
@@ -942,6 +945,8 @@ def _answer_checks(
         if source_url_contains is None
         else str(source_url_contains) in str(top_answer.get("source_url", ""))
         and _any_source_ref_contains(top_answer.get("source_refs", []), str(source_url_contains)),
+        "freshness_present": bool(freshness),
+        "freshness_note_present": bool(str(freshness.get("note", "")).strip()),
         "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
     }
 
@@ -1165,6 +1170,7 @@ def _live_answer_diagnostics(
             if isinstance(top_answer.get("confidence"), dict)
             else None,
         },
+        "freshness": top_answer.get("freshness", {}),
         "graph_relation_edges": compact_result.get("graph_relation_edges", []),
     }
 

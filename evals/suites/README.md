@@ -46,7 +46,7 @@ Together they verify:
   packets
 - live answer diagnostics with failed checks, matched query terms, score
   breakdowns, compact top evidence, keyword/graph ranks, answer context label
-  counts, and relation edges
+  counts, freshness context, and relation edges
 
 Run it with:
 

@@ -75,6 +75,9 @@ not an LLM:
 - `answer_text` is a short reproducible summary of those labels.
 - `source_url`, `evidence_refs`, score details, and source refs remain attached
   to each answer.
+- `posted_at`, `captured_at`, and `freshness` carry the public post timestamp,
+  local capture timestamp, and fallback packet-created context when older
+  indexes do not yet include capture metadata.
 - `confidence` names the starter graph context as the basis and keeps relation
   confidence visible.
 
@@ -125,10 +128,10 @@ artifacts.
 runs the focused Xiaomi 13T answer gate against the same existing receipts. It
 renders local graph-query packets into answer packets and checks that
 root/recovery actions, target files, tools, firmware context, source refs, and
-the internal-search boundary survive the answer renderer. Each live answer case
-also returns compact diagnostics: failed check names, matched terms, score
-breakdown, top evidence refs, answer context label counts, and relation edges
-that reached the answer.
+freshness notes, and the internal-search boundary survive the answer renderer.
+Each live answer case also returns compact diagnostics: failed check names,
+matched terms, score breakdown, top evidence refs, answer context label counts,
+freshness context, and relation edges that reached the answer.
 
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local
@@ -144,13 +147,14 @@ edges in the graph export.
 
 `aoa-4pda eval answer-packets` runs
 `evals/suites/starter_answer_packets.json`. It checks that deterministic answer
-packets preserve expected issue/fix/warning labels, source refs, and the
-internal-search boundary.
+packets preserve expected issue/fix/warning labels, source refs, freshness
+notes, and the internal-search boundary.
 
 `aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json`
 runs the focused public-safe answer suite over the sanitized Xiaomi 13T fixture.
 It checks deterministic root/recovery/file/tool/firmware labels without using
-network or committing generated artifacts.
+network or committing generated artifacts, and verifies that the rendered
+answer carries freshness context.
 
 ## Answer Contract
 

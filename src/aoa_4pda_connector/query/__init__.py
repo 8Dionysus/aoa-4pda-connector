@@ -104,6 +104,8 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
                 "source_url": doc.get("source_url"),
                 "topic_id": doc.get("topic_id"),
                 "post_id": doc.get("post_id"),
+                "posted_at": doc.get("posted_at"),
+                "captured_at": doc.get("captured_at"),
                 "chunk_id": doc.get("chunk_id", doc_id),
                 "chunk_index": doc.get("chunk_index"),
                 "char_start": doc.get("char_start"),

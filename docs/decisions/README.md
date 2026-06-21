@@ -25,3 +25,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0016` | [Live Xiaomi graph query eval](AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md) |
 | `AOA-4PDA-D-0017` | [Root/recovery answer packets](AOA-4PDA-D-0017-root-recovery-answer-packets.md) |
 | `AOA-4PDA-D-0018` | [Connector ready audit](AOA-4PDA-D-0018-connector-ready-audit.md) |
+| `AOA-4PDA-D-0019` | [Answer freshness context](AOA-4PDA-D-0019-answer-freshness-context.md) |
