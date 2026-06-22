@@ -5,6 +5,11 @@ adapters belong in `abyss-stack`, but they should be able to consume this
 repository through stable command and storage contracts without moving corpora,
 indexes, graphs, or receipts into Git.
 
+`docs/MCP_ROLLOUT.md` is the portable rollout contract for adapters named
+`aoa-4pda-connector-mcp`. It describes the standalone route for external
+agents and the OS Abyss route where the runtime package lives under
+`abyss-stack/mcp/services/`.
+
 ## Storage Inputs
 
 Runtime consumers configure the same roots as operators:
@@ -80,6 +85,10 @@ successful local answer packet that says the configured database does not yet
 support a reliable answer; it is not a crawl request or runtime failure.
 Runtime layers may summarize or display packets, but source URLs and receipts
 remain the authority.
+
+MCP adapters must preserve `agent_answer`, `evidence_chain`, `nuance_report`,
+`answer_report`, and `network_touched=false` when wrapping
+`aoa-4pda answer`.
 
 `query-hybrid` requires keyword, vector, and graph receipts for the selected
 run. The starter vector route is deterministic and model-free; external

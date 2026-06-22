@@ -63,6 +63,7 @@ REQUIRED_FILES = [
     "docs/COVERAGE.md",
     "docs/REFRESH.md",
     "docs/RUNTIME_CONTRACT.md",
+    "docs/MCP_ROLLOUT.md",
     "docs/STARTER_PROOF.md",
     "docs/QUERY_MODEL.md",
     "docs/GRAPH_MODEL.md",
@@ -262,6 +263,7 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     coverage_doc = (repo_root / "docs" / "COVERAGE.md").read_text(encoding="utf-8")
     refresh_doc = (repo_root / "docs" / "REFRESH.md").read_text(encoding="utf-8")
     runtime_contract = (repo_root / "docs" / "RUNTIME_CONTRACT.md").read_text(encoding="utf-8")
+    mcp_rollout = (repo_root / "docs" / "MCP_ROLLOUT.md").read_text(encoding="utf-8")
     install_doc = (repo_root / "docs" / "INSTALL.md").read_text(encoding="utf-8")
     agent_install_doc = (repo_root / "docs" / "AGENT_INSTALL_ROUTE.md").read_text(encoding="utf-8")
 
@@ -354,9 +356,29 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
         "CONNECTOR_DATA_ROOT",
         "CONNECTOR_ARTIFACT_ROOT",
         "aoa_4pda_agent_install_route_verify_v1",
+        "docs/MCP_ROLLOUT.md",
+        "aoa-4pda-connector-mcp",
     ]:
         if token not in runtime_contract:
             errors.append(f"runtime contract missing token: {token}")
+
+    for token in [
+        "aoa-4pda-connector-mcp",
+        "CONNECTOR_DATA_ROOT",
+        "CONNECTOR_CACHE_ROOT",
+        "CONNECTOR_ARTIFACT_ROOT",
+        "aoa_4pda_answer_packet_v1",
+        "agent_answer",
+        "evidence_chain",
+        "nuance_report",
+        "answer_report",
+        "network_touched",
+        "read-only",
+        "no-network",
+        "mcp/services/aoa-4pda-connector-mcp/",
+    ]:
+        if token not in mcp_rollout:
+            errors.append(f"MCP rollout doc missing token: {token}")
 
     install_verifier = "python scripts/verify_agent_install_route.py"
     if install_verifier not in install_doc or install_verifier not in agent_install_doc:

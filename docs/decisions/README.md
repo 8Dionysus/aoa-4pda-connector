@@ -40,3 +40,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0031` | [Answer gap awareness](AOA-4PDA-D-0031-answer-gap-awareness.md) |
 | `AOA-4PDA-D-0032` | [Answer evidence chain](AOA-4PDA-D-0032-answer-evidence-chain.md) |
 | `AOA-4PDA-D-0033` | [Deterministic agent answer](AOA-4PDA-D-0033-deterministic-agent-answer.md) |
+| `AOA-4PDA-D-0034` | [Portable MCP rollout contract](AOA-4PDA-D-0034-portable-mcp-rollout-contract.md) |
