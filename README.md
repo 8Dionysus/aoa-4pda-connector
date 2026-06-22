@@ -26,7 +26,7 @@ databases.
 | Starter profiles and seeds | `connector/profiles/`, `connector/seeds/` |
 | Install and proof routes | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md`, `docs/STARTER_PROOF.md` |
 | Profile discovery, seed review, coverage, and refresh audits | `docs/DISCOVERY.md`, `docs/SEED_REVIEW.md`, `docs/COVERAGE.md`, `docs/REFRESH.md` |
-| Readiness and runtime handoff | `docs/CONNECTOR_READY.md`, `docs/RUNTIME_CONTRACT.md` |
+| Readiness and runtime handoff | `docs/CONNECTOR_READY.md`, `docs/RUNTIME_CONTRACT.md`, `docs/MCP_ROLLOUT.md` |
 | Validation | `scripts/validate_connector.py`, `tests/` |
 
 ## Safe Quickstart
