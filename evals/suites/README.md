@@ -8,6 +8,10 @@ The active starter suites are:
 - `starter_graph_relations.json`, a sanitized live-shaped graph relation suite
 - `starter_graph_query_packets.json`, a graph-enriched query packet suite
 - `starter_answer_packets.json`, a deterministic rendered answer packet suite
+- `starter_claim_conflict_relations.json`, a portable claim/conflict graph
+  relation suite over a sanitized multi-post fixture
+- `starter_claim_answer_packets.json`, a rendered answer suite for
+  conflict/freshness/applicability/warning reports
 - `live_starter_search_quality.json`, a named-run search quality suite for
   already-built bounded live starter indexes
 - `live_xiaomi_13t_search_quality.json`, a focused named-run search quality
@@ -39,6 +43,10 @@ Together they verify:
 - focused Xiaomi 13T entity nodes and root/recovery relation edges
 - relation-aware `graph_context` in evidence packet results
 - issue/fix/warning labels and answer text in rendered answer packets
+- claim/method/context/warning nodes, supersedes/contradicts/contextualizes
+  relation edges, and relation audit metadata
+- conflict, freshness, applicability, warning reports, claim ids, read-only
+  policy, and no-network answer packets
 - live-run exact and specific-term retrieval over existing configured storage
 - live-run Xiaomi 13T top-N recall for hard OrangeFox, vendor_boot, KernelSU,
   and HyperOS recovery queries
@@ -48,6 +56,8 @@ Together they verify:
   Magisk/TWRP-oriented seed windows
 - Xiaomi 13T root/recovery/file/tool/firmware labels in deterministic answer
   packets
+- Xiaomi 13T current-method freshness checks, brick/bootloop gap handling,
+  warning-intent guardrails, and out-of-scope insufficient-evidence behavior
 - live answer diagnostics with failed checks, matched query terms, score
   breakdowns, compact top evidence, keyword/graph ranks, answer context label
   counts, freshness context, deterministic cited agent-answer brief,
@@ -60,6 +70,8 @@ aoa-4pda eval search-quality
 aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
 aoa-4pda eval answer-packets
+aoa-4pda eval claim-relations
+aoa-4pda eval claim-answer-packets
 aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
 aoa-4pda eval live-search-quality --run <run-id>
 aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_search_quality.json

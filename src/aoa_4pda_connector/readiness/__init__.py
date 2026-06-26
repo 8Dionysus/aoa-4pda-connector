@@ -31,6 +31,8 @@ REQUIRED_INSTALL_TOKENS = [
     "aoa-4pda eval graph-query-packets",
     "aoa-4pda eval hybrid-query-packets",
     "aoa-4pda eval answer-packets",
+    "aoa-4pda eval claim-relations",
+    "aoa-4pda eval claim-answer-packets",
 ]
 
 REQUIRED_STARTER_SURFACES = [
@@ -51,6 +53,8 @@ REQUIRED_FOCUSED_SURFACES = [
     "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
     "evals/suites/live_xiaomi_13t_graph_query_quality.json",
     "evals/suites/live_xiaomi_13t_answer_quality.json",
+    "evals/suites/starter_claim_conflict_relations.json",
+    "evals/suites/starter_claim_answer_packets.json",
     "evals/suites/xiaomi_13t_graph_relations.json",
     "evals/suites/xiaomi_13t_answer_packets.json",
 ]

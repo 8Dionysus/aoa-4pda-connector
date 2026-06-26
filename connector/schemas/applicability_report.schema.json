@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-connector/applicability_report.schema.json",
+  "title": "AoA Connector Applicability Report",
+  "type": "object",
+  "required": ["schema", "status", "context_labels", "condition_labels", "missing_context", "applicability_basis"],
+  "properties": {
+    "schema": { "const": "aoa_connector_applicability_report_v1" },
+    "status": { "enum": ["context_available", "context_required"] },
+    "context_labels": { "type": "array", "items": { "type": "string" } },
+    "condition_labels": { "type": "array", "items": { "type": "string" } },
+    "missing_context": { "type": "array", "items": { "type": "string" } },
+    "applicability_basis": { "type": "string" }
+  },
+  "additionalProperties": true
+}

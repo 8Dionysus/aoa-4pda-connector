@@ -29,3 +29,5 @@ quality_gates:
   live_hybrid_query_suite: evals/suites/live_xiaomi_13t_hybrid_query_quality.json
   live_graph_query_suite: evals/suites/live_xiaomi_13t_graph_query_quality.json
   live_answer_suite: evals/suites/live_xiaomi_13t_answer_quality.json
+  claim_graph_suite: evals/suites/starter_claim_conflict_relations.json
+  claim_answer_suite: evals/suites/starter_claim_answer_packets.json

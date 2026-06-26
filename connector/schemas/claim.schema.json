@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-connector/claim.schema.json",
+  "title": "AoA Connector Claim",
+  "type": "object",
+  "required": [
+    "schema",
+    "claim_id",
+    "claim_kind",
+    "action",
+    "source_post",
+    "evidence_span",
+    "freshness_context",
+    "confidence",
+    "confidence_basis"
+  ],
+  "properties": {
+    "schema": { "const": "aoa_connector_claim_v1" },
+    "claim_id": { "type": "string", "minLength": 1 },
+    "claim_kind": { "enum": ["method", "warning", "status", "context", "risk"] },
+    "method_id": { "type": ["string", "null"] },
+    "method_kind": { "type": ["string", "null"] },
+    "action": { "type": "string" },
+    "target_labels": { "type": "array", "items": { "type": "string" } },
+    "tool_labels": { "type": "array", "items": { "type": "string" } },
+    "condition_labels": { "type": "array", "items": { "type": "string" } },
+    "applicability_context": { "type": "array", "items": { "type": "string" } },
+    "risk_labels": { "type": "array", "items": { "type": "string" } },
+    "warning_labels": { "type": "array", "items": { "type": "string" } },
+    "source_post": { "$ref": "#/$defs/source_post" },
+    "evidence_span": { "$ref": "#/$defs/evidence_span" },
+    "freshness_context": { "$ref": "#/$defs/freshness_context" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "confidence_basis": { "$ref": "#/$defs/confidence_basis" },
+    "manual_review_required": { "type": "boolean" }
+  },
+  "$defs": {
+    "source_post": {
+      "type": "object",
+      "required": ["post_id", "topic_id", "source_url", "posted_at", "captured_at"],
+      "properties": {
+        "post_id": { "type": ["string", "null"] },
+        "topic_id": { "type": ["string", "null"] },
+        "source_url": { "type": ["string", "null"] },
+        "posted_at": { "type": ["string", "null"] },
+        "captured_at": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "evidence_span": {
+      "type": "object",
+      "required": ["type", "char_start", "char_end", "text"],
+      "properties": {
+        "type": { "const": "excerpt" },
+        "char_start": { "type": "integer", "minimum": 0 },
+        "char_end": { "type": "integer", "minimum": 0 },
+        "text": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "freshness_context": {
+      "type": "object",
+      "required": ["posted_at", "captured_at", "source_freshness", "profile_window"],
+      "properties": {
+        "posted_at": { "type": ["string", "null"] },
+        "captured_at": { "type": ["string", "null"] },
+        "source_freshness": { "type": "string" },
+        "profile_window": { "type": "string" },
+        "newer_related_claim_ids": { "type": "array", "items": { "type": "string" } },
+        "possibly_superseded": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "confidence_basis": {
+      "type": "object",
+      "required": ["basis", "extractor_version"],
+      "properties": {
+        "basis": { "type": "string" },
+        "extractor_version": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

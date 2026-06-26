@@ -21,6 +21,13 @@ The graph is a derived navigation layer, not source truth.
 - `issue`
 - `fix`
 - `warning`
+- `claim`
+- `method`
+- `action`
+- `target`
+- `condition`
+- `applicability_context`
+- `risk`
 - `external_link`
 
 Entity node ids are scoped by kind: `entity:<kind>:<value>`. This avoids
@@ -39,6 +46,19 @@ collapsing different facts that happen to share similar values.
 - `recovery_targets_file`
 - `recovery_uses_tool`
 - `recovery_mentions_firmware`
+- `claim_applies_to_context`
+- `method_uses_tool`
+- `method_targets_object`
+- `method_requires_condition`
+- `warning_targets_action`
+- `warning_targets_object`
+- `claim_contextualizes_claim`
+- `claim_supersedes_claim`
+- `claim_contradicts_claim`
+- `claim_deprecated_for_context`
+- `source_supports_claim`
+- `source_warns_about_claim`
+- `source_updates_claim`
 - `supersedes`
 - `quotes`
 - `same_device_alias`
@@ -82,6 +102,30 @@ These edges preserve the source post ref and use lower confidence than direct
 post/topic structure. They are useful navigation hints, not final proof that a
 fix is universally correct or a warning applies outside its cited post.
 
+## Claim Semantics
+
+Post/entity edges are not enough for forum knowledge that ages, conflicts, or
+applies only under a version, region, tool, file, or state. The graph therefore
+adds a portable claim layer:
+
+- `claim` nodes preserve source URL, post id, topic id, timestamps, evidence
+  excerpt, extraction rule, confidence basis, freshness context, and profile id.
+- `method`, `action`, `target`, `tool`, `condition`,
+  `applicability_context`, `risk`, and `warning` nodes expose the structure
+  agents need before turning a post into advice.
+- `claim_supersedes_claim`, `claim_contradicts_claim`,
+  `claim_contextualizes_claim`, and `claim_deprecated_for_context` model local
+  evidence pressure. They do not assert absolute truth.
+- Every claim relation edge carries source refs, confidence, extraction basis,
+  relation reason, freshness basis, and manual-review status.
+
+The first extractor is deterministic and heuristic. It recognizes root,
+recovery, firmware/update/rollback language, warning/risk statements,
+works/no-longer/current-context wording, firmware/version/region constraints,
+tools, files, actions, and uncertainty. The public packet contract is generic
+so later XDA, StackOverflow, Telegram, Discord, or Facebook connectors can
+write compatible claims from different source adapters.
+
 ## Starter Query Context
 
 `aoa-4pda query-graph` uses the graph as an enrichment layer for local keyword
@@ -101,6 +145,11 @@ Magisk query.
 The resulting `graph_context` stays inside the evidence packet result. It is
 not a standalone graph verdict and does not make relation edges stronger than
 their cited source refs and confidence values.
+
+Claim-aware graph context additionally carries `claim_node_ids`, `claims`,
+`methods`, and claim relation edges. This is the surface used by answer packets
+and MCP to distinguish primary, supporting, conflicting, superseding, and
+contextual evidence.
 
 ## Starter Graph Eval
 
@@ -140,3 +189,8 @@ recovery queries whose rich evidence starts below keyword rank 1.
 `evals/suites/live_xiaomi_13t_answer_quality.json` renders those existing local
 graph-query packets into answer packets and checks the same root/recovery
 context at the agent handoff layer.
+
+`aoa-4pda eval claim-relations` runs
+`evals/suites/starter_claim_conflict_relations.json`. It checks claim/method/
+context/warning nodes, supersedes/contradicts/contextualizes/deprecated
+relations, and relation audit metadata over a sanitized multi-post fixture.

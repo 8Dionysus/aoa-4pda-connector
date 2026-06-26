@@ -91,9 +91,12 @@ posts, 1,559 indexed chunks/posts, 1,559 deterministic vector chunk docs,
 26,701 vector features, 1,508 graph nodes, and 2,855 graph edges. Against that
 run, search, ranking-pressure, hybrid smoke, graph-query, and answer gates pass
 without additional network access for the current information-need matrix.
-`reference_profile_information_need_coverage` reports 10/10 covered classes for
-that run, including battery/power, camera, purchase/variants, firmware source,
-and late-window regression watch.
+`reference_profile_information_need_coverage` now routes 15/15 deep-required
+classes, including conflict/supersession claim semantics, current-method
+freshness, brick/bootloop gap behavior, warning-intent guardrails,
+battery/power, camera, purchase/variants, firmware source, and late-window
+regression watch. Rebuild the external graph artifact for that run after claim
+extractor changes to expose claim counters in receipts and coverage output.
 
 If `reference_profile_seed_review_state` is `partial`, the connector may be
 operational but the active Xiaomi 13T reference loop is not done. Run

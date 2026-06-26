@@ -208,11 +208,14 @@ pages, 1,448 normalized posts, 1,559 indexed chunks/posts, 8,016 index terms,
 1,559 deterministic vector chunk docs, 26,701 vector features, 1,508 graph
 nodes, and 2,855 graph edges. Against that named run, search,
 ranking-pressure, live hybrid, graph-query, and answer gates are green for the
-current information-need matrix: 10/10 Xiaomi 13T classes are covered by local
-eval routes, including battery/power, camera, purchase/variants, firmware
-source, and late-window regression watch. The generated raw snapshots, indexes,
-vectors, graphs, and receipts are intentionally ignored local state, not
-committed repository content.
+current information-need matrix. The matrix now routes 15/15 deep-required
+Xiaomi 13T classes through local eval cases, including conflict/supersession
+claim semantics, current-method freshness, brick/bootloop gap behavior,
+warning-intent guardrails, battery/power, camera, purchase/variants, firmware
+source, and late-window regression watch. Rebuild `build-graph` for that run
+after this claim layer to materialize claim counters in the external graph
+artifact. The generated raw snapshots, indexes, vectors, graphs, and receipts
+are intentionally ignored local state, not committed repository content.
 
 ## Local Eval Route
 

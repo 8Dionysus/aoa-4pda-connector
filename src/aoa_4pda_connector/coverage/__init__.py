@@ -224,6 +224,8 @@ def _read_profile(path: Path) -> dict[str, object]:
         "live_hybrid_query_suite",
         "live_graph_query_suite",
         "live_answer_suite",
+        "claim_graph_suite",
+        "claim_answer_suite",
     }
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
@@ -379,12 +381,18 @@ def _vector_materialization(receipt: dict[str, object]) -> dict[str, object]:
 def _graph_materialization(receipt: dict[str, object]) -> dict[str, object]:
     path = Path(str(receipt.get("graph_path", "")))
     payload = _load_json(path) if path.is_file() else {}
+    claim_stats = payload.get("claim_stats", {}) if isinstance(payload.get("claim_stats"), dict) else {}
     return {
         "path": str(path) if receipt.get("graph_path") else None,
         "path_exists": path.is_file(),
         "profile_id": receipt.get("profile_id"),
         "node_count": _int_value(payload.get("node_count"), 0),
         "edge_count": _int_value(payload.get("edge_count"), 0),
+        "claim_stats": claim_stats,
+        "claim_count": _int_value(claim_stats.get("claim_count"), 0),
+        "supersedes_count": _int_value(claim_stats.get("supersedes_count"), 0),
+        "contradicts_count": _int_value(claim_stats.get("contradicts_count"), 0),
+        "contextualizes_count": _int_value(claim_stats.get("contextualizes_count"), 0),
     }
 
 
@@ -396,6 +404,8 @@ def _quality_gates(repo_root: Path, profile: dict[str, object]) -> dict[str, dic
         "live_hybrid_query_suite",
         "live_graph_query_suite",
         "live_answer_suite",
+        "claim_graph_suite",
+        "claim_answer_suite",
     ]:
         rel = str(profile.get(key, ""))
         path = repo_root / rel if rel else None

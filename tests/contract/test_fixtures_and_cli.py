@@ -144,7 +144,7 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     assert info_evidence["matrix_exists"] is True
     assert info_evidence["connector_ready_complete"] is False
     assert info_evidence["deep_profile_complete"] is False
-    assert len(info_evidence["deep_profile_missing_need_ids"]) == 10
+    assert len(info_evidence["deep_profile_missing_need_ids"]) == 15
     assert criteria["next_representative_profile_prepared"]["status"] == "achieved"
     assert "redmi-note-10-pro" in criteria["next_representative_profile_prepared"]["evidence"]["prepared_profiles"]
 
@@ -378,8 +378,8 @@ def test_cli_coverage_audit_reports_xiaomi_no_run_without_network(tmp_path):
     assert payload["coverage"]["seed_pages"]["fetched"] == 0
     assert payload["coverage"]["seeds"]["missing"] == 23
     assert payload["information_needs"]["matrix_exists"] is True
-    assert payload["information_needs"]["summary"]["total"] == 10
-    assert payload["information_needs"]["summary"]["status_counts"]["unmaterialized"] == 10
+    assert payload["information_needs"]["summary"]["total"] == 15
+    assert payload["information_needs"]["summary"]["status_counts"]["unmaterialized"] == 15
     assert payload["checks"]["deep_information_needs_covered"] is False
     assert payload["checks"]["receipt_chain_present"] is False
     assert payload["network_touched"] is False
@@ -547,7 +547,7 @@ def test_cli_coverage_audit_reports_partial_xiaomi_seed_coverage(tmp_path):
     assert payload["materialized"]["graph"]["edge_count"] > 0
     assert payload["checks"]["receipt_chain_present"] is True
     assert payload["checks"]["all_expected_seed_pages_fetched"] is False
-    assert payload["information_needs"]["summary"]["covered"] == 1
+    assert payload["information_needs"]["summary"]["covered"] == 2
     assert payload["information_needs"]["summary"]["deep_profile_complete"] is False
     recovery_need = {
         item["need_id"]: item

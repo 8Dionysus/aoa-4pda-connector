@@ -40,6 +40,19 @@ WEAK_QUERY_TERMS = {
     "такая",
     "что",
 }
+WARNING_QUERY_TERMS = {
+    "danger",
+    "dangerous",
+    "risk",
+    "warn",
+    "warning",
+    "опасно",
+    "осторожно",
+    "предупреждение",
+    "предупреждения",
+    "риск",
+    "риски",
+}
 
 
 def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> dict[str, object]:
@@ -64,6 +77,10 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
     ]
     evidence_chain = _evidence_chain(answers, answer_entries)
     nuance_report = _nuance_report(evidence_chain, grounding)
+    conflict_report = _conflict_report(evidence_chain, grounding)
+    freshness_report = _freshness_report(evidence_chain, nuance_report, conflict_report)
+    applicability_report = _applicability_report(evidence_packet.get("query", ""), evidence_chain, grounding)
+    warning_report = _warning_report(evidence_chain, query_report)
     return {
         "schema": "aoa_4pda_answer_packet_v1",
         "answer_id": str(evidence_packet.get("packet_id", "query")).replace("query-", "answer-", 1),
@@ -81,11 +98,25 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         "answers": answers,
         "evidence_chain": evidence_chain,
         "nuance_report": nuance_report,
-        "agent_answer": _agent_answer(evidence_packet.get("query", ""), evidence_chain, nuance_report, grounding),
+        "conflict_report": conflict_report,
+        "freshness_report": freshness_report,
+        "applicability_report": applicability_report,
+        "warning_report": warning_report,
+        "agent_answer": _agent_answer(
+            evidence_packet.get("query", ""),
+            evidence_chain,
+            nuance_report,
+            grounding,
+            conflict_report,
+            freshness_report,
+            warning_report,
+        ),
         "policy": {
             "source": "local_keyword_index_plus_graph_answer_renderer",
             "internal_search_used": internal_search_used,
         },
+        "network_touched": False,
+        "read_only": True,
     }
 
 
@@ -172,6 +203,8 @@ def _evidence_chain(answers: list[dict[str, object]], entries: list[dict[str, ob
         if not isinstance(grounding, dict):
             grounding = {}
         relation_kinds = _relation_kinds_for_result(result)
+        claim_relation_edges = _claim_relation_edges_for_result(result)
+        claim_ids = _claim_ids_for_result(result)
         freshness = answer.get("freshness", {})
         chain.append(
             {
@@ -188,11 +221,25 @@ def _evidence_chain(answers: list[dict[str, object]], entries: list[dict[str, ob
                 "freshness": freshness if isinstance(freshness, dict) else {},
                 "evidence_refs": answer.get("evidence_refs", []),
                 "source_refs": answer.get("source_refs", []),
+                "claim_ids": claim_ids,
+                "claim_relation_edges": claim_relation_edges,
+                "claim_freshness_windows": answer.get("claim_freshness_windows", []),
                 "matched_terms": _strings(result.get("matched_terms", [])),
                 "matched_exact_terms": _strings(result.get("matched_exact_terms", [])),
                 "matched_specific_terms": _strings(result.get("matched_specific_terms", [])),
                 "matched_content_terms": _strings(grounding.get("matched_content_terms", [])),
                 "relation_kinds": relation_kinds,
+                "issue_labels": answer.get("issue_labels", []),
+                "fix_labels": answer.get("fix_labels", []),
+                "warning_labels": answer.get("warning_labels", []),
+                "warned_target_labels": answer.get("warned_target_labels", []),
+                "root_action_labels": answer.get("root_action_labels", []),
+                "recovery_action_labels": answer.get("recovery_action_labels", []),
+                "target_file_labels": answer.get("target_file_labels", []),
+                "tool_labels": answer.get("tool_labels", []),
+                "firmware_context_labels": answer.get("firmware_context_labels", []),
+                "claim_context_labels": answer.get("claim_context_labels", []),
+                "claim_condition_labels": answer.get("claim_condition_labels", []),
                 "score": answer.get("score"),
             }
         )
@@ -202,6 +249,12 @@ def _evidence_chain(answers: list[dict[str, object]], entries: list[dict[str, ob
 def _chain_role(index: int, answer: dict[str, object], relation_kinds: list[str]) -> str:
     if index == 1:
         return "primary"
+    if "claim_contradicts_claim" in relation_kinds or "claim_deprecated_for_context" in relation_kinds:
+        return "conflicting"
+    if "claim_supersedes_claim" in relation_kinds:
+        return "superseding"
+    if "claim_contextualizes_claim" in relation_kinds:
+        return "contextual"
     if answer.get("warning_labels"):
         return "caution"
     if relation_kinds:
@@ -254,11 +307,258 @@ def _chain_freshness(chain: list[dict[str, object]]) -> dict[str, object]:
     }
 
 
+def _conflict_report(chain: list[dict[str, object]], grounding: dict[str, object]) -> dict[str, object]:
+    if not chain or grounding.get("answer_status") == "insufficient_evidence":
+        return {
+            "schema": "aoa_connector_conflict_report_v1",
+            "status": "insufficient_evidence",
+            "primary_claim_id": None,
+            "primary_post_id": None,
+            "supporting_claim_ids": [],
+            "conflicting_claim_ids": [],
+            "superseding_claim_ids": [],
+            "contextual_claim_ids": [],
+            "warnings": [],
+            "missing": _missing_gap_categories(grounding),
+            "confidence": "none",
+            "primary_selection_reason": "No grounded evidence chain was available.",
+            "demotion_reasons": [],
+        }
+
+    edges = _chain_claim_relation_edges(chain)
+    primary = chain[0]
+    primary_claims = _strings(primary.get("claim_ids", []))
+    supporting_claims = _claim_ids_by_role(chain, {"supporting", "caution", "contextual"})
+    conflicting_claims = _edge_claim_ids(edges, {"claim_contradicts_claim", "claim_deprecated_for_context"})
+    superseding_claims = _edge_claim_ids(edges, {"claim_supersedes_claim"})
+    contextual_claims = _edge_claim_ids(edges, {"claim_contextualizes_claim"})
+    status = "clear"
+    if conflicting_claims:
+        status = "conflict_detected"
+    elif superseding_claims:
+        status = "possibly_superseded"
+    elif contextual_claims:
+        status = "contextualized"
+    return {
+        "schema": "aoa_connector_conflict_report_v1",
+        "status": status,
+        "primary_claim_id": primary_claims[0] if primary_claims else None,
+        "primary_post_id": primary.get("post_id"),
+        "supporting_claim_ids": supporting_claims,
+        "conflicting_claim_ids": conflicting_claims,
+        "superseding_claim_ids": superseding_claims,
+        "contextual_claim_ids": contextual_claims,
+        "warnings": _warning_claim_ids(chain),
+        "missing": [],
+        "confidence": _report_confidence(chain, conflicting_claims, superseding_claims),
+        "primary_selection_reason": "Primary source is the top grounded local evidence result; conflict and freshness reports explain any demotion pressure.",
+        "demotion_reasons": _demotion_reasons(edges),
+    }
+
+
+def _freshness_report(
+    chain: list[dict[str, object]],
+    nuance_report: dict[str, object],
+    conflict_report: dict[str, object],
+) -> dict[str, object]:
+    freshness = nuance_report.get("freshness", {})
+    if not isinstance(freshness, dict):
+        freshness = {}
+    windows = _unique_sorted(
+        window
+        for step in chain
+        for window in step.get("claim_freshness_windows", [])
+        if isinstance(step.get("claim_freshness_windows"), list)
+    )
+    if not chain:
+        state = "not_enough_local_evidence"
+    elif conflict_report.get("status") == "conflict_detected":
+        state = "conflicting_evidence"
+    elif conflict_report.get("status") == "possibly_superseded":
+        state = "possibly_superseded"
+    elif "latest_window" in windows:
+        state = "fresh_answer"
+    elif conflict_report.get("status") == "contextualized":
+        state = "old_with_newer_context"
+    else:
+        state = "old_but_still_supported"
+    return {
+        "schema": "aoa_connector_freshness_report_v1",
+        "state": state,
+        "basis": freshness.get("basis") or "source_post_and_capture_metadata",
+        "latest_captured_at": freshness.get("latest_captured_at"),
+        "captured_at_values": freshness.get("captured_at_values", []),
+        "posted_at_values": freshness.get("posted_at_values", []),
+        "profile_windows": windows,
+        "newer_related_claims_visible": bool(conflict_report.get("superseding_claim_ids")),
+        "local_base_stale_possible": state in {"possibly_superseded", "old_with_newer_context", "not_enough_local_evidence"},
+    }
+
+
+def _applicability_report(query: object, chain: list[dict[str, object]], grounding: dict[str, object]) -> dict[str, object]:
+    contexts = _unique_sorted(
+        label
+        for step in chain
+        for field in ["firmware_context_labels", "claim_context_labels"]
+        for label in step.get(field, [])
+        if isinstance(step.get(field), list)
+    )
+    conditions = _unique_sorted(
+        label
+        for step in chain
+        for label in step.get("claim_condition_labels", [])
+        if isinstance(step.get("claim_condition_labels"), list)
+    )
+    query_text = str(query or "").casefold()
+    asks_current_context = any(term in query_text for term in ["now", "current", "сейчас", "актуаль", "можно ли"])
+    missing_context = []
+    if grounding.get("answer_status") == "insufficient_evidence":
+        missing_context.append("source_coverage")
+    if asks_current_context and not contexts:
+        missing_context.append("version_or_region_or_state_context")
+    return {
+        "schema": "aoa_connector_applicability_report_v1",
+        "status": "context_required" if missing_context else "context_available",
+        "context_labels": contexts,
+        "condition_labels": conditions,
+        "missing_context": missing_context,
+        "applicability_basis": "claim_context_and_firmware_entities",
+    }
+
+
+def _warning_report(chain: list[dict[str, object]], query_report: dict[str, object]) -> dict[str, object]:
+    warning_labels = _unique_sorted(
+        label
+        for step in chain
+        for label in step.get("warning_labels", [])
+        if isinstance(step.get("warning_labels"), list)
+    )
+    warning_targets = _unique_sorted(
+        label
+        for step in chain
+        for label in step.get("warned_target_labels", [])
+        if isinstance(step.get("warned_target_labels"), list)
+    )
+    warning_edges = [
+        edge
+        for edge in _chain_claim_relation_edges(chain)
+        if edge.get("kind") in {"source_warns_about_claim", "warning_targets_object", "warning_targets_action", "claim_contradicts_claim"}
+    ]
+    requested = _warning_requested(query_report)
+    return {
+        "schema": "aoa_connector_warning_report_v1",
+        "warning_requested": requested,
+        "warning_supported": bool(warning_labels or warning_edges),
+        "risk_status": "warning_present" if warning_labels or warning_edges else "no_warning_claim_in_evidence",
+        "warning_labels": warning_labels,
+        "warning_target_labels": warning_targets,
+        "warning_claim_ids": _warning_claim_ids(chain),
+        "relation_count": len(warning_edges),
+    }
+
+
+def _missing_gap_categories(grounding: dict[str, object]) -> list[str]:
+    reason = str(grounding.get("gap_reason") or "insufficient_evidence")
+    if reason == "no_candidate_evidence":
+        return ["source_coverage", "freshness", "conflict", "context", "warning"]
+    if reason == "unmatched_structured_query_terms":
+        return ["context", "source_coverage"]
+    return ["source_coverage"]
+
+
+def _chain_claim_relation_edges(chain: list[dict[str, object]]) -> list[dict[str, object]]:
+    edges: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for step in chain:
+        relation_edges = step.get("claim_relation_edges", [])
+        if not isinstance(relation_edges, list):
+            continue
+        for edge in relation_edges:
+            if not isinstance(edge, dict):
+                continue
+            edge_id = str(edge.get("edge_id") or f"{edge.get('kind')}:{edge.get('from_node')}:{edge.get('to_node')}")
+            if edge_id in seen:
+                continue
+            seen.add(edge_id)
+            edges.append(edge)
+    return edges
+
+
+def _claim_ids_by_role(chain: list[dict[str, object]], roles: set[str]) -> list[str]:
+    return _unique_sorted(
+        claim_id
+        for step in chain
+        if step.get("role") in roles
+        for claim_id in step.get("claim_ids", [])
+        if isinstance(step.get("claim_ids"), list)
+    )
+
+
+def _edge_claim_ids(edges: list[dict[str, object]], kinds: set[str]) -> list[str]:
+    values: list[str] = []
+    for edge in edges:
+        if edge.get("kind") not in kinds:
+            continue
+        for endpoint in [edge.get("from_node"), edge.get("to_node")]:
+            text = str(endpoint or "")
+            if text.startswith("claim:"):
+                values.append(text)
+    return _unique_sorted(values)
+
+
+def _warning_claim_ids(chain: list[dict[str, object]]) -> list[str]:
+    values: list[str] = []
+    for step in chain:
+        if step.get("warning_labels"):
+            values.extend(_strings(step.get("claim_ids", [])))
+    for edge in _chain_claim_relation_edges(chain):
+        if edge.get("kind") == "source_warns_about_claim" and str(edge.get("to_node") or "").startswith("claim:"):
+            values.append(str(edge.get("to_node")))
+    return _unique_sorted(values)
+
+
+def _report_confidence(
+    chain: list[dict[str, object]],
+    conflicting_claims: list[str],
+    superseding_claims: list[str],
+) -> str:
+    if not chain:
+        return "none"
+    if conflicting_claims:
+        return "bounded_conflict_visible"
+    if superseding_claims:
+        return "bounded_freshness_pressure_visible"
+    if len(chain) >= 2:
+        return "supported_by_multiple_local_sources"
+    return "single_grounded_source"
+
+
+def _demotion_reasons(edges: list[dict[str, object]]) -> list[dict[str, object]]:
+    reasons: list[dict[str, object]] = []
+    for edge in edges:
+        kind = str(edge.get("kind") or "")
+        if kind not in {"claim_contradicts_claim", "claim_supersedes_claim", "claim_deprecated_for_context", "claim_contextualizes_claim"}:
+            continue
+        reasons.append(
+            {
+                "kind": kind,
+                "from_claim_id": edge.get("from_node"),
+                "to_claim_id": edge.get("to_node"),
+                "reason": edge.get("relation_reason"),
+                "manual_review_required": edge.get("manual_review_required"),
+            }
+        )
+    return reasons
+
+
 def _agent_answer(
     query: object,
     chain: list[dict[str, object]],
     nuance_report: dict[str, object],
     grounding: dict[str, object],
+    conflict_report: dict[str, object],
+    freshness_report: dict[str, object],
+    warning_report: dict[str, object],
 ) -> dict[str, object]:
     status = str(grounding.get("answer_status") or "insufficient_evidence")
     citations = _agent_citations(chain)
@@ -282,6 +582,9 @@ def _agent_answer(
             "citations": [],
             "freshness": freshness,
             "limitations": limitations,
+            "conflict_status": conflict_report.get("status"),
+            "freshness_state": freshness_report.get("state"),
+            "warning_status": warning_report.get("risk_status"),
         }
 
     text_parts = []
@@ -296,6 +599,9 @@ def _agent_answer(
     limitation_text = _limitations_brief(limitations)
     if limitation_text:
         text_parts.append(limitation_text)
+    conflict_text = _conflict_brief(conflict_report, warning_report)
+    if conflict_text:
+        text_parts.append(conflict_text)
 
     return {
         "format": "deterministic_cited_brief_v1",
@@ -306,6 +612,9 @@ def _agent_answer(
         "citations": citations,
         "freshness": freshness,
         "limitations": limitations,
+        "conflict_status": conflict_report.get("status"),
+        "freshness_state": freshness_report.get("state"),
+        "warning_status": warning_report.get("risk_status"),
     }
 
 
@@ -323,6 +632,7 @@ def _agent_citations(chain: list[dict[str, object]]) -> list[dict[str, object]]:
                 "posted_at": step.get("posted_at"),
                 "captured_at": step.get("captured_at"),
                 "evidence_refs": step.get("evidence_refs", []),
+                "claim_ids": step.get("claim_ids", []),
             }
         )
     return citations
@@ -397,6 +707,16 @@ def _limitations_brief(limitations: list[object]) -> str:
     return f"Ограничения: {'; '.join(parts)}." if parts else ""
 
 
+def _conflict_brief(conflict_report: dict[str, object], warning_report: dict[str, object]) -> str:
+    parts: list[str] = []
+    status = str(conflict_report.get("status") or "")
+    if status in {"conflict_detected", "possibly_superseded", "contextualized"}:
+        parts.append(f"Семантика claims: {status}.")
+    if warning_report.get("warning_supported"):
+        parts.append("Предупреждения/риски присутствуют в evidence.")
+    return " ".join(parts)
+
+
 def _relation_kinds_for_result(result: dict[str, object]) -> list[str]:
     context = result.get("graph_context", {})
     if not isinstance(context, dict):
@@ -411,6 +731,28 @@ def _relation_kinds_for_result(result: dict[str, object]) -> list[str]:
     )
 
 
+def _claim_relation_edges_for_result(result: dict[str, object]) -> list[dict[str, object]]:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return []
+    relation_edges = context.get("relation_edges", [])
+    if not isinstance(relation_edges, list):
+        return []
+    return [
+        edge
+        for edge in relation_edges
+        if isinstance(edge, dict)
+        and str(edge.get("kind") or "").startswith(("claim_", "source_", "method_", "warning_"))
+    ]
+
+
+def _claim_ids_for_result(result: dict[str, object]) -> list[str]:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return []
+    return _strings(context.get("claim_node_ids", []))
+
+
 def _unique_sorted(values: object) -> list[str]:
     unique = {str(value).strip() for value in values if str(value or "").strip()}
     return sorted(unique)
@@ -423,6 +765,8 @@ def _grounding_metrics(query_report: dict[str, object], result: dict[str, object
     unmatched_structured_terms = sorted(_required_structured_terms(query_report).difference(matched_values))
     relation_supported = _relation_supported(result)
     content_phrase_supported = _content_phrase_supported(result, content_terms)
+    warning_requested = _warning_requested(query_report)
+    warning_supported = _warning_supported(result)
     return {
         "content_terms": sorted(content_terms),
         "matched_content_terms": matched_content_terms,
@@ -430,16 +774,24 @@ def _grounding_metrics(query_report: dict[str, object], result: dict[str, object
         "unmatched_structured_terms": unmatched_structured_terms,
         "relation_supported": relation_supported,
         "content_phrase_supported": content_phrase_supported,
+        "warning_requested": warning_requested,
+        "warning_supported": warning_supported,
     }
 
 
 def _is_grounded(metrics: dict[str, object]) -> bool:
+    if bool(metrics.get("warning_requested")) and not bool(metrics.get("warning_supported")):
+        return False
     if bool(metrics.get("relation_supported")):
         return True
     matched_count = int(metrics.get("matched_content_term_count") or 0)
+    content_terms = metrics.get("content_terms", [])
+    content_term_count = len(content_terms) if isinstance(content_terms, list) else 0
     unmatched_structured = metrics.get("unmatched_structured_terms", [])
     has_unmatched_structured = bool(unmatched_structured) if isinstance(unmatched_structured, list) else False
     if has_unmatched_structured:
+        return matched_count >= 3
+    if content_term_count >= 5:
         return matched_count >= 3
     if matched_count >= 2:
         return True
@@ -497,6 +849,17 @@ def _relation_supported(result: dict[str, object]) -> bool:
     context = result.get("graph_context", {})
     if not isinstance(context, dict):
         return False
+    rerank = result.get("relation_rerank", {})
+    if isinstance(rerank, dict):
+        intents = rerank.get("intents", [])
+        if isinstance(intents, list):
+            if intents:
+                return int(rerank.get("matching_edge_count") or 0) > 0
+            for field in ["fixes", "warnings"]:
+                values = context.get(field, [])
+                if isinstance(values, list) and values:
+                    return True
+            return False
     relation_edges = context.get("relation_edges", [])
     if isinstance(relation_edges, list) and any(isinstance(edge, dict) for edge in relation_edges):
         return True
@@ -506,6 +869,32 @@ def _relation_supported(result: dict[str, object]) -> bool:
             return True
     rerank = result.get("relation_rerank", {})
     return isinstance(rerank, dict) and int(rerank.get("matching_edge_count") or 0) > 0
+
+
+def _warning_requested(query_report: dict[str, object]) -> bool:
+    terms = {
+        _normalize_term(value)
+        for field in ["terms", "exact_terms", "specific_terms", "technical_terms"]
+        for value in _strings(query_report.get(field, []))
+    }
+    return bool(terms.intersection(WARNING_QUERY_TERMS))
+
+
+def _warning_supported(result: dict[str, object]) -> bool:
+    context = result.get("graph_context", {})
+    if not isinstance(context, dict):
+        return False
+    for field in ["warnings", "warned_targets"]:
+        values = context.get(field, [])
+        if isinstance(values, list) and values:
+            return True
+    relation_edges = context.get("relation_edges", [])
+    return isinstance(relation_edges, list) and any(
+        isinstance(edge, dict)
+        and edge.get("kind")
+        in {"warns_about", "source_warns_about_claim", "warning_targets_object", "warning_targets_action", "claim_contradicts_claim"}
+        for edge in relation_edges
+    )
 
 
 def _content_phrase_supported(result: dict[str, object], content_terms: set[str]) -> bool:
@@ -544,6 +933,9 @@ def _answer_for_result(result: dict[str, object], *, packet_created_at: object) 
     fix_labels = _labels(context.get("fixes", []))
     warning_labels = _labels(context.get("warnings", []))
     warned_target_labels = _labels(context.get("warned_targets", []))
+    claims = context.get("claims", [])
+    if not isinstance(claims, list):
+        claims = []
     relation_edges = context.get("relation_edges", [])
     if not isinstance(relation_edges, list):
         relation_edges = []
@@ -556,6 +948,10 @@ def _answer_for_result(result: dict[str, object], *, packet_created_at: object) 
     target_file_labels = relation_labels["target_file_labels"]
     tool_labels = relation_labels["tool_labels"]
     firmware_context_labels = relation_labels["firmware_context_labels"]
+    claim_ids = _strings(context.get("claim_node_ids", []))
+    claim_context_labels = _claim_field_labels(claims, "applicability_context")
+    claim_condition_labels = _claim_field_labels(claims, "condition_labels")
+    claim_freshness_windows = _claim_freshness_windows(claims)
     answer_kind = _answer_kind(
         issue_labels,
         fix_labels,
@@ -595,6 +991,10 @@ def _answer_for_result(result: dict[str, object], *, packet_created_at: object) 
         "target_file_labels": target_file_labels,
         "tool_labels": tool_labels,
         "firmware_context_labels": firmware_context_labels,
+        "claim_ids": claim_ids,
+        "claim_context_labels": claim_context_labels,
+        "claim_condition_labels": claim_condition_labels,
+        "claim_freshness_windows": claim_freshness_windows,
         "evidence_refs": result.get("evidence_refs", []),
         "source_refs": context.get("source_refs", []) or ([result.get("source_url")] if result.get("source_url") else []),
         "freshness": _freshness(result, packet_created_at=packet_created_at),
@@ -720,6 +1120,33 @@ def _relation_labels(relation_edges: list[object], entity_node_ids: list[object]
         }:
             _append_unique(labels["firmware_context_labels"], to_label)
     return labels
+
+
+def _claim_field_labels(claims: list[object], field: str) -> list[str]:
+    labels: list[str] = []
+    for item in claims:
+        if not isinstance(item, dict):
+            continue
+        claim = item.get("claim", {})
+        if not isinstance(claim, dict):
+            continue
+        for value in _strings(claim.get(field, [])):
+            _append_unique(labels, value)
+    return labels
+
+
+def _claim_freshness_windows(claims: list[object]) -> list[str]:
+    windows: list[str] = []
+    for item in claims:
+        if not isinstance(item, dict):
+            continue
+        claim = item.get("claim", {})
+        if not isinstance(claim, dict):
+            continue
+        freshness = claim.get("freshness_context", {})
+        if isinstance(freshness, dict):
+            _append_unique(windows, str(freshness.get("profile_window") or ""))
+    return windows
 
 
 def _entity_node_parts(node_id: object) -> tuple[str, str]:

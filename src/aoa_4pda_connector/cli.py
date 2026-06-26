@@ -16,6 +16,8 @@ from aoa_4pda_connector.coverage import audit_profile_coverage
 from aoa_4pda_connector.discovery import audit_profile_discovery, audit_profile_seed_review
 from aoa_4pda_connector.evaluation import (
     DEFAULT_ANSWER_EVAL_SUITE,
+    DEFAULT_CLAIM_ANSWER_EVAL_SUITE,
+    DEFAULT_CLAIM_GRAPH_EVAL_SUITE,
     DEFAULT_GRAPH_EVAL_SUITE,
     DEFAULT_GRAPH_QUERY_EVAL_SUITE,
     DEFAULT_HYBRID_QUERY_EVAL_SUITE,
@@ -268,6 +270,9 @@ def build_parser() -> argparse.ArgumentParser:
     graph_relations = eval_sub.add_parser("graph-relations", help="Run the starter graph relation eval.")
     graph_relations.add_argument("--suite", default=str(DEFAULT_GRAPH_EVAL_SUITE))
     graph_relations.set_defaults(func=cmd_eval_graph_relations)
+    claim_relations = eval_sub.add_parser("claim-relations", help="Run the starter claim/conflict graph relation eval.")
+    claim_relations.add_argument("--suite", default=str(DEFAULT_CLAIM_GRAPH_EVAL_SUITE))
+    claim_relations.set_defaults(func=cmd_eval_graph_relations)
     graph_query_packets = eval_sub.add_parser("graph-query-packets", help="Run the starter graph query packet eval.")
     graph_query_packets.add_argument("--suite", default=str(DEFAULT_GRAPH_QUERY_EVAL_SUITE))
     graph_query_packets.set_defaults(func=cmd_eval_graph_query_packets)
@@ -277,6 +282,12 @@ def build_parser() -> argparse.ArgumentParser:
     answer_packets = eval_sub.add_parser("answer-packets", help="Run the starter rendered answer packet eval.")
     answer_packets.add_argument("--suite", default=str(DEFAULT_ANSWER_EVAL_SUITE))
     answer_packets.set_defaults(func=cmd_eval_answer_packets)
+    claim_answer_packets = eval_sub.add_parser(
+        "claim-answer-packets",
+        help="Run the starter claim/conflict answer packet eval.",
+    )
+    claim_answer_packets.add_argument("--suite", default=str(DEFAULT_CLAIM_ANSWER_EVAL_SUITE))
+    claim_answer_packets.set_defaults(func=cmd_eval_answer_packets)
 
     serve = sub.add_parser("serve", help="Safe serve stub.")
     serve.set_defaults(func=lambda args: cmd_stub("serve", args))
@@ -307,6 +318,12 @@ def cmd_doctor(_args: argparse.Namespace) -> int:
         "vector_index.schema.json",
         "graph_node.schema.json",
         "graph_edge.schema.json",
+        "claim.schema.json",
+        "claim_relation.schema.json",
+        "conflict_report.schema.json",
+        "freshness_report.schema.json",
+        "applicability_report.schema.json",
+        "warning_report.schema.json",
     ]
     required_ignore_patterns = [
         ".connector-state/",
@@ -489,6 +506,8 @@ def cmd_profile_inspect(args: argparse.Namespace) -> int:
                 "live_hybrid_query_suite": profile.get("live_hybrid_query_suite"),
                 "live_graph_query_suite": profile.get("live_graph_query_suite"),
                 "live_answer_suite": profile.get("live_answer_suite"),
+                "claim_graph_suite": profile.get("claim_graph_suite"),
+                "claim_answer_suite": profile.get("claim_answer_suite"),
             },
             "seed": {
                 "path": str(profile.get("seed_file")),
@@ -624,6 +643,8 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
         "profile_id": args.profile,
         "built_at": _now(),
         "graph_path": str(graph_path),
+        "claim_stats": graph.get("claim_stats", {}),
+        "source_run_ids": [run_id],
         "network_touched": False,
     }
     materialize_receipt = {
@@ -647,6 +668,9 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
             "vector_features": int(vector.get("feature_count", 0)),
             "graph_nodes": int(graph.get("node_count", 0)),
             "graph_edges": int(graph.get("edge_count", 0)),
+            "graph_claims": int(graph.get("claim_stats", {}).get("claim_count", 0))
+            if isinstance(graph.get("claim_stats"), dict)
+            else 0,
         },
         "policy": {
             "allowed_public_only": True,
@@ -853,12 +877,15 @@ def cmd_build_graph(args: argparse.Namespace) -> int:
     normalized_dir = roots.data / "normalized" / run_id
     output_dir = roots.artifact / "graphs" / run_id
     graph_path = build_graph(normalized_dir, output_dir, args.profile)
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
     payload = {
         "schema": "aoa_4pda_graph_receipt_v1",
         "run_id": run_id,
         "profile_id": args.profile,
         "built_at": _now(),
         "graph_path": str(graph_path),
+        "claim_stats": graph.get("claim_stats", {}) if isinstance(graph.get("claim_stats"), dict) else {},
+        "source_run_ids": [run_id],
         "network_touched": False,
     }
     receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "graph", payload)
@@ -1322,6 +1349,8 @@ def _read_profile(repo_root: Path, profile_id: str) -> dict[str, object]:
         "live_hybrid_query_suite",
         "live_graph_query_suite",
         "live_answer_suite",
+        "claim_graph_suite",
+        "claim_answer_suite",
     }
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()

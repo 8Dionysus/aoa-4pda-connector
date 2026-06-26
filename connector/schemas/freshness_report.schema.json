@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-connector/freshness_report.schema.json",
+  "title": "AoA Connector Freshness Report",
+  "type": "object",
+  "required": ["schema", "state", "basis", "captured_at_values", "posted_at_values", "profile_windows"],
+  "properties": {
+    "schema": { "const": "aoa_connector_freshness_report_v1" },
+    "state": {
+      "enum": [
+        "fresh_answer",
+        "old_but_still_supported",
+        "old_with_newer_context",
+        "possibly_superseded",
+        "conflicting_evidence",
+        "not_enough_local_evidence"
+      ]
+    },
+    "basis": { "type": "string" },
+    "latest_captured_at": { "type": ["string", "null"] },
+    "captured_at_values": { "type": "array", "items": { "type": "string" } },
+    "posted_at_values": { "type": "array", "items": { "type": "string" } },
+    "profile_windows": { "type": "array", "items": { "type": "string" } },
+    "newer_related_claims_visible": { "type": "boolean" },
+    "local_base_stale_possible": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}
