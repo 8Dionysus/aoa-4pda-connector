@@ -18,9 +18,11 @@ from aoa_4pda_connector.vector import build_vector_index
 
 DEFAULT_SEARCH_EVAL_SUITE = Path("evals/suites/starter_search_quality.json")
 DEFAULT_GRAPH_EVAL_SUITE = Path("evals/suites/starter_graph_relations.json")
+DEFAULT_CLAIM_GRAPH_EVAL_SUITE = Path("evals/suites/starter_claim_conflict_relations.json")
 DEFAULT_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/starter_graph_query_packets.json")
 DEFAULT_HYBRID_QUERY_EVAL_SUITE = Path("evals/suites/starter_hybrid_query_packets.json")
 DEFAULT_ANSWER_EVAL_SUITE = Path("evals/suites/starter_answer_packets.json")
+DEFAULT_CLAIM_ANSWER_EVAL_SUITE = Path("evals/suites/starter_claim_answer_packets.json")
 DEFAULT_LIVE_SEARCH_EVAL_SUITE = Path("evals/suites/live_starter_search_quality.json")
 DEFAULT_LIVE_HYBRID_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_hybrid_query_quality.json")
 DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_graph_query_quality.json")
@@ -817,6 +819,11 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
 
     nodes = {str(node.get("node_id")): node for node in graph.get("nodes", [])}
     edges = [edge for edge in graph.get("edges", [])]
+    node_kinds = sorted({str(node.get("kind")) for node in nodes.values()})
+    relation_edge_kinds = sorted({str(edge.get("kind")) for edge in edges})
+    claim_stats = graph.get("claim_stats", {})
+    if not isinstance(claim_stats, dict):
+        claim_stats = {}
     post_mention_targets = {
         str(edge.get("to_node"))
         for edge in edges
@@ -835,6 +842,13 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
         "topic_contains_post_edge": _edge_exists(edges, "topic_contains_post", topic_node, post_node),
         "expected_entity_nodes_present": all(node_id in nodes for node_id in expected_entity_ids),
         "post_mentions_expected_entities": all(node_id in post_mention_targets for node_id in expected_mention_ids),
+        "node_kinds_all": _optional_all_expected(expect.get("node_kinds_all"), node_kinds),
+        "relation_edge_kinds_all": _optional_all_expected(expect.get("relation_edge_kinds_all"), relation_edge_kinds),
+        "claim_stats_min": _optional_claim_stats_min(claim_stats, expect.get("claim_stats_min")),
+        "relation_edge_metadata_present": _optional_relation_edge_metadata(
+            edges,
+            expect.get("relation_edge_metadata_kinds_all"),
+        ),
         "expected_relation_edges_present": all(_edge_exists(edges, **edge) for edge in expected_relation_edges),
         "source_refs_preserved": _source_refs_contain(nodes.get(post_node, {}), source_url_contains)
         and all(_source_refs_contain(edge, source_url_contains) for edge in expected_mention_edges)
@@ -850,6 +864,9 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
         "expected_entity_node_ids": expected_entity_ids,
         "expected_post_mentions_entity_node_ids": expected_mention_ids,
         "expected_relation_edges": expected_relation_edges,
+        "node_kinds": node_kinds,
+        "relation_edge_kinds": relation_edge_kinds,
+        "claim_stats": claim_stats,
         "checks": checks,
         "matched_entity_node_ids": sorted(node_id for node_id in expected_entity_ids if node_id in nodes),
         "matched_post_mentions_entity_node_ids": sorted(
@@ -1232,6 +1249,9 @@ def _answer_checks(
     answer_report = answer_packet.get("answer_report", {})
     if not isinstance(answer_report, dict):
         answer_report = {}
+    top_evidence_grounding = answer_report.get("top_evidence_grounding", {})
+    if not isinstance(top_evidence_grounding, dict):
+        top_evidence_grounding = {}
     evidence_chain = answer_packet.get("evidence_chain", [])
     if not isinstance(evidence_chain, list):
         evidence_chain = []
@@ -1239,6 +1259,18 @@ def _answer_checks(
     nuance_report = answer_packet.get("nuance_report", {})
     if not isinstance(nuance_report, dict):
         nuance_report = {}
+    conflict_report = answer_packet.get("conflict_report", {})
+    if not isinstance(conflict_report, dict):
+        conflict_report = {}
+    freshness_report = answer_packet.get("freshness_report", {})
+    if not isinstance(freshness_report, dict):
+        freshness_report = {}
+    applicability_report = answer_packet.get("applicability_report", {})
+    if not isinstance(applicability_report, dict):
+        applicability_report = {}
+    warning_report = answer_packet.get("warning_report", {})
+    if not isinstance(warning_report, dict):
+        warning_report = {}
     agent_answer = answer_packet.get("agent_answer", {})
     if not isinstance(agent_answer, dict):
         agent_answer = {}
@@ -1246,6 +1278,20 @@ def _answer_checks(
     if not isinstance(agent_citations, list):
         agent_citations = []
     agent_text = str(agent_answer.get("text") or "")
+    policy = answer_packet.get("policy", {})
+    if not isinstance(policy, dict):
+        policy = {}
+    network_touched = answer_packet.get("network_touched", False)
+    limitations = nuance_report.get("limitations", [])
+    if not isinstance(limitations, list):
+        limitations = []
+    nuance_freshness = nuance_report.get("freshness", {})
+    if not isinstance(nuance_freshness, dict):
+        nuance_freshness = {}
+    expected_answer_status = str(
+        expected.get("answer_report_status") or expected.get("agent_answer_status") or "answered"
+    )
+    expects_answered = expected_answer_status == "answered"
     label_fields = [
         "issue_labels",
         "fix_labels",
@@ -1258,8 +1304,32 @@ def _answer_checks(
         "firmware_context_labels",
     ]
     return {
-        "top_answer_present": bool(top_answer),
-        "answer_status_answered": answer_report.get("answer_status") == "answered",
+        "top_answer_present": bool(top_answer) if expects_answered else True,
+        "answer_status_answered": answer_report.get("answer_status") == expected_answer_status,
+        "answer_report_status": _optional_equal(
+            answer_report.get("answer_status"),
+            expected.get("answer_report_status"),
+        ),
+        "answer_report_grounded_candidate_count": _optional_equal(
+            answer_report.get("grounded_candidate_count"),
+            expected.get("answer_report_grounded_candidate_count"),
+        ),
+        "answer_report_filtered_candidate_count_min": _optional_minimum(
+            int(answer_report.get("filtered_candidate_count") or 0),
+            expected.get("answer_report_filtered_candidate_count_min"),
+        ),
+        "top_evidence_warning_requested": _optional_bool(
+            bool(top_evidence_grounding.get("warning_requested")),
+            expected.get("top_evidence_warning_requested"),
+        ),
+        "top_evidence_warning_supported": _optional_bool(
+            bool(top_evidence_grounding.get("warning_supported")),
+            expected.get("top_evidence_warning_supported"),
+        ),
+        "agent_answer_status": _optional_equal(
+            agent_answer.get("status"),
+            expected.get("agent_answer_status"),
+        ),
         "top_post_id": _optional_equal(top_answer.get("post_id"), expected.get("top_post_id")),
         "answer_kind": _optional_equal(top_answer.get("answer_kind"), expected.get("answer_kind")),
         "expected_labels_present": all(
@@ -1274,21 +1344,102 @@ def _answer_checks(
         if source_url_contains is None
         else str(source_url_contains) in str(top_answer.get("source_url", ""))
         and _any_source_ref_contains(top_answer.get("source_refs", []), str(source_url_contains)),
-        "freshness_present": bool(freshness),
-        "freshness_note_present": bool(str(freshness.get("note", "")).strip()),
-        "evidence_chain_present": bool(evidence_chain),
+        "freshness_present": bool(freshness) if expects_answered else True,
+        "freshness_note_present": bool(str(freshness.get("note", "")).strip()) if expects_answered else True,
+        "nuance_freshness_latest_captured_at_present": _optional_bool(
+            bool(nuance_freshness.get("latest_captured_at")),
+            expected.get("nuance_freshness_latest_captured_at_present"),
+        ),
+        "nuance_freshness_posted_at_values_min": _optional_minimum(
+            len(nuance_freshness.get("posted_at_values", []))
+            if isinstance(nuance_freshness.get("posted_at_values", []), list)
+            else 0,
+            expected.get("nuance_freshness_posted_at_values_min"),
+        ),
+        "evidence_chain_present": bool(evidence_chain) if expects_answered else True,
+        "evidence_chain_min": _optional_minimum(len(evidence_chain), expected.get("evidence_chain_min")),
         "evidence_chain_top_post_id": top_chain_step.get("post_id") == top_answer.get("post_id"),
         "evidence_chain_top_source_url": top_chain_step.get("source_url") == top_answer.get("source_url"),
+        "evidence_chain_claim_ids_present": _optional_bool(
+            bool(top_chain_step.get("claim_ids")),
+            expected.get("evidence_chain_claim_ids_present"),
+        ),
         "nuance_report_present": bool(nuance_report),
         "nuance_chain_step_count_matches": nuance_report.get("chain_step_count") == len(evidence_chain),
+        "nuance_source_count_min": _optional_minimum(
+            int(nuance_report.get("source_count") or 0),
+            expected.get("nuance_source_count_min"),
+        ),
+        "limitations_kind_any": _optional_any_expected(
+            expected.get("limitations_kind_any"),
+            [
+                limitation.get("kind")
+                for limitation in limitations
+                if isinstance(limitation, dict)
+            ],
+        ),
         "agent_answer_present": bool(agent_answer),
-        "agent_answer_status_answered": agent_answer.get("status") == "answered",
-        "agent_answer_text_cites_primary": "[1]" in agent_text,
+        "agent_answer_status_answered": agent_answer.get("status") == expected_answer_status,
+        "agent_answer_text_cites_primary": ("[1]" in agent_text) if expects_answered else True,
         "agent_answer_cites_top_post": any(
             isinstance(citation, dict) and citation.get("post_id") == top_answer.get("post_id")
             for citation in agent_citations
+        )
+        if expects_answered
+        else True,
+        "conflict_report_status": _optional_equal(
+            conflict_report.get("status"),
+            expected.get("conflict_report_status"),
         ),
-        "internal_search_unused": answer_packet.get("policy", {}).get("internal_search_used") is False,
+        "conflict_report_primary_claim_present": _optional_bool(
+            bool(conflict_report.get("primary_claim_id")),
+            expected.get("conflict_report_primary_claim_present"),
+        ),
+        "conflict_report_conflicting_claims_min": _optional_minimum(
+            len(conflict_report.get("conflicting_claim_ids", []))
+            if isinstance(conflict_report.get("conflicting_claim_ids"), list)
+            else 0,
+            expected.get("conflict_report_conflicting_claims_min"),
+        ),
+        "conflict_report_superseding_claims_min": _optional_minimum(
+            len(conflict_report.get("superseding_claim_ids", []))
+            if isinstance(conflict_report.get("superseding_claim_ids"), list)
+            else 0,
+            expected.get("conflict_report_superseding_claims_min"),
+        ),
+        "freshness_report_state": _optional_equal(
+            freshness_report.get("state"),
+            expected.get("freshness_report_state"),
+        ),
+        "applicability_report_status": _optional_equal(
+            applicability_report.get("status"),
+            expected.get("applicability_report_status"),
+        ),
+        "applicability_context_labels_any": _optional_any_expected(
+            expected.get("applicability_context_labels_any"),
+            applicability_report.get("context_labels", []),
+        ),
+        "warning_report_supported": _optional_bool(
+            bool(warning_report.get("warning_supported")),
+            expected.get("warning_report_supported"),
+        ),
+        "warning_report_relation_count_min": _optional_minimum(
+            int(warning_report.get("relation_count") or 0),
+            expected.get("warning_report_relation_count_min"),
+        ),
+        "policy_internal_search_used": _optional_bool(
+            bool(policy.get("internal_search_used")),
+            expected.get("policy_internal_search_used"),
+        ),
+        "network_touched": _optional_bool(
+            bool(network_touched),
+            expected.get("network_touched"),
+        ),
+        "read_only": _optional_bool(
+            bool(answer_packet.get("read_only")),
+            expected.get("read_only"),
+        ),
+        "internal_search_unused": policy.get("internal_search_used") is False,
     }
 
 
@@ -1349,6 +1500,42 @@ def _optional_minimum(actual: int, expected: object) -> bool:
         return actual >= int(expected)
     except (TypeError, ValueError):
         return False
+
+
+def _optional_claim_stats_min(claim_stats: dict[str, object], expected: object) -> bool:
+    if expected is None:
+        return True
+    if not isinstance(expected, dict):
+        return False
+    for key, raw_minimum in expected.items():
+        try:
+            actual = int(claim_stats.get(str(key)) or 0)
+            minimum = int(raw_minimum)
+        except (TypeError, ValueError):
+            return False
+        if actual < minimum:
+            return False
+    return True
+
+
+def _optional_relation_edge_metadata(edges: list[dict[str, object]], expected_kinds: object) -> bool:
+    if expected_kinds is None:
+        return True
+    required_fields = {
+        "source_refs",
+        "confidence",
+        "extraction_basis",
+        "relation_reason",
+        "freshness_basis",
+        "manual_review_required",
+    }
+    for kind in _list_or_empty(expected_kinds):
+        matching = [edge for edge in edges if edge.get("kind") == kind]
+        if not matching:
+            return False
+        if not all(required_fields.issubset(edge.keys()) for edge in matching):
+            return False
+    return True
 
 
 def _optional_bool(actual: bool, expected: object) -> bool:

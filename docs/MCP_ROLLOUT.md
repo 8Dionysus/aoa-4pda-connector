@@ -90,17 +90,23 @@ Adapters must route by `schema` and preserve these source fields from
 - `evidence_chain`
 - `nuance_report`
 - `answer_report`
+- `conflict_report`
+- `freshness_report`
+- `applicability_report`
+- `warning_report`
 - `answers`
 - `query_report`
 - `network_touched`
+- `read_only`
 
-`network_touched` must remain `false` for MCP answer calls. A packet with
-`agent_answer.status=insufficient_evidence` is a successful local result that
-reports missing evidence; it is not permission to crawl.
+`network_touched` must remain `false` and `read_only` must remain `true` for
+MCP answer calls. A packet with `agent_answer.status=insufficient_evidence` is
+a successful local result that reports missing evidence; it is not permission to
+crawl.
 
 Runtime layers may display or synthesize from `agent_answer`, but source URLs,
-post ids, topic ids, capture receipts, evidence refs, freshness context, and
-limitations remain the authority.
+post ids, topic ids, claim ids, capture receipts, evidence refs, conflict and
+freshness reports, warning reports, and limitations remain the authority.
 
 ## Standalone Route
 

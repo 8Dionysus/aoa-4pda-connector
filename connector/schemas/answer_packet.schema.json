@@ -13,7 +13,9 @@
     "evidence_chain",
     "nuance_report",
     "agent_answer",
-    "policy"
+    "policy",
+    "network_touched",
+    "read_only"
   ],
   "properties": {
     "schema": { "const": "aoa_4pda_answer_packet_v1" },
@@ -155,7 +157,7 @@
         ],
         "properties": {
           "chain_step": { "type": "integer", "minimum": 1 },
-          "role": { "enum": ["primary", "supporting", "caution", "related_context"] },
+          "role": { "enum": ["primary", "supporting", "caution", "contextual", "conflicting", "superseding", "related_context"] },
           "answer_kind": { "type": ["string", "null"] },
           "summary": { "type": ["string", "null"] },
           "source_url": { "type": ["string", "null"] },
@@ -220,6 +222,10 @@
         }
       }
     },
+    "conflict_report": { "type": "object" },
+    "freshness_report": { "type": "object" },
+    "applicability_report": { "type": "object" },
+    "warning_report": { "type": "object" },
     "agent_answer": {
       "type": "object",
       "required": [
@@ -277,7 +283,9 @@
         "source": { "const": "local_keyword_index_plus_graph_answer_renderer" },
         "internal_search_used": { "type": "boolean" }
       }
-    }
+    },
+    "network_touched": { "const": false },
+    "read_only": { "const": true }
   },
   "additionalProperties": true
 }

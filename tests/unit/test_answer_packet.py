@@ -150,6 +150,267 @@ def test_render_answer_packet_reports_insufficient_evidence_for_weak_candidates(
     assert "В базе недостаточно данных" in answer_packet["agent_answer"]["text"]
 
 
+def test_render_answer_packet_does_not_ground_unrelated_relation_edges():
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-unrelated-relation",
+        "query": "Xiaomi 13T eSIM bootloader modem unlock facebook",
+        "created_at": "2026-06-21T21:45:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["xiaomi", "13t", "esim", "bootloader", "modem", "unlock", "facebook", "aristotle"],
+            "exact_terms": ["13t"],
+            "technical_terms": ["aristotle"],
+            "specific_terms": ["esim", "unlock"],
+        },
+        "results": [
+            _answer_result(
+                post_id="128964413",
+                chunk_id="1076859:128964413:chunk-000",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+                posted_at="12.03.24, 12:36",
+                captured_at="2026-06-21T19:57:53Z",
+                snippet="Recovery instructions for Xiaomi 13T mention unlock data but not eSIM modem.",
+                matched_terms=["13t", "aristotle", "unlock", "xiaomi"],
+                matched_exact_terms=["13t"],
+                matched_specific_terms=["unlock"],
+                relation_edges=[
+                    {
+                        "kind": "recovery_targets_file",
+                        "from_node": "entity:recovery_action:flash recovery.img",
+                        "to_node": "entity:file:recovery.img",
+                        "confidence": 0.5,
+                    },
+                ],
+                entity_node_ids=[
+                    "entity:recovery_action:flash recovery.img",
+                    "entity:file:recovery.img",
+                ],
+            )
+            | {
+                "relation_rerank": {
+                    "intents": [],
+                    "matching_edge_count": 0,
+                    "matching_relation_kinds": [],
+                    "matching_relation_confidence_sum": 0,
+                    "query_values": ["13t", "aristotle", "esim", "unlock"],
+                }
+            }
+        ],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answers"] == []
+    assert answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert answer_packet["answer_report"]["grounded_candidate_count"] == 0
+    assert answer_packet["agent_answer"]["status"] == "insufficient_evidence"
+
+
+def test_render_answer_packet_requires_warning_semantics_for_warning_queries():
+    result = _answer_result(
+        post_id="128964413",
+        chunk_id="1076859:128964413:chunk-000",
+        source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+        posted_at="12.03.24, 12:36",
+        captured_at="2026-06-21T19:57:53Z",
+        snippet="TWRP recovery instructions for Xiaomi 13T.",
+        matched_terms=["13t", "aristotle", "recovery", "twrp", "xiaomi"],
+        matched_exact_terms=["13t"],
+        matched_specific_terms=["recovery", "twrp"],
+        relation_edges=[
+            {
+                "kind": "recovery_targets_file",
+                "from_node": "entity:recovery_action:flash recovery.img",
+                "to_node": "entity:file:recovery.img",
+                "confidence": 0.5,
+            },
+        ],
+        entity_node_ids=["entity:recovery_action:flash recovery.img", "entity:file:recovery.img"],
+    )
+    result["relation_rerank"] = {
+        "intents": ["recovery"],
+        "matching_edge_count": 1,
+        "matching_relation_kinds": ["recovery_targets_file"],
+        "matching_relation_confidence_sum": 0.5,
+        "query_values": ["13t", "aristotle", "recovery", "twrp"],
+    }
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-warning-without-warning-semantics",
+        "query": "Xiaomi 13T предупреждение TWRP recovery",
+        "created_at": "2026-06-21T21:50:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["xiaomi", "13t", "предупреждение", "twrp", "recovery", "aristotle"],
+            "exact_terms": ["13t"],
+            "technical_terms": ["aristotle"],
+            "specific_terms": ["предупреждение", "twrp", "recovery"],
+        },
+        "results": [result],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answers"] == []
+    assert answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["warning_requested"] is True
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["warning_supported"] is False
+
+
+def test_render_answer_packet_reports_claim_conflict_freshness_and_applicability():
+    old_claim = "claim:xiaomi-13t:5001:method:flash_recovery_img"
+    new_claim = "claim:xiaomi-13t:5002:status:no_longer_works"
+    warning_claim = "claim:xiaomi-13t:5003:warning:do_not_flash"
+    source_url = "https://4pda.to/forum/index.php?showtopic=1076859#entry5001"
+    relation_edges = [
+        {
+            "edge_id": "edge-source-support",
+            "kind": "source_supports_claim",
+            "from_node": "post:5001",
+            "to_node": old_claim,
+            "source_refs": [source_url],
+            "source_post_ids": ["5001"],
+            "confidence": 0.72,
+            "extraction_basis": "recovery_action_entity_v1",
+            "relation_reason": "source post provides direct evidence for this claim",
+            "freshness_basis": "source_post_and_capture_metadata",
+            "manual_review_required": False,
+        },
+        {
+            "edge_id": "edge-supersedes",
+            "kind": "claim_supersedes_claim",
+            "from_node": new_claim,
+            "to_node": old_claim,
+            "source_refs": [
+                "https://4pda.to/forum/index.php?showtopic=1076859#entry5002",
+                source_url,
+            ],
+            "source_post_ids": ["5002", "5001"],
+            "confidence": 0.5,
+            "extraction_basis": "freshness_language_v1",
+            "relation_reason": "newer related claim has update/current/no-longer language",
+            "freshness_basis": "source_post_and_capture_metadata",
+            "manual_review_required": True,
+        },
+        {
+            "edge_id": "edge-contradicts",
+            "kind": "claim_contradicts_claim",
+            "from_node": warning_claim,
+            "to_node": old_claim,
+            "source_refs": [
+                "https://4pda.to/forum/index.php?showtopic=1076859#entry5003",
+                source_url,
+            ],
+            "source_post_ids": ["5003", "5001"],
+            "confidence": 0.52,
+            "extraction_basis": "warning_entity_or_language_v1",
+            "relation_reason": "strong warning may contradict an ordinary method answer",
+            "freshness_basis": "source_post_and_capture_metadata",
+            "manual_review_required": True,
+        },
+    ]
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-claim-conflict",
+        "query": "можно ли сейчас прошивать recovery.img Xiaomi 13T warning",
+        "created_at": "2026-06-21T21:45:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["можно", "сейчас", "прошивать", "recovery.img", "xiaomi", "13t", "warning"],
+            "exact_terms": ["recovery.img", "13t"],
+            "technical_terms": [],
+            "specific_terms": ["recovery.img", "warning"],
+        },
+        "results": [
+            {
+                "source_url": source_url,
+                "topic_id": "1076859",
+                "post_id": "5001",
+                "posted_at": "12.03.24, 12:36",
+                "captured_at": "2026-06-21T19:57:53Z",
+                "chunk_id": "1076859:5001:chunk-000",
+                "snippet": "Xiaomi 13T recovery.img flash instructions.",
+                "score": 10.0,
+                "score_breakdown": {"bm25": 6.0, "exact": 1.75, "phrase": 2.5},
+                "matched_terms": ["13t", "recovery.img", "warning", "xiaomi"],
+                "matched_exact_terms": ["13t", "recovery.img"],
+                "matched_specific_terms": ["recovery.img", "warning"],
+                "matched_phrases": ["xiaomi 13t"],
+                "evidence_refs": ["chunk:1076859:5001:chunk-000", "post:5001"],
+                "graph_context": {
+                    "source_refs": [source_url],
+                    "entity_node_ids": [],
+                    "claim_node_ids": [old_claim],
+                    "relation_edges": relation_edges,
+                    "claims": [
+                        {
+                            "node_id": old_claim,
+                            "kind": "claim",
+                            "label": "flash recovery.img",
+                            "source_refs": [source_url],
+                            "confidence": 0.72,
+                            "claim": {
+                                "claim_id": old_claim,
+                                "applicability_context": ["Xiaomi 13T", "HyperOS 1.0"],
+                                "condition_labels": ["bootloader_unlocked"],
+                                "freshness_context": {"profile_window": "early"},
+                            },
+                        }
+                    ],
+                    "methods": [],
+                    "issues": [],
+                    "fixes": [],
+                    "warnings": [
+                        {
+                            "node_id": "warning:do-not-flash",
+                            "kind": "warning",
+                            "label": "do not flash recovery.img without matching firmware",
+                            "source_refs": [source_url],
+                            "confidence": 0.7,
+                            "warns_about_node_ids": ["target:recovery_img"],
+                        }
+                    ],
+                    "warned_targets": [
+                        {
+                            "node_id": "target:recovery_img",
+                            "kind": "target",
+                            "label": "recovery.img",
+                            "source_refs": [source_url],
+                            "confidence": 0.65,
+                        }
+                    ],
+                },
+                "relation_rerank": {
+                    "intents": [],
+                    "matching_edge_count": 0,
+                    "matching_relation_kinds": [],
+                    "matching_relation_confidence_sum": 0,
+                    "query_values": ["recovery.img", "warning"],
+                },
+            }
+        ],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["read_only"] is True
+    assert answer_packet["network_touched"] is False
+    assert answer_packet["answers"][0]["claim_ids"] == [old_claim]
+    assert answer_packet["evidence_chain"][0]["claim_ids"] == [old_claim]
+    assert answer_packet["conflict_report"]["status"] == "conflict_detected"
+    assert old_claim in answer_packet["conflict_report"]["conflicting_claim_ids"]
+    assert new_claim in answer_packet["conflict_report"]["superseding_claim_ids"]
+    assert answer_packet["freshness_report"]["state"] == "conflicting_evidence"
+    assert answer_packet["applicability_report"]["context_labels"] == ["HyperOS 1.0", "Xiaomi 13T"]
+    assert answer_packet["applicability_report"]["condition_labels"] == ["bootloader_unlocked"]
+    assert answer_packet["warning_report"]["warning_supported"] is True
+    assert answer_packet["warning_report"]["warning_target_labels"] == ["recovery.img"]
+
+
 def test_render_answer_packet_builds_deduped_evidence_chain_with_nuance_report():
     evidence_packet = {
         "schema": "aoa_4pda_evidence_packet_v1",

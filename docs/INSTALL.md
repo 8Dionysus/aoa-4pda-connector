@@ -26,6 +26,8 @@ aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
 aoa-4pda eval hybrid-query-packets
 aoa-4pda eval answer-packets
+aoa-4pda eval claim-relations
+aoa-4pda eval claim-answer-packets
 ```
 
 `python scripts/verify_agent_install_route.py` creates a temporary fresh copy
@@ -74,6 +76,8 @@ aoa-4pda eval graph-relations
 aoa-4pda eval graph-query-packets
 aoa-4pda eval hybrid-query-packets
 aoa-4pda eval answer-packets
+aoa-4pda eval claim-relations
+aoa-4pda eval claim-answer-packets
 ```
 
 A live starter crawl should be explicit and bounded:

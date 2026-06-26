@@ -693,6 +693,13 @@ def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):
                         "expect": {
                             "top_post_id": "128964413",
                             "answer_kind": "recovery",
+                            "answer_report_status": "answered",
+                            "agent_answer_status": "answered",
+                            "network_touched": False,
+                            "policy_internal_search_used": False,
+                            "evidence_chain_min": 1,
+                            "nuance_source_count_min": 1,
+                            "nuance_freshness_latest_captured_at_present": True,
                             "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
                             "query_report_unit": "chunk",
                             "matched_specific_terms_all": ["recovery.img"],
@@ -765,6 +772,13 @@ def test_live_answer_eval_suite_checks_named_run_without_network(tmp_path):
     assert recovery_case["top_answer"]["recovery_action_labels"] == ["flash recovery.img"]
     assert recovery_case["checks"]["freshness_present"] is True
     assert recovery_case["checks"]["freshness_note_present"] is True
+    assert recovery_case["checks"]["answer_report_status"] is True
+    assert recovery_case["checks"]["agent_answer_status"] is True
+    assert recovery_case["checks"]["network_touched"] is True
+    assert recovery_case["checks"]["policy_internal_search_used"] is True
+    assert recovery_case["checks"]["evidence_chain_min"] is True
+    assert recovery_case["checks"]["nuance_source_count_min"] is True
+    assert recovery_case["checks"]["nuance_freshness_latest_captured_at_present"] is True
     assert recovery_case["diagnostics"]["freshness"]["basis"] == "source_post_and_capture_metadata"
     root_case = report["cases"][1]
     assert root_case["checks"]["answer_kind"] is True

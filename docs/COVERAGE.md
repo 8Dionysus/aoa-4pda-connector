@@ -58,7 +58,8 @@ For a profile such as Xiaomi 13T, the audit checks:
 - index document and term counts
 - deterministic vector document and feature counts
 - graph node and edge counts
-- live search, ranking-pressure, graph-query, and answer suite presence
+- live search, ranking-pressure, graph-query, answer, claim-graph, and
+  claim-answer suite presence
 - `aoa_4pda_information_need_matrix_v1` coverage for useful question classes,
   including whether each class has seed focus, materialized focus, and eval
   case routes
@@ -102,6 +103,8 @@ aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_
 aoa-4pda eval live-hybrid-query-quality --run latest --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json
 aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
 aoa-4pda eval live-answer-quality --run latest --suite evals/suites/live_xiaomi_13t_answer_quality.json
+aoa-4pda eval claim-relations
+aoa-4pda eval claim-answer-packets
 ```
 
 Only the explicit `crawl` step touches the network. The audit is safe to run
@@ -109,7 +112,8 @@ before and after the materialization sequence.
 
 On the current local Xiaomi 13T reference run, keyword ranking-pressure is a
 top-N recall gate. Relation-aware top ranking for hard root/recovery queries is
-validated by the graph-query and answer suites. The information-need matrix now
-reports 10/10 covered classes on run `20260621T194521Z__crawl`, including
-battery/power, camera, purchase/variants, firmware source, and late-window
-regression watch.
+validated by the graph-query and answer suites. Conflict/supersession semantics
+are now routed through `claim_graph_suite` and `claim_answer_suite`, so
+`conflicting_superseded_instructions` is deep-required instead of a mapped
+non-required gap. The audit reports claim counters from graph artifacts when a
+run has been rebuilt with the claim extractor.

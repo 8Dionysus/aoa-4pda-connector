@@ -100,6 +100,13 @@ It verifies that issue, fix, warning, warned-target labels, answer text
 fragments, and source refs survive the full local query -> graph context ->
 answer renderer path.
 
+`aoa-4pda eval claim-relations` and `aoa-4pda eval claim-answer-packets` check
+the portable claim/conflict/freshness layer. They use a sanitized multi-post
+fixture with an old recovery method, a newer update/status claim, and a warning
+claim, then verify supersession, contradiction, contextualization, claim ids,
+freshness, applicability, warning reports, `read_only=true`, and
+`network_touched=false`.
+
 This eval is local connector evidence. It does not create central proof
 verdicts, broad regression scores, or full-corpus quality claims.
 

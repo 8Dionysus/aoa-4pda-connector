@@ -6,10 +6,19 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+from aoa_4pda_connector.claims import (
+    assign_freshness_windows,
+    claim_graph_stats,
+    extract_post_claims,
+    graph_nodes_for_claims,
+    relation_edges_for_claims,
+)
+
 
 def build_graph(normalized_dir: Path, output_dir: Path, profile_id: str = "starter") -> Path:
     nodes: dict[str, dict[str, object]] = {}
     edges: list[dict[str, object]] = []
+    claims: list[dict[str, object]] = []
     for topic_path in sorted(normalized_dir.glob("topic-*.json")):
         topic = json.loads(topic_path.read_text(encoding="utf-8"))
         topic_node = f"topic:{topic['topic_id']}"
@@ -74,6 +83,20 @@ def build_graph(normalized_dir: Path, output_dir: Path, profile_id: str = "start
                 )
             _append_relation_edges(edges, post_node, entities, source_url)
             _append_xiaomi_relation_edges(edges, post_node, entities, source_url)
+            claims.extend(extract_post_claims(post, profile_id))
+    assign_freshness_windows(claims)
+    claim_nodes = graph_nodes_for_claims(claims)
+    for node_id, claim_node in claim_nodes.items():
+        existing = nodes.get(node_id)
+        if existing:
+            for source_ref in claim_node.get("source_refs", []):
+                if source_ref not in existing["source_refs"]:
+                    existing["source_refs"].append(source_ref)
+        else:
+            nodes[node_id] = claim_node
+    claim_edges = relation_edges_for_claims(claims)
+    edges.extend(claim_edges)
+    claim_stats = claim_graph_stats(claims, claim_edges)
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / "graph.json"
     payload = {
@@ -82,6 +105,7 @@ def build_graph(normalized_dir: Path, output_dir: Path, profile_id: str = "start
         "built_at": datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "node_count": len(nodes),
         "edge_count": len(edges),
+        "claim_stats": claim_stats,
         "nodes": list(nodes.values()),
         "edges": edges,
     }

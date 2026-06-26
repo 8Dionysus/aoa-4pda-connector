@@ -114,12 +114,33 @@ not an LLM:
   are filtered out, duplicate chunks from the same post are collapsed, and
   `answer_report` reports candidate, grounded, filtered, and deduplicated
   counts.
+- Relation support must align with the query intent when the query path
+  provides relation-rerank diagnostics. A post that merely has unrelated
+  recovery/root graph context is not enough grounding for an unrelated or
+  weakly matched question.
+- Explicit warning-intent queries require warning semantics in graph context
+  such as `warnings`, `warned_targets`, or `warns_about`. Otherwise the packet
+  stays `insufficient_evidence` instead of downgrading the request into an
+  ordinary recovery/root answer.
 - `evidence_chain` mirrors the grounded answer handoff as ordered chain steps
   with role, source URL, topic/post/chunk ids, matched content terms, relation
   kinds, evidence refs, and freshness.
 - `nuance_report` summarizes the chain breadth, relation kinds, matched
   content terms, freshness spread, and limitations such as weak filtered
   candidates or duplicate same-post chunks.
+- `conflict_report` names the primary claim, supporting claims, conflicting
+  claims, superseding claims, contextual claims, warning pressure, missing
+  categories, confidence basis, and demotion reasons. It decides only what the
+  local evidence supports.
+- `freshness_report` distinguishes `fresh_answer`, `old_but_still_supported`,
+  `old_with_newer_context`, `possibly_superseded`, `conflicting_evidence`, and
+  `not_enough_local_evidence`.
+- `applicability_report` carries version, firmware, device, region, state, and
+  condition context that the answer depends on.
+- `warning_report` keeps warning/risk support separate from ordinary recovery
+  or root instructions.
+- Answer packets preserve `claim_ids`, `read_only=true`, and
+  `network_touched=false`.
 - `agent_answer` is a deterministic cited brief built from `evidence_chain`
   and `nuance_report`. It is not LLM synthesis: it carries bracket citations,
   freshness, limitations, and insufficient-evidence text directly from the
@@ -132,6 +153,12 @@ not an LLM:
 
 Answer packets are for agent handoff and UI/API ergonomics. They do not replace
 the evidence packet, graph export, or source URL as the truth surface.
+
+The claim/conflict/freshness fields are connector-family contracts, not a
+Xiaomi-only shape. A StackOverflow adapter could map accepted answer edits and
+comments into claims; XDA can map thread posts; Telegram/Discord/Facebook
+exports can map messages and replies. Source adapters differ, but downstream
+agents should inspect the same report fields before making stronger claims.
 
 ## Starter Search Eval
 
@@ -190,10 +217,18 @@ freshness notes, answer grounding, and the internal-search boundary survive the
 answer renderer. The rendered packet is chain-aware: weak candidates are
 filtered, duplicate post chunks are collapsed, and downstream agents can follow
 `agent_answer`, `evidence_chain`, and `nuance_report` before composing a
-user-facing answer.
+user-facing answer. The suite also protects current-method freshness context,
+brick/bootloop insufficient-evidence behavior, explicit warning-intent
+guardrails, policy fields, and `network_touched=false`.
 Each live answer case also returns compact diagnostics: failed check names,
 matched terms, score breakdown, top evidence refs, answer context label counts,
 freshness context, and relation edges that reached the answer.
+
+`aoa-4pda eval claim-answer-packets` runs
+`evals/suites/starter_claim_answer_packets.json`. It verifies that warning and
+current-method questions expose claim ids, conflict/freshness/applicability/
+warning reports, `read_only=true`, and `network_touched=false` without crawling
+or using internal search.
 
 `aoa-4pda eval graph-query-packets` runs
 `evals/suites/starter_graph_query_packets.json`. It builds temporary local

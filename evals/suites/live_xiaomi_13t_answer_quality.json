@@ -272,6 +272,114 @@
           "сброс настроек до заводских"
         ]
       }
+    },
+    {
+      "case_id": "xiaomi-13t-live-current-recovery-runtime-contract",
+      "query": "Xiaomi 13T можно ли сейчас ставить TWRP OrangeFox fastbootd recovery",
+      "expect": {
+        "top_post_id": "128964413",
+        "answer_kind": "recovery",
+        "answer_report_status": "answered",
+        "agent_answer_status": "answered",
+        "network_touched": false,
+        "policy_internal_search_used": false,
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "matched_specific_terms_all": ["recovery", "twrp"],
+        "graph_report_rerank_intents_all": ["recovery"],
+        "graph_report_relation_edge_kinds_all": [
+          "recovery_targets_file",
+          "recovery_uses_tool"
+        ],
+        "recovery_action_labels": ["flash recovery.img"],
+        "target_file_labels": ["recovery.img"],
+        "tool_labels": ["fastboot", "TWRP"],
+        "evidence_chain_min": 2,
+        "nuance_source_count_min": 2,
+        "nuance_freshness_latest_captured_at_present": true,
+        "nuance_freshness_posted_at_values_min": 2,
+        "limitations_kind_any": ["filtered_weak_candidates"]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-root-current-freshness-contract",
+      "query": "Xiaomi 13T старый способ root boot img Magisk HyperOS сейчас безопасно или устарело",
+      "expect": {
+        "top_post_id": "134545533",
+        "answer_kind": "root",
+        "answer_report_status": "answered",
+        "agent_answer_status": "answered",
+        "network_touched": false,
+        "policy_internal_search_used": false,
+        "source_url_contains": "showtopic=1076859&st=5360#entry134545533",
+        "query_report_unit": "chunk",
+        "matched_specific_terms_all": ["boot.img", "magisk"],
+        "graph_report_rerank_intents_all": ["root"],
+        "graph_report_relation_edge_kinds_all": [
+          "root_targets_file",
+          "root_uses_tool"
+        ],
+        "root_action_labels": ["patch boot.img"],
+        "target_file_labels": ["boot.img"],
+        "tool_labels": ["Magisk"],
+        "evidence_chain_min": 5,
+        "nuance_source_count_min": 5,
+        "nuance_freshness_latest_captured_at_present": true,
+        "nuance_freshness_posted_at_values_min": 5
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-brick-bootloop-gap-answer",
+      "query": "Xiaomi 13T bootloop fastbootd vendor_boot восстановить recovery кирпич",
+      "expect": {
+        "answer_report_status": "insufficient_evidence",
+        "agent_answer_status": "insufficient_evidence",
+        "answer_report_grounded_candidate_count": 0,
+        "answer_report_filtered_candidate_count_min": 1,
+        "network_touched": false,
+        "policy_internal_search_used": false,
+        "limitations_kind_any": ["candidate_evidence_below_grounding_threshold"]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-warning-supported-answer",
+      "query": "Xiaomi 13T предупреждение fastbootd кирпич TWRP recovery",
+      "expect": {
+        "top_post_id": "128964413",
+        "answer_kind": "recovery",
+        "answer_report_status": "answered",
+        "agent_answer_status": "answered",
+        "answer_report_grounded_candidate_count": 1,
+        "answer_report_filtered_candidate_count_min": 1,
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "top_evidence_warning_requested": true,
+        "top_evidence_warning_supported": true,
+        "evidence_chain_claim_ids_present": true,
+        "conflict_report_status": "conflict_detected",
+        "conflict_report_primary_claim_present": true,
+        "conflict_report_conflicting_claims_min": 1,
+        "freshness_report_state": "conflicting_evidence",
+        "applicability_report_status": "context_available",
+        "warning_report_supported": true,
+        "warning_report_relation_count_min": 1,
+        "network_touched": false,
+        "read_only": true,
+        "policy_internal_search_used": false,
+        "limitations_kind_any": ["filtered_weak_candidates"]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-unrelated-topic-gap-answer",
+      "query": "Xiaomi 13T данные недостаточны eSIM bootloader modem unlock facebook",
+      "expect": {
+        "answer_report_status": "insufficient_evidence",
+        "agent_answer_status": "insufficient_evidence",
+        "answer_report_grounded_candidate_count": 0,
+        "answer_report_filtered_candidate_count_min": 1,
+        "network_touched": false,
+        "policy_internal_search_used": false,
+        "limitations_kind_any": ["candidate_evidence_below_grounding_threshold"]
+      }
     }
   ]
 }

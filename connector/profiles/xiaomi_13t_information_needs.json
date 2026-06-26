@@ -206,6 +206,98 @@
           "xiaomi-13t-live-late-update-reset-answer"
         ]
       }
+    },
+    {
+      "need_id": "current_method_freshness_contract",
+      "label": "Current-method questions with freshness, source chain, and read-only runtime contract",
+      "priority": "required",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "twrp_orangefox_current",
+        "twrp_orangefox_current_adjacent",
+        "boot_img_magisk",
+        "hyperos_boot_img",
+        "firmware_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-current-recovery-runtime-contract",
+          "xiaomi-13t-live-root-current-freshness-contract"
+        ]
+      }
+    },
+    {
+      "need_id": "brick_bootloop_recovery_gap",
+      "label": "Brick, bootloop, fastbootd, and recovery questions must answer only when evidence is grounded",
+      "priority": "required",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "recovery_img_restore",
+        "recovery_img_restore_adjacent",
+        "twrp_orangefox_current"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-brick-bootloop-gap-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "warning_risky_action_supported_answer",
+      "label": "Warnings and risky recovery actions must remain visible through warning_report and conflict/freshness reports",
+      "priority": "required",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "twrp_orangefox_current",
+        "twrp_orangefox_current_adjacent",
+        "recovery_img_restore_adjacent"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-warning-supported-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "insufficient_evidence_guardrail",
+      "label": "Out-of-scope or weakly matched questions must return insufficient_evidence instead of hallucinated instructions",
+      "priority": "required",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "device_discussion",
+        "device_discussion_late_window",
+        "firmware_late_window"
+      ],
+      "eval_cases": {
+        "live_answer_suite": [
+          "xiaomi-13t-live-unrelated-topic-gap-answer"
+        ]
+      }
+    },
+    {
+      "need_id": "conflicting_superseded_instructions",
+      "label": "Conflicting, superseded, and context-only instructions require explicit graph semantics before they are treated as covered",
+      "priority": "required",
+      "required_for_connector_ready": false,
+      "required_for_deep_profile": true,
+      "seed_focus_any": [
+        "twrp_orangefox_current",
+        "firmware_late_window",
+        "device_discussion_late_window"
+      ],
+      "eval_cases": {
+        "claim_graph_suite": [
+          "claim-conflict-graph-semantics"
+        ],
+        "claim_answer_suite": [
+          "warning-post-prevents-ordinary-safe-answer",
+          "newer-status-demotes-old-recovery-method"
+        ]
+      }
     }
   ]
 }

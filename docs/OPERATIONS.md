@@ -116,7 +116,9 @@ It is not final deep-device coverage by itself. Check
 `information_needs.summary.deep_profile_missing_need_ids` in
 `aoa-4pda coverage audit xiaomi-13t --run 20260621T194521Z__crawl` before
 claiming that a class of Xiaomi 13T questions is covered; the current matrix
-reports 10/10 covered classes for that named run.
+routes 15/15 deep-required classes, including conflict/supersession claim
+semantics, through local eval cases. Rebuild the external graph artifact for
+the named run to materialize claim counters after changing the extractor.
 Use `discovery audit` to find public topic/window candidates already visible in
 stored snapshots before changing seeds. Review `review_priority`,
 `anchor_texts`, `evidence_contexts`, and `target_hits`; already covered

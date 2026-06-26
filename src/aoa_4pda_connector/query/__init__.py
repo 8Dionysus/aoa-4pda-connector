@@ -8,6 +8,7 @@ import math
 from datetime import UTC, datetime
 from pathlib import Path
 
+from aoa_4pda_connector.claims import CLAIM_RELATION_KINDS
 from aoa_4pda_connector.index import extract_exact_terms, technical_alias_tokens, tokenize
 from aoa_4pda_connector.vector import query_vector_index
 
@@ -18,6 +19,8 @@ EXACT_TERM_BOOST = 1.75
 PHRASE_BOOST = 2.5
 GRAPH_RELATION_WEIGHT = 0.85
 RELATION_EDGE_KINDS = (
+    *sorted(CLAIM_RELATION_KINDS),
+    "post_mentions_claim",
     "fixes_issue",
     "recovery_mentions_firmware",
     "recovery_targets_file",
@@ -27,10 +30,13 @@ RELATION_EDGE_KINDS = (
     "root_uses_tool",
     "warns_about",
 )
+CLAIM_NODE_EDGE_KINDS = {"post_mentions_claim", "source_supports_claim", "source_warns_about_claim", "source_updates_claim"}
 ROOT_INTENT_TERMS = {"boot.img", "init_boot.img", "kernelsu", "ksu", "magisk", "root"}
-ROOT_RELATION_EDGE_KINDS = {"root_mentions_firmware", "root_targets_file", "root_uses_tool"}
+ROOT_RELATION_EDGE_KINDS = {"method_targets_object", "method_uses_tool", "root_mentions_firmware", "root_targets_file", "root_uses_tool"}
 RECOVERY_INTENT_TERMS = {"orangefox", "recovery", "recovery.img", "twrp", "vendor_boot"}
 RECOVERY_RELATION_EDGE_KINDS = {
+    "method_targets_object",
+    "method_uses_tool",
     "recovery_mentions_firmware",
     "recovery_targets_file",
     "recovery_uses_tool",
@@ -478,7 +484,7 @@ def _relation_edge_matches_query(edge: dict[str, object], query_values: set[str]
     if not query_values:
         return True
     kind = str(edge.get("kind", ""))
-    if kind.endswith("_uses_tool") or kind.endswith("_targets_file") or kind.endswith("_mentions_firmware"):
+    if kind.endswith("_uses_tool") or kind.endswith("_targets_file") or kind.endswith("_targets_object") or kind.endswith("_mentions_firmware"):
         edge_text = _normalize_relation_value(edge.get("to_node", ""))
     else:
         edge_text = _normalize_relation_value(
@@ -576,6 +582,18 @@ def _graph_context_for_result(
     ]
     entity_node_ids = sorted({str(edge.get("to_node")) for edge in mention_edges if edge.get("to_node")})
     entity_node_set = set(entity_node_ids)
+    claim_edges = [
+        edge
+        for edge in edges
+        if edge.get("kind") in CLAIM_NODE_EDGE_KINDS
+        and (
+            edge.get("from_node") == post_node
+            or (edge.get("kind") in {"source_supports_claim", "source_warns_about_claim", "source_updates_claim"} and edge.get("from_node") == post_node)
+        )
+        and _source_refs_include(edge, source_url)
+    ]
+    claim_node_ids = sorted({str(edge.get("to_node")) for edge in claim_edges if str(edge.get("to_node", "")).startswith("claim:")})
+    claim_node_set = set(claim_node_ids)
     relation_edges = [
         _edge_summary(edge)
         for edge in edges
@@ -584,6 +602,9 @@ def _graph_context_for_result(
         and (
             str(edge.get("from_node")) in entity_node_set
             or str(edge.get("to_node")) in entity_node_set
+            or str(edge.get("from_node")) in claim_node_set
+            or str(edge.get("to_node")) in claim_node_set
+            or str(edge.get("from_node")) == post_node
         )
     ]
     relation_endpoint_ids = {
@@ -592,16 +613,28 @@ def _graph_context_for_result(
         for node_id in [str(edge.get("from_node")), str(edge.get("to_node"))]
         if node_id
     }
-    context_node_ids = sorted(entity_node_set.union(relation_endpoint_ids))
+    context_node_ids = sorted(entity_node_set.union(claim_node_set).union(relation_endpoint_ids))
     fixes_issue = _relation_targets_by_from(relation_edges, "fixes_issue")
     warns_about = _relation_targets_by_from(relation_edges, "warns_about")
+    warning_targets = _relation_targets_by_from(relation_edges, "warning_targets_object")
     warned_target_ids = sorted({target for targets in warns_about.values() for target in targets})
 
     return {
         "post_node": post_node,
         "source_refs": [source_url] if source_url else [],
         "entity_node_ids": entity_node_ids,
+        "claim_node_ids": claim_node_ids,
         "relation_edges": relation_edges,
+        "claims": [
+            _node_summary(nodes[node_id])
+            for node_id in claim_node_ids
+            if node_id in nodes
+        ],
+        "methods": [
+            _node_summary(nodes[node_id])
+            for node_id in context_node_ids
+            if node_id in nodes and nodes[node_id].get("kind") == "method"
+        ],
         "issues": [
             _node_summary(nodes[node_id])
             for node_id in context_node_ids
@@ -616,10 +649,15 @@ def _graph_context_for_result(
             {**_node_summary(nodes[node_id]), "warns_about_node_ids": warns_about.get(node_id, [])}
             for node_id in sorted(warns_about)
             if node_id in nodes
+        ]
+        + [
+            {**_node_summary(nodes[node_id]), "warns_about_node_ids": warning_targets.get(node_id, [])}
+            for node_id in sorted(warning_targets)
+            if node_id in nodes and nodes[node_id].get("kind") == "warning"
         ],
         "warned_targets": [
             _node_summary(nodes[node_id])
-            for node_id in warned_target_ids
+            for node_id in sorted(set(warned_target_ids).union({target for targets in warning_targets.values() for target in targets}))
             if node_id in nodes
         ],
     }
@@ -641,13 +679,16 @@ def _relation_targets_by_from(edges: list[dict[str, object]], kind: str) -> dict
 
 
 def _node_summary(node: dict[str, object]) -> dict[str, object]:
-    return {
+    summary = {
         "node_id": node.get("node_id"),
         "kind": node.get("kind"),
         "label": node.get("label"),
         "source_refs": node.get("source_refs", []),
         "confidence": node.get("confidence"),
     }
+    if node.get("kind") == "claim" and isinstance(node.get("claim"), dict):
+        summary["claim"] = node.get("claim")
+    return summary
 
 
 def _edge_summary(edge: dict[str, object]) -> dict[str, object]:
@@ -657,7 +698,14 @@ def _edge_summary(edge: dict[str, object]) -> dict[str, object]:
         "from_node": edge.get("from_node"),
         "to_node": edge.get("to_node"),
         "source_refs": edge.get("source_refs", []),
+        "source_post_ids": edge.get("source_post_ids", []),
         "confidence": edge.get("confidence"),
+        "extraction_basis": edge.get("extraction_basis"),
+        "relation_reason": edge.get("relation_reason"),
+        "freshness_basis": edge.get("freshness_basis"),
+        "manual_review_required": edge.get("manual_review_required"),
+        "posted_at": edge.get("posted_at"),
+        "captured_at": edge.get("captured_at"),
     }
 
 

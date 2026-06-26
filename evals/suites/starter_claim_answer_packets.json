@@ -1,0 +1,53 @@
+{
+  "schema": "aoa_4pda_answer_eval_suite_v1",
+  "suite_id": "starter-claim-answer-packets",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "claim_conflict_html_topic",
+    "html_fixture": "connector/fixtures/html/claim_conflict_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=claim-conflict"
+  },
+  "cases": [
+    {
+      "case_id": "warning-post-prevents-ordinary-safe-answer",
+      "query": "Xiaomi 13T warning recovery.img matching firmware brick",
+      "expect": {
+        "answer_report_status": "answered",
+        "evidence_chain_claim_ids_present": true,
+        "conflict_report_status": "conflict_detected",
+        "conflict_report_primary_claim_present": true,
+        "conflict_report_conflicting_claims_min": 1,
+        "freshness_report_state": "conflicting_evidence",
+        "applicability_report_status": "context_available",
+        "applicability_context_labels_any": ["HyperOS", "Xiaomi 13T", "aristotle"],
+        "warning_report_supported": true,
+        "warning_report_relation_count_min": 1,
+        "policy_internal_search_used": false,
+        "network_touched": false,
+        "read_only": true
+      }
+    },
+    {
+      "case_id": "newer-status-demotes-old-recovery-method",
+      "query": "Xiaomi 13T recovery.img no longer works now after update",
+      "expect": {
+        "answer_report_status": "answered",
+        "evidence_chain_claim_ids_present": true,
+        "conflict_report_status": "conflict_detected",
+        "conflict_report_primary_claim_present": true,
+        "conflict_report_conflicting_claims_min": 1,
+        "conflict_report_superseding_claims_min": 1,
+        "freshness_report_state": "conflicting_evidence",
+        "applicability_report_status": "context_available",
+        "applicability_context_labels_any": ["HyperOS 2.0", "after_update"],
+        "warning_report_supported": true,
+        "warning_report_relation_count_min": 1,
+        "policy_internal_search_used": false,
+        "network_touched": false,
+        "read_only": true
+      }
+    }
+  ]
+}

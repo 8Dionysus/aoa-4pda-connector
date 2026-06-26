@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-connector/conflict_report.schema.json",
+  "title": "AoA Connector Conflict Report",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "primary_claim_id",
+    "supporting_claim_ids",
+    "conflicting_claim_ids",
+    "superseding_claim_ids",
+    "contextual_claim_ids",
+    "missing",
+    "confidence",
+    "primary_selection_reason"
+  ],
+  "properties": {
+    "schema": { "const": "aoa_connector_conflict_report_v1" },
+    "status": {
+      "enum": ["clear", "contextualized", "possibly_superseded", "conflict_detected", "insufficient_evidence"]
+    },
+    "primary_claim_id": { "type": ["string", "null"] },
+    "primary_post_id": { "type": ["string", "null"] },
+    "supporting_claim_ids": { "type": "array", "items": { "type": "string" } },
+    "conflicting_claim_ids": { "type": "array", "items": { "type": "string" } },
+    "superseding_claim_ids": { "type": "array", "items": { "type": "string" } },
+    "contextual_claim_ids": { "type": "array", "items": { "type": "string" } },
+    "missing": { "type": "array", "items": { "type": "string" } },
+    "confidence": { "type": "string" },
+    "primary_selection_reason": { "type": "string" },
+    "demotion_reasons": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": true
+}

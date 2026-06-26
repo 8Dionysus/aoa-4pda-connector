@@ -39,6 +39,8 @@ REQUIRED_FILES = [
     "connector/manifests/route_allowlist.yaml",
     "evals/PORT.yaml",
     "evals/suites/starter_answer_packets.json",
+    "evals/suites/starter_claim_answer_packets.json",
+    "evals/suites/starter_claim_conflict_relations.json",
     "evals/suites/starter_graph_relations.json",
     "evals/suites/starter_graph_query_packets.json",
     "evals/suites/starter_hybrid_query_packets.json",
@@ -119,6 +121,12 @@ REQUIRED_SCHEMAS = [
     "vector_index.schema.json",
     "graph_node.schema.json",
     "graph_edge.schema.json",
+    "claim.schema.json",
+    "claim_relation.schema.json",
+    "conflict_report.schema.json",
+    "freshness_report.schema.json",
+    "applicability_report.schema.json",
+    "warning_report.schema.json",
 ]
 
 REQUIRED_GITIGNORE = [

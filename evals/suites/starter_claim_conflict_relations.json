@@ -1,0 +1,62 @@
+{
+  "schema": "aoa_4pda_graph_eval_suite_v1",
+  "suite_id": "starter-claim-conflict-relations",
+  "owner_repo": "aoa-4pda-connector",
+  "proof_owner_repo": "aoa-evals",
+  "central_boundary": "local connector eval cases only; no central verdict, scoring, regression, or proof doctrine authority",
+  "dataset": {
+    "kind": "claim_conflict_html_topic",
+    "html_fixture": "connector/fixtures/html/claim_conflict_topic.html",
+    "source_url": "https://4pda.to/forum/index.php?showtopic=1076859&st=claim-conflict"
+  },
+  "cases": [
+    {
+      "case_id": "claim-conflict-graph-semantics",
+      "expect": {
+        "post_id": "9101",
+        "topic_id": "1076859",
+        "node_kinds_all": [
+          "claim",
+          "method",
+          "target",
+          "tool",
+          "condition",
+          "applicability_context",
+          "warning"
+        ],
+        "relation_edge_kinds_all": [
+          "claim_applies_to_context",
+          "method_uses_tool",
+          "method_targets_object",
+          "method_requires_condition",
+          "warning_targets_object",
+          "claim_contextualizes_claim",
+          "claim_supersedes_claim",
+          "claim_contradicts_claim",
+          "claim_deprecated_for_context",
+          "source_supports_claim",
+          "source_warns_about_claim",
+          "source_updates_claim"
+        ],
+        "claim_stats_min": {
+          "claim_count": 3,
+          "method_count": 2,
+          "warning_count": 1,
+          "applicability_context_count": 3,
+          "supersedes_count": 1,
+          "contradicts_count": 1,
+          "contextualizes_count": 1,
+          "warning_relation_count": 1,
+          "manual_review_candidate_count": 1
+        },
+        "relation_edge_metadata_kinds_all": [
+          "claim_supersedes_claim",
+          "claim_contradicts_claim",
+          "claim_contextualizes_claim",
+          "claim_deprecated_for_context"
+        ],
+        "source_url_contains": "#entry9101"
+      }
+    }
+  ]
+}

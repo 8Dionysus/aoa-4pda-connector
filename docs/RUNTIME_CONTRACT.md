@@ -77,8 +77,11 @@ requested, graph context when requested, answer freshness notes, and answer
 grounding status. Answer packets also expose `agent_answer`, `evidence_chain`,
 and `nuance_report`; runtime layers should treat `agent_answer` as a
 deterministic cited brief and keep `evidence_chain` available for inspection or
-richer synthesis. `answers` is a filtered and same-post-deduplicated answer
-list, not a raw top-N dump.
+richer synthesis. Claim-aware packets also expose `conflict_report`,
+`freshness_report`, `applicability_report`, `warning_report`, and `claim_ids`
+so agents can distinguish primary, supporting, conflicting, superseding, and
+contextual evidence before making a stronger claim. `answers` is a filtered
+and same-post-deduplicated answer list, not a raw top-N dump.
 `answer_report.answer_status=insufficient_evidence` with empty `answers` and
 `evidence_chain` arrays plus `agent_answer.status=insufficient_evidence` is a
 successful local answer packet that says the configured database does not yet
@@ -87,8 +90,9 @@ Runtime layers may summarize or display packets, but source URLs and receipts
 remain the authority.
 
 MCP adapters must preserve `agent_answer`, `evidence_chain`, `nuance_report`,
-`answer_report`, and `network_touched=false` when wrapping
-`aoa-4pda answer`.
+`answer_report`, `conflict_report`, `freshness_report`,
+`applicability_report`, `warning_report`, `claim_ids`,
+`network_touched=false`, and `read_only=true` when wrapping `aoa-4pda answer`.
 
 `query-hybrid` requires keyword, vector, and graph receipts for the selected
 run. The starter vector route is deterministic and model-free; external

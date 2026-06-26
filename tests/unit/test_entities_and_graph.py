@@ -299,3 +299,102 @@ def test_graph_adds_kernelsu_root_relation_edges(tmp_path):
         "entity:root_action:patch boot.img",
         "entity:tool:KSU",
     ) in relation_edges
+
+
+def test_graph_adds_claim_conflict_freshness_semantics(tmp_path):
+    normalized_dir = tmp_path / "normalized"
+    normalized_dir.mkdir()
+    old_text = (
+        "Xiaomi 13T aristotle HyperOS 1.0. Можно прошить recovery.img через fastboot "
+        "и TWRP, bootloader unlock обязателен."
+    )
+    new_text = (
+        "Xiaomi 13T aristotle после обновления HyperOS 2.0 recovery.img через fastboot "
+        "no longer works now."
+    )
+    warning_text = (
+        "Xiaomi 13T aristotle Важно: не прошивать recovery.img без matching firmware, "
+        "иначе кирпич fastbootd."
+    )
+    topic = {
+        "schema": "aoa_4pda_normalized_topic_v1",
+        "topic_id": "claim-conflict",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=1076859",
+        "title": "Xiaomi 13T - claim conflict",
+        "captured_at": "2026-06-21T00:00:00Z",
+        "posts": [
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "5001",
+                "topic_id": "claim-conflict",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry5001",
+                "author_label": None,
+                "posted_at": "12.03.24, 12:36",
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": old_text,
+                "entities": extract_entities(old_text),
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "5002",
+                "topic_id": "claim-conflict",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry5002",
+                "author_label": None,
+                "posted_at": "18.06.26, 08:10",
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": new_text,
+                "entities": extract_entities(new_text),
+            },
+            {
+                "schema": "aoa_4pda_normalized_post_v1",
+                "post_id": "5003",
+                "topic_id": "claim-conflict",
+                "source_url": "https://4pda.to/forum/index.php?showtopic=1076859#entry5003",
+                "author_label": None,
+                "posted_at": "19.06.26, 08:10",
+                "captured_at": "2026-06-21T00:00:00Z",
+                "text": warning_text,
+                "entities": extract_entities(warning_text),
+            },
+        ],
+    }
+    (normalized_dir / "topic-claim-conflict.json").write_text(
+        json.dumps(topic, ensure_ascii=False), encoding="utf-8"
+    )
+
+    graph_path = build_graph(normalized_dir, tmp_path / "graph", "xiaomi-13t")
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    node_kinds = {node["kind"] for node in graph["nodes"]}
+    edge_kinds = {edge["kind"] for edge in graph["edges"]}
+
+    assert {"claim", "method", "target", "tool", "condition", "applicability_context", "warning"}.issubset(node_kinds)
+    assert {
+        "claim_applies_to_context",
+        "method_uses_tool",
+        "method_targets_object",
+        "method_requires_condition",
+        "warning_targets_object",
+        "claim_contextualizes_claim",
+        "claim_supersedes_claim",
+        "claim_contradicts_claim",
+        "claim_deprecated_for_context",
+        "source_supports_claim",
+        "source_warns_about_claim",
+        "source_updates_claim",
+    }.issubset(edge_kinds)
+    assert graph["claim_stats"]["claim_count"] >= 3
+    assert graph["claim_stats"]["supersedes_count"] >= 1
+    assert graph["claim_stats"]["contradicts_count"] >= 1
+    assert graph["claim_stats"]["contextualizes_count"] >= 1
+
+    required_metadata = [
+        "source_refs",
+        "confidence",
+        "extraction_basis",
+        "relation_reason",
+        "freshness_basis",
+        "manual_review_required",
+    ]
+    claim_edges = [edge for edge in graph["edges"] if edge["kind"] in {"claim_supersedes_claim", "claim_contradicts_claim"}]
+    assert claim_edges
+    assert all(all(field in edge for field in required_metadata) for edge in claim_edges)

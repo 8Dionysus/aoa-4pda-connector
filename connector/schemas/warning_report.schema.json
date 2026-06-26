@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/aoa-connector/warning_report.schema.json",
+  "title": "AoA Connector Warning Report",
+  "type": "object",
+  "required": [
+    "schema",
+    "warning_requested",
+    "warning_supported",
+    "risk_status",
+    "warning_labels",
+    "warning_target_labels",
+    "warning_claim_ids",
+    "relation_count"
+  ],
+  "properties": {
+    "schema": { "const": "aoa_connector_warning_report_v1" },
+    "warning_requested": { "type": "boolean" },
+    "warning_supported": { "type": "boolean" },
+    "risk_status": { "enum": ["warning_present", "no_warning_claim_in_evidence"] },
+    "warning_labels": { "type": "array", "items": { "type": "string" } },
+    "warning_target_labels": { "type": "array", "items": { "type": "string" } },
+    "warning_claim_ids": { "type": "array", "items": { "type": "string" } },
+    "relation_count": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

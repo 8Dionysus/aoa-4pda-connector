@@ -49,13 +49,15 @@ Use this when a user asks an agent to install the connector.
 21. Run `aoa-4pda eval graph-query-packets`.
 22. Run `aoa-4pda eval hybrid-query-packets`.
 23. Run `aoa-4pda eval answer-packets`.
-24. Ask the operator for external storage roots before larger or long-lived
+24. Run `aoa-4pda eval claim-relations`.
+25. Run `aoa-4pda eval claim-answer-packets`.
+26. Ask the operator for external storage roots before larger or long-lived
     crawls.
-25. Run `aoa-4pda policy check`.
-26. Stop before any network crawl unless the operator explicitly asks for it.
-27. If the operator asks for a starter run, use `--profile starter` with a
+27. Run `aoa-4pda policy check`.
+28. Stop before any network crawl unless the operator explicitly asks for it.
+29. If the operator asks for a starter run, use `--profile starter` with a
     small `--max-topics` value first.
-28. After a starter crawl, run `normalize`, `build-index`, `build-vector`,
+30. After a starter crawl, run `normalize`, `build-index`, `build-vector`,
     `build-graph`, and `proof live-starter` sequentially against the same run.
 29. Run `aoa-4pda eval live-search-quality --run <run-id>` only after that
     named live run has an index receipt.
