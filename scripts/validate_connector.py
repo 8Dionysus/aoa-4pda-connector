@@ -180,6 +180,7 @@ IGNORED_LOCAL_CACHE_DIR_NAMES = {
 }
 
 ALLOWED_REPO_LOCAL_STATE_ROOT = ".connector-state"
+ALLOWED_KAG_RECORD_DIRS = {("kag", "indexes")}
 
 
 def main() -> int:
@@ -229,6 +230,8 @@ def main() -> int:
         if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in rel_parts):
             continue
         if rel_parts and rel_parts[0] == ALLOWED_REPO_LOCAL_STATE_ROOT:
+            continue
+        if tuple(rel_parts[:2]) in ALLOWED_KAG_RECORD_DIRS:
             continue
         if path.is_dir() and path.name in FORBIDDEN_ARTIFACT_DIR_NAMES:
             errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")
