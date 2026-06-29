@@ -102,6 +102,67 @@ def test_cli_storage_status_reports_repo_local_default_without_network():
     assert payload["measure"] is True
 
 
+def test_cli_sources_registry_plans_4pda_crawl_scope(tmp_path):
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(tmp_path / "data"),
+            "CONNECTOR_CACHE_ROOT": str(tmp_path / "cache"),
+            "CONNECTOR_ARTIFACT_ROOT": str(tmp_path / "artifacts"),
+        }
+    )
+    add = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "sources",
+            "add",
+            "https://4pda.to/forum/index.php?showtopic=42",
+            "--kind",
+            "topic",
+            "--tags",
+            "xiaomi,firmware",
+            "--trust-score",
+            "0.8",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert add.returncode == 0, add.stdout + add.stderr
+    add_payload = json.loads(add.stdout)
+    assert add_payload["schema"] == "aoa_4pda_source_registry_receipt_v1"
+    assert add_payload["source"]["access"] == "public"
+
+    list_result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "sources", "list", "--tag", "xiaomi"],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert list_result.returncode == 0, list_result.stdout + list_result.stderr
+    assert json.loads(list_result.stdout)["selected_count"] == 1
+
+    plan = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "sources", "plan", "--run", "pytest-4pda-sources", "--max-pages", "3"],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert plan.returncode == 0, plan.stdout + plan.stderr
+    plan_payload = json.loads(plan.stdout)
+    assert plan_payload["schema"] == "aoa_4pda_source_crawl_plan_v1"
+    assert plan_payload["steps"][0]["operation"] == "crawl"
+    assert plan_payload["network_touched"] is False
+
+
 def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     env = _env_with_src()
     env.update(
