@@ -78,11 +78,12 @@ jobs:
 
           forbidden = {"data", "cache", "artifacts", "raw", "indexes", "vectors", "graphs"}
           allowed_scaffold = {
-              ".connector-state/data/.gitkeep",
-              ".connector-state/cache/.gitkeep",
-              ".connector-state/artifacts/.gitkeep",
-              "kag/indexes/source_inventory.json",
-          }
+            ".connector-state/data/.gitkeep",
+            ".connector-state/cache/.gitkeep",
+            ".connector-state/artifacts/.gitkeep",
+            "kag/indexes/source_inventory.json",
+            "kag/indexes/source_surface_index.json",
+        }
           hits = []
           tracked = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
           for rel in tracked:
