@@ -1,20 +1,20 @@
 {
   "coverage_summary": {
-    "command_count": 13,
+    "command_count": 12,
     "document_count": 75,
-    "generated_count": 3,
+    "generated_count": 1,
     "heading_count": 442,
     "mechanics_count": 0,
-    "record_count": 182,
+    "record_count": 183,
     "schema_count": 17,
-    "script_count": 1,
+    "script_count": 0,
     "test_count": 11,
     "unknown_count": 10,
     "validator_count": 1
   },
   "index_identity": {
     "artifact_kind": "source_surface_index",
-    "content_digest": "e90036bdbce531af12b4b572bd81be493cb4763c8728c912eef1c0179deea604",
+    "content_digest": "cb76413681e853a631c80d5799f20c1efaada5c37255387792aa519d58840ec7",
     "local_id": "index:repo-local:source-surfaces",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-index.schema.json"
   },
@@ -587,13 +587,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "467f73508e639bd4dddc2b1cee9a476624cf0273af50fc00a2a4296347b2f006",
+        "content_hash": "5323c256338f942dd60e37bace8d1481f1d94a1bff2c0d459232c6536e042e67",
         "git_ref": "git-index-source-tree",
         "id": "file:.github/workflows/validate.yml:a5c0f08bc4",
         "mime": "application/yaml",
         "path": ".github/workflows/validate.yml",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 2915
+        "size_bytes": 2917
       },
       "mechanics_role": "none",
       "observed_form": "file",
@@ -626,7 +626,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "467f73508e639bd4dddc2b1cee9a476624cf0273af50fc00a2a4296347b2f006",
+        "digest": "5323c256338f942dd60e37bace8d1481f1d94a1bff2c0d459232c6536e042e67",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -15010,15 +15010,8 @@
         "surface": "generated/connector_registry.min.json"
       },
       "provenance": {
-        "generated_by": "scripts/generate_repo_local_kag_index.py",
-        "materials": [
-          {
-            "authority": "derived_readmodel",
-            "path": "generated/connector_registry.min.json",
-            "repo": "aoa-4pda-connector",
-            "role": "primary"
-          }
-        ],
+        "generated_by": "scripts/generate_kag.py",
+        "materials": [],
         "observed_by": "scripts/generate_repo_local_kag_index.py",
         "source_refs": [
           {
@@ -15400,7 +15393,7 @@
       "abi": {
         "abi_epoch": "source",
         "artifact_class": "index",
-        "compatibility": "generated",
+        "compatibility": "stable",
         "contract_version": "none",
         "schema_version": "aoa-local-kag-record-v1"
       },
@@ -15441,19 +15434,12 @@
         "surface": "kag/indexes/source_inventory.json"
       },
       "provenance": {
-        "generated_by": "scripts/generate_repo_local_kag_index.py",
-        "materials": [
-          {
-            "authority": "derived_readmodel",
-            "path": "kag/indexes/source_inventory.json",
-            "repo": "aoa-4pda-connector",
-            "role": "primary"
-          }
-        ],
+        "generated_by": "",
+        "materials": [],
         "observed_by": "scripts/generate_repo_local_kag_index.py",
         "source_refs": [
           {
-            "authority": "derived_readmodel",
+            "authority": "authored_source",
             "path": "kag/indexes/source_inventory.json",
             "repo": "aoa-4pda-connector",
             "role": "primary"
@@ -15476,7 +15462,7 @@
         "signature_ref": "",
         "verification_state": "digest-only"
       },
-      "surface_state": "generated_readmodel",
+      "surface_state": "authored_source",
       "toolchain": {
         "detected_tools": [
           "git",
@@ -15763,7 +15749,7 @@
       "abi": {
         "abi_epoch": "source",
         "artifact_class": "projection",
-        "compatibility": "generated",
+        "compatibility": "stable",
         "contract_version": "none",
         "schema_version": "aoa-local-kag-record-v1"
       },
@@ -15804,19 +15790,12 @@
         "surface": "kag/projections/source_return.json"
       },
       "provenance": {
-        "generated_by": "scripts/generate_repo_local_kag_index.py",
-        "materials": [
-          {
-            "authority": "derived_readmodel",
-            "path": "kag/projections/source_return.json",
-            "repo": "aoa-4pda-connector",
-            "role": "primary"
-          }
-        ],
+        "generated_by": "",
+        "materials": [],
         "observed_by": "scripts/generate_repo_local_kag_index.py",
         "source_refs": [
           {
-            "authority": "derived_readmodel",
+            "authority": "authored_source",
             "path": "kag/projections/source_return.json",
             "repo": "aoa-4pda-connector",
             "role": "primary"
@@ -15839,7 +15818,7 @@
         "signature_ref": "",
         "verification_state": "digest-only"
       },
-      "surface_state": "generated_readmodel",
+      "surface_state": "authored_source",
       "toolchain": {
         "detected_tools": [
           "git",
@@ -16125,7 +16104,7 @@
     {
       "abi": {
         "abi_epoch": "source",
-        "artifact_class": "script",
+        "artifact_class": "source_code",
         "compatibility": "stable",
         "contract_version": "none",
         "schema_version": "none"
@@ -16134,13 +16113,13 @@
         "scope": "public",
         "secrets_risk": "none"
       },
-      "artifact_kind": "script",
+      "artifact_kind": "source_code",
       "classification": {
         "confidence": "high",
-        "primary_kind": "command"
+        "primary_kind": "surface"
       },
-      "code_role": "entrypoint",
-      "command_role": "script",
+      "code_role": "source_module",
+      "command_role": "none",
       "consumer_route": {
         "route_kind": "resource",
         "surface": "aoa-kag-mcp"
@@ -16161,9 +16140,9 @@
         "size_bytes": 13166
       },
       "mechanics_role": "none",
-      "observed_form": "command",
+      "observed_form": "file",
       "owner_return_route": {
-        "route_kind": "command_owner",
+        "route_kind": "source_owner",
         "surface": "scripts/verify_agent_install_route.py"
       },
       "provenance": {
@@ -16201,9 +16180,7 @@
           "git",
           "python"
         ],
-        "owner_commands": [
-          "python scripts/verify_agent_install_route.py"
-        ],
+        "owner_commands": [],
         "required_tools": [
           "python"
         ]
@@ -16599,13 +16576,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "bdaaab66a9b459f374d973ba45fd3fe1d4c967cc2a8fa58b9b4c7c4d17212023",
+        "content_hash": "25b15a4c45f1ee80483e59fc037ab0133d2fb945ceb0f2d73d10d3846f5bc919",
         "git_ref": "git-index-source-tree",
         "id": "file:src/aoa_4pda_connector/cli.py:1193cea4c9",
         "mime": "text/x-python",
         "path": "src/aoa_4pda_connector/cli.py",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 62261
+        "size_bytes": 81343
       },
       "mechanics_role": "none",
       "observed_form": "file",
@@ -16638,7 +16615,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "bdaaab66a9b459f374d973ba45fd3fe1d4c967cc2a8fa58b9b4c7c4d17212023",
+        "digest": "25b15a4c45f1ee80483e59fc037ab0133d2fb945ceb0f2d73d10d3846f5bc919",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -18112,6 +18089,95 @@
         "state": "current"
       },
       "identity": {
+        "content_hash": "4bcc9ff18cc7b137707ab92c4412b837a4f16a3455347084ff1c8384b0c6aafc",
+        "git_ref": "git-index-source-tree",
+        "id": "file:src/aoa_4pda_connector/sources/__init__.py:5984016420",
+        "mime": "text/x-python",
+        "path": "src/aoa_4pda_connector/sources/__init__.py",
+        "repo": "aoa-4pda-connector",
+        "size_bytes": 7058
+      },
+      "mechanics_role": "none",
+      "observed_form": "file",
+      "owner_return_route": {
+        "route_kind": "source_owner",
+        "surface": "src/aoa_4pda_connector/sources/__init__.py"
+      },
+      "provenance": {
+        "generated_by": "",
+        "materials": [],
+        "observed_by": "scripts/generate_repo_local_kag_index.py",
+        "source_refs": [
+          {
+            "authority": "authored_source",
+            "path": "src/aoa_4pda_connector/sources/__init__.py",
+            "repo": "aoa-4pda-connector",
+            "role": "primary"
+          }
+        ],
+        "validated_by": [
+          "scripts/validate_kag.py"
+        ]
+      },
+      "refs": {
+        "heading_refs": [],
+        "line_refs": [
+          "src/aoa_4pda_connector/sources/__init__.py:1"
+        ],
+        "path_ref": "src/aoa_4pda_connector/sources/__init__.py"
+      },
+      "signs": {
+        "attestation_ref": "",
+        "digest": "4bcc9ff18cc7b137707ab92c4412b837a4f16a3455347084ff1c8384b0c6aafc",
+        "signature_ref": "",
+        "verification_state": "digest-only"
+      },
+      "surface_state": "authored_source",
+      "toolchain": {
+        "detected_tools": [
+          "git",
+          "python"
+        ],
+        "owner_commands": [],
+        "required_tools": [
+          "python"
+        ]
+      },
+      "validator_route": {
+        "route_kind": "source_fast",
+        "surface": "scripts/validate_kag.py"
+      }
+    },
+    {
+      "abi": {
+        "abi_epoch": "source",
+        "artifact_class": "source_code",
+        "compatibility": "stable",
+        "contract_version": "none",
+        "schema_version": "none"
+      },
+      "access": {
+        "scope": "public",
+        "secrets_risk": "none"
+      },
+      "artifact_kind": "source_code",
+      "classification": {
+        "confidence": "high",
+        "primary_kind": "surface"
+      },
+      "code_role": "source_module",
+      "command_role": "none",
+      "consumer_route": {
+        "route_kind": "resource",
+        "surface": "aoa-kag-mcp"
+      },
+      "document_role": "none",
+      "freshness": {
+        "checked_ref": "git-index-source-tree",
+        "mode": "source_snapshot",
+        "state": "current"
+      },
+      "identity": {
         "content_hash": "256ae529146b8835c0c0e7532f529d65eb9bcc14dbda3392a03b63592f487cf8",
         "git_ref": "git-index-source-tree",
         "id": "file:src/aoa_4pda_connector/storage/__init__.py:fcd9a33223",
@@ -18290,13 +18356,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "c7f3767b9f5b8b0a92e0ad5223a7ffcf248aec4da5ff4d9f028dc7f756da4df5",
+        "content_hash": "be1c9701d2a7f0b414022123f18561a94e7fd838975b1d8cfc909508da10a679",
         "git_ref": "git-index-source-tree",
         "id": "file:tests/contract/test_fixtures_and_cli.py:b979c19001",
         "mime": "text/x-python",
         "path": "tests/contract/test_fixtures_and_cli.py",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 70803
+        "size_bytes": 74134
       },
       "mechanics_role": "none",
       "observed_form": "command",
@@ -18329,7 +18395,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "c7f3767b9f5b8b0a92e0ad5223a7ffcf248aec4da5ff4d9f028dc7f756da4df5",
+        "digest": "be1c9701d2a7f0b414022123f18561a94e7fd838975b1d8cfc909508da10a679",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -18745,13 +18811,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "37e0d04113395ef7c0bde35d1e8e2d25dd117245d43b56888a1d602866348c4e",
+        "content_hash": "895dcf4bb7fd49be605d8e88398b3f4bed6b4419823cdf714ac0d4ee5548df86",
         "git_ref": "git-index-source-tree",
         "id": "file:tests/unit/test_crawl_pagination.py:04c0622462",
         "mime": "text/x-python",
         "path": "tests/unit/test_crawl_pagination.py",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 4751
+        "size_bytes": 13844
       },
       "mechanics_role": "none",
       "observed_form": "command",
@@ -18784,7 +18850,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "37e0d04113395ef7c0bde35d1e8e2d25dd117245d43b56888a1d602866348c4e",
+        "digest": "895dcf4bb7fd49be605d8e88398b3f4bed6b4419823cdf714ac0d4ee5548df86",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
