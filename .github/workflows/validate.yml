@@ -83,7 +83,7 @@ jobs:
             ".connector-state/artifacts/.gitkeep",
             "kag/indexes/source_inventory.json",
             "kag/indexes/source_surface_index.json",
-        }
+          }
           hits = []
           tracked = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
           for rel in tracked:
