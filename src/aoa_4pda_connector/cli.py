@@ -113,6 +113,14 @@ def build_parser() -> argparse.ArgumentParser:
     _add_source_filter_args(sources_plan)
     sources_plan.add_argument("--all", action="store_true")
     sources_plan.set_defaults(func=cmd_sources_plan)
+    sources_crawl = sources_sub.add_parser("crawl", help="Crawl operator-local public topic sources.")
+    sources_crawl.add_argument("--run", default=None)
+    sources_crawl.add_argument("--max-pages", type=int, default=1)
+    sources_crawl.add_argument("--include-media", choices=sorted(MEDIA_POLICIES))
+    sources_crawl.add_argument("--delay-seconds", type=float, default=8)
+    _add_source_filter_args(sources_crawl)
+    sources_crawl.add_argument("--all", action="store_true")
+    sources_crawl.set_defaults(func=cmd_sources_crawl)
 
     materialize = sub.add_parser("materialize", help="Materialize small no-network starter datasets.")
     materialize_sub = materialize.add_subparsers(dest="materialize_command", required=True)
@@ -501,6 +509,146 @@ def cmd_sources_plan(args: argparse.Namespace) -> int:
     path.write_text(json.dumps(plan, indent=2, sort_keys=True), encoding="utf-8")
     _emit({"status": "ok" if selected else "no_sources", "plan_path": str(path), **plan})
     return 0 if selected else 1
+
+
+def cmd_sources_crawl(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    error = _require_roots(roots, ["data", "artifact"])
+    if error:
+        return error
+    if args.max_pages < 1:
+        _emit(
+            {
+                "schema": "aoa_4pda_source_crawl_preflight_v1",
+                "status": "error",
+                "error": "max_pages must be at least 1",
+                "network_touched": False,
+                "read_only": True,
+                "download_touched": False,
+            }
+        )
+        return 2
+    create_storage_roots(roots)
+    registry = load_registry(roots.data)
+    selected = _selected_sources(registry, args)
+    run_id = args.run or _new_run_id("source-crawl")
+    started_at = _now()
+    plan = build_source_plan(run_id=run_id, sources=selected, max_pages=args.max_pages, include_media=args.include_media)
+    plan_path = roots.artifact / "source-plans" / run_id / "source-plan.json"
+    plan_path.parent.mkdir(parents=True, exist_ok=True)
+    plan_path.write_text(json.dumps(plan, indent=2, sort_keys=True), encoding="utf-8")
+    if not selected:
+        _emit({"status": "no_sources", "plan_path": str(plan_path), **plan})
+        return 1
+    preflight_errors = _source_crawl_preflight_errors(plan.get("steps", []))
+    if preflight_errors:
+        _emit(
+            {
+                "schema": "aoa_4pda_source_crawl_preflight_v1",
+                "status": "blocked",
+                "run_id": run_id,
+                "plan_path": str(plan_path),
+                "selected_count": len(selected),
+                "errors": preflight_errors,
+                "network_touched": False,
+                "read_only": True,
+                "download_touched": False,
+            }
+        )
+        return 2
+
+    raw_dir = roots.data / "raw" / run_id
+    receipt_dir = roots.artifact / "receipts"
+    fetched = []
+    errors = []
+    total_requests = len(selected) * args.max_pages
+    request_index = 0
+    sources_by_id = {str(source.get("source_id")): source for source in selected}
+    for step in plan["steps"]:
+        source_id = str(step["source_id"])
+        source = sources_by_id[source_id]
+        source_ref = str(step["source_ref"])
+        for page_index in range(args.max_pages):
+            request_index += 1
+            page_url = topic_page_url(source_ref, page_index)
+            page_start = page_url.rsplit("st=", 1)[-1]
+            try:
+                result = fetch_public_topic(page_url, raw_dir)
+                fetched.append(
+                    {
+                        "seed_id": source_id,
+                        "source_id": source_id,
+                        "source_ref": source_ref,
+                        "source_kind": source.get("kind"),
+                        "source_access": source.get("access"),
+                        "source_scope": source.get("scope"),
+                        "source_tags": source.get("tags", []),
+                        "label": source.get("title") or source_ref,
+                        "page_index": page_index,
+                        "page_start": int(page_start),
+                        "url": result.url,
+                        "path": str(result.path),
+                        "bytes": result.bytes_written,
+                        "sha256": result.sha256,
+                        "status": result.status,
+                    }
+                )
+            except Exception as exc:  # noqa: BLE001 - receipt should preserve crawl failure detail.
+                errors.append(
+                    {
+                        "seed_id": source_id,
+                        "source_id": source_id,
+                        "source_ref": source_ref,
+                        "page_index": page_index,
+                        "page_start": page_start,
+                        "url": page_url,
+                        "error": str(exc),
+                    }
+                )
+            if request_index < total_requests:
+                polite_sleep(args.delay_seconds)
+    fetched_source_ids = sorted({str(item["source_id"]) for item in fetched})
+    fetched_topic_ids = sorted({topic_id_from_url(str(item["url"])) for item in fetched})
+    receipt = {
+        "schema": "aoa_4pda_crawl_receipt_v1",
+        "run_id": run_id,
+        "profile_id": "operator-sources",
+        "started_at": started_at,
+        "finished_at": _now(),
+        "source_urls": [item["url"] for item in fetched],
+        "source_registry": {
+            "registry_path": str(registry_path(roots.data)),
+            "plan_path": str(plan_path),
+            "selected_count": len(selected),
+            "source_ids": [str(source.get("source_id")) for source in selected],
+        },
+        "policy": {
+            "allowed_public_only": True,
+            "internal_search_used": False,
+            "attachments_downloaded": False,
+        },
+        "counts": {
+            "requested": len(selected),
+            "fetched": len(fetched),
+            "requested_sources": len(selected),
+            "requested_topics": len(selected),
+            "requested_pages": total_requests,
+            "fetched_sources": len(fetched_source_ids),
+            "fetched_topics": len(fetched_topic_ids),
+            "fetched_pages": len(fetched),
+            "errors": len(errors),
+        },
+        "snapshots": fetched,
+        "errors": errors,
+        "network_touched": True,
+        "read_only": True,
+        "download_touched": False,
+    }
+    receipt_path = _write_receipt(receipt_dir, run_id, "crawl", receipt)
+    status = "ok" if fetched and not errors else "partial" if fetched else "error"
+    _emit({"status": status, "receipt": str(receipt_path), **receipt})
+    return 0 if fetched else 1
 
 
 def cmd_policy_check(_args: argparse.Namespace) -> int:
@@ -1551,6 +1699,54 @@ def _selected_sources(registry: dict[str, object], args: argparse.Namespace) -> 
         tags=getattr(args, "tags", None),
         enabled_only=not bool(getattr(args, "all", False)),
     )
+
+
+def _source_crawl_preflight_errors(steps: object) -> list[dict[str, object]]:
+    errors: list[dict[str, object]] = []
+    if not isinstance(steps, list):
+        return [{"error_code": "invalid_source_plan", "message": "source plan steps must be a list"}]
+    for step in steps:
+        if not isinstance(step, dict):
+            errors.append({"error_code": "invalid_source_plan_step", "message": "source plan step must be an object"})
+            continue
+        source_ref = str(step.get("source_ref") or "")
+        if step.get("kind") != "topic":
+            errors.append(
+                {
+                    "source_id": step.get("source_id"),
+                    "source_ref": source_ref,
+                    "error_code": "unsupported_source_kind",
+                    "message": "sources crawl currently supports public topic sources only",
+                }
+            )
+        if step.get("access") != "public":
+            errors.append(
+                {
+                    "source_id": step.get("source_id"),
+                    "source_ref": source_ref,
+                    "error_code": "unsupported_access_mode",
+                    "message": "4PDA sources crawl does not use login or account-gated routes",
+                }
+            )
+        if step.get("include_media") != "none":
+            errors.append(
+                {
+                    "source_id": step.get("source_id"),
+                    "source_ref": source_ref,
+                    "error_code": "media_download_disabled",
+                    "message": "4PDA sources crawl stores public HTML snapshots only",
+                }
+            )
+        if not is_url_allowed(source_ref):
+            errors.append(
+                {
+                    "source_id": step.get("source_id"),
+                    "source_ref": source_ref,
+                    "error_code": "outside_public_topic_policy",
+                    "message": "source_ref must be a public 4PDA topic URL",
+                }
+            )
+    return errors
 
 
 if __name__ == "__main__":

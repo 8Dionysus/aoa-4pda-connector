@@ -162,6 +162,52 @@ def test_cli_sources_registry_plans_4pda_crawl_scope(tmp_path):
     assert plan_payload["steps"][0]["operation"] == "crawl"
     assert plan_payload["network_touched"] is False
 
+    blocked_source = "https://4pda.to/forum/index.php?showtopic=43"
+    blocked_add = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "sources",
+            "add",
+            blocked_source,
+            "--kind",
+            "topic",
+            "--include-media",
+            "documents",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert blocked_add.returncode == 0, blocked_add.stdout + blocked_add.stderr
+
+    blocked_crawl = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "sources",
+            "crawl",
+            "--run",
+            "pytest-blocked-source-crawl",
+            "--source",
+            blocked_source,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert blocked_crawl.returncode == 2, blocked_crawl.stdout + blocked_crawl.stderr
+    blocked_payload = json.loads(blocked_crawl.stdout)
+    assert blocked_payload["schema"] == "aoa_4pda_source_crawl_preflight_v1"
+    assert blocked_payload["network_touched"] is False
+    assert blocked_payload["errors"][0]["error_code"] == "media_download_disabled"
+
 
 def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
     env = _env_with_src()
