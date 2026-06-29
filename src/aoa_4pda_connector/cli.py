@@ -121,6 +121,19 @@ def build_parser() -> argparse.ArgumentParser:
     _add_source_filter_args(sources_crawl)
     sources_crawl.add_argument("--all", action="store_true")
     sources_crawl.set_defaults(func=cmd_sources_crawl)
+    sources_build = sources_sub.add_parser(
+        "build",
+        help="Crawl selected public sources and build local retrieval artifacts.",
+    )
+    sources_build.add_argument("--run", default=None)
+    sources_build.add_argument("--profile", default="operator-sources")
+    sources_build.add_argument("--max-pages", type=int, default=1)
+    sources_build.add_argument("--include-media", choices=sorted(MEDIA_POLICIES))
+    sources_build.add_argument("--delay-seconds", type=float, default=8)
+    sources_build.add_argument("--dimensions", type=int, default=256)
+    _add_source_filter_args(sources_build)
+    sources_build.add_argument("--all", action="store_true")
+    sources_build.set_defaults(func=cmd_sources_build)
 
     materialize = sub.add_parser("materialize", help="Materialize small no-network starter datasets.")
     materialize_sub = materialize.add_subparsers(dest="materialize_command", required=True)
@@ -517,19 +530,121 @@ def cmd_sources_crawl(args: argparse.Namespace) -> int:
     error = _require_roots(roots, ["data", "artifact"])
     if error:
         return error
-    if args.max_pages < 1:
+    create_storage_roots(roots)
+    rc, payload = _source_crawl_payload(roots, args)
+    _emit(payload)
+    return rc
+
+
+def cmd_sources_build(args: argparse.Namespace) -> int:
+    repo_root = find_repo_root()
+    roots = StorageRoots.from_env(repo_root)
+    error = _require_roots(roots, ["data", "cache", "artifact"])
+    if error:
+        return error
+    create_storage_roots(roots)
+    crawl_rc, crawl_payload = _source_crawl_payload(roots, args)
+    if crawl_rc != 0:
         _emit(
             {
-                "schema": "aoa_4pda_source_crawl_preflight_v1",
+                "schema": "aoa_4pda_source_build_receipt_v1",
+                "status": "blocked" if crawl_payload.get("status") in {"blocked", "no_sources"} else "error",
+                "stage": "crawl",
+                "run_id": crawl_payload.get("run_id"),
+                "crawl": crawl_payload,
+                "network_touched": bool(crawl_payload.get("network_touched")),
+                "derived_network_touched": False,
+                "download_touched": bool(crawl_payload.get("download_touched")),
+            }
+        )
+        return crawl_rc
+
+    run_id = str(crawl_payload["run_id"])
+    try:
+        normalize_receipt_path, normalize_receipt = _normalize_crawl_receipt(roots, crawl_payload)
+        index_receipt_path, index_receipt = _build_index_receipt(roots, run_id, args.profile)
+        vector_receipt_path, vector_receipt = _build_vector_receipt(roots, run_id, args.profile, args.dimensions)
+        graph_receipt_path, graph_receipt = _build_graph_receipt(roots, run_id, args.profile)
+    except Exception as exc:  # noqa: BLE001 - source build receipt should preserve failure detail.
+        _emit(
+            {
+                "schema": "aoa_4pda_source_build_receipt_v1",
                 "status": "error",
-                "error": "max_pages must be at least 1",
-                "network_touched": False,
-                "read_only": True,
+                "stage": "derive",
+                "run_id": run_id,
+                "crawl_receipt": crawl_payload.get("receipt"),
+                "error": str(exc),
+                "network_touched": True,
+                "derived_network_touched": False,
                 "download_touched": False,
             }
         )
-        return 2
-    create_storage_roots(roots)
+        return 1
+
+    index = json.loads(Path(str(index_receipt["index_path"])).read_text(encoding="utf-8"))
+    vector = json.loads(Path(str(vector_receipt["vector_path"])).read_text(encoding="utf-8"))
+    graph = json.loads(Path(str(graph_receipt["graph_path"])).read_text(encoding="utf-8"))
+    crawl_counts = crawl_payload.get("counts", {}) if isinstance(crawl_payload.get("counts"), dict) else {}
+    normalize_counts = normalize_receipt.get("counts", {}) if isinstance(normalize_receipt.get("counts"), dict) else {}
+    payload = {
+        "schema": "aoa_4pda_source_build_receipt_v1",
+        "run_id": run_id,
+        "profile_id": args.profile,
+        "source_profile_id": crawl_payload.get("profile_id"),
+        "finished_at": _now(),
+        "source_registry": crawl_payload.get("source_registry", {}),
+        "receipts": {
+            "crawl": str(crawl_payload["receipt"]),
+            "normalize": str(normalize_receipt_path),
+            "index": str(index_receipt_path),
+            "vector": str(vector_receipt_path),
+            "graph": str(graph_receipt_path),
+        },
+        "artifacts": {
+            "index_path": index_receipt.get("index_path"),
+            "vector_path": vector_receipt.get("vector_path"),
+            "graph_path": graph_receipt.get("graph_path"),
+        },
+        "counts": {
+            "crawl_fetched_pages": int(crawl_counts.get("fetched_pages", 0) or 0),
+            "crawl_errors": int(crawl_counts.get("errors", 0) or 0),
+            "normalized_topics": int(normalize_counts.get("topics", 0) or 0),
+            "normalized_pages": int(normalize_counts.get("pages", 0) or 0),
+            "index_docs": int(index.get("doc_count", 0) or 0),
+            "index_terms": int(index.get("term_count", 0) or 0),
+            "vector_docs": int(vector.get("doc_count", 0) or 0),
+            "vector_features": int(vector.get("feature_count", 0) or 0),
+            "graph_nodes": int(graph.get("node_count", 0) or 0),
+            "graph_edges": int(graph.get("edge_count", 0) or 0),
+            "graph_claims": int(graph.get("claim_stats", {}).get("claim_count", 0))
+            if isinstance(graph.get("claim_stats"), dict)
+            else 0,
+        },
+        "policy": {
+            "allowed_public_only": True,
+            "internal_search_used": False,
+            "attachments_downloaded": False,
+        },
+        "network_touched": True,
+        "derived_network_touched": False,
+        "download_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "source_build", payload)
+    status = "partial" if int(payload["counts"]["crawl_errors"]) else "ok"
+    _emit({"status": status, "receipt": str(receipt_path), **payload})
+    return 0
+
+
+def _source_crawl_payload(roots: StorageRoots, args: argparse.Namespace) -> tuple[int, dict[str, object]]:
+    if args.max_pages < 1:
+        return 2, {
+            "schema": "aoa_4pda_source_crawl_preflight_v1",
+            "status": "error",
+            "error": "max_pages must be at least 1",
+            "network_touched": False,
+            "read_only": True,
+            "download_touched": False,
+        }
     registry = load_registry(roots.data)
     selected = _selected_sources(registry, args)
     run_id = args.run or _new_run_id("source-crawl")
@@ -539,24 +654,20 @@ def cmd_sources_crawl(args: argparse.Namespace) -> int:
     plan_path.parent.mkdir(parents=True, exist_ok=True)
     plan_path.write_text(json.dumps(plan, indent=2, sort_keys=True), encoding="utf-8")
     if not selected:
-        _emit({"status": "no_sources", "plan_path": str(plan_path), **plan})
-        return 1
+        return 1, {"status": "no_sources", "plan_path": str(plan_path), **plan}
     preflight_errors = _source_crawl_preflight_errors(plan.get("steps", []))
     if preflight_errors:
-        _emit(
-            {
-                "schema": "aoa_4pda_source_crawl_preflight_v1",
-                "status": "blocked",
-                "run_id": run_id,
-                "plan_path": str(plan_path),
-                "selected_count": len(selected),
-                "errors": preflight_errors,
-                "network_touched": False,
-                "read_only": True,
-                "download_touched": False,
-            }
-        )
-        return 2
+        return 2, {
+            "schema": "aoa_4pda_source_crawl_preflight_v1",
+            "status": "blocked",
+            "run_id": run_id,
+            "plan_path": str(plan_path),
+            "selected_count": len(selected),
+            "errors": preflight_errors,
+            "network_touched": False,
+            "read_only": True,
+            "download_touched": False,
+        }
 
     raw_dir = roots.data / "raw" / run_id
     receipt_dir = roots.artifact / "receipts"
@@ -647,8 +758,7 @@ def cmd_sources_crawl(args: argparse.Namespace) -> int:
     }
     receipt_path = _write_receipt(receipt_dir, run_id, "crawl", receipt)
     status = "ok" if fetched and not errors else "partial" if fetched else "error"
-    _emit({"status": status, "receipt": str(receipt_path), **receipt})
-    return 0 if fetched else 1
+    return 0 if fetched else 1, {"status": status, "receipt": str(receipt_path), **receipt}
 
 
 def cmd_policy_check(_args: argparse.Namespace) -> int:
@@ -1025,23 +1135,7 @@ def cmd_normalize(args: argparse.Namespace) -> int:
     if error:
         return error
     receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "crawl")
-    run_id = receipt["run_id"]
-    output_dir = roots.data / "normalized" / run_id
-    normalized = []
-    for snapshot in receipt.get("snapshots", []):
-        path = normalize_snapshot(Path(snapshot["path"]), snapshot["url"], output_dir)
-        normalized.append({"source_url": snapshot["url"], "path": str(path)})
-    topic_ids = sorted({topic_id_from_url(str(item["source_url"])) for item in normalized})
-    payload = {
-        "schema": "aoa_4pda_normalize_receipt_v1",
-        "run_id": run_id,
-        "source_run_id": receipt["run_id"],
-        "finished_at": _now(),
-        "normalized": normalized,
-        "counts": {"topics": len(topic_ids), "pages": len(normalized)},
-        "network_touched": False,
-    }
-    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "normalize", payload)
+    receipt_path, payload = _normalize_crawl_receipt(roots, receipt)
     _emit({"status": "ok", "receipt": str(receipt_path), **payload})
     return 0
 
@@ -1052,22 +1146,7 @@ def cmd_build_index(args: argparse.Namespace) -> int:
     if error:
         return error
     receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
-    run_id = receipt["run_id"]
-    normalized_dir = roots.data / "normalized" / run_id
-    output_dir = roots.cache / "indexes" / run_id
-    index_path = build_keyword_index(normalized_dir, output_dir, args.profile)
-    payload = {
-        "schema": "aoa_4pda_index_manifest_v1",
-        "index_id": run_id,
-        "profile_id": args.profile,
-        "built_at": _now(),
-        "source_run_ids": [run_id],
-        "index_kinds": ["keyword"],
-        "artifact_root": str(output_dir),
-        "index_path": str(index_path),
-        "network_touched": False,
-    }
-    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "index", payload)
+    receipt_path, payload = _build_index_receipt(roots, str(receipt["run_id"]), args.profile)
     _emit({"status": "ok", "receipt": str(receipt_path), **payload})
     return 0
 
@@ -1078,25 +1157,7 @@ def cmd_build_vector(args: argparse.Namespace) -> int:
     if error:
         return error
     receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
-    run_id = receipt["run_id"]
-    normalized_dir = roots.data / "normalized" / run_id
-    output_dir = roots.cache / "vectors" / run_id
-    vector_path = build_vector_index(normalized_dir, output_dir, args.profile, dimensions=args.dimensions)
-    vector = json.loads(vector_path.read_text(encoding="utf-8"))
-    payload = {
-        "schema": "aoa_4pda_vector_manifest_v1",
-        "vector_id": run_id,
-        "profile_id": args.profile,
-        "built_at": _now(),
-        "source_run_ids": [run_id],
-        "index_kinds": ["vector"],
-        "vector_algorithm": vector.get("algorithm"),
-        "dimensions": vector.get("dimensions"),
-        "artifact_root": str(output_dir),
-        "vector_path": str(vector_path),
-        "network_touched": False,
-    }
-    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "vector", payload)
+    receipt_path, payload = _build_vector_receipt(roots, str(receipt["run_id"]), args.profile, args.dimensions)
     _emit({"status": "ok", "receipt": str(receipt_path), **payload})
     return 0
 
@@ -1107,22 +1168,7 @@ def cmd_build_graph(args: argparse.Namespace) -> int:
     if error:
         return error
     receipt = _load_latest_or_named_receipt(roots.artifact, args.run, "normalize")
-    run_id = receipt["run_id"]
-    normalized_dir = roots.data / "normalized" / run_id
-    output_dir = roots.artifact / "graphs" / run_id
-    graph_path = build_graph(normalized_dir, output_dir, args.profile)
-    graph = json.loads(graph_path.read_text(encoding="utf-8"))
-    payload = {
-        "schema": "aoa_4pda_graph_receipt_v1",
-        "run_id": run_id,
-        "profile_id": args.profile,
-        "built_at": _now(),
-        "graph_path": str(graph_path),
-        "claim_stats": graph.get("claim_stats", {}) if isinstance(graph.get("claim_stats"), dict) else {},
-        "source_run_ids": [run_id],
-        "network_touched": False,
-    }
-    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "graph", payload)
+    receipt_path, payload = _build_graph_receipt(roots, str(receipt["run_id"]), args.profile)
     _emit({"status": "ok", "receipt": str(receipt_path), **payload})
     return 0
 
@@ -1689,6 +1735,92 @@ def _query_hybrid_packet_from_roots(artifact_root: Path, run: str, query: str, l
         query,
         limit=limit,
     )
+
+
+def _normalize_crawl_receipt(roots: StorageRoots, receipt: dict[str, object]) -> tuple[Path, dict[str, object]]:
+    run_id = str(receipt["run_id"])
+    output_dir = roots.data / "normalized" / run_id
+    normalized = []
+    for snapshot in receipt.get("snapshots", []):
+        path = normalize_snapshot(Path(snapshot["path"]), snapshot["url"], output_dir)
+        normalized.append({"source_url": snapshot["url"], "path": str(path)})
+    topic_ids = sorted({topic_id_from_url(str(item["source_url"])) for item in normalized})
+    payload = {
+        "schema": "aoa_4pda_normalize_receipt_v1",
+        "run_id": run_id,
+        "source_run_id": receipt["run_id"],
+        "finished_at": _now(),
+        "normalized": normalized,
+        "counts": {"topics": len(topic_ids), "pages": len(normalized)},
+        "network_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "normalize", payload)
+    return receipt_path, payload
+
+
+def _build_index_receipt(roots: StorageRoots, run_id: str, profile_id: str) -> tuple[Path, dict[str, object]]:
+    normalized_dir = roots.data / "normalized" / run_id
+    output_dir = roots.cache / "indexes" / run_id
+    index_path = build_keyword_index(normalized_dir, output_dir, profile_id)
+    payload = {
+        "schema": "aoa_4pda_index_manifest_v1",
+        "index_id": run_id,
+        "profile_id": profile_id,
+        "built_at": _now(),
+        "source_run_ids": [run_id],
+        "index_kinds": ["keyword"],
+        "artifact_root": str(output_dir),
+        "index_path": str(index_path),
+        "network_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "index", payload)
+    return receipt_path, payload
+
+
+def _build_vector_receipt(
+    roots: StorageRoots,
+    run_id: str,
+    profile_id: str,
+    dimensions: int,
+) -> tuple[Path, dict[str, object]]:
+    normalized_dir = roots.data / "normalized" / run_id
+    output_dir = roots.cache / "vectors" / run_id
+    vector_path = build_vector_index(normalized_dir, output_dir, profile_id, dimensions=dimensions)
+    vector = json.loads(vector_path.read_text(encoding="utf-8"))
+    payload = {
+        "schema": "aoa_4pda_vector_manifest_v1",
+        "vector_id": run_id,
+        "profile_id": profile_id,
+        "built_at": _now(),
+        "source_run_ids": [run_id],
+        "index_kinds": ["vector"],
+        "vector_algorithm": vector.get("algorithm"),
+        "dimensions": vector.get("dimensions"),
+        "artifact_root": str(output_dir),
+        "vector_path": str(vector_path),
+        "network_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "vector", payload)
+    return receipt_path, payload
+
+
+def _build_graph_receipt(roots: StorageRoots, run_id: str, profile_id: str) -> tuple[Path, dict[str, object]]:
+    normalized_dir = roots.data / "normalized" / run_id
+    output_dir = roots.artifact / "graphs" / run_id
+    graph_path = build_graph(normalized_dir, output_dir, profile_id)
+    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    payload = {
+        "schema": "aoa_4pda_graph_receipt_v1",
+        "run_id": run_id,
+        "profile_id": profile_id,
+        "built_at": _now(),
+        "graph_path": str(graph_path),
+        "claim_stats": graph.get("claim_stats", {}) if isinstance(graph.get("claim_stats"), dict) else {},
+        "source_run_ids": [run_id],
+        "network_touched": False,
+    }
+    receipt_path = _write_receipt(roots.artifact / "receipts", run_id, "graph", payload)
+    return receipt_path, payload
 
 
 def _selected_sources(registry: dict[str, object], args: argparse.Namespace) -> list[dict[str, object]]:
