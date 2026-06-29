@@ -204,6 +204,90 @@ def test_sources_crawl_feeds_normalize_receipt_chain_without_network(tmp_path, m
     assert (artifact_root / "receipts" / "source-crawl-test.normalize.json").is_file()
 
 
+def test_sources_build_writes_queryable_artifact_chain_without_network(tmp_path, monkeypatch, capsys):
+    calls: list[str] = []
+    fixture = REPO_ROOT / "connector" / "fixtures" / "html" / "xiaomi_13t_firmware_topic.html"
+
+    def fake_fetch_public_topic(url, output_dir):  # noqa: ANN001 - mirrors CLI dependency shape.
+        calls.append(url)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        path = output_dir / f"build-page-{len(calls)}.html"
+        path.write_bytes(fixture.read_bytes())
+        return FetchResult(
+            url=url,
+            path=path,
+            bytes_written=path.stat().st_size,
+            sha256=f"sha-build-{len(calls)}",
+            status=200,
+        )
+
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    monkeypatch.setenv(ENV_DATA_ROOT, str(data_root))
+    monkeypatch.setenv(ENV_CACHE_ROOT, str(cache_root))
+    monkeypatch.setenv(ENV_ARTIFACT_ROOT, str(artifact_root))
+    upsert_source(
+        data_root,
+        source_ref="https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        kind="topic",
+        title="Xiaomi 13T firmware window",
+        tags=["xiaomi", "firmware"],
+        trust_score=0.8,
+    )
+    monkeypatch.setattr(cli, "fetch_public_topic", fake_fetch_public_topic)
+    monkeypatch.setattr(cli, "polite_sleep", lambda _seconds: None)
+
+    build_rc = cli.cmd_sources_build(
+        SimpleNamespace(
+            run="source-build-test",
+            profile="xiaomi-13t",
+            max_pages=1,
+            include_media=None,
+            delay_seconds=0,
+            dimensions=64,
+            source_refs=None,
+            kinds=None,
+            tags=["firmware"],
+            all=False,
+        )
+    )
+    build_payload = json.loads(capsys.readouterr().out)
+
+    assert build_rc == 0
+    assert calls == ["https://4pda.to/forum/index.php?showtopic=1076859&st=2140"]
+    assert build_payload["schema"] == "aoa_4pda_source_build_receipt_v1"
+    assert build_payload["status"] == "ok"
+    assert build_payload["network_touched"] is True
+    assert build_payload["derived_network_touched"] is False
+    assert build_payload["download_touched"] is False
+    assert build_payload["counts"]["crawl_fetched_pages"] == 1
+    assert build_payload["counts"]["normalized_pages"] == 1
+    assert build_payload["counts"]["index_docs"] > 0
+    assert build_payload["counts"]["vector_docs"] == build_payload["counts"]["index_docs"]
+    assert build_payload["counts"]["graph_edges"] > 0
+    for receipt_path in build_payload["receipts"].values():
+        assert Path(receipt_path).is_file()
+    assert (cache_root / "indexes" / "source-build-test" / "keyword_index.json").is_file()
+    assert (cache_root / "vectors" / "source-build-test" / "vector_index.json").is_file()
+    assert (artifact_root / "graphs" / "source-build-test" / "graph.json").is_file()
+
+    query_rc = cli.cmd_query_hybrid(
+        SimpleNamespace(
+            run="source-build-test",
+            query="Xiaomi 13T recovery.img fastboot",
+            limit=3,
+        )
+    )
+    query_payload = json.loads(capsys.readouterr().out)
+
+    assert query_rc == 0
+    assert query_payload["status"] == "ok"
+    assert query_payload["schema"] == "aoa_4pda_evidence_packet_v1"
+    assert query_payload["policy"]["internal_search_used"] is False
+    assert query_payload["results"]
+
+
 def test_sources_crawl_blocks_download_policy_before_network(tmp_path, monkeypatch, capsys):
     calls: list[str] = []
     data_root = tmp_path / "data"
@@ -239,3 +323,43 @@ def test_sources_crawl_blocks_download_policy_before_network(tmp_path, monkeypat
     assert payload["network_touched"] is False
     assert payload["download_touched"] is False
     assert payload["errors"][0]["error_code"] == "media_download_disabled"
+
+
+def test_sources_build_blocks_download_policy_before_network(tmp_path, monkeypatch, capsys):
+    calls: list[str] = []
+    data_root = tmp_path / "data"
+    monkeypatch.setenv(ENV_DATA_ROOT, str(data_root))
+    monkeypatch.setenv(ENV_CACHE_ROOT, str(tmp_path / "cache"))
+    monkeypatch.setenv(ENV_ARTIFACT_ROOT, str(tmp_path / "artifacts"))
+    upsert_source(
+        data_root,
+        source_ref="https://4pda.to/forum/index.php?showtopic=1076859",
+        kind="topic",
+        include_media="documents",
+    )
+    monkeypatch.setattr(cli, "fetch_public_topic", lambda *_args, **_kwargs: calls.append("fetch"))
+
+    rc = cli.cmd_sources_build(
+        SimpleNamespace(
+            run="blocked-build-test",
+            profile="operator-sources",
+            max_pages=1,
+            include_media=None,
+            delay_seconds=0,
+            dimensions=64,
+            source_refs=None,
+            kinds=None,
+            tags=None,
+            all=False,
+        )
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert rc == 2
+    assert calls == []
+    assert payload["schema"] == "aoa_4pda_source_build_receipt_v1"
+    assert payload["status"] == "blocked"
+    assert payload["stage"] == "crawl"
+    assert payload["network_touched"] is False
+    assert payload["download_touched"] is False
+    assert payload["crawl"]["errors"][0]["error_code"] == "media_download_disabled"
