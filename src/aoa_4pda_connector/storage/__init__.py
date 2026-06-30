@@ -40,7 +40,16 @@ def storage_status(repo_root: Path, roots: StorageRoots, *, measure: bool = Fals
         "artifact": _root_status(repo_root, roots.artifact, measure=measure),
     }
     warnings = storage_warnings(repo_root, roots)
-    init_required = any(not report.get("exists") for report in root_reports.values())
+    non_directory_roots = [
+        name
+        for name, report in root_reports.items()
+        if report.get("exists") and not report.get("is_dir")
+    ]
+    warnings = [*warnings, *(f"{name}_root_not_directory" for name in non_directory_roots)]
+    init_required = any(
+        (not report.get("exists")) or (not report.get("is_dir"))
+        for report in root_reports.values()
+    )
     return {
         "schema": "aoa_4pda_storage_status_v1",
         "status": "warn" if warnings or init_required else "ok",

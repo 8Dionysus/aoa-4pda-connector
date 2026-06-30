@@ -102,6 +102,39 @@ def test_cli_storage_status_reports_repo_local_default_without_network():
     assert payload["measure"] is True
 
 
+def test_cli_storage_status_marks_existing_files_not_ready(tmp_path):
+    data = tmp_path / "data"
+    cache = tmp_path / "cache"
+    artifact = tmp_path / "artifact"
+    for path in (data, cache, artifact):
+        path.write_text("not a directory\n", encoding="utf-8")
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data),
+            "CONNECTOR_CACHE_ROOT": str(cache),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact),
+        }
+    )
+
+    result = subprocess.run(
+        [sys.executable, "-m", "aoa_4pda_connector.cli", "storage", "status"],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    payload = json.loads(result.stdout)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert payload["status"] == "warn"
+    assert payload["init_required"] is True
+    assert payload["roots"]["data"]["exists"] is True
+    assert payload["roots"]["data"]["is_dir"] is False
+    assert "data_root_not_directory" in payload["warnings"]
+
+
 def test_cli_sources_registry_plans_4pda_crawl_scope(tmp_path):
     env = _env_with_src()
     env.update(
@@ -264,6 +297,40 @@ def test_cli_ready_reports_connector_ready_audit_without_network(tmp_path):
         check=False,
     )
     assert strict.returncode == 1, strict.stdout + strict.stderr
+
+
+def test_cli_materialize_fixture_rejects_run_id_path_separators(tmp_path):
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(tmp_path / "data"),
+            "CONNECTOR_CACHE_ROOT": str(tmp_path / "cache"),
+            "CONNECTOR_ARTIFACT_ROOT": str(tmp_path / "artifacts"),
+        }
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "materialize",
+            "fixture",
+            "--run",
+            "../../../../tmp/escaped-run",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    payload = json.loads(result.stdout)
+
+    assert result.returncode == 1
+    assert payload["status"] == "error"
+    assert "safe basename" in payload["error"]
+    assert not (tmp_path / "data").exists()
 
 
 def test_cli_materialize_fixture_writes_queryable_local_state_without_network(tmp_path):
@@ -451,10 +518,19 @@ def test_cli_profile_inspect_reports_redmi_note_10_pro_route_without_network():
     assert payload["routes"]["seed_file"] == "connector/seeds/redmi_note_10_pro_topics.yaml"
     assert payload["quality_gates"]["live_search_suite"] == "evals/suites/live_redmi_note_10_pro_search_quality.json"
     assert payload["seed"]["topic_count"] == 4
-    assert "redmi-note-10-pro-miui-root-window-0" in payload["seed"]["topic_ids"]
-    assert "redmi-note-10-pro-unofficial-recovery-window-0" in payload["seed"]["topic_ids"]
+    assert "redmi-note-10-pro-miui-root-window-40" in payload["seed"]["topic_ids"]
+    assert "redmi-note-10-pro-unofficial-recovery-window-40" in payload["seed"]["topic_ids"]
     assert payload["checks"]["seed_urls_allowed_public_topics"] is True
     assert payload["network_touched"] is False
+
+
+def test_redmi_seed_focused_windows_do_not_duplicate_bare_topic_start() -> None:
+    seed_text = (REPO_ROOT / "connector/seeds/redmi_note_10_pro_topics.yaml").read_text(encoding="utf-8")
+
+    assert "redmi-note-10-pro-miui-root-window-0" not in seed_text
+    assert "redmi-note-10-pro-unofficial-recovery-window-0" not in seed_text
+    assert "showtopic=1019304&st=40" in seed_text
+    assert "showtopic=1021534&st=40" in seed_text
 
 
 def test_cli_coverage_audit_reports_xiaomi_no_run_without_network(tmp_path):
@@ -912,6 +988,121 @@ def test_cli_discovery_audit_reports_missing_run_without_network(tmp_path):
     assert payload["status"] == "missing_run"
     assert payload["source_run"]["snapshot_count"] == 0
     assert payload["checks"]["crawl_receipt_present"] is False
+    assert payload["network_touched"] is False
+
+
+def test_cli_discovery_audit_rejects_wrong_profile_receipt_without_network(tmp_path):
+    run_id = "discovery-audit-wrong-profile-test"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    raw_path = data_root / "raw" / run_id / "topic.html"
+    raw_path.parent.mkdir(parents=True)
+    raw_path.write_text("<html><body>Xiaomi 13T candidate</body></html>", encoding="utf-8")
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "redmi-note-10-pro",
+            "snapshots": [{"path": str(raw_path), "url": "https://4pda.to/forum/index.php?showtopic=1076859"}],
+            "network_touched": True,
+        },
+    )
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "discovery",
+            "audit",
+            "xiaomi-13t",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "profile_mismatch"
+    assert payload["source_run"]["profile_id"] == "redmi-note-10-pro"
+    assert payload["source_run"]["inspected_snapshot_count"] == 0
+    assert payload["checks"]["crawl_receipt_profile_matches"] is False
+    assert payload["network_touched"] is False
+
+
+def test_cli_discovery_audit_reports_missing_snapshot_data_without_certifying(tmp_path):
+    run_id = "discovery-audit-missing-snapshots-test"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    missing_path = data_root / "raw" / run_id / "missing.html"
+    _write_receipt(
+        receipts_dir,
+        run_id,
+        "crawl",
+        {
+            "schema": "aoa_4pda_crawl_receipt_v1",
+            "run_id": run_id,
+            "profile_id": "xiaomi-13t",
+            "snapshots": [{"path": str(missing_path), "url": "https://4pda.to/forum/index.php?showtopic=1076859"}],
+            "network_touched": True,
+        },
+    )
+    env = _env_with_src()
+    env.update(
+        {
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "discovery",
+            "audit",
+            "xiaomi-13t",
+            "--run",
+            run_id,
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "missing_snapshot_data"
+    assert payload["source_run"]["snapshot_count"] == 1
+    assert payload["source_run"]["inspected_snapshot_count"] == 0
+    assert payload["source_run"]["missing_snapshot_paths"] == [str(missing_path)]
+    assert payload["checks"]["snapshots_available"] is False
     assert payload["network_touched"] is False
 
 
@@ -1958,8 +2149,36 @@ def test_cli_live_starter_proof_checks_named_external_run(tmp_path):
     assert payload["proof_command_network_touched"] is False
     assert payload["source_run_network_touched"] is True
     assert payload["checks"]["policy_preserved"] is True
+    assert payload["checks"]["source_profile_is_starter"] is True
     assert payload["checks"]["query_returns_result"] is True
     assert payload["counts"]["index_docs"] == 2
+
+    crawl_payload = json.loads((receipts_dir / f"{run_id}.crawl.json").read_text(encoding="utf-8"))
+    crawl_payload["profile_id"] = "focused-device"
+    _write_receipt(receipts_dir, run_id, "crawl", crawl_payload)
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "proof",
+            "live-starter",
+            "--run",
+            run_id,
+            "--query",
+            "bootloop boot.img firmware",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 1, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["schema"] == "aoa_4pda_live_starter_proof_v1"
+    assert payload["status"] == "error"
+    assert payload["checks"]["source_profile_is_starter"] is False
 
 
 def _write_receipt(receipts_dir: Path, run_id: str, kind: str, payload: dict[str, object]) -> None:

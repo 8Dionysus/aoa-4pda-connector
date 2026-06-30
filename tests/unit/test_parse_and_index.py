@@ -6,8 +6,8 @@ from pathlib import Path
 from aoa_4pda_connector.fetch import topic_page_start_from_url, topic_page_url
 from aoa_4pda_connector.index import build_keyword_index, extract_exact_terms, technical_alias_tokens, tokenize
 from aoa_4pda_connector.normalize import normalize_snapshot
-from aoa_4pda_connector.parse import decode_html, extract_posts, extract_title
-from aoa_4pda_connector.query import packet_id_for_query, query_keyword_index
+from aoa_4pda_connector.parse import clean_text, decode_html, extract_posts, extract_title
+from aoa_4pda_connector.query import _ranking_key, packet_id_for_query, query_keyword_index
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +21,13 @@ def test_parse_synthetic_topic_fixture():
     assert len(posts) == 2
     assert posts[1]["post_id"] == "1002"
     assert "bootloop" in posts[1]["text"]
+
+
+def test_decode_html_prefers_valid_utf8_before_cp1251_fallback():
+    document = decode_html("Xiaomi 13T на HyperOS".encode("utf-8"))
+
+    assert "на HyperOS" in document
+    assert "РЅР°" not in document
 
 
 def test_parse_live_shape_fixture_extracts_metadata_and_drops_noise():
@@ -40,6 +47,15 @@ def test_parse_live_shape_fixture_extracts_metadata_and_drops_noise():
     assert "--------------------" not in post["text"]
     assert "Signature mentions" not in post["text"]
     assert "profile card noise" not in post["text"]
+
+
+def test_clean_text_keeps_post_text_after_void_tags_inside_ignored_block():
+    fragment = (
+        '<div class="post-block quote">quoted stale text<br><img src="noise.png"></div>'
+        "<p>Real recovery text after quote.</p>"
+    )
+
+    assert clean_text(fragment) == "Real recovery text after quote."
 
 
 def test_normalize_live_shape_fixture_preserves_post_metadata(tmp_path):
@@ -93,6 +109,44 @@ def test_keyword_index_and_query_fixture(tmp_path):
     packet = query_keyword_index(index_path, "bootloop boot.img")
     assert packet["policy"]["internal_search_used"] is False
     assert packet["results"][0]["post_id"] == "1002"
+
+
+def test_post_level_index_keeps_post_only_evidence_refs(tmp_path):
+    index_path = tmp_path / "keyword_index.json"
+    index_path.write_text(
+        json.dumps(
+            {
+                "schema": "aoa_4pda_keyword_index_v1",
+                "profile_id": "starter",
+                "unit": "post",
+                "doc_count": 1,
+                "docs": [
+                    {
+                        "doc_id": "post-doc-1002",
+                        "topic_id": "synthetic-topic-1",
+                        "post_id": "1002",
+                        "source_url": "https://4pda.to/forum/index.php?showtopic=1#entry1002",
+                        "text": "bootloop recovery.img boot.img",
+                        "search_text": "bootloop recovery.img boot.img",
+                        "exact_text": "bootloop recovery.img boot.img",
+                        "exact_terms": ["recovery.img", "boot.img"],
+                        "tokens": 3,
+                    }
+                ],
+                "inverted": {"bootloop": [{"doc_id": "post-doc-1002", "count": 1}]},
+                "exact": {"boot.img": ["post-doc-1002"]},
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    packet = query_keyword_index(index_path, "bootloop boot.img")
+
+    top = packet["results"][0]
+    assert packet["query_report"]["unit"] == "post"
+    assert top["chunk_id"] is None
+    assert top["evidence_refs"] == ["post:1002"]
 
 
 def test_tokenization_preserves_forum_search_terms():
@@ -239,6 +293,33 @@ def test_query_prioritizes_specific_terms_over_topic_boilerplate(tmp_path):
     assert top["post_id"] == "3002"
     assert "bootloop" in top["matched_specific_terms"]
     assert "recovery.img" in top["matched_specific_terms"]
+
+
+def test_ranking_key_keeps_total_score_primary_over_specific_term_count():
+    rare_but_weak = {
+        "bm25": 0.2,
+        "exact": 0.0,
+        "phrase": 0.0,
+        "matched_terms": {"rare-token"},
+        "matched_exact_terms": set(),
+        "matched_phrases": set(),
+    }
+    stronger_score = {
+        "bm25": 2.0,
+        "exact": 1.0,
+        "phrase": 0.0,
+        "matched_terms": {"common-token"},
+        "matched_exact_terms": {"common-token"},
+        "matched_phrases": set(),
+    }
+
+    ranked = sorted(
+        [("weak", rare_but_weak), ("strong", stronger_score)],
+        key=lambda item: _ranking_key(item, ["rare-token"]),
+        reverse=True,
+    )
+
+    assert ranked[0][0] == "strong"
 
 
 def test_query_normalizes_split_file_version_and_codename_aliases(tmp_path):

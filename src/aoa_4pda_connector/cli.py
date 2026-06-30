@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -36,7 +37,7 @@ from aoa_4pda_connector.evaluation import (
     run_live_search_eval_suite,
     run_search_eval_suite,
 )
-from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep, topic_id_from_url, topic_page_url
+from aoa_4pda_connector.fetch import fetch_public_topic, polite_sleep, topic_id_from_url, topic_page_start_from_url, topic_page_url
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
@@ -60,12 +61,26 @@ from aoa_4pda_connector.vector import build_vector_index
 
 
 LIVE_SHAPE_FIXTURE_URL = "https://4pda.to/forum/index.php?showtopic=42&st=0"
+SAFE_RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))
+
+
+def _safe_run_id(value: object, *, field: str = "run_id") -> str:
+    run_id = str(value or "").strip()
+    if (
+        not run_id
+        or run_id in {".", ".."}
+        or "/" in run_id
+        or "\\" in run_id
+        or not SAFE_RUN_ID_RE.fullmatch(run_id)
+    ):
+        raise ValueError(f"{field} must be a safe basename")
+    return run_id
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -542,6 +557,21 @@ def cmd_sources_build(args: argparse.Namespace) -> int:
     error = _require_roots(roots, ["data", "cache", "artifact"])
     if error:
         return error
+    if args.dimensions < 1:
+        _emit(
+            {
+                "schema": "aoa_4pda_source_build_receipt_v1",
+                "status": "error",
+                "stage": "preflight",
+                "run_id": args.run,
+                "profile_id": args.profile,
+                "error": "dimensions must be greater than 0",
+                "network_touched": False,
+                "derived_network_touched": False,
+                "download_touched": False,
+            }
+        )
+        return 2
     create_storage_roots(roots)
     crawl_rc, crawl_payload = _source_crawl_payload(roots, args)
     if crawl_rc != 0:
@@ -682,9 +712,11 @@ def _source_crawl_payload(roots: StorageRoots, args: argparse.Namespace) -> tupl
         source_ref = str(step["source_ref"])
         for page_index in range(args.max_pages):
             request_index += 1
-            page_url = topic_page_url(source_ref, page_index)
-            page_start = page_url.rsplit("st=", 1)[-1]
+            page_url = source_ref
+            page_start = ""
             try:
+                page_url = topic_page_url(source_ref, page_index)
+                page_start = page_url.rsplit("st=", 1)[-1]
                 result = fetch_public_topic(page_url, raw_dir)
                 fetched.append(
                     {
@@ -936,8 +968,19 @@ def cmd_materialize_fixture(args: argparse.Namespace) -> int:
     error = _require_roots(roots, ["data", "cache", "artifact"])
     if error:
         return error
+    try:
+        run_id = _safe_run_id(args.run, field="--run")
+    except ValueError as exc:
+        _emit(
+            {
+                "schema": "aoa_4pda_materialize_receipt_v1",
+                "status": "error",
+                "error": str(exc),
+                "network_touched": False,
+            }
+        )
+        return 1
     create_storage_roots(roots)
-    run_id = args.run
     normalized_dir = roots.data / "normalized" / run_id
     fixture_path = repo_root / "connector" / "fixtures" / "html" / "live_shape_topic.html"
     normalized_path = normalize_snapshot(fixture_path, LIVE_SHAPE_FIXTURE_URL, normalized_dir)
@@ -1401,6 +1444,7 @@ def cmd_proof_live_starter(args: argparse.Namespace) -> int:
     first_result = packet["results"][0] if packet.get("results") else {}
     checks = {
         "external_roots_ready": not storage_warning_list,
+        "source_profile_is_starter": crawl_receipt.get("profile_id") == "starter",
         "crawl_fetched_public_topics": fetched_topics > 0
         and int(crawl_counts.get("errors", 0)) == 0,
         "policy_preserved": policy.get("allowed_public_only") is True
@@ -1708,7 +1752,9 @@ def _load_graph_receipt_for_query(artifact_root: Path, requested_run: str, index
     named_graph = receipt_dir / f"{index_run_id}.graph.json"
     if named_graph.is_file():
         return json.loads(named_graph.read_text(encoding="utf-8"))
-    return _load_latest_or_named_receipt(artifact_root, requested_run, "graph")
+    raise FileNotFoundError(
+        f"matching graph receipt required for index run {index_run_id!r}: {named_graph}"
+    )
 
 
 def _query_graph_packet_from_roots(artifact_root: Path, run: str, query: str, limit: int) -> dict[str, object]:
@@ -1878,6 +1924,27 @@ def _source_crawl_preflight_errors(steps: object) -> list[dict[str, object]]:
                     "message": "source_ref must be a public 4PDA topic URL",
                 }
             )
+        try:
+            page_start = int(topic_page_start_from_url(source_ref) or 0)
+        except ValueError:
+            errors.append(
+                {
+                    "source_id": step.get("source_id"),
+                    "source_ref": source_ref,
+                    "error_code": "invalid_topic_offset",
+                    "message": "source_ref st offset must be an integer",
+                }
+            )
+        else:
+            if page_start < 0:
+                errors.append(
+                    {
+                        "source_id": step.get("source_id"),
+                        "source_ref": source_ref,
+                        "error_code": "invalid_topic_offset",
+                        "message": "source_ref st offset must be non-negative",
+                    }
+                )
     return errors
 
 

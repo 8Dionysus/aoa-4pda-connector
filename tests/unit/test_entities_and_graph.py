@@ -38,7 +38,7 @@ def test_extract_entities_finds_xiaomi_13t_firmware_root_recovery_terms():
         "Xiaomi 13T 2306EPN60G aristotle на HyperOS 2.0.2. "
         "Можно пропатчить boot.img через Magisk или KSU. "
         "Сама TWRP: twrp-3.7.1_A13-5.10.136-vendor_boot-aristotle.img. "
-        "Родной recovery от стоковой прошивки: recovery.img. "
+        "Родной recovery от стоковой прошивки: recovery.img можно прошить через fastboot. "
         "Orange Fox for Xiaomi 13T тоже прошивается через fastboot."
     )
 
@@ -61,11 +61,53 @@ def test_extract_entities_finds_xiaomi_13t_firmware_root_recovery_terms():
     assert ("recovery_action", "flash recovery.img") in pairs
 
 
-def test_extract_entities_links_kernelsu_boot_image_root_action():
+def test_extract_entities_stops_poco_device_before_issue_prose():
+    pairs = _entity_pairs("Poco F3 bootloop after flashing recovery.img.")
+
+    assert ("device", "Poco F3") in pairs
+    assert ("device", "Poco F3 bootloop") not in pairs
+    assert ("issue", "bootloop") in pairs
+
+
+def test_extract_entities_does_not_link_recovery_image_to_unrelated_tool_sentence():
+    text = (
+        "Родной recovery от стоковой прошивки: recovery.img. "
+        "TWRP пока не работает, fastboot обсуждают отдельно."
+    )
+
+    pairs = _entity_pairs(text)
+
+    assert ("file", "recovery.img") in pairs
+    assert ("tool", "TWRP") in pairs
+    assert ("tool", "fastboot") in pairs
+    assert ("recovery_action", "flash recovery.img") not in pairs
+
+
+def test_extract_entities_does_not_link_kernelsu_question_to_boot_image_root_action():
     text = (
         "Xiaomi 13T HyperOS: у кого-то есть boot.img из прошивки "
         "OS2.0.207.0_Repack_by_greeshan? KernelSU не могу никак установить."
     )
+
+    pairs = _entity_pairs(text)
+
+    assert ("tool", "KSU") in pairs
+    assert ("file", "boot.img") in pairs
+    assert ("root_action", "patch boot.img") not in pairs
+
+
+def test_extract_entities_does_not_link_negative_same_sentence_kernelsu_context():
+    text = "Xiaomi 13T HyperOS boot.img из прошивки KernelSU не могу никак установить."
+
+    pairs = _entity_pairs(text)
+
+    assert ("tool", "KSU") in pairs
+    assert ("file", "boot.img") in pairs
+    assert ("root_action", "patch boot.img") not in pairs
+
+
+def test_extract_entities_links_kernelsu_boot_image_root_action_in_patch_context():
+    text = "Xiaomi 13T HyperOS: KernelSU, нужно пропатчить boot.img из этой прошивки."
 
     pairs = _entity_pairs(text)
 
@@ -254,8 +296,8 @@ def test_graph_adds_kernelsu_root_relation_edges(tmp_path):
     normalized_dir = tmp_path / "normalized"
     normalized_dir.mkdir()
     text = (
-        "Xiaomi 13T HyperOS: у кого-то есть boot.img из прошивки "
-        "OS2.0.207.0_Repack_by_greeshan? KernelSU не могу никак установить."
+        "Xiaomi 13T HyperOS: KernelSU, нужно пропатчить boot.img из прошивки "
+        "OS2.0.207.0_Repack_by_greeshan."
     )
     topic = {
         "schema": "aoa_4pda_normalized_topic_v1",

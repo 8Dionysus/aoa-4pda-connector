@@ -18,9 +18,15 @@ HYPEROS_VERSION_RE = re.compile(r"\bHyperOS\s+\d+(?:\.\d+){1,5}\b", re.I)
 OS_VERSION_RE = re.compile(r"\bOS\d+(?:\.\d+){2,5}\b", re.I)
 BUILD_ID_RE = re.compile(r"\b[A-Z]{2,}[A-Z0-9]{2,}(?:\.[A-Z0-9]+){2,}\b")
 DEVICE_MODEL_RE = re.compile(r"\b\d{4}[A-Z]{2,}\d{2}[A-Z]\b", re.I)
-DEVICE_RE = re.compile(
-    r"\b(?:Redmi\s+Note\s+\d+(?:\s+Pro|\s+Plus)?|Redmi\s+\d+[A-Za-z]*|Xiaomi\s+Mi\s+Pad\s+\d(?:\s+Plus)?|Xiaomi\s+13T(?:\s+Pro)?|Poco\s+[A-Z0-9 ]{2,12})\b",
-    re.I,
+DEVICE_PATTERNS = (
+    re.compile(
+        r"\b(?:Redmi\s+Note\s+\d+(?:\s+Pro|\s+Plus)?|Redmi\s+\d+[A-Za-z]*|Xiaomi\s+Mi\s+Pad\s+\d(?:\s+Plus)?|Xiaomi\s+13T(?:\s+Pro)?)\b",
+        re.I,
+    ),
+    re.compile(
+        r"\bPoco\s+[A-Z]\d{1,3}[A-Z]*(?:\s+(?:Pro|Plus|GT|5G|NFC))?\b",
+        re.I,
+    ),
 )
 KNOWN_TOOLS = {
     "adb": "ADB",
@@ -93,8 +99,9 @@ def normalize_snapshot(raw_path: Path, source_url: str, output_dir: Path) -> Pat
 def extract_entities(text: str) -> list[dict[str, str]]:
     entities: list[dict[str, str]] = []
     lowered = text.lower()
-    for match in DEVICE_RE.finditer(text):
-        _add_entity(entities, "device", _canonical_spaces(match.group(0)))
+    for pattern in DEVICE_PATTERNS:
+        for match in pattern.finditer(text):
+            _add_entity(entities, "device", _canonical_spaces(match.group(0)))
     for match in DEVICE_MODEL_RE.finditer(text):
         _add_entity(entities, "device_model", match.group(0).upper())
     for match in FIRMWARE_VERSION_RE.finditer(text):
@@ -166,20 +173,31 @@ def _canonical_warning(lowered_text: str, file_value: str, codename: str) -> str
 def _add_root_and_recovery_actions(entities: list[dict[str, str]], lowered: str) -> None:
     files = {entity["value"] for entity in entities if entity["kind"] == "file"}
     tools = {entity["value"] for entity in entities if entity["kind"] == "tool"}
+    root_patch_pattern = r"(?:patch|patched|патч(?:ить|енный)?|пропатч(?:ить|енный)?)"
     root_tool_pattern = r"(?:magisk|ksu|kernel\s*su)"
+    recovery_flash_pattern = r"(?:flash|прош(?:ить|ей|ивается|ивка))"
+    recovery_tool_pattern = r"(?:fastboot|twrp|orange\s*fox|orangefox)"
+    negative_root_context_pattern = (
+        rf"\b{root_tool_pattern}\b[^.?!]{{0,80}}"
+        r"(?:не\s+могу|не\s+получается|не\s+работ|cannot|can't|cant|not\s+working)"
+    )
 
     for file_value in sorted(files):
         file_pattern = re.escape(file_value)
+        has_same_sentence_root_tool = (
+            re.search(rf"{file_pattern}[^.?!]{{0,120}}\b{root_tool_pattern}\b", lowered)
+            or re.search(rf"\b{root_tool_pattern}\b[^.?!]{{0,120}}{file_pattern}", lowered)
+        ) and not re.search(negative_root_context_pattern, lowered)
         if file_value in {"boot.img", "init_boot.img"} and (
-            re.search(rf"\b(?:patch|patched|патч(?:ить|енный)?|пропатч(?:ить|енный)?)\b[^.?!]{{0,120}}{file_pattern}", lowered)
-            or re.search(rf"{file_pattern}.{{0,160}}\b{root_tool_pattern}\b", lowered)
-            or re.search(rf"\b{root_tool_pattern}\b.{{0,160}}{file_pattern}", lowered)
+            re.search(rf"\b{root_patch_pattern}\b[^.?!]{{0,120}}{file_pattern}", lowered)
+            or re.search(rf"{file_pattern}[^.?!]{{0,120}}\b{root_patch_pattern}\b", lowered)
+            or has_same_sentence_root_tool
         ):
             _add_entity(entities, "root_action", f"patch {file_value}")
 
         if file_value == "recovery.img" and (
-            re.search(rf"\b(?:flash|прош(?:ить|ей|ивается|ивка))\b[^.?!]{{0,120}}{file_pattern}", lowered)
-            or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b(?:fastboot|twrp|orange\s*fox|orangefox)\b", lowered)
-            or {"TWRP", "OrangeFox", "fastboot"}.intersection(tools)
+            re.search(rf"\b{recovery_flash_pattern}\b[^.?!]{{0,120}}{file_pattern}", lowered)
+            or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b{recovery_flash_pattern}\b", lowered)
+            or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b{recovery_tool_pattern}\b", lowered)
         ):
             _add_entity(entities, "recovery_action", f"flash {file_value}")

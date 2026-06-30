@@ -171,6 +171,9 @@ FORBIDDEN_ARTIFACT_DIR_NAMES = {
     "graphs",
 }
 
+FORBIDDEN_ARTIFACT_FILE_SUFFIXES = {".sqlite", ".sqlite3", ".parquet"}
+FORBIDDEN_ARTIFACT_DIR_SUFFIXES = {".qdrant", ".lancedb"}
+
 IGNORED_LOCAL_CACHE_DIR_NAMES = {
     "__pycache__",
     ".pytest_cache",
@@ -181,6 +184,38 @@ IGNORED_LOCAL_CACHE_DIR_NAMES = {
 
 ALLOWED_REPO_LOCAL_STATE_ROOT = ".connector-state"
 ALLOWED_KAG_RECORD_DIRS = {("kag", "indexes")}
+
+
+def _is_allowed_kag_record_path(path: Path, rel_parts: tuple[str, ...]) -> bool:
+    if len(rel_parts) == 2 and tuple(rel_parts) in ALLOWED_KAG_RECORD_DIRS:
+        return True
+    return (
+        len(rel_parts) == 3
+        and tuple(rel_parts[:2]) in ALLOWED_KAG_RECORD_DIRS
+        and path.is_file()
+        and path.suffix == ".json"
+    )
+
+
+def _forbidden_artifact_path_error(repo_root: Path, path: Path) -> str | None:
+    if ".git" in path.parts:
+        return None
+    rel_path = path.relative_to(repo_root)
+    rel_parts = rel_path.parts
+    if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in rel_parts):
+        return None
+    if rel_parts and rel_parts[0] == ALLOWED_REPO_LOCAL_STATE_ROOT:
+        return None
+    if _is_allowed_kag_record_path(path, rel_parts):
+        return None
+    if path.is_dir() and (
+        path.name in FORBIDDEN_ARTIFACT_DIR_NAMES
+        or any(path.name.endswith(suffix) for suffix in FORBIDDEN_ARTIFACT_DIR_SUFFIXES)
+    ):
+        return f"forbidden artifact directory exists inside repository: {rel_path}"
+    if path.is_file() and path.suffix in FORBIDDEN_ARTIFACT_FILE_SUFFIXES:
+        return f"forbidden artifact file exists inside repository: {rel_path}"
+    return None
 
 
 def main() -> int:
@@ -224,17 +259,9 @@ def main() -> int:
             errors.append(f"heavy artifact path exists inside repository: {rel}")
 
     for path in repo_root.rglob("*"):
-        if ".git" in path.parts:
-            continue
-        rel_parts = path.relative_to(repo_root).parts
-        if any(part in IGNORED_LOCAL_CACHE_DIR_NAMES for part in rel_parts):
-            continue
-        if rel_parts and rel_parts[0] == ALLOWED_REPO_LOCAL_STATE_ROOT:
-            continue
-        if tuple(rel_parts[:2]) in ALLOWED_KAG_RECORD_DIRS:
-            continue
-        if path.is_dir() and path.name in FORBIDDEN_ARTIFACT_DIR_NAMES:
-            errors.append(f"forbidden artifact directory exists inside repository: {path.relative_to(repo_root)}")
+        error = _forbidden_artifact_path_error(repo_root, path)
+        if error:
+            errors.append(error)
 
     _check_text(repo_root, errors, warnings)
     _check_eval_port(repo_root, errors)
