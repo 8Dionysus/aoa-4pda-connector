@@ -29,6 +29,25 @@ DEFAULT_LIVE_GRAPH_QUERY_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_graph_q
 DEFAULT_LIVE_ANSWER_EVAL_SUITE = Path("evals/suites/live_xiaomi_13t_answer_quality.json")
 
 
+def _expected_profiles(dataset: object) -> set[str]:
+    if not isinstance(dataset, dict):
+        return set()
+    expected: set[str] = set()
+    raw_profiles = dataset.get("expected_profiles")
+    if isinstance(raw_profiles, list):
+        expected.update(str(item) for item in raw_profiles if str(item))
+    raw_profile = dataset.get("expected_profile")
+    if raw_profile:
+        expected.add(str(raw_profile))
+    return expected
+
+
+def _receipts_match_expected_profiles(expected_profiles: set[str], *receipts: dict[str, object]) -> bool:
+    if not expected_profiles:
+        return True
+    return all(str(receipt.get("profile_id") or "") in expected_profiles for receipt in receipts)
+
+
 def run_search_eval_suite(suite_path: Path | None = None, repo_root: Path | None = None) -> dict[str, object]:
     """Run a small public-safe search eval suite without touching the network."""
 
@@ -412,16 +431,17 @@ def run_live_graph_query_eval_suite(
     normalize_counts = normalize_receipt.get("counts", {})
     policy = crawl_receipt.get("policy", {})
     dataset = suite.get("dataset", {})
-    expected_profile = dataset.get("expected_profile")
+    expected_profiles = _expected_profiles(dataset)
     checks = {
         "policy_preserved": policy.get("allowed_public_only") is True
         and policy.get("internal_search_used") is False
         and policy.get("attachments_downloaded") is False,
-        "profile_matches": True
-        if expected_profile is None
-        else crawl_receipt.get("profile_id") == expected_profile
-        and index_receipt.get("profile_id") == expected_profile
-        and graph_receipt.get("profile_id") == expected_profile,
+        "profile_matches": _receipts_match_expected_profiles(
+            expected_profiles,
+            crawl_receipt,
+            index_receipt,
+            graph_receipt,
+        ),
         "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
         "graph_has_relation_edges": bool(
             {
@@ -516,17 +536,18 @@ def run_live_hybrid_query_eval_suite(
     normalize_counts = normalize_receipt.get("counts", {})
     policy = crawl_receipt.get("policy", {})
     dataset = suite.get("dataset", {})
-    expected_profile = dataset.get("expected_profile")
+    expected_profiles = _expected_profiles(dataset)
     checks = {
         "policy_preserved": policy.get("allowed_public_only") is True
         and policy.get("internal_search_used") is False
         and policy.get("attachments_downloaded") is False,
-        "profile_matches": True
-        if expected_profile is None
-        else crawl_receipt.get("profile_id") == expected_profile
-        and index_receipt.get("profile_id") == expected_profile
-        and vector_receipt.get("profile_id") == expected_profile
-        and graph_receipt.get("profile_id") == expected_profile,
+        "profile_matches": _receipts_match_expected_profiles(
+            expected_profiles,
+            crawl_receipt,
+            index_receipt,
+            vector_receipt,
+            graph_receipt,
+        ),
         "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
         "vector_has_docs": int(vector_payload.get("doc_count", 0)) > 0,
         "graph_has_edges": int(graph_payload.get("edge_count", 0)) > 0,
@@ -621,16 +642,17 @@ def run_live_answer_eval_suite(
     normalize_counts = normalize_receipt.get("counts", {})
     policy = crawl_receipt.get("policy", {})
     dataset = suite.get("dataset", {})
-    expected_profile = dataset.get("expected_profile")
+    expected_profiles = _expected_profiles(dataset)
     checks = {
         "policy_preserved": policy.get("allowed_public_only") is True
         and policy.get("internal_search_used") is False
         and policy.get("attachments_downloaded") is False,
-        "profile_matches": True
-        if expected_profile is None
-        else crawl_receipt.get("profile_id") == expected_profile
-        and index_receipt.get("profile_id") == expected_profile
-        and graph_receipt.get("profile_id") == expected_profile,
+        "profile_matches": _receipts_match_expected_profiles(
+            expected_profiles,
+            crawl_receipt,
+            index_receipt,
+            graph_receipt,
+        ),
         "index_has_posts": int(index_payload.get("doc_count", 0)) > 0,
         "graph_has_relation_edges": bool(
             {
@@ -806,7 +828,9 @@ def _run_graph_case(case: dict[str, object], graph: dict[str, object]) -> dict[s
     post_node = f"post:{post_id}"
     topic_node = f"topic:{topic_id}"
     expected_entity_ids = [str(node_id) for node_id in expect.get("entity_node_ids", [])]
-    expected_mention_ids = [str(node_id) for node_id in expect.get("post_mentions_entity_node_ids", [])]
+    expected_mention_ids = _unique_strings(
+        [*expected_entity_ids, *[str(node_id) for node_id in expect.get("post_mentions_entity_node_ids", [])]]
+    )
     expected_relation_edges = [
         {
             "kind": str(edge.get("kind", "")),
@@ -1471,6 +1495,14 @@ def _all_expected(expected: object, actual: object) -> bool:
     expected_values = {str(item).lower() for item in expected if str(item)}
     actual_values = {str(item).lower() for item in actual}
     return expected_values.issubset(actual_values)
+
+
+def _unique_strings(values: list[str]) -> list[str]:
+    result: list[str] = []
+    for value in values:
+        if value and value not in result:
+            result.append(value)
+    return result
 
 
 def _optional_equal(actual: object, expected: object) -> bool:

@@ -20,6 +20,22 @@ POST_BODY_RE = re.compile(
     re.I | re.S,
 )
 IGNORED_CLASS_TOKENS = {"edit", "post-edit-reason", "signature"}
+VOID_TAGS = {
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+}
 
 
 class TextExtractor(HTMLParser):
@@ -36,9 +52,12 @@ class TextExtractor(HTMLParser):
             self.parts.append(text)
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag_name = tag.lower()
+        if tag_name in VOID_TAGS:
+            return
         attrs_map = {key.lower(): value or "" for key, value in attrs}
         class_attr = attrs_map.get("class", "").lower()
-        if self.skip_depth or tag.lower() in {"script", "style"} or _class_is_ignored(class_attr):
+        if self.skip_depth or tag_name in {"script", "style"} or _class_is_ignored(class_attr):
             self.skip_depth += 1
 
     def handle_endtag(self, _tag: str) -> None:
@@ -50,7 +69,7 @@ class TextExtractor(HTMLParser):
 
 
 def decode_html(data: bytes) -> str:
-    for encoding in ["windows-1251", "utf-8"]:
+    for encoding in ["utf-8", "windows-1251"]:
         try:
             return data.decode(encoding)
         except UnicodeDecodeError:

@@ -77,6 +77,8 @@ jobs:
           import subprocess
 
           forbidden = {"data", "cache", "artifacts", "raw", "indexes", "vectors", "graphs"}
+          forbidden_file_suffixes = (".sqlite", ".sqlite3", ".parquet")
+          forbidden_dir_suffixes = (".qdrant", ".lancedb")
           allowed_scaffold = {
             ".connector-state/data/.gitkeep",
             ".connector-state/cache/.gitkeep",
@@ -89,7 +91,11 @@ jobs:
           for rel in tracked:
               if rel in allowed_scaffold:
                   continue
-              if any(part in forbidden for part in rel.split("/")):
+              parts = rel.split("/")
+              if (
+                  any(part in forbidden or part.endswith(forbidden_dir_suffixes) for part in parts)
+                  or rel.endswith(forbidden_file_suffixes)
+              ):
                   hits.append(rel)
           if hits:
               print("tracked forbidden artifact paths:")

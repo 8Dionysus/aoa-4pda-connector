@@ -10,7 +10,7 @@ from aoa_4pda_connector.answer import render_answer_packet
 from aoa_4pda_connector.graph import build_graph
 from aoa_4pda_connector.index import build_keyword_index
 from aoa_4pda_connector.normalize import normalize_snapshot
-from aoa_4pda_connector.query import query_graph_packet
+from aoa_4pda_connector.query import _relation_query_values, query_graph_packet
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -26,6 +26,7 @@ def test_render_answer_packet_summarizes_graph_context_without_network(tmp_path)
     assert answer_packet["schema"] == "aoa_4pda_answer_packet_v1"
     assert answer_packet["policy"]["source"] == "local_keyword_index_plus_graph_answer_renderer"
     assert answer_packet["policy"]["internal_search_used"] is False
+    assert answer_packet["query_report"] == evidence_packet["query_report"]
     assert answer_packet["answer_report"]["renderer"] == "starter_graph_context_v2"
     assert answer_packet["answer_report"]["source_packet_id"] == evidence_packet["packet_id"]
     assert answer_packet["answer_report"]["freshness_context"] == "source_post_and_capture_metadata"
@@ -54,6 +55,18 @@ def test_render_answer_packet_summarizes_graph_context_without_network(tmp_path)
     assert answer["freshness"]["captured_at"] == answer["captured_at"]
     assert answer["freshness"]["packet_created_at"] == answer_packet["created_at"]
     assert "Public post timestamp" in answer["freshness"]["note"]
+
+
+def test_render_answer_packet_reports_fallback_freshness_without_capture_metadata(tmp_path):
+    index_path, graph_path = _build_live_shape_index_and_graph(tmp_path)
+    evidence_packet = query_graph_packet(index_path, graph_path, "bootloop recovery.img camellia", limit=1)
+    for result in evidence_packet["results"]:
+        result.pop("captured_at", None)
+
+    answer_packet = render_answer_packet(evidence_packet)
+
+    assert answer_packet["answer_report"]["freshness_context"] == "packet_created_at_fallback"
+    assert answer_packet["answers"][0]["freshness"]["basis"] == "packet_created_at_fallback"
 
 
 def test_render_answer_packet_preserves_xiaomi_root_recovery_relation_context(tmp_path):
@@ -85,6 +98,20 @@ def test_render_answer_packet_preserves_xiaomi_root_recovery_relation_context(tm
     assert answer["posted_at"] == "20.06.26, 12:00"
     assert answer["captured_at"]
     assert answer["freshness"]["basis"] == "source_post_and_capture_metadata"
+
+
+def test_relation_query_values_preserve_plain_relation_endpoint_terms():
+    query_values = _relation_query_values(
+        {
+            "terms": ["xiaomi", "13t", "magisk", "twrp", "fastboot"],
+            "exact_terms": ["13t"],
+            "specific_terms": [],
+            "technical_terms": ["aristotle"],
+        }
+    )
+
+    assert {"aristotle", "fastboot", "magisk", "twrp"}.issubset(query_values)
+    assert "xiaomi" not in query_values
 
 
 def test_render_answer_packet_reports_insufficient_evidence_for_weak_candidates():
@@ -208,6 +235,98 @@ def test_render_answer_packet_does_not_ground_unrelated_relation_edges():
     assert answer_packet["agent_answer"]["status"] == "insufficient_evidence"
 
 
+def test_render_answer_packet_does_not_let_relation_hit_override_missing_structured_term():
+    result = _answer_result(
+        post_id="128964413",
+        chunk_id="1076859:128964413:chunk-000",
+        source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+        posted_at="12.03.24, 12:36",
+        captured_at="2026-06-21T19:57:53Z",
+        snippet="Xiaomi 13T recovery instructions mention boot.img and fastboot.",
+        matched_terms=["13t", "aristotle", "boot.img", "fastboot", "xiaomi"],
+        matched_exact_terms=["13t", "boot.img"],
+        matched_specific_terms=["boot.img", "fastboot"],
+        relation_edges=[
+            {
+                "kind": "recovery_uses_tool",
+                "from_node": "entity:recovery_action:flash recovery.img",
+                "to_node": "entity:tool:fastboot",
+                "confidence": 0.5,
+            }
+        ],
+        entity_node_ids=["entity:recovery_action:flash recovery.img", "entity:tool:fastboot"],
+    )
+    result["relation_rerank"] = {
+        "intents": ["recovery"],
+        "matching_edge_count": 1,
+        "matching_relation_kinds": ["recovery_uses_tool"],
+        "matching_relation_confidence_sum": 0.5,
+        "query_values": ["13t", "aristotle", "boot.img", "xyznotfound123"],
+    }
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-relation-missing-structured",
+        "query": "Xiaomi 13T xyznotfound123 boot.img",
+        "created_at": "2026-06-21T21:45:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["xiaomi", "13t", "aristotle", "xyznotfound123", "boot.img"],
+            "exact_terms": ["13t", "xyznotfound123", "boot.img"],
+            "technical_terms": ["aristotle", "boot.img"],
+            "specific_terms": ["xyznotfound123", "boot.img"],
+        },
+        "results": [result],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answers"] == []
+    assert answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert answer_packet["answer_report"]["gap_reason"] == "unmatched_structured_query_terms"
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["relation_supported"] is True
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["unmatched_structured_terms"] == [
+        "xyznotfound123"
+    ]
+
+
+def test_render_answer_packet_preserves_posted_freshness_without_capture_timestamp():
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-posted-freshness",
+        "query": "Xiaomi 13T recovery.img fastboot TWRP",
+        "created_at": "2026-06-21T22:10:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["xiaomi", "13t", "recovery.img", "fastboot", "twrp", "aristotle"],
+            "exact_terms": ["13t", "recovery.img"],
+            "technical_terms": ["recovery.img", "aristotle"],
+            "specific_terms": ["recovery.img", "fastboot", "twrp"],
+        },
+        "results": [
+            _answer_result(
+                post_id="128964413",
+                chunk_id="1076859:128964413:chunk-000",
+                source_url="https://4pda.to/forum/index.php?showtopic=1076859&st=2140#entry128964413",
+                posted_at="12.03.24, 12:36",
+                captured_at="",
+                snippet="TWRP прошивается через fastboot, recovery.img нужен для Xiaomi 13T.",
+                matched_terms=["13t", "aristotle", "fastboot", "recovery.img", "twrp", "xiaomi"],
+                matched_exact_terms=["13t", "recovery.img"],
+                matched_specific_terms=["fastboot", "recovery.img", "twrp"],
+            )
+        ],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answer_report"]["answer_status"] == "answered"
+    assert answer_packet["nuance_report"]["freshness"]["basis"] == "source_post_metadata_without_capture_timestamp"
+    assert answer_packet["nuance_report"]["freshness"]["posted_at_values"] == ["12.03.24, 12:36"]
+    assert answer_packet["freshness_report"]["basis"] == "source_post_metadata_without_capture_timestamp"
+
+
 def test_render_answer_packet_requires_warning_semantics_for_warning_queries():
     result = _answer_result(
         post_id="128964413",
@@ -247,6 +366,57 @@ def test_render_answer_packet_requires_warning_semantics_for_warning_queries():
             "exact_terms": ["13t"],
             "technical_terms": ["aristotle"],
             "specific_terms": ["предупреждение", "twrp", "recovery"],
+        },
+        "results": [result],
+        "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},
+    }
+
+    answer_packet = render_answer_packet(evidence_packet, limit=1)
+
+    assert answer_packet["answers"] == []
+    assert answer_packet["answer_report"]["answer_status"] == "insufficient_evidence"
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["warning_requested"] is True
+    assert answer_packet["answer_report"]["top_evidence_grounding"]["warning_supported"] is False
+
+
+def test_render_answer_packet_does_not_treat_conflict_edge_as_warning_support():
+    method_claim = "claim:xiaomi-13t:5001:method:flash_recovery_img"
+    warning_claim = "claim:xiaomi-13t:5003:warning:do_not_flash"
+    source_url = "https://4pda.to/forum/index.php?showtopic=1076859#entry5001"
+    result = _answer_result(
+        post_id="5001",
+        chunk_id="1076859:5001:chunk-000",
+        source_url=source_url,
+        posted_at="12.03.24, 12:36",
+        captured_at="2026-06-21T19:57:53Z",
+        snippet="Xiaomi 13T recovery.img flash instructions.",
+        matched_terms=["13t", "recovery.img", "warning", "xiaomi"],
+        matched_exact_terms=["13t", "recovery.img"],
+        matched_specific_terms=["recovery.img", "warning"],
+        relation_edges=[
+            {
+                "edge_id": "edge-contradicts",
+                "kind": "claim_contradicts_claim",
+                "from_node": warning_claim,
+                "to_node": method_claim,
+                "source_refs": [source_url],
+                "source_post_ids": ["5003", "5001"],
+                "confidence": 0.52,
+            }
+        ],
+    )
+    result["graph_context"]["claim_node_ids"] = [method_claim]
+    evidence_packet = {
+        "schema": "aoa_4pda_evidence_packet_v1",
+        "packet_id": "query-warning-conflict-only",
+        "query": "warning recovery.img Xiaomi 13T",
+        "created_at": "2026-06-21T21:50:00Z",
+        "query_report": {
+            "algorithm": "bm25_exact_v1",
+            "terms": ["warning", "recovery.img", "xiaomi", "13t"],
+            "exact_terms": ["recovery.img", "13t"],
+            "technical_terms": [],
+            "specific_terms": ["warning", "recovery.img"],
         },
         "results": [result],
         "policy": {"source": "local_keyword_index_plus_graph", "internal_search_used": False},

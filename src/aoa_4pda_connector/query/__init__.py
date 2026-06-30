@@ -41,6 +41,16 @@ RECOVERY_RELATION_EDGE_KINDS = {
     "recovery_targets_file",
     "recovery_uses_tool",
 }
+RELATION_ENDPOINT_PLAIN_TERMS = {
+    "fastboot",
+    "kernelsu",
+    "ksu",
+    "magisk",
+    "orangefox",
+    "recovery",
+    "root",
+    "twrp",
+}
 
 
 def packet_id_for_query(query: str) -> str:
@@ -107,6 +117,10 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
         matched_exact_terms = sorted(score["matched_exact_terms"])
         matched_phrases = sorted(score["matched_phrases"])
         matched_specific_terms = sorted(_matched_specific_terms(score, specific_terms))
+        evidence_refs = [f"post:{doc.get('post_id')}"]
+        chunk_id = doc.get("chunk_id")
+        if index.get("unit") == "chunk" or chunk_id:
+            evidence_refs.insert(0, f"chunk:{chunk_id or doc_id}")
         results.append(
             {
                 "source_url": doc.get("source_url"),
@@ -114,7 +128,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
                 "post_id": doc.get("post_id"),
                 "posted_at": doc.get("posted_at"),
                 "captured_at": doc.get("captured_at"),
-                "chunk_id": doc.get("chunk_id", doc_id),
+                "chunk_id": chunk_id,
                 "chunk_index": doc.get("chunk_index"),
                 "char_start": doc.get("char_start"),
                 "char_end": doc.get("char_end"),
@@ -129,7 +143,7 @@ def query_keyword_index(index_path: Path, query: str, limit: int = 5) -> dict[st
                 "matched_exact_terms": matched_exact_terms,
                 "matched_phrases": matched_phrases,
                 "matched_specific_terms": matched_specific_terms,
-                "evidence_refs": [f"chunk:{doc.get('chunk_id', doc_id)}", f"post:{doc.get('post_id')}"],
+                "evidence_refs": evidence_refs,
             }
         )
     return {
@@ -404,6 +418,11 @@ def _relation_query_values(query_report: object) -> set[str]:
         for field in ["exact_terms", "specific_terms", "technical_terms"]
         for value in query_report.get(field, [])
     }
+    values.update(
+        value
+        for value in (_normalize_relation_value(value) for value in query_report.get("terms", []))
+        if value in RELATION_ENDPOINT_PLAIN_TERMS
+    )
     return {value for value in values if len(value) >= 3}
 
 
@@ -539,14 +558,25 @@ def _matched_specific_terms(score: dict[str, object], specific_terms: list[str])
     return (matched_terms | matched_exact_terms).intersection(specific_terms)
 
 
-def _ranking_key(item: tuple[str, dict[str, object]], specific_terms: list[str]) -> tuple[float, int, int, float]:
+def _matched_structured_exact_terms(score: dict[str, object], specific_terms: list[str]) -> set[str]:
+    matched_exact_terms = set(score["matched_exact_terms"])
+    matched_specific_terms = matched_exact_terms.intersection(specific_terms)
+    return {
+        term
+        for term in matched_specific_terms
+        if any(separator in str(term) for separator in [".", "_", "/", "-"])
+    }
+
+
+def _ranking_key(item: tuple[str, dict[str, object]], specific_terms: list[str]) -> tuple[int, float, int, int, int]:
     score = item[1]
     total = float(score["bm25"]) + float(score["exact"]) + float(score["phrase"])
     return (
-        float(len(_matched_specific_terms(score, specific_terms))),
+        len(_matched_structured_exact_terms(score, specific_terms)),
+        total,
+        len(_matched_specific_terms(score, specific_terms)),
         len(score["matched_exact_terms"]),
         len(score["matched_phrases"]),
-        total,
     )
 
 

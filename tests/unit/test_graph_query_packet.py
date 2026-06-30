@@ -144,6 +144,73 @@ def test_cli_query_graph_uses_external_index_and_graph_without_network(tmp_path)
     assert {"fixes_issue", "warns_about"}.issubset(edge_kinds)
 
 
+def test_cli_query_graph_requires_graph_receipt_matching_latest_index_run(tmp_path):
+    new_run_id = "new-index-run"
+    old_run_id = "old-graph-run"
+    data_root = tmp_path / "data"
+    cache_root = tmp_path / "cache"
+    artifact_root = tmp_path / "artifacts"
+    receipts_dir = artifact_root / "receipts"
+    receipts_dir.mkdir(parents=True)
+    _write_receipt(
+        receipts_dir,
+        old_run_id,
+        "graph",
+        {
+            "schema": "aoa_4pda_graph_receipt_v1",
+            "run_id": old_run_id,
+            "profile_id": "starter",
+            "graph_path": str(tmp_path / "old" / "graph.json"),
+            "network_touched": False,
+        },
+    )
+    _write_receipt(
+        receipts_dir,
+        new_run_id,
+        "index",
+        {
+            "schema": "aoa_4pda_index_manifest_v1",
+            "index_id": new_run_id,
+            "profile_id": "starter",
+            "source_run_ids": [new_run_id],
+            "index_kinds": ["keyword"],
+            "artifact_root": str(tmp_path / "new"),
+            "index_path": str(tmp_path / "new" / "index.json"),
+            "network_touched": False,
+        },
+    )
+
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": str(REPO_ROOT / "src"),
+            "CONNECTOR_DATA_ROOT": str(data_root),
+            "CONNECTOR_CACHE_ROOT": str(cache_root),
+            "CONNECTOR_ARTIFACT_ROOT": str(artifact_root),
+        }
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "aoa_4pda_connector.cli",
+            "query-graph",
+            "bootloop recovery.img camellia",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "error"
+    assert "matching graph receipt required" in payload["error"]
+    assert new_run_id in payload["error"]
+
+
 def test_query_graph_packet_carries_xiaomi_root_and_recovery_relations(tmp_path):
     index_path, graph_path = _build_xiaomi_firmware_index_and_graph(tmp_path)
 

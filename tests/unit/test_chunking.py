@@ -38,6 +38,24 @@ def test_chunk_post_preserves_source_refs_and_overlaps_long_text():
     assert chunks[1]["char_start"] < chunks[0]["char_end"]
 
 
+def test_chunk_offsets_slice_source_text_before_space_canonicalization():
+    source_text = "  alpha\t\tbeta   gamma\n\n\n\ndelta  "
+    post = {
+        "topic_id": "chunk-topic",
+        "post_id": "3002",
+        "source_url": "https://4pda.to/forum/index.php?showtopic=42#entry3002",
+        "text": source_text,
+    }
+
+    chunk = chunk_post(post, max_chars=200, overlap_chars=20)[0]
+    source_slice = source_text[chunk["char_start"] : chunk["char_end"]]
+
+    assert chunk["text"] == "alpha beta gamma\n\ndelta"
+    assert "alpha\t\tbeta" in source_slice
+    assert source_slice.strip().startswith("alpha")
+    assert source_slice.strip().endswith("delta")
+
+
 def test_keyword_index_queries_return_precise_chunk_evidence(tmp_path):
     normalized_dir = tmp_path / "normalized"
     normalized_dir.mkdir()

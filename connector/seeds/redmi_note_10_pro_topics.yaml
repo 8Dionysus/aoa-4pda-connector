@@ -17,8 +17,8 @@ topics:
     status: public_topic_seed
     focus: miui_firmware_root_tools
     max_pages: 2
-  - id: redmi-note-10-pro-miui-root-window-0
-    url: https://4pda.to/forum/index.php?showtopic=1019304&st=0
+  - id: redmi-note-10-pro-miui-root-window-40
+    url: https://4pda.to/forum/index.php?showtopic=1019304&st=40
     label: Redmi Note 10 Pro - root/TWRP starter window
     status: public_topic_seed
     focus: boot_img_magisk_twrp
@@ -29,8 +29,8 @@ topics:
     status: public_topic_seed
     focus: unofficial_firmware_recovery
     max_pages: 2
-  - id: redmi-note-10-pro-unofficial-recovery-window-0
-    url: https://4pda.to/forum/index.php?showtopic=1021534&st=0
+  - id: redmi-note-10-pro-unofficial-recovery-window-40
+    url: https://4pda.to/forum/index.php?showtopic=1021534&st=40
     label: Redmi Note 10 Pro - recovery/bootloop starter window
     status: public_topic_seed
     focus: recovery_img_bootloop

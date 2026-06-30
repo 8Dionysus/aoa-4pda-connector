@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 
 from aoa_4pda_connector.evaluation import (
+    _expected_profiles,
+    _receipts_match_expected_profiles,
     run_answer_eval_suite,
     run_graph_eval_suite,
     run_graph_query_eval_suite,
@@ -18,6 +20,23 @@ from aoa_4pda_connector.normalize import extract_entities
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_live_eval_profile_matching_accepts_expected_profile_aliases():
+    expected = _expected_profiles(
+        {
+            "expected_profile": "xiaomi-13t",
+            "expected_profiles": ["focused-device"],
+        }
+    )
+
+    assert expected == {"focused-device", "xiaomi-13t"}
+    assert _receipts_match_expected_profiles(
+        expected,
+        {"profile_id": "focused-device"},
+        {"profile_id": "xiaomi-13t"},
+    )
+    assert not _receipts_match_expected_profiles(expected, {"profile_id": "redmi-note-10-pro"})
 
 
 def test_search_eval_suite_reports_case_quality_without_network():
@@ -64,6 +83,8 @@ def test_graph_eval_suite_reports_live_shape_entity_edges_without_network():
     assert case["checks"]["post_mentions_expected_entities"] is True
     assert case["checks"]["expected_relation_edges_present"] is True
     assert case["checks"]["source_refs_preserved"] is True
+    assert set(case["expected_post_mentions_entity_node_ids"]) == set(case["expected_entity_node_ids"])
+    assert set(case["matched_post_mentions_entity_node_ids"]) == set(case["expected_entity_node_ids"])
 
 
 def test_graph_query_eval_suite_reports_relation_context_without_network():
@@ -386,7 +407,7 @@ def test_live_search_eval_suite_reports_expected_result_rank_without_network(tmp
                             "expected_result_post_id": "2002",
                             "expected_result_source_url_contains": "showtopic=1076859&st=0#entry2002",
                             "expected_result_rank_max": 2,
-                            "expected_result_matched_specific_terms_all": ["twrp", "fastboot", "recovery"],
+                            "expected_result_matched_terms_all": ["twrp", "fastboot", "recovery"],
                             "query_report_unit": "chunk",
                         },
                     }
@@ -414,7 +435,7 @@ def test_live_search_eval_suite_reports_expected_result_rank_without_network(tmp
     assert case["top_result"]["post_id"] == "2001"
     assert case["checks"]["expected_result_present"] is True
     assert case["checks"]["expected_result_rank_max"] is True
-    assert case["checks"]["expected_result_matched_specific_terms_all"] is True
+    assert case["checks"]["expected_result_matched_terms_all"] is True
     assert case["expected_result_rank"] == 2
     assert case["expected_result"]["post_id"] == "2002"
     assert case["diagnostics"]["expected_result"]["rank"] == 2

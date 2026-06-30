@@ -89,6 +89,19 @@ FORBIDDEN_HEAVY_ROOTS = [
 ]
 
 
+def _expected_profiles(dataset: object) -> set[str]:
+    if not isinstance(dataset, dict):
+        return set()
+    expected: set[str] = set()
+    raw_profiles = dataset.get("expected_profiles")
+    if isinstance(raw_profiles, list):
+        expected.update(str(item) for item in raw_profiles if str(item))
+    raw_profile = dataset.get("expected_profile")
+    if raw_profile:
+        expected.add(str(raw_profile))
+    return expected
+
+
 def audit_connector_ready(
     repo_root: Path | None = None,
     roots: StorageRoots | None = None,
@@ -473,8 +486,10 @@ def _next_profile_gate(repo_root: Path) -> dict[str, object]:
             seed_count = seed_text.count("- id:")
             seed_window_count = seed_text.count("max_pages:") + seed_text.count("&st=")
             suite_expected_profile = dataset.get("expected_profile") if isinstance(dataset, dict) else None
+            suite_expected_profiles = _expected_profiles(dataset)
+            route_profile_id = profile_id or path.stem
             route = {
-                "profile_id": profile_id or path.stem,
+                "profile_id": route_profile_id,
                 "profile_path": str(path.relative_to(repo_root)),
                 "seed_file": seed_rel,
                 "seed_file_exists": bool(seed_path and seed_path.is_file()),
@@ -483,7 +498,8 @@ def _next_profile_gate(repo_root: Path) -> dict[str, object]:
                 "live_search_suite": live_search_rel,
                 "live_search_suite_exists": bool(live_search_path and live_search_path.is_file()),
                 "suite_expected_profile": suite_expected_profile,
-                "suite_profile_matches": suite_expected_profile == profile_id,
+                "suite_expected_profiles": sorted(suite_expected_profiles),
+                "suite_profile_matches": not suite_expected_profiles or route_profile_id in suite_expected_profiles,
             }
             route["prepared"] = (
                 route["seed_file_exists"]
