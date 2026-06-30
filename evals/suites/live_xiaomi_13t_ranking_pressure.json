@@ -21,7 +21,7 @@
         "expected_result_post_id": "128964413",
         "expected_result_source_url_contains": "showtopic=1076859&st=2140#entry128964413",
         "expected_result_rank_max": 5,
-        "expected_result_matched_specific_terms_all": ["twrp", "recovery"],
+        "expected_result_matched_terms_all": ["twrp", "recovery"],
         "query_report_technical_terms_all": ["aristotle"],
         "query_report_unit": "chunk"
       }
@@ -33,7 +33,7 @@
         "expected_result_post_id": "128964413",
         "expected_result_source_url_contains": "showtopic=1076859&st=2140#entry128964413",
         "expected_result_rank_max": 5,
-        "expected_result_matched_specific_terms_all": ["twrp"],
+        "expected_result_matched_terms_all": ["twrp"],
         "query_report_technical_terms_all": ["aristotle"],
         "query_report_unit": "chunk"
       }

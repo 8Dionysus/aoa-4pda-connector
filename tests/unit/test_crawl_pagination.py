@@ -288,6 +288,45 @@ def test_sources_build_writes_queryable_artifact_chain_without_network(tmp_path,
     assert query_payload["results"]
 
 
+def test_sources_build_rejects_nonpositive_dimensions_before_network(tmp_path, monkeypatch, capsys):
+    calls: list[str] = []
+    data_root = tmp_path / "data"
+    monkeypatch.setenv(ENV_DATA_ROOT, str(data_root))
+    monkeypatch.setenv(ENV_CACHE_ROOT, str(tmp_path / "cache"))
+    monkeypatch.setenv(ENV_ARTIFACT_ROOT, str(tmp_path / "artifacts"))
+    upsert_source(
+        data_root,
+        source_ref="https://4pda.to/forum/index.php?showtopic=1076859&st=2140",
+        kind="topic",
+    )
+    monkeypatch.setattr(cli, "fetch_public_topic", lambda *_args, **_kwargs: calls.append("fetch"))
+
+    rc = cli.cmd_sources_build(
+        SimpleNamespace(
+            run="bad-dimensions-test",
+            profile="operator-sources",
+            max_pages=1,
+            include_media=None,
+            delay_seconds=0,
+            dimensions=0,
+            source_refs=None,
+            kinds=None,
+            tags=None,
+            all=False,
+        )
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert rc == 2
+    assert calls == []
+    assert payload["schema"] == "aoa_4pda_source_build_receipt_v1"
+    assert payload["status"] == "error"
+    assert payload["stage"] == "preflight"
+    assert payload["error"] == "dimensions must be greater than 0"
+    assert payload["network_touched"] is False
+    assert payload["derived_network_touched"] is False
+
+
 def test_sources_crawl_blocks_download_policy_before_network(tmp_path, monkeypatch, capsys):
     calls: list[str] = []
     data_root = tmp_path / "data"
@@ -323,6 +362,44 @@ def test_sources_crawl_blocks_download_policy_before_network(tmp_path, monkeypat
     assert payload["network_touched"] is False
     assert payload["download_touched"] is False
     assert payload["errors"][0]["error_code"] == "media_download_disabled"
+
+
+def test_sources_crawl_blocks_non_numeric_topic_offset_before_network(tmp_path, monkeypatch, capsys):
+    calls: list[str] = []
+    data_root = tmp_path / "data"
+    monkeypatch.setenv(ENV_DATA_ROOT, str(data_root))
+    monkeypatch.setenv(ENV_CACHE_ROOT, str(tmp_path / "cache"))
+    monkeypatch.setenv(ENV_ARTIFACT_ROOT, str(tmp_path / "artifacts"))
+    source_ref = "https://4pda.to/forum/index.php?showtopic=1076859&st=abc"
+    upsert_source(
+        data_root,
+        source_ref=source_ref,
+        kind="topic",
+    )
+    monkeypatch.setattr(cli, "fetch_public_topic", lambda *_args, **_kwargs: calls.append("fetch"))
+
+    rc = cli.cmd_sources_crawl(
+        SimpleNamespace(
+            run="bad-offset-test",
+            max_pages=1,
+            include_media=None,
+            delay_seconds=0,
+            source_refs=None,
+            kinds=None,
+            tags=None,
+            all=False,
+        )
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert rc == 2
+    assert calls == []
+    assert payload["schema"] == "aoa_4pda_source_crawl_preflight_v1"
+    assert payload["status"] == "blocked"
+    assert payload["network_touched"] is False
+    assert payload["download_touched"] is False
+    assert payload["errors"][0]["source_ref"] == source_ref
+    assert payload["errors"][0]["error_code"] == "invalid_topic_offset"
 
 
 def test_sources_build_blocks_download_policy_before_network(tmp_path, monkeypatch, capsys):

@@ -558,12 +558,23 @@ def _matched_specific_terms(score: dict[str, object], specific_terms: list[str])
     return (matched_terms | matched_exact_terms).intersection(specific_terms)
 
 
-def _ranking_key(item: tuple[str, dict[str, object]], specific_terms: list[str]) -> tuple[float, float, int, int]:
+def _matched_structured_exact_terms(score: dict[str, object], specific_terms: list[str]) -> set[str]:
+    matched_exact_terms = set(score["matched_exact_terms"])
+    matched_specific_terms = matched_exact_terms.intersection(specific_terms)
+    return {
+        term
+        for term in matched_specific_terms
+        if any(separator in str(term) for separator in [".", "_", "/", "-"])
+    }
+
+
+def _ranking_key(item: tuple[str, dict[str, object]], specific_terms: list[str]) -> tuple[int, float, int, int, int]:
     score = item[1]
     total = float(score["bm25"]) + float(score["exact"]) + float(score["phrase"])
     return (
+        len(_matched_structured_exact_terms(score, specific_terms)),
         total,
-        float(len(_matched_specific_terms(score, specific_terms))),
+        len(_matched_specific_terms(score, specific_terms)),
         len(score["matched_exact_terms"]),
         len(score["matched_phrases"]),
     )

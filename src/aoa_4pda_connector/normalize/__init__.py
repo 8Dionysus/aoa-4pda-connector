@@ -199,5 +199,7 @@ def _add_root_and_recovery_actions(entities: list[dict[str, str]], lowered: str)
             re.search(rf"\b{recovery_flash_pattern}\b[^.?!]{{0,120}}{file_pattern}", lowered)
             or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b{recovery_flash_pattern}\b", lowered)
             or re.search(rf"{file_pattern}[^.?!]{{0,160}}\b{recovery_tool_pattern}\b", lowered)
+            or re.search(rf"{file_pattern}.{{0,240}}\b{recovery_tool_pattern}\b.{{0,120}}\b{recovery_flash_pattern}\b", lowered)
+            or re.search(rf"{file_pattern}.{{0,240}}\b{recovery_flash_pattern}\b.{{0,120}}\b{recovery_tool_pattern}\b", lowered)
         ):
             _add_entity(entities, "recovery_action", f"flash {file_value}")

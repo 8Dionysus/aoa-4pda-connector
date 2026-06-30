@@ -62,7 +62,9 @@ def audit_profile_discovery(
     covered_seed_windows = _covered_seed_windows(seeds, default_pages)
     profile_terms = _profile_terms(profile)
     receipt = _load_receipt(storage_roots, run, "crawl")
-    snapshots = receipt.get("snapshots", []) if isinstance(receipt.get("snapshots"), list) else []
+    receipt_profile_id = receipt.get("profile_id") if receipt else None
+    profile_mismatch = bool(receipt and receipt_profile_id and receipt_profile_id != profile_id)
+    snapshots = [] if profile_mismatch else receipt.get("snapshots", []) if isinstance(receipt.get("snapshots"), list) else []
 
     grouped: dict[str, dict[str, object]] = {}
     denied: dict[str, int] = defaultdict(int)
@@ -123,8 +125,12 @@ def audit_profile_discovery(
     )
     if not receipt:
         status = "missing_run"
+    elif profile_mismatch:
+        status = "profile_mismatch"
     elif candidates:
         status = "needs_seed_review"
+    elif inspected_snapshots == 0:
+        status = "missing_snapshot_data"
     else:
         status = "no_new_candidates"
 
@@ -177,6 +183,7 @@ def audit_profile_discovery(
             "profile_exists": profile_path.is_file(),
             "seed_file_exists": seed_path.is_file(),
             "crawl_receipt_present": bool(receipt),
+            "crawl_receipt_profile_matches": not profile_mismatch,
             "snapshots_available": inspected_snapshots > 0 if receipt else False,
             "public_candidates_allowed": all(is_url_allowed(str(item.get("url", ""))) for item in candidates),
             "covered_seed_windows_excluded_from_candidates": True,
@@ -802,6 +809,10 @@ def _int_value(value: object, default: int) -> int:
 def _next_actions(status: str, candidates: list[dict[str, object]]) -> list[str]:
     if status == "missing_run":
         return ["Create or restore a bounded crawl receipt before auditing discovery candidates."]
+    if status == "profile_mismatch":
+        return ["Select a crawl receipt whose profile_id matches the requested profile before auditing discovery candidates."]
+    if status == "missing_snapshot_data":
+        return ["Restore or recrawl at least one stored public snapshot before certifying discovery status."]
     if candidates:
         return [
             "Review high-priority discovery candidates with their anchor/source evidence before editing seeds.",

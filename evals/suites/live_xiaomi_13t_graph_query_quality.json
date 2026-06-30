@@ -10,6 +10,7 @@
     "requires_run": true,
     "requires_committed_corpus": false,
     "expected_profile": "xiaomi-13t",
+    "expected_profiles": ["xiaomi-13t", "focused-device"],
     "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
     "notes": "Reads existing configured storage receipts, keyword index, and graph export for a named Xiaomi 13T run; does not crawl or commit generated artifacts."
   },

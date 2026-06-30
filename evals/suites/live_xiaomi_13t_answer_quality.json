@@ -10,6 +10,7 @@
     "requires_run": true,
     "requires_committed_corpus": false,
     "expected_profile": "xiaomi-13t",
+    "expected_profiles": ["xiaomi-13t", "focused-device"],
     "seed_file": "connector/seeds/xiaomi_13t_topics.yaml",
     "notes": "Reads existing configured storage receipts, keyword index, and graph export for a named Xiaomi 13T run; renders answers locally and does not crawl or commit generated artifacts."
   },
@@ -34,6 +35,35 @@
           "Recovery actions: flash recovery.img.",
           "Target files: recovery.img.",
           "Tools: fastboot; TWRP."
+        ]
+      }
+    },
+    {
+      "case_id": "xiaomi-13t-live-root-recovery-answer",
+      "query": "Xiaomi 13T aristotle recovery.img boot.img Magisk KSU fastboot",
+      "expect": {
+        "top_post_id": "128964413",
+        "answer_kind": "root_recovery",
+        "source_url_contains": "showtopic=1076859&st=2140#entry128964413",
+        "query_report_unit": "chunk",
+        "matched_specific_terms_all": ["boot.img", "recovery.img"],
+        "query_report_technical_terms_all": ["boot.img", "recovery.img", "aristotle"],
+        "graph_report_relation_edge_kinds_all": [
+          "recovery_targets_file",
+          "recovery_uses_tool",
+          "root_targets_file",
+          "root_uses_tool"
+        ],
+        "root_action_labels": ["patch boot.img"],
+        "recovery_action_labels": ["flash recovery.img"],
+        "target_file_labels": ["boot.img", "recovery.img"],
+        "tool_labels": ["KSU", "Magisk", "fastboot"],
+        "firmware_context_labels": ["HyperOS"],
+        "answer_context_labels_min": 7,
+        "answer_text_contains": [
+          "Root actions: patch boot.img.",
+          "Recovery actions: flash recovery.img.",
+          "Target files: boot.img; recovery.img."
         ]
       }
     },

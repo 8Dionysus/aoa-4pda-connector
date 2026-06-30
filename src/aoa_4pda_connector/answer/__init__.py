@@ -53,6 +53,12 @@ WARNING_QUERY_TERMS = {
     "риск",
     "риски",
 }
+WARNING_EVIDENCE_EDGE_KINDS = {
+    "warns_about",
+    "source_warns_about_claim",
+    "warning_targets_object",
+    "warning_targets_action",
+}
 
 
 def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> dict[str, object]:
@@ -75,6 +81,7 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         _answer_for_result(entry["result"], packet_created_at=packet_created_at)
         for entry in answer_entries
     ]
+    freshness_context = _answer_report_freshness_context(answers)
     evidence_chain = _evidence_chain(answers, answer_entries)
     nuance_report = _nuance_report(evidence_chain, grounding)
     conflict_report = _conflict_report(evidence_chain, grounding)
@@ -92,10 +99,11 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
             "source_packet_schema": evidence_packet.get("schema"),
             "query_algorithm": query_report.get("algorithm"),
             "graph_context_required": True,
-            "freshness_context": "source_post_and_capture_metadata",
+            "freshness_context": freshness_context,
             **grounding,
         },
         "answers": answers,
+        "query_report": query_report,
         "evidence_chain": evidence_chain,
         "nuance_report": nuance_report,
         "conflict_report": conflict_report,
@@ -117,7 +125,18 @@ def render_answer_packet(evidence_packet: dict[str, object], limit: int = 5) -> 
         },
         "network_touched": False,
         "read_only": True,
-    }
+}
+
+
+def _answer_report_freshness_context(answers: list[dict[str, object]]) -> str:
+    bases = [
+        answer.get("freshness", {}).get("basis")
+        for answer in answers
+        if isinstance(answer.get("freshness"), dict)
+    ]
+    if any(basis == "source_post_and_capture_metadata" for basis in bases):
+        return "source_post_and_capture_metadata"
+    return "packet_created_at_fallback"
 
 
 def _query_report(evidence_packet: dict[str, object]) -> dict[str, object]:
@@ -299,8 +318,16 @@ def _nuance_report(chain: list[dict[str, object]], grounding: dict[str, object])
 def _chain_freshness(chain: list[dict[str, object]]) -> dict[str, object]:
     captured_at_values = _unique_sorted(step.get("captured_at") for step in chain)
     posted_at_values = _unique_sorted(step.get("posted_at") for step in chain)
+    if captured_at_values:
+        basis = "source_post_and_capture_metadata"
+    elif posted_at_values:
+        basis = "source_post_metadata_without_capture_timestamp"
+    elif chain:
+        basis = "local_evidence_without_timestamp_metadata"
+    else:
+        basis = "no_answer_evidence"
     return {
-        "basis": "source_post_and_capture_metadata" if captured_at_values else "no_answer_evidence",
+        "basis": basis,
         "latest_captured_at": max(captured_at_values) if captured_at_values else None,
         "captured_at_values": captured_at_values,
         "posted_at_values": posted_at_values,
@@ -442,7 +469,7 @@ def _warning_report(chain: list[dict[str, object]], query_report: dict[str, obje
     warning_edges = [
         edge
         for edge in _chain_claim_relation_edges(chain)
-        if edge.get("kind") in {"source_warns_about_claim", "warning_targets_object", "warning_targets_action", "claim_contradicts_claim"}
+        if edge.get("kind") in WARNING_EVIDENCE_EDGE_KINDS
     ]
     requested = _warning_requested(query_report)
     return {
@@ -782,8 +809,6 @@ def _grounding_metrics(query_report: dict[str, object], result: dict[str, object
 def _is_grounded(metrics: dict[str, object]) -> bool:
     if bool(metrics.get("warning_requested")) and not bool(metrics.get("warning_supported")):
         return False
-    if bool(metrics.get("relation_supported")):
-        return True
     matched_count = int(metrics.get("matched_content_term_count") or 0)
     content_terms = metrics.get("content_terms", [])
     content_term_count = len(content_terms) if isinstance(content_terms, list) else 0
@@ -791,6 +816,8 @@ def _is_grounded(metrics: dict[str, object]) -> bool:
     has_unmatched_structured = bool(unmatched_structured) if isinstance(unmatched_structured, list) else False
     if has_unmatched_structured:
         return matched_count >= 3
+    if bool(metrics.get("relation_supported")):
+        return True
     if content_term_count >= 5:
         return matched_count >= 3
     if matched_count >= 2:
@@ -891,8 +918,7 @@ def _warning_supported(result: dict[str, object]) -> bool:
     relation_edges = context.get("relation_edges", [])
     return isinstance(relation_edges, list) and any(
         isinstance(edge, dict)
-        and edge.get("kind")
-        in {"warns_about", "source_warns_about_claim", "warning_targets_object", "warning_targets_action", "claim_contradicts_claim"}
+        and edge.get("kind") in WARNING_EVIDENCE_EDGE_KINDS
         for edge in relation_edges
     )
 
