@@ -73,6 +73,16 @@ REQUIRED_FILES = [
     "docs/LIMITS_AND_ETHICS.md",
     "docs/decisions/README.md",
     ".github/workflows/validate.yml",
+    "kag/AGENTS.md",
+    "kag/README.md",
+    "kag/manifest.json",
+    "kag/nodes/source_home.json",
+    "kag/nodes/storage_boundary.json",
+    "kag/edges/source_routes_to_storage_boundary.json",
+    "kag/indexes/source_inventory.json",
+    "kag/indexes/source_surface_index.json",
+    "kag/projections/source_return.json",
+    "kag/receipts/validation_receipt.json",
     "src/aoa_4pda_connector/cli.py",
 ]
 
@@ -106,6 +116,12 @@ REQUIRED_DIRS = [
     "evals/reports",
     "connector/seeds/reviews",
     "generated",
+    "kag",
+    "kag/nodes",
+    "kag/edges",
+    "kag/indexes",
+    "kag/projections",
+    "kag/receipts",
     ".github/workflows",
 ]
 
