@@ -261,6 +261,7 @@ def main() -> int:
         *repo_root.glob("connector/seeds/reviews/**/*.json"),
         *repo_root.glob("evals/suites/**/*.json"),
         *repo_root.glob("generated/**/*.json"),
+        *repo_root.glob("kag/**/*.json"),
     ]:
         _load_json(path, errors)
 
