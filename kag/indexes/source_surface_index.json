@@ -64,7 +64,7 @@
   },
   "index_identity": {
     "artifact_kind": "source_surface_index",
-    "content_digest": "646d765a3c19bb56c8b1e4ade842102bf2c09fbaf5192e859547c8d9d9247abc",
+    "content_digest": "8db09991548d3c441941f4e220f2fd841fd9f95c76f2e456c13c273e7acdee66",
     "local_id": "index:repo-local:source-surfaces",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-index.schema.json"
   },
@@ -292,7 +292,7 @@
         "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
         "git_ref": "git-index-source-tree",
         "id": "file:.connector-state/artifacts/.gitkeep:9accf75395",
-        "mime": "application/octet-stream",
+        "mime": "text/plain",
         "path": ".connector-state/artifacts/.gitkeep",
         "repo": "aoa-4pda-connector",
         "size_bytes": 1
@@ -379,7 +379,7 @@
         "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
         "git_ref": "git-index-source-tree",
         "id": "file:.connector-state/cache/.gitkeep:ffb60a7310",
-        "mime": "application/octet-stream",
+        "mime": "text/plain",
         "path": ".connector-state/cache/.gitkeep",
         "repo": "aoa-4pda-connector",
         "size_bytes": 1
@@ -466,7 +466,7 @@
         "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
         "git_ref": "git-index-source-tree",
         "id": "file:.connector-state/data/.gitkeep:c10ea2dd50",
-        "mime": "application/octet-stream",
+        "mime": "text/plain",
         "path": ".connector-state/data/.gitkeep",
         "repo": "aoa-4pda-connector",
         "size_bytes": 1
@@ -553,7 +553,7 @@
         "content_hash": "9aa4ed24fb5e24bb66e002fab9cfeec5157a11546dae24081a1d1e469ab4b134",
         "git_ref": "git-index-source-tree",
         "id": "file:.env.example:a3046da0d1",
-        "mime": "application/octet-stream",
+        "mime": "text/plain",
         "path": ".env.example",
         "repo": "aoa-4pda-connector",
         "size_bytes": 891
@@ -637,7 +637,7 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "feff37be3b565a8bf0d154f18c81498072b2b33c18290da229c544b2ad87c918",
+        "content_hash": "9043b9261b2f774c1db5b86410b2f855d10bbb387f360bfa62512cc0ba22b80b",
         "git_ref": "git-index-source-tree",
         "id": "file:.github/workflows/validate.yml:a5c0f08bc4",
         "mime": "application/yaml",
@@ -676,7 +676,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "feff37be3b565a8bf0d154f18c81498072b2b33c18290da229c544b2ad87c918",
+        "digest": "9043b9261b2f774c1db5b86410b2f855d10bbb387f360bfa62512cc0ba22b80b",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -729,7 +729,7 @@
         "content_hash": "aa94df76f8942c582ac9d19e77a363208a5ecc51633d68a0958bda23f413bd69",
         "git_ref": "git-index-source-tree",
         "id": "file:.gitignore:bc37d034ba",
-        "mime": "application/octet-stream",
+        "mime": "text/plain",
         "path": ".gitignore",
         "repo": "aoa-4pda-connector",
         "size_bytes": 875
@@ -15060,7 +15060,7 @@
         "surface": "generated/connector_registry.min.json"
       },
       "provenance": {
-        "generated_by": "scripts/generate_kag.py",
+        "generated_by": "",
         "materials": [],
         "observed_by": "aoa-kag:scripts/generate_repo_local_kag_index.py",
         "source_refs": [
@@ -16006,7 +16006,7 @@
         "content_hash": "cb069715e0fc5783aaab38655047b27b38ff59783e3f12de222d20aafb6e491d",
         "git_ref": "git-index-source-tree",
         "id": "file:pyproject.toml:50c86b7ed8",
-        "mime": "application/octet-stream",
+        "mime": "application/toml",
         "path": "pyproject.toml",
         "repo": "aoa-4pda-connector",
         "size_bytes": 611
