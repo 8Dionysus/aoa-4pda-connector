@@ -1,0 +1,539 @@
+{
+  "entries": [
+    {
+      "event_kind": "workflow_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:65ce6400b5999dfceebb",
+      "observation_state": "declared",
+      "path": ".github/workflows/validate.yml",
+      "source_record_id": "file:.github/workflows/validate.yml:a5c0f08bc4"
+    },
+    {
+      "event_kind": "release_lane",
+      "event_role": "declaration",
+      "heading_ref": {
+        "anchor": "unreleased",
+        "level": 2,
+        "line": 3,
+        "ref": "CHANGELOG.md#unreleased",
+        "title": "Unreleased"
+      },
+      "id": "event:repo:0fae662dd9c666b85032",
+      "observation_state": "declared",
+      "path": "CHANGELOG.md",
+      "source_record_id": "file:changelog.md:06572a96a5"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:302057a9d046baa30b9a",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0001-public-evidence-connector-skeleton.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0001-public-evidence-connector-skeleton.md:bd84906c13"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:508f2b2fc15d7e337c1f",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0002-ci-and-starter-proof-gate.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0002-ci-and-starter-proof-gate.md:3c9b0b7595"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:981fabf4fc76c8618684",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0003-bm25-exact-starter-search.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0003-bm25-exact-starter-search.md:c875cc25e8"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:ea5a4f3e2b4b9a66c13b",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0004-heuristic-entity-extraction-v1.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0004-heuristic-entity-extraction-v1.md:2870ee5b33"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:73447af9d4102c121b3e",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0005-live-starter-proof-gate.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0005-live-starter-proof-gate.md:3a954d6479"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:e66c4153b86a852c6c51",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0006-local-starter-search-eval-pack.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0006-local-starter-search-eval-pack.md:ad1e3a40b0"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:bb732ced7bc9e58ab563",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0007-local-starter-graph-relation-eval-pack.md:eb2a52f89f"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:aaf3faf054913e23d6a0",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0008-starter-graph-relation-edges-v1.md:e02dc89fa9"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:fdb357d22269bdc658c3",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0009-starter-graph-query-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0009-starter-graph-query-packets.md:de18ff01e9"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:9e8ef38930e810823a48",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0010-starter-answer-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0010-starter-answer-packets.md:a0bff30a0c"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:6801321e55cb6cd17038",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0011-repo-local-state-root.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0011-repo-local-state-root.md:e38ec72c31"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:a4116dc1eb6da6935b17",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0012-live-starter-search-quality-eval.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0012-live-starter-search-quality-eval.md:704f8ddb3e"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:f733abb099e5a68e8218",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0013-technical-token-normalization.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0013-technical-token-normalization.md:a3b5e725bc"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:cc9e2b9c15dccac91191",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0014-focused-xiaomi-13t-profile.md:4ae8bc3f6b"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:f769cfd983c00182818e",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0015-xiaomi-entity-extraction-v2.md:45738141e9"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:a492abc98633ce5ae730",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0016-live-xiaomi-graph-query-eval.md:635171a355"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:452180469b2db518543a",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0017-root-recovery-answer-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0017-root-recovery-answer-packets.md:15813587b0"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:c4e249b18ebaac827f57",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0018-connector-ready-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0018-connector-ready-audit.md:c02175c393"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:5ff0c2dc8fe9a4f0432e",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0019-answer-freshness-context.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0019-answer-freshness-context.md:d511595d3f"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:6cfb0d116745f67b3be3",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0020-second-representative-profile.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0020-second-representative-profile.md:d7a32daf8f"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:cad4677fc92c729d3a5a",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0021-reference-profile-coverage-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0021-reference-profile-coverage-audit.md:b92322c610"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:6665b3eba6efe629fb53",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0022-reference-profile-refresh-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0022-reference-profile-refresh-audit.md:42c9c36ee1"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:20318f72b0c3f535ee54",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0023-reference-profile-discovery-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0023-reference-profile-discovery-audit.md:f193c58539"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:a1855af9add9472d2c93",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0024-review-ready-discovery-candidates.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0024-review-ready-discovery-candidates.md:51d3085fed"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:59452c6fcf67f869a56a",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0025-discovery-review-manifest.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0025-discovery-review-manifest.md:6a6cbfe455"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:27e65f4cf25cf8308021",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0026-xiaomi-13t-reviewed-seed-expansion.md:09560a03c1"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:39dae643d682851d7684",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0027-discovery-pagination-defer-rule.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0027-discovery-pagination-defer-rule.md:1e48c02657"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:7049d62ae261bdaaf33f",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0028-deterministic-vector-hybrid-index.md:aef954134f"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:fbf6a03acdd3f07bdf17",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0029-agent-install-route-verifier.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0029-agent-install-route-verifier.md:cf9b380161"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:5039619c64a142cd164d",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0030-information-need-coverage.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0030-information-need-coverage.md:6f211478f7"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:e242f68adc59b1ba7ba7",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0031-answer-gap-awareness.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0031-answer-gap-awareness.md:5f7659b4e4"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:8a319335714b89552210",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0032-answer-evidence-chain.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0032-answer-evidence-chain.md:c88cebb38b"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:e5b4ff0a0fae278391d7",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0033-deterministic-agent-answer.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0033-deterministic-agent-answer.md:999abc8709"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:02880c204c1f2d277fb5",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0034-portable-mcp-rollout-contract.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0034-portable-mcp-rollout-contract.md:215e751dc6"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:b94c707e451c733435bc",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0035-deep-runtime-answer-grounding.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0035-deep-runtime-answer-grounding.md:cc3f6b5a5d"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:9ab8da7715d6b1a14838",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0036-claim-conflict-freshness-runtime.md:a6529f58b3"
+    },
+    {
+      "event_kind": "decision_record",
+      "event_role": "declaration",
+      "heading_ref": null,
+      "id": "event:repo:6447ce3ebeee30b7e2a6",
+      "observation_state": "declared",
+      "path": "docs/decisions/AOA-4PDA-D-0037-connector-family-claim-contract.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0037-connector-family-claim-contract.md:35414bbef8"
+    },
+    {
+      "event_kind": "validation_receipt",
+      "event_role": "receipt",
+      "heading_ref": null,
+      "id": "event:repo:dccff329e6287afd1138",
+      "observation_state": "observed",
+      "path": "kag/receipts/validation_receipt.json",
+      "source_record_id": "file:kag/receipts/validation_receipt.json:8e616be0cd"
+    },
+    {
+      "event_kind": "validation_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:196b4f95ac12b1ee1348",
+      "observation_state": "declared",
+      "path": "scripts/validate_connector.py",
+      "source_record_id": "file:scripts/validate_connector.py:de39a47221"
+    },
+    {
+      "event_kind": "command_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:7a25abd0d7ea23d0409f",
+      "observation_state": "declared",
+      "path": "scripts/verify_agent_install_route.py",
+      "source_record_id": "file:scripts/verify_agent_install_route.py:7a0ab3925d"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:08b110de80b4b7e3f498",
+      "observation_state": "declared",
+      "path": "tests/contract/test_fixtures_and_cli.py",
+      "source_record_id": "file:tests/contract/test_fixtures_and_cli.py:b979c19001"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:2d1d3393dd5c417656cd",
+      "observation_state": "declared",
+      "path": "tests/integration/test_agent_install_verifier.py",
+      "source_record_id": "file:tests/integration/test_agent_install_verifier.py:6c82b254b2"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:fb408030e80e2c6f303d",
+      "observation_state": "declared",
+      "path": "tests/integration/test_validator.py",
+      "source_record_id": "file:tests/integration/test_validator.py:4ec0e84ff6"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:696de77254301a80d9ab",
+      "observation_state": "declared",
+      "path": "tests/unit/test_answer_packet.py",
+      "source_record_id": "file:tests/unit/test_answer_packet.py:c0a7bd3535"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:29a73c1b63ac24a0573b",
+      "observation_state": "declared",
+      "path": "tests/unit/test_chunking.py",
+      "source_record_id": "file:tests/unit/test_chunking.py:f17d3e03e1"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:96732a5378d01e444d7b",
+      "observation_state": "declared",
+      "path": "tests/unit/test_crawl_pagination.py",
+      "source_record_id": "file:tests/unit/test_crawl_pagination.py:04c0622462"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:59b7f17799af8f3834ab",
+      "observation_state": "declared",
+      "path": "tests/unit/test_entities_and_graph.py",
+      "source_record_id": "file:tests/unit/test_entities_and_graph.py:32af1f4882"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:ae52fe3935665fa30b27",
+      "observation_state": "declared",
+      "path": "tests/unit/test_graph_query_packet.py",
+      "source_record_id": "file:tests/unit/test_graph_query_packet.py:186db5898e"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:a23e00445f7e4a4112bb",
+      "observation_state": "declared",
+      "path": "tests/unit/test_parse_and_index.py",
+      "source_record_id": "file:tests/unit/test_parse_and_index.py:7cc537e18a"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:5bae53269e3dc0f82210",
+      "observation_state": "declared",
+      "path": "tests/unit/test_policy_rules.py",
+      "source_record_id": "file:tests/unit/test_policy_rules.py:01fe2bd0a0"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:71964d25d9a49d2d6df3",
+      "observation_state": "declared",
+      "path": "tests/unit/test_search_eval.py",
+      "source_record_id": "file:tests/unit/test_search_eval.py:0eeacc05ec"
+    },
+    {
+      "event_kind": "test_run",
+      "event_role": "producer",
+      "heading_ref": null,
+      "id": "event:repo:69fa5f61fade30455b67",
+      "observation_state": "declared",
+      "path": "tests/unit/test_validate_connector_policy.py",
+      "source_record_id": "file:tests/unit/test_validate_connector_policy.py:032cbb9aed"
+    }
+  ],
+  "index_identity": {
+    "artifact_kind": "repository_event_index",
+    "content_digest": "d226ffe1c2ccc442a92f5c75e8fb93e28883da745579b9deef8bd3938a140162",
+    "index_kind": "event",
+    "local_id": "index:repo-local:events",
+    "schema_ref": "aoa-kag:schemas/repo-local-kag-repository-index.schema.json"
+  },
+  "registry_output": {
+    "consumer": "aoa-kag-mcp",
+    "resource_shape": "repo-local-event-index",
+    "stable_fields": [
+      "id",
+      "event_kind",
+      "event_role",
+      "source_record_id",
+      "path",
+      "heading_ref"
+    ]
+  },
+  "repo": {
+    "git_ref": "git-index-source-tree",
+    "name": "aoa-4pda-connector",
+    "owner_type": "connector",
+    "root": "."
+  },
+  "schema_version": "aoa-repo-local-kag-repository-index-v1",
+  "source_index": {
+    "content_digest": "9d461d19b6dd0156095590983bff4e1a3b76242e2c72e40aa19716629c4e5494",
+    "local_id": "index:repo-local:source-surfaces",
+    "path": "kag/indexes/source_surface_index.json"
+  },
+  "summary": {
+    "entry_count": 54,
+    "kind_counts": {
+      "command_run": 1,
+      "decision_record": 37,
+      "release_lane": 1,
+      "test_run": 12,
+      "validation_receipt": 1,
+      "validation_run": 1,
+      "workflow_run": 1
+    }
+  }
+}

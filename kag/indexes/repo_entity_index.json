@@ -1,0 +1,2624 @@
+{
+  "entries": [
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "agents",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "agent_route",
+      "id": "entity:file:.connector-state/agents.md:c48b09d1eb",
+      "label": ".connector-state/AGENTS.md",
+      "source_record_id": "file:.connector-state/agents.md:c48b09d1eb"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:.connector-state/readme.md:377f66e180",
+      "label": ".connector-state/README.md",
+      "source_record_id": "file:.connector-state/readme.md:377f66e180"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "directory_marker",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:.connector-state/artifacts/.gitkeep:9accf75395",
+      "label": ".connector-state/artifacts/.gitkeep",
+      "source_record_id": "file:.connector-state/artifacts/.gitkeep:9accf75395"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "directory_marker",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:.connector-state/cache/.gitkeep:ffb60a7310",
+      "label": ".connector-state/cache/.gitkeep",
+      "source_record_id": "file:.connector-state/cache/.gitkeep:ffb60a7310"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "directory_marker",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:.connector-state/data/.gitkeep:c10ea2dd50",
+      "label": ".connector-state/data/.gitkeep",
+      "source_record_id": "file:.connector-state/data/.gitkeep:c10ea2dd50"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:.env.example:a3046da0d1",
+      "label": ".env.example",
+      "source_record_id": "file:.env.example:a3046da0d1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:.github/workflows/validate.yml:a5c0f08bc4",
+      "label": ".github/workflows/validate.yml",
+      "source_record_id": "file:.github/workflows/validate.yml:a5c0f08bc4"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "owner_metadata",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "owner_surface",
+      "id": "entity:file:.gitignore:bc37d034ba",
+      "label": ".gitignore",
+      "source_record_id": "file:.gitignore:bc37d034ba"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "agents",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "agent_route",
+      "id": "entity:file:agents.md:a54ff182c7",
+      "label": "AGENTS.md",
+      "source_record_id": "file:agents.md:a54ff182c7"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "boundary",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:boundaries.md:22819d489e",
+      "label": "BOUNDARIES.md",
+      "source_record_id": "file:boundaries.md:22819d489e"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "changelog",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:changelog.md:06572a96a5",
+      "label": "CHANGELOG.md",
+      "source_record_id": "file:changelog.md:06572a96a5"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:charter.md:91d16dd057",
+      "label": "CHARTER.md",
+      "source_record_id": "file:charter.md:91d16dd057"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:readme.md:b335630551",
+      "label": "README.md",
+      "source_record_id": "file:readme.md:b335630551"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "roadmap",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:roadmap.md:683343bdf9",
+      "label": "ROADMAP.md",
+      "source_record_id": "file:roadmap.md:683343bdf9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:connector/readme.md:5aa00cda8e",
+      "label": "connector/README.md",
+      "source_record_id": "file:connector/readme.md:5aa00cda8e"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "source_policy",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:connector/source_policy.md:1ec0689ca4",
+      "label": "connector/SOURCE_POLICY.md",
+      "source_record_id": "file:connector/source_policy.md:1ec0689ca4"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:connector/storage_policy.md:aef066cc09",
+      "label": "connector/STORAGE_POLICY.md",
+      "source_record_id": "file:connector/storage_policy.md:aef066cc09"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/examples/evidence_packets/synthetic_bootloop_packet.json:02c94c3b87",
+      "label": "connector/examples/evidence_packets/synthetic_bootloop_packet.json",
+      "source_record_id": "file:connector/examples/evidence_packets/synthetic_bootloop_packet.json:02c94c3b87"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "text_artifact",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/examples/queries/starter_queries.txt:4b9617a85a",
+      "label": "connector/examples/queries/starter_queries.txt",
+      "source_record_id": "file:connector/examples/queries/starter_queries.txt:4b9617a85a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/fixtures/expected_packets/synthetic_bootloop_packet.json:d240924149",
+      "label": "connector/fixtures/expected_packets/synthetic_bootloop_packet.json",
+      "source_record_id": "file:connector/fixtures/expected_packets/synthetic_bootloop_packet.json:d240924149"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "fixture",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:connector/fixtures/html/claim_conflict_topic.html:c9631d1130",
+      "label": "connector/fixtures/html/claim_conflict_topic.html",
+      "source_record_id": "file:connector/fixtures/html/claim_conflict_topic.html:c9631d1130"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "fixture",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:connector/fixtures/html/live_shape_topic.html:29f8c2d061",
+      "label": "connector/fixtures/html/live_shape_topic.html",
+      "source_record_id": "file:connector/fixtures/html/live_shape_topic.html:29f8c2d061"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "fixture",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:connector/fixtures/html/synthetic_topic.html:fc809a46a6",
+      "label": "connector/fixtures/html/synthetic_topic.html",
+      "source_record_id": "file:connector/fixtures/html/synthetic_topic.html:fc809a46a6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "fixture",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:connector/fixtures/html/xiaomi_13t_firmware_topic.html:2c3d6d37c6",
+      "label": "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
+      "source_record_id": "file:connector/fixtures/html/xiaomi_13t_firmware_topic.html:2c3d6d37c6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/fixtures/normalized/synthetic_topic.json:2686b8f9ad",
+      "label": "connector/fixtures/normalized/synthetic_topic.json",
+      "source_record_id": "file:connector/fixtures/normalized/synthetic_topic.json:2686b8f9ad"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "manifest",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "manifest",
+      "id": "entity:file:connector/manifests/artifact_classes.yaml:702a5cec90",
+      "label": "connector/manifests/artifact_classes.yaml",
+      "source_record_id": "file:connector/manifests/artifact_classes.yaml:702a5cec90"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "manifest",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "manifest",
+      "id": "entity:file:connector/manifests/connector_manifest.yaml:747276e9b1",
+      "label": "connector/manifests/connector_manifest.yaml",
+      "source_record_id": "file:connector/manifests/connector_manifest.yaml:747276e9b1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "manifest",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "manifest",
+      "id": "entity:file:connector/manifests/route_allowlist.yaml:1ba98f35b6",
+      "label": "connector/manifests/route_allowlist.yaml",
+      "source_record_id": "file:connector/manifests/route_allowlist.yaml:1ba98f35b6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/focused-device.yaml:fd04eda279",
+      "label": "connector/profiles/focused-device.yaml",
+      "source_record_id": "file:connector/profiles/focused-device.yaml:fd04eda279"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/full-public.yaml:c4d3bf7d99",
+      "label": "connector/profiles/full-public.yaml",
+      "source_record_id": "file:connector/profiles/full-public.yaml:c4d3bf7d99"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/redmi-note-10-pro.yaml:1d40cf9ba8",
+      "label": "connector/profiles/redmi-note-10-pro.yaml",
+      "source_record_id": "file:connector/profiles/redmi-note-10-pro.yaml:1d40cf9ba8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/starter.yaml:86fb3508bf",
+      "label": "connector/profiles/starter.yaml",
+      "source_record_id": "file:connector/profiles/starter.yaml:86fb3508bf"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/xiaomi-13t.yaml:07ad7539f8",
+      "label": "connector/profiles/xiaomi-13t.yaml",
+      "source_record_id": "file:connector/profiles/xiaomi-13t.yaml:07ad7539f8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/profiles/xiaomi_13t_information_needs.json:89983a8209",
+      "label": "connector/profiles/xiaomi_13t_information_needs.json",
+      "source_record_id": "file:connector/profiles/xiaomi_13t_information_needs.json:89983a8209"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/answer_packet.schema.json:3886462d56",
+      "label": "connector/schemas/answer_packet.schema.json",
+      "source_record_id": "file:connector/schemas/answer_packet.schema.json:3886462d56"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/applicability_report.schema.json:bfec791fa3",
+      "label": "connector/schemas/applicability_report.schema.json",
+      "source_record_id": "file:connector/schemas/applicability_report.schema.json:bfec791fa3"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/claim.schema.json:32e75444c5",
+      "label": "connector/schemas/claim.schema.json",
+      "source_record_id": "file:connector/schemas/claim.schema.json:32e75444c5"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/claim_relation.schema.json:383c535c0b",
+      "label": "connector/schemas/claim_relation.schema.json",
+      "source_record_id": "file:connector/schemas/claim_relation.schema.json:383c535c0b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/conflict_report.schema.json:5a9c8bd05f",
+      "label": "connector/schemas/conflict_report.schema.json",
+      "source_record_id": "file:connector/schemas/conflict_report.schema.json:5a9c8bd05f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/crawl_receipt.schema.json:b0b5287569",
+      "label": "connector/schemas/crawl_receipt.schema.json",
+      "source_record_id": "file:connector/schemas/crawl_receipt.schema.json:b0b5287569"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/evidence_packet.schema.json:22b1fd4258",
+      "label": "connector/schemas/evidence_packet.schema.json",
+      "source_record_id": "file:connector/schemas/evidence_packet.schema.json:22b1fd4258"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/freshness_report.schema.json:116037cdf5",
+      "label": "connector/schemas/freshness_report.schema.json",
+      "source_record_id": "file:connector/schemas/freshness_report.schema.json:116037cdf5"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/graph_edge.schema.json:7cdc761c31",
+      "label": "connector/schemas/graph_edge.schema.json",
+      "source_record_id": "file:connector/schemas/graph_edge.schema.json:7cdc761c31"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/graph_node.schema.json:1582c817b6",
+      "label": "connector/schemas/graph_node.schema.json",
+      "source_record_id": "file:connector/schemas/graph_node.schema.json:1582c817b6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/index_manifest.schema.json:0bee62c710",
+      "label": "connector/schemas/index_manifest.schema.json",
+      "source_record_id": "file:connector/schemas/index_manifest.schema.json:0bee62c710"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/materialize_receipt.schema.json:5aeacf8a1f",
+      "label": "connector/schemas/materialize_receipt.schema.json",
+      "source_record_id": "file:connector/schemas/materialize_receipt.schema.json:5aeacf8a1f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/normalized_post.schema.json:2b0ac6226c",
+      "label": "connector/schemas/normalized_post.schema.json",
+      "source_record_id": "file:connector/schemas/normalized_post.schema.json:2b0ac6226c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/normalized_topic.schema.json:9d8d8799e9",
+      "label": "connector/schemas/normalized_topic.schema.json",
+      "source_record_id": "file:connector/schemas/normalized_topic.schema.json:9d8d8799e9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/vector_index.schema.json:126017c593",
+      "label": "connector/schemas/vector_index.schema.json",
+      "source_record_id": "file:connector/schemas/vector_index.schema.json:126017c593"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/vector_manifest.schema.json:6a78740e7a",
+      "label": "connector/schemas/vector_manifest.schema.json",
+      "source_record_id": "file:connector/schemas/vector_manifest.schema.json:6a78740e7a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "schema",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "contract",
+      "id": "entity:file:connector/schemas/warning_report.schema.json:931d4eadc5",
+      "label": "connector/schemas/warning_report.schema.json",
+      "source_record_id": "file:connector/schemas/warning_report.schema.json:931d4eadc5"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/seeds/forum_sections.yaml:f9c30e454c",
+      "label": "connector/seeds/forum_sections.yaml",
+      "source_record_id": "file:connector/seeds/forum_sections.yaml:f9c30e454c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/seeds/redmi_note_10_pro_topics.yaml:6c452750eb",
+      "label": "connector/seeds/redmi_note_10_pro_topics.yaml",
+      "source_record_id": "file:connector/seeds/redmi_note_10_pro_topics.yaml:6c452750eb"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/seeds/reviews/xiaomi_13t_discovery_review.json:cb21d8f540",
+      "label": "connector/seeds/reviews/xiaomi_13t_discovery_review.json",
+      "source_record_id": "file:connector/seeds/reviews/xiaomi_13t_discovery_review.json:cb21d8f540"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/seeds/starter_topics.yaml:e44b371dc0",
+      "label": "connector/seeds/starter_topics.yaml",
+      "source_record_id": "file:connector/seeds/starter_topics.yaml:e44b371dc0"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:connector/seeds/xiaomi_13t_topics.yaml:674dae1d22",
+      "label": "connector/seeds/xiaomi_13t_topics.yaml",
+      "source_record_id": "file:connector/seeds/xiaomi_13t_topics.yaml:674dae1d22"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/agent_install_route.md:38c86ecaa7",
+      "label": "docs/AGENT_INSTALL_ROUTE.md",
+      "source_record_id": "file:docs/agent_install_route.md:38c86ecaa7"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/architecture.md:ff21b6b9a3",
+      "label": "docs/ARCHITECTURE.md",
+      "source_record_id": "file:docs/architecture.md:ff21b6b9a3"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/connector_family_claim_contract.md:2fbbbc3cbc",
+      "label": "docs/CONNECTOR_FAMILY_CLAIM_CONTRACT.md",
+      "source_record_id": "file:docs/connector_family_claim_contract.md:2fbbbc3cbc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/connector_ready.md:547872a5f4",
+      "label": "docs/CONNECTOR_READY.md",
+      "source_record_id": "file:docs/connector_ready.md:547872a5f4"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/coverage.md:d83910ec80",
+      "label": "docs/COVERAGE.md",
+      "source_record_id": "file:docs/coverage.md:d83910ec80"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/discovery.md:e5ce7a4007",
+      "label": "docs/DISCOVERY.md",
+      "source_record_id": "file:docs/discovery.md:e5ce7a4007"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/external_storage.md:ff63a64d12",
+      "label": "docs/EXTERNAL_STORAGE.md",
+      "source_record_id": "file:docs/external_storage.md:ff63a64d12"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/graph_model.md:72ed1bbd50",
+      "label": "docs/GRAPH_MODEL.md",
+      "source_record_id": "file:docs/graph_model.md:72ed1bbd50"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/install.md:93adeedb62",
+      "label": "docs/INSTALL.md",
+      "source_record_id": "file:docs/install.md:93adeedb62"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/limits_and_ethics.md:1c1a0f7ad1",
+      "label": "docs/LIMITS_AND_ETHICS.md",
+      "source_record_id": "file:docs/limits_and_ethics.md:1c1a0f7ad1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/mcp_rollout.md:7592ebe12e",
+      "label": "docs/MCP_ROLLOUT.md",
+      "source_record_id": "file:docs/mcp_rollout.md:7592ebe12e"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/operations.md:3b441db82a",
+      "label": "docs/OPERATIONS.md",
+      "source_record_id": "file:docs/operations.md:3b441db82a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/query_model.md:dc059c6e17",
+      "label": "docs/QUERY_MODEL.md",
+      "source_record_id": "file:docs/query_model.md:dc059c6e17"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/refresh.md:b3e31c26e3",
+      "label": "docs/REFRESH.md",
+      "source_record_id": "file:docs/refresh.md:b3e31c26e3"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/runtime_contract.md:fa011f8c69",
+      "label": "docs/RUNTIME_CONTRACT.md",
+      "source_record_id": "file:docs/runtime_contract.md:fa011f8c69"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/seed_review.md:66f30773db",
+      "label": "docs/SEED_REVIEW.md",
+      "source_record_id": "file:docs/seed_review.md:66f30773db"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/starter_proof.md:a06d166b7c",
+      "label": "docs/STARTER_PROOF.md",
+      "source_record_id": "file:docs/starter_proof.md:a06d166b7c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0001-public-evidence-connector-skeleton.md:bd84906c13",
+      "label": "docs/decisions/AOA-4PDA-D-0001-public-evidence-connector-skeleton.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0001-public-evidence-connector-skeleton.md:bd84906c13"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0002-ci-and-starter-proof-gate.md:3c9b0b7595",
+      "label": "docs/decisions/AOA-4PDA-D-0002-ci-and-starter-proof-gate.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0002-ci-and-starter-proof-gate.md:3c9b0b7595"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0003-bm25-exact-starter-search.md:c875cc25e8",
+      "label": "docs/decisions/AOA-4PDA-D-0003-bm25-exact-starter-search.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0003-bm25-exact-starter-search.md:c875cc25e8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0004-heuristic-entity-extraction-v1.md:2870ee5b33",
+      "label": "docs/decisions/AOA-4PDA-D-0004-heuristic-entity-extraction-v1.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0004-heuristic-entity-extraction-v1.md:2870ee5b33"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0005-live-starter-proof-gate.md:3a954d6479",
+      "label": "docs/decisions/AOA-4PDA-D-0005-live-starter-proof-gate.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0005-live-starter-proof-gate.md:3a954d6479"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0006-local-starter-search-eval-pack.md:ad1e3a40b0",
+      "label": "docs/decisions/AOA-4PDA-D-0006-local-starter-search-eval-pack.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0006-local-starter-search-eval-pack.md:ad1e3a40b0"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0007-local-starter-graph-relation-eval-pack.md:eb2a52f89f",
+      "label": "docs/decisions/AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0007-local-starter-graph-relation-eval-pack.md:eb2a52f89f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0008-starter-graph-relation-edges-v1.md:e02dc89fa9",
+      "label": "docs/decisions/AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0008-starter-graph-relation-edges-v1.md:e02dc89fa9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0009-starter-graph-query-packets.md:de18ff01e9",
+      "label": "docs/decisions/AOA-4PDA-D-0009-starter-graph-query-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0009-starter-graph-query-packets.md:de18ff01e9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0010-starter-answer-packets.md:a0bff30a0c",
+      "label": "docs/decisions/AOA-4PDA-D-0010-starter-answer-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0010-starter-answer-packets.md:a0bff30a0c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0011-repo-local-state-root.md:e38ec72c31",
+      "label": "docs/decisions/AOA-4PDA-D-0011-repo-local-state-root.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0011-repo-local-state-root.md:e38ec72c31"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0012-live-starter-search-quality-eval.md:704f8ddb3e",
+      "label": "docs/decisions/AOA-4PDA-D-0012-live-starter-search-quality-eval.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0012-live-starter-search-quality-eval.md:704f8ddb3e"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0013-technical-token-normalization.md:a3b5e725bc",
+      "label": "docs/decisions/AOA-4PDA-D-0013-technical-token-normalization.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0013-technical-token-normalization.md:a3b5e725bc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0014-focused-xiaomi-13t-profile.md:4ae8bc3f6b",
+      "label": "docs/decisions/AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0014-focused-xiaomi-13t-profile.md:4ae8bc3f6b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0015-xiaomi-entity-extraction-v2.md:45738141e9",
+      "label": "docs/decisions/AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0015-xiaomi-entity-extraction-v2.md:45738141e9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0016-live-xiaomi-graph-query-eval.md:635171a355",
+      "label": "docs/decisions/AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0016-live-xiaomi-graph-query-eval.md:635171a355"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0017-root-recovery-answer-packets.md:15813587b0",
+      "label": "docs/decisions/AOA-4PDA-D-0017-root-recovery-answer-packets.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0017-root-recovery-answer-packets.md:15813587b0"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0018-connector-ready-audit.md:c02175c393",
+      "label": "docs/decisions/AOA-4PDA-D-0018-connector-ready-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0018-connector-ready-audit.md:c02175c393"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0019-answer-freshness-context.md:d511595d3f",
+      "label": "docs/decisions/AOA-4PDA-D-0019-answer-freshness-context.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0019-answer-freshness-context.md:d511595d3f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0020-second-representative-profile.md:d7a32daf8f",
+      "label": "docs/decisions/AOA-4PDA-D-0020-second-representative-profile.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0020-second-representative-profile.md:d7a32daf8f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0021-reference-profile-coverage-audit.md:b92322c610",
+      "label": "docs/decisions/AOA-4PDA-D-0021-reference-profile-coverage-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0021-reference-profile-coverage-audit.md:b92322c610"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0022-reference-profile-refresh-audit.md:42c9c36ee1",
+      "label": "docs/decisions/AOA-4PDA-D-0022-reference-profile-refresh-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0022-reference-profile-refresh-audit.md:42c9c36ee1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0023-reference-profile-discovery-audit.md:f193c58539",
+      "label": "docs/decisions/AOA-4PDA-D-0023-reference-profile-discovery-audit.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0023-reference-profile-discovery-audit.md:f193c58539"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0024-review-ready-discovery-candidates.md:51d3085fed",
+      "label": "docs/decisions/AOA-4PDA-D-0024-review-ready-discovery-candidates.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0024-review-ready-discovery-candidates.md:51d3085fed"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0025-discovery-review-manifest.md:6a6cbfe455",
+      "label": "docs/decisions/AOA-4PDA-D-0025-discovery-review-manifest.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0025-discovery-review-manifest.md:6a6cbfe455"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0026-xiaomi-13t-reviewed-seed-expansion.md:09560a03c1",
+      "label": "docs/decisions/AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0026-xiaomi-13t-reviewed-seed-expansion.md:09560a03c1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0027-discovery-pagination-defer-rule.md:1e48c02657",
+      "label": "docs/decisions/AOA-4PDA-D-0027-discovery-pagination-defer-rule.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0027-discovery-pagination-defer-rule.md:1e48c02657"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0028-deterministic-vector-hybrid-index.md:aef954134f",
+      "label": "docs/decisions/AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0028-deterministic-vector-hybrid-index.md:aef954134f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0029-agent-install-route-verifier.md:cf9b380161",
+      "label": "docs/decisions/AOA-4PDA-D-0029-agent-install-route-verifier.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0029-agent-install-route-verifier.md:cf9b380161"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0030-information-need-coverage.md:6f211478f7",
+      "label": "docs/decisions/AOA-4PDA-D-0030-information-need-coverage.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0030-information-need-coverage.md:6f211478f7"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0031-answer-gap-awareness.md:5f7659b4e4",
+      "label": "docs/decisions/AOA-4PDA-D-0031-answer-gap-awareness.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0031-answer-gap-awareness.md:5f7659b4e4"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0032-answer-evidence-chain.md:c88cebb38b",
+      "label": "docs/decisions/AOA-4PDA-D-0032-answer-evidence-chain.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0032-answer-evidence-chain.md:c88cebb38b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0033-deterministic-agent-answer.md:999abc8709",
+      "label": "docs/decisions/AOA-4PDA-D-0033-deterministic-agent-answer.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0033-deterministic-agent-answer.md:999abc8709"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0034-portable-mcp-rollout-contract.md:215e751dc6",
+      "label": "docs/decisions/AOA-4PDA-D-0034-portable-mcp-rollout-contract.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0034-portable-mcp-rollout-contract.md:215e751dc6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0035-deep-runtime-answer-grounding.md:cc3f6b5a5d",
+      "label": "docs/decisions/AOA-4PDA-D-0035-deep-runtime-answer-grounding.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0035-deep-runtime-answer-grounding.md:cc3f6b5a5d"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0036-claim-conflict-freshness-runtime.md:a6529f58b3",
+      "label": "docs/decisions/AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0036-claim-conflict-freshness-runtime.md:a6529f58b3"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "decision",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "decision",
+      "id": "entity:file:docs/decisions/aoa-4pda-d-0037-connector-family-claim-contract.md:35414bbef8",
+      "label": "docs/decisions/AOA-4PDA-D-0037-connector-family-claim-contract.md",
+      "source_record_id": "file:docs/decisions/aoa-4pda-d-0037-connector-family-claim-contract.md:35414bbef8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:docs/decisions/readme.md:e5ec0e7030",
+      "label": "docs/decisions/README.md",
+      "source_record_id": "file:docs/decisions/readme.md:e5ec0e7030"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "agents",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "agent_route",
+      "id": "entity:file:evals/agents.md:97b1e9d3cd",
+      "label": "evals/AGENTS.md",
+      "source_record_id": "file:evals/agents.md:97b1e9d3cd"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/port.yaml:b027c5aa6b",
+      "label": "evals/PORT.yaml",
+      "source_record_id": "file:evals/port.yaml:b027c5aa6b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/readme.md:a1a9eeb43d",
+      "label": "evals/README.md",
+      "source_record_id": "file:evals/readme.md:a1a9eeb43d"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/intake/readme.md:d27b56ff43",
+      "label": "evals/intake/README.md",
+      "source_record_id": "file:evals/intake/readme.md:d27b56ff43"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/reports/readme.md:ac5e016ca2",
+      "label": "evals/reports/README.md",
+      "source_record_id": "file:evals/reports/readme.md:ac5e016ca2"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "report",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/reports/connector-local-suite-route-pass-20260625.report.md:9363d2e2fc",
+      "label": "evals/reports/connector-local-suite-route-pass-20260625.report.md",
+      "source_record_id": "file:evals/reports/connector-local-suite-route-pass-20260625.report.md:9363d2e2fc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/suites/readme.md:8611332c6f",
+      "label": "evals/suites/README.md",
+      "source_record_id": "file:evals/suites/readme.md:8611332c6f"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "unknown_document",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:evals/suites/connector-local-quality-gates.suite.md:d0f035e0ca",
+      "label": "evals/suites/connector-local-quality-gates.suite.md",
+      "source_record_id": "file:evals/suites/connector-local-quality-gates.suite.md:d0f035e0ca"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_redmi_note_10_pro_search_quality.json:9ac76ff9b2",
+      "label": "evals/suites/live_redmi_note_10_pro_search_quality.json",
+      "source_record_id": "file:evals/suites/live_redmi_note_10_pro_search_quality.json:9ac76ff9b2"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_starter_search_quality.json:93eaf99360",
+      "label": "evals/suites/live_starter_search_quality.json",
+      "source_record_id": "file:evals/suites/live_starter_search_quality.json:93eaf99360"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_xiaomi_13t_answer_quality.json:52d77785f8",
+      "label": "evals/suites/live_xiaomi_13t_answer_quality.json",
+      "source_record_id": "file:evals/suites/live_xiaomi_13t_answer_quality.json:52d77785f8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_xiaomi_13t_graph_query_quality.json:507a675818",
+      "label": "evals/suites/live_xiaomi_13t_graph_query_quality.json",
+      "source_record_id": "file:evals/suites/live_xiaomi_13t_graph_query_quality.json:507a675818"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_xiaomi_13t_hybrid_query_quality.json:baa7113e2a",
+      "label": "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
+      "source_record_id": "file:evals/suites/live_xiaomi_13t_hybrid_query_quality.json:baa7113e2a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_xiaomi_13t_ranking_pressure.json:6e5ffdebcf",
+      "label": "evals/suites/live_xiaomi_13t_ranking_pressure.json",
+      "source_record_id": "file:evals/suites/live_xiaomi_13t_ranking_pressure.json:6e5ffdebcf"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/live_xiaomi_13t_search_quality.json:fdacf3bfbc",
+      "label": "evals/suites/live_xiaomi_13t_search_quality.json",
+      "source_record_id": "file:evals/suites/live_xiaomi_13t_search_quality.json:fdacf3bfbc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_answer_packets.json:9f7439b3aa",
+      "label": "evals/suites/starter_answer_packets.json",
+      "source_record_id": "file:evals/suites/starter_answer_packets.json:9f7439b3aa"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_claim_answer_packets.json:0406674f03",
+      "label": "evals/suites/starter_claim_answer_packets.json",
+      "source_record_id": "file:evals/suites/starter_claim_answer_packets.json:0406674f03"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_claim_conflict_relations.json:3880ed3d49",
+      "label": "evals/suites/starter_claim_conflict_relations.json",
+      "source_record_id": "file:evals/suites/starter_claim_conflict_relations.json:3880ed3d49"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_graph_query_packets.json:34ac318fba",
+      "label": "evals/suites/starter_graph_query_packets.json",
+      "source_record_id": "file:evals/suites/starter_graph_query_packets.json:34ac318fba"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_graph_relations.json:6a84ce747c",
+      "label": "evals/suites/starter_graph_relations.json",
+      "source_record_id": "file:evals/suites/starter_graph_relations.json:6a84ce747c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_hybrid_query_packets.json:d1ff2f9e71",
+      "label": "evals/suites/starter_hybrid_query_packets.json",
+      "source_record_id": "file:evals/suites/starter_hybrid_query_packets.json:d1ff2f9e71"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/starter_search_quality.json:df59095a7b",
+      "label": "evals/suites/starter_search_quality.json",
+      "source_record_id": "file:evals/suites/starter_search_quality.json:df59095a7b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/xiaomi_13t_answer_packets.json:51c2bdabef",
+      "label": "evals/suites/xiaomi_13t_answer_packets.json",
+      "source_record_id": "file:evals/suites/xiaomi_13t_answer_packets.json:51c2bdabef"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:evals/suites/xiaomi_13t_graph_relations.json:0103b782e5",
+      "label": "evals/suites/xiaomi_13t_graph_relations.json",
+      "source_record_id": "file:evals/suites/xiaomi_13t_graph_relations.json:0103b782e5"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "generated_readmodel",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "generated_readmodel"
+      },
+      "entity_kind": "readmodel",
+      "id": "entity:file:generated/connector_registry.min.json:f6de70cde9",
+      "label": "generated/connector_registry.min.json",
+      "source_record_id": "file:generated/connector_registry.min.json:f6de70cde9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "agents",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "agent_route",
+      "id": "entity:file:kag/agents.md:f80d68b85b",
+      "label": "kag/AGENTS.md",
+      "source_record_id": "file:kag/agents.md:f80d68b85b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "document",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "readme",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "document",
+      "id": "entity:file:kag/readme.md:213631cc86",
+      "label": "kag/README.md",
+      "source_record_id": "file:kag/readme.md:213631cc86"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "generated_readmodel"
+      },
+      "entity_kind": "readmodel",
+      "id": "entity:file:kag/edges/source_routes_to_storage_boundary.json:8c12cb4c11",
+      "label": "kag/edges/source_routes_to_storage_boundary.json",
+      "source_record_id": "file:kag/edges/source_routes_to_storage_boundary.json:8c12cb4c11"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "index",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "generated_readmodel"
+      },
+      "entity_kind": "readmodel",
+      "id": "entity:file:kag/indexes/source_inventory.json:1416e51205",
+      "label": "kag/indexes/source_inventory.json",
+      "source_record_id": "file:kag/indexes/source_inventory.json:1416e51205"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:kag/manifest.json:0d25d90d08",
+      "label": "kag/manifest.json",
+      "source_record_id": "file:kag/manifest.json:0d25d90d08"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:kag/nodes/source_home.json:a87a1f114c",
+      "label": "kag/nodes/source_home.json",
+      "source_record_id": "file:kag/nodes/source_home.json:a87a1f114c"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "config",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:kag/nodes/storage_boundary.json:45dfb2e4b0",
+      "label": "kag/nodes/storage_boundary.json",
+      "source_record_id": "file:kag/nodes/storage_boundary.json:45dfb2e4b0"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "projection",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "generated_readmodel"
+      },
+      "entity_kind": "readmodel",
+      "id": "entity:file:kag/projections/source_return.json:1a2a306538",
+      "label": "kag/projections/source_return.json",
+      "source_record_id": "file:kag/projections/source_return.json:1a2a306538"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "receipt",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "receipt"
+      },
+      "entity_kind": "artifact",
+      "id": "entity:file:kag/receipts/validation_receipt.json:8e616be0cd",
+      "label": "kag/receipts/validation_receipt.json",
+      "source_record_id": "file:kag/receipts/validation_receipt.json:8e616be0cd"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "manifest",
+        "code_role": "none",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "manifest",
+      "id": "entity:file:pyproject.toml:50c86b7ed8",
+      "label": "pyproject.toml",
+      "source_record_id": "file:pyproject.toml:50c86b7ed8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "validator",
+        "code_role": "validator",
+        "command_role": "validator",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:scripts/validate_connector.py:de39a47221",
+      "label": "scripts/validate_connector.py",
+      "source_record_id": "file:scripts/validate_connector.py:de39a47221"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "script",
+        "code_role": "entrypoint",
+        "command_role": "script",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:scripts/verify_agent_install_route.py:7a0ab3925d",
+      "label": "scripts/verify_agent_install_route.py",
+      "source_record_id": "file:scripts/verify_agent_install_route.py:7a0ab3925d"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/__init__.py:62c64fcf0a",
+      "label": "src/aoa_4pda_connector/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/__init__.py:62c64fcf0a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/answer/__init__.py:17ab4be858",
+      "label": "src/aoa_4pda_connector/answer/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/answer/__init__.py:17ab4be858"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/chunk/__init__.py:85724410a6",
+      "label": "src/aoa_4pda_connector/chunk/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/chunk/__init__.py:85724410a6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/claims/__init__.py:da8e9f6a23",
+      "label": "src/aoa_4pda_connector/claims/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/claims/__init__.py:da8e9f6a23"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/cli.py:1193cea4c9",
+      "label": "src/aoa_4pda_connector/cli.py",
+      "source_record_id": "file:src/aoa_4pda_connector/cli.py:1193cea4c9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/config.py:e79dbc55f9",
+      "label": "src/aoa_4pda_connector/config.py",
+      "source_record_id": "file:src/aoa_4pda_connector/config.py:e79dbc55f9"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/coverage/__init__.py:400d94ac96",
+      "label": "src/aoa_4pda_connector/coverage/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/coverage/__init__.py:400d94ac96"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/discovery/__init__.py:85b0d909e8",
+      "label": "src/aoa_4pda_connector/discovery/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/discovery/__init__.py:85b0d909e8"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/evaluation/__init__.py:5c9335d993",
+      "label": "src/aoa_4pda_connector/evaluation/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/evaluation/__init__.py:5c9335d993"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/export/__init__.py:e2107c1444",
+      "label": "src/aoa_4pda_connector/export/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/export/__init__.py:e2107c1444"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/fetch/__init__.py:8c85022d51",
+      "label": "src/aoa_4pda_connector/fetch/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/fetch/__init__.py:8c85022d51"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/graph/__init__.py:2f690541c6",
+      "label": "src/aoa_4pda_connector/graph/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/graph/__init__.py:2f690541c6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/index/__init__.py:504c64d155",
+      "label": "src/aoa_4pda_connector/index/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/index/__init__.py:504c64d155"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/normalize/__init__.py:889acf876b",
+      "label": "src/aoa_4pda_connector/normalize/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/normalize/__init__.py:889acf876b"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/parse/__init__.py:a765af4bdc",
+      "label": "src/aoa_4pda_connector/parse/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/parse/__init__.py:a765af4bdc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/policy/__init__.py:9a1cf35016",
+      "label": "src/aoa_4pda_connector/policy/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/policy/__init__.py:9a1cf35016"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/policy/rules.py:d33255b0ac",
+      "label": "src/aoa_4pda_connector/policy/rules.py",
+      "source_record_id": "file:src/aoa_4pda_connector/policy/rules.py:d33255b0ac"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/query/__init__.py:aae0912091",
+      "label": "src/aoa_4pda_connector/query/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/query/__init__.py:aae0912091"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/readiness/__init__.py:c913859171",
+      "label": "src/aoa_4pda_connector/readiness/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/readiness/__init__.py:c913859171"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/refresh/__init__.py:91e151cdbc",
+      "label": "src/aoa_4pda_connector/refresh/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/refresh/__init__.py:91e151cdbc"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/serve/__init__.py:249acde47a",
+      "label": "src/aoa_4pda_connector/serve/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/serve/__init__.py:249acde47a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/sources/__init__.py:5984016420",
+      "label": "src/aoa_4pda_connector/sources/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/sources/__init__.py:5984016420"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/storage/__init__.py:fcd9a33223",
+      "label": "src/aoa_4pda_connector/storage/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/storage/__init__.py:fcd9a33223"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "source_code",
+        "code_role": "source_module",
+        "command_role": "none",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "code",
+      "id": "entity:file:src/aoa_4pda_connector/vector/__init__.py:f3c66d7959",
+      "label": "src/aoa_4pda_connector/vector/__init__.py",
+      "source_record_id": "file:src/aoa_4pda_connector/vector/__init__.py:f3c66d7959"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/contract/test_fixtures_and_cli.py:b979c19001",
+      "label": "tests/contract/test_fixtures_and_cli.py",
+      "source_record_id": "file:tests/contract/test_fixtures_and_cli.py:b979c19001"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/integration/test_agent_install_verifier.py:6c82b254b2",
+      "label": "tests/integration/test_agent_install_verifier.py",
+      "source_record_id": "file:tests/integration/test_agent_install_verifier.py:6c82b254b2"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/integration/test_validator.py:4ec0e84ff6",
+      "label": "tests/integration/test_validator.py",
+      "source_record_id": "file:tests/integration/test_validator.py:4ec0e84ff6"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_answer_packet.py:c0a7bd3535",
+      "label": "tests/unit/test_answer_packet.py",
+      "source_record_id": "file:tests/unit/test_answer_packet.py:c0a7bd3535"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_chunking.py:f17d3e03e1",
+      "label": "tests/unit/test_chunking.py",
+      "source_record_id": "file:tests/unit/test_chunking.py:f17d3e03e1"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_crawl_pagination.py:04c0622462",
+      "label": "tests/unit/test_crawl_pagination.py",
+      "source_record_id": "file:tests/unit/test_crawl_pagination.py:04c0622462"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_entities_and_graph.py:32af1f4882",
+      "label": "tests/unit/test_entities_and_graph.py",
+      "source_record_id": "file:tests/unit/test_entities_and_graph.py:32af1f4882"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_graph_query_packet.py:186db5898e",
+      "label": "tests/unit/test_graph_query_packet.py",
+      "source_record_id": "file:tests/unit/test_graph_query_packet.py:186db5898e"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_parse_and_index.py:7cc537e18a",
+      "label": "tests/unit/test_parse_and_index.py",
+      "source_record_id": "file:tests/unit/test_parse_and_index.py:7cc537e18a"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_policy_rules.py:01fe2bd0a0",
+      "label": "tests/unit/test_policy_rules.py",
+      "source_record_id": "file:tests/unit/test_policy_rules.py:01fe2bd0a0"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_search_eval.py:0eeacc05ec",
+      "label": "tests/unit/test_search_eval.py",
+      "source_record_id": "file:tests/unit/test_search_eval.py:0eeacc05ec"
+    },
+    {
+      "coordinates": {
+        "artifact_kind": "test",
+        "code_role": "test",
+        "command_role": "test",
+        "document_role": "none",
+        "mechanics_role": "none",
+        "surface_state": "authored_source"
+      },
+      "entity_kind": "command",
+      "id": "entity:file:tests/unit/test_validate_connector_policy.py:032cbb9aed",
+      "label": "tests/unit/test_validate_connector_policy.py",
+      "source_record_id": "file:tests/unit/test_validate_connector_policy.py:032cbb9aed"
+    }
+  ],
+  "index_identity": {
+    "artifact_kind": "repository_entity_index",
+    "content_digest": "f306b6bed0fa97fcac1507f2abee7a05a29ee95ab70b94afb3841be28e642f79",
+    "index_kind": "entity",
+    "local_id": "index:repo-local:entities",
+    "schema_ref": "aoa-kag:schemas/repo-local-kag-repository-index.schema.json"
+  },
+  "registry_output": {
+    "consumer": "aoa-kag-mcp",
+    "resource_shape": "repo-local-entity-index",
+    "stable_fields": [
+      "id",
+      "entity_kind",
+      "source_record_id",
+      "coordinates"
+    ]
+  },
+  "repo": {
+    "git_ref": "git-index-source-tree",
+    "name": "aoa-4pda-connector",
+    "owner_type": "connector",
+    "root": "."
+  },
+  "schema_version": "aoa-repo-local-kag-repository-index-v1",
+  "source_index": {
+    "content_digest": "9d461d19b6dd0156095590983bff4e1a3b76242e2c72e40aa19716629c4e5494",
+    "local_id": "index:repo-local:source-surfaces",
+    "path": "kag/indexes/source_surface_index.json"
+  },
+  "summary": {
+    "entry_count": 184,
+    "kind_counts": {
+      "agent_route": 4,
+      "artifact": 41,
+      "code": 28,
+      "command": 14,
+      "contract": 17,
+      "decision": 37,
+      "document": 34,
+      "manifest": 4,
+      "owner_surface": 1,
+      "readmodel": 4
+    }
+  }
+}
