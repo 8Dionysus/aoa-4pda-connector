@@ -12,13 +12,15 @@
       "projection": 1,
       "receipt": 1,
       "schema": 17,
-      "source_code": 25,
+      "script": 1,
+      "source_code": 24,
       "test": 12,
       "text_artifact": 1,
       "validator": 1
     },
     "command_role": {
-      "none": 171,
+      "none": 170,
+      "script": 1,
       "test": 12,
       "validator": 1
     },
@@ -39,9 +41,9 @@
     },
     "primary_kind": {
       "artifact": 13,
-      "command": 13,
+      "command": 14,
       "document": 75,
-      "surface": 83
+      "surface": 82
     },
     "surface_state": {
       "authored_source": 179,
@@ -50,21 +52,21 @@
     }
   },
   "coverage_summary": {
-    "command_count": 13,
+    "command_count": 14,
     "document_count": 75,
     "generated_count": 4,
     "heading_count": 442,
     "mechanics_count": 0,
     "record_count": 184,
     "schema_count": 17,
-    "script_count": 0,
+    "script_count": 1,
     "test_count": 12,
     "unknown_count": 0,
     "validator_count": 1
   },
   "index_identity": {
     "artifact_kind": "source_surface_index",
-    "content_digest": "8db09991548d3c441941f4e220f2fd841fd9f95c76f2e456c13c273e7acdee66",
+    "content_digest": "9d461d19b6dd0156095590983bff4e1a3b76242e2c72e40aa19716629c4e5494",
     "local_id": "index:repo-local:source-surfaces",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-index.schema.json"
   },
@@ -637,7 +639,7 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "9043b9261b2f774c1db5b86410b2f855d10bbb387f360bfa62512cc0ba22b80b",
+        "content_hash": "0c4cfca05eddb5a04d463d80571e1446ad2bde2420110fa0023235bd0f478da2",
         "git_ref": "git-index-source-tree",
         "id": "file:.github/workflows/validate.yml:a5c0f08bc4",
         "mime": "application/yaml",
@@ -676,7 +678,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "9043b9261b2f774c1db5b86410b2f855d10bbb387f360bfa62512cc0ba22b80b",
+        "digest": "0c4cfca05eddb5a04d463d80571e1446ad2bde2420110fa0023235bd0f478da2",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -2207,7 +2209,7 @@
         "confidence": "high",
         "primary_kind": "artifact"
       },
-      "code_role": "none",
+      "code_role": "source_module",
       "command_role": "none",
       "consumer_route": {
         "route_kind": "resource",
@@ -2294,7 +2296,7 @@
         "confidence": "high",
         "primary_kind": "artifact"
       },
-      "code_role": "none",
+      "code_role": "source_module",
       "command_role": "none",
       "consumer_route": {
         "route_kind": "resource",
@@ -2381,7 +2383,7 @@
         "confidence": "high",
         "primary_kind": "artifact"
       },
-      "code_role": "none",
+      "code_role": "source_module",
       "command_role": "none",
       "consumer_route": {
         "route_kind": "resource",
@@ -2468,7 +2470,7 @@
         "confidence": "high",
         "primary_kind": "artifact"
       },
-      "code_role": "none",
+      "code_role": "source_module",
       "command_role": "none",
       "consumer_route": {
         "route_kind": "resource",
@@ -15134,13 +15136,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "bb5f9f932f4c4e7e0a8943af725e7ee2a518690c5484e5b076ec97e6a6f2db3c",
+        "content_hash": "a724146b48716a52586184a427ab2b9140bc5297a28a60dd9c757572f884f48a",
         "git_ref": "git-index-source-tree",
         "id": "file:kag/agents.md:f80d68b85b",
         "mime": "text/markdown",
         "path": "kag/AGENTS.md",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 1296
+        "size_bytes": 1312
       },
       "mechanics_role": "none",
       "observed_form": "file",
@@ -15223,7 +15225,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "bb5f9f932f4c4e7e0a8943af725e7ee2a518690c5484e5b076ec97e6a6f2db3c",
+        "digest": "a724146b48716a52586184a427ab2b9140bc5297a28a60dd9c757572f884f48a",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -15271,13 +15273,13 @@
         "state": "current"
       },
       "identity": {
-        "content_hash": "8275ec3443df8b7be8780b8a0666d91973ba9c0f6b55480da988b3192230bee4",
+        "content_hash": "18bf584b8c03b6b7609a14c4d6ed84a898b942b37787721f628c09746c6b8756",
         "git_ref": "git-index-source-tree",
         "id": "file:kag/readme.md:213631cc86",
         "mime": "text/markdown",
         "path": "kag/README.md",
         "repo": "aoa-4pda-connector",
-        "size_bytes": 1116
+        "size_bytes": 1127
       },
       "mechanics_role": "none",
       "observed_form": "file",
@@ -15332,7 +15334,7 @@
       },
       "signs": {
         "attestation_ref": "",
-        "digest": "8275ec3443df8b7be8780b8a0666d91973ba9c0f6b55480da988b3192230bee4",
+        "digest": "18bf584b8c03b6b7609a14c4d6ed84a898b942b37787721f628c09746c6b8756",
         "signature_ref": "",
         "verification_state": "digest-only"
       },
@@ -16154,7 +16156,7 @@
     {
       "abi": {
         "abi_epoch": "source",
-        "artifact_class": "source_code",
+        "artifact_class": "script",
         "compatibility": "stable",
         "contract_version": "none",
         "schema_version": "none"
@@ -16163,13 +16165,13 @@
         "scope": "public",
         "secrets_risk": "none"
       },
-      "artifact_kind": "source_code",
+      "artifact_kind": "script",
       "classification": {
         "confidence": "high",
-        "primary_kind": "surface"
+        "primary_kind": "command"
       },
-      "code_role": "source_module",
-      "command_role": "none",
+      "code_role": "entrypoint",
+      "command_role": "script",
       "consumer_route": {
         "route_kind": "resource",
         "surface": "aoa-kag-mcp"
@@ -16190,9 +16192,9 @@
         "size_bytes": 13166
       },
       "mechanics_role": "none",
-      "observed_form": "file",
+      "observed_form": "command",
       "owner_return_route": {
-        "route_kind": "source_owner",
+        "route_kind": "command_owner",
         "surface": "scripts/verify_agent_install_route.py"
       },
       "provenance": {
@@ -16230,7 +16232,9 @@
           "git",
           "python"
         ],
-        "owner_commands": [],
+        "owner_commands": [
+          "python scripts/verify_agent_install_route.py"
+        ],
         "required_tools": [
           "python"
         ]
