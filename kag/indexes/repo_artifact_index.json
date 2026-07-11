@@ -50,7 +50,7 @@
     },
     {
       "artifact_kind": "config",
-      "content_hash": "0c4cfca05eddb5a04d463d80571e1446ad2bde2420110fa0023235bd0f478da2",
+      "content_hash": "0e51a9122293a0c6f7730304e4bc1accd69492e9176d2db33fd84239311931d1",
       "id": "artifact:file:.github/workflows/validate.yml:a5c0f08bc4",
       "path": ".github/workflows/validate.yml",
       "source_record_id": "file:.github/workflows/validate.yml:a5c0f08bc4",
@@ -1475,7 +1475,7 @@
   ],
   "index_identity": {
     "artifact_kind": "repository_artifact_index",
-    "content_digest": "43ae80659b54f4f8f58d46b4407788c3030adfba721cc34a22e31ed7bfd21f56",
+    "content_digest": "5c17ec92c4b18f2e4861b56f7c684f154387e4b2181a1bf5852e0b0d43bc8b2f",
     "index_kind": "artifact",
     "local_id": "index:repo-local:artifacts",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-repository-index.schema.json"
@@ -1499,7 +1499,7 @@
   },
   "schema_version": "aoa-repo-local-kag-repository-index-v1",
   "source_index": {
-    "content_digest": "9d461d19b6dd0156095590983bff4e1a3b76242e2c72e40aa19716629c4e5494",
+    "content_digest": "dcb61d5da15e13409784e63f13ffe18e126751679bcdbbca4608525b7b5e6e08",
     "local_id": "index:repo-local:source-surfaces",
     "path": "kag/indexes/source_surface_index.json"
   },
