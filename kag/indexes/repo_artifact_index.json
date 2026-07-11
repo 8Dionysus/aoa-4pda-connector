@@ -1,1505 +1,279 @@
 {
   "entries": [
-    {
-      "artifact_kind": "document",
-      "content_hash": "ed8520a40a4623244150ff45190f17f408da5ee8fa57d71f8c29539e767b6fef",
-      "id": "artifact:file:.connector-state/agents.md:c48b09d1eb",
-      "path": ".connector-state/AGENTS.md",
-      "source_record_id": "file:.connector-state/agents.md:c48b09d1eb",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "145dba80f1b6bd1568b18b48d3a8c42fe0208195caf224b6e61d591b822618fb",
-      "id": "artifact:file:.connector-state/readme.md:377f66e180",
-      "path": ".connector-state/README.md",
-      "source_record_id": "file:.connector-state/readme.md:377f66e180",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "directory_marker",
-      "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "id": "artifact:file:.connector-state/artifacts/.gitkeep:9accf75395",
-      "path": ".connector-state/artifacts/.gitkeep",
-      "source_record_id": "file:.connector-state/artifacts/.gitkeep:9accf75395",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "directory_marker",
-      "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "id": "artifact:file:.connector-state/cache/.gitkeep:ffb60a7310",
-      "path": ".connector-state/cache/.gitkeep",
-      "source_record_id": "file:.connector-state/cache/.gitkeep:ffb60a7310",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "directory_marker",
-      "content_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "id": "artifact:file:.connector-state/data/.gitkeep:c10ea2dd50",
-      "path": ".connector-state/data/.gitkeep",
-      "source_record_id": "file:.connector-state/data/.gitkeep:c10ea2dd50",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "9aa4ed24fb5e24bb66e002fab9cfeec5157a11546dae24081a1d1e469ab4b134",
-      "id": "artifact:file:.env.example:a3046da0d1",
-      "path": ".env.example",
-      "source_record_id": "file:.env.example:a3046da0d1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "0e51a9122293a0c6f7730304e4bc1accd69492e9176d2db33fd84239311931d1",
-      "id": "artifact:file:.github/workflows/validate.yml:a5c0f08bc4",
-      "path": ".github/workflows/validate.yml",
-      "source_record_id": "file:.github/workflows/validate.yml:a5c0f08bc4",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "owner_metadata",
-      "content_hash": "aa94df76f8942c582ac9d19e77a363208a5ecc51633d68a0958bda23f413bd69",
-      "id": "artifact:file:.gitignore:bc37d034ba",
-      "path": ".gitignore",
-      "source_record_id": "file:.gitignore:bc37d034ba",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "8f7a68300cfbb4eac670e1b94b40ac054c6a860d6ab2dc213b77493540a3f679",
-      "id": "artifact:file:agents.md:a54ff182c7",
-      "path": "AGENTS.md",
-      "source_record_id": "file:agents.md:a54ff182c7",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "23f32ebc033c7f625b2c0bb8c340fdd6145aeac658144db03818dd23b9611078",
-      "id": "artifact:file:boundaries.md:22819d489e",
-      "path": "BOUNDARIES.md",
-      "source_record_id": "file:boundaries.md:22819d489e",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "4b99ad6c8639f030a36fdb783b0a840fbd514b00de3fdd4361a87249fce2083e",
-      "id": "artifact:file:changelog.md:06572a96a5",
-      "path": "CHANGELOG.md",
-      "source_record_id": "file:changelog.md:06572a96a5",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "14e539628373712dbc1b286132225850b0c4a3dbc057605a4af104c5798dbafd",
-      "id": "artifact:file:charter.md:91d16dd057",
-      "path": "CHARTER.md",
-      "source_record_id": "file:charter.md:91d16dd057",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "9f15b53b2efc7fef759fce8aa01e92add24473bcf5af4ed27f719efb7bfb0999",
-      "id": "artifact:file:readme.md:b335630551",
-      "path": "README.md",
-      "source_record_id": "file:readme.md:b335630551",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "be1ff54f309eb8700ab7d6d10e3f2989690752d6d1a0dc3e8cc46bcd39c7815f",
-      "id": "artifact:file:roadmap.md:683343bdf9",
-      "path": "ROADMAP.md",
-      "source_record_id": "file:roadmap.md:683343bdf9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "b4ea332ce5e20556f7e74ba8ffd41428e818993c47696f842810f687e3a446c7",
-      "id": "artifact:file:connector/readme.md:5aa00cda8e",
-      "path": "connector/README.md",
-      "source_record_id": "file:connector/readme.md:5aa00cda8e",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "a7d38edc7fa8bf698cb6f418ba07ac49d5a6290d8b1a9275b2c2b3a875b83397",
-      "id": "artifact:file:connector/source_policy.md:1ec0689ca4",
-      "path": "connector/SOURCE_POLICY.md",
-      "source_record_id": "file:connector/source_policy.md:1ec0689ca4",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d5cae0a40a12c23de586540304125273e4d7f72053ac0cbd09cf77388819df50",
-      "id": "artifact:file:connector/storage_policy.md:aef066cc09",
-      "path": "connector/STORAGE_POLICY.md",
-      "source_record_id": "file:connector/storage_policy.md:aef066cc09",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "d475112f4c22d3468d8a15849aa89c1f1c1051f89cb6428cdf503e9a99567b84",
-      "id": "artifact:file:connector/examples/evidence_packets/synthetic_bootloop_packet.json:02c94c3b87",
-      "path": "connector/examples/evidence_packets/synthetic_bootloop_packet.json",
-      "source_record_id": "file:connector/examples/evidence_packets/synthetic_bootloop_packet.json:02c94c3b87",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "text_artifact",
-      "content_hash": "8a85ae25b3d768955056ecbfb0c7436b325b8a45f1f0c848530059a991ffb717",
-      "id": "artifact:file:connector/examples/queries/starter_queries.txt:4b9617a85a",
-      "path": "connector/examples/queries/starter_queries.txt",
-      "source_record_id": "file:connector/examples/queries/starter_queries.txt:4b9617a85a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "38f81f7f58a79f4b7114167787e11221fedc29ae1eacebe260831d10cc0bc210",
-      "id": "artifact:file:connector/fixtures/expected_packets/synthetic_bootloop_packet.json:d240924149",
-      "path": "connector/fixtures/expected_packets/synthetic_bootloop_packet.json",
-      "source_record_id": "file:connector/fixtures/expected_packets/synthetic_bootloop_packet.json:d240924149",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "fixture",
-      "content_hash": "7208eac51dcc2880dac391749d726f25fca24b3bccf5faba0aa6a7fdaf2aee60",
-      "id": "artifact:file:connector/fixtures/html/claim_conflict_topic.html:c9631d1130",
-      "path": "connector/fixtures/html/claim_conflict_topic.html",
-      "source_record_id": "file:connector/fixtures/html/claim_conflict_topic.html:c9631d1130",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "fixture",
-      "content_hash": "6c3e8cb4f6b4d7877b75e795ee36e733f95c27ff0adda0011d1e0aa8a60b6772",
-      "id": "artifact:file:connector/fixtures/html/live_shape_topic.html:29f8c2d061",
-      "path": "connector/fixtures/html/live_shape_topic.html",
-      "source_record_id": "file:connector/fixtures/html/live_shape_topic.html:29f8c2d061",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "fixture",
-      "content_hash": "afb456b87068ee7451d8b4ba5e36d812272d327e51de1daa36f307a87ff9b131",
-      "id": "artifact:file:connector/fixtures/html/synthetic_topic.html:fc809a46a6",
-      "path": "connector/fixtures/html/synthetic_topic.html",
-      "source_record_id": "file:connector/fixtures/html/synthetic_topic.html:fc809a46a6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "fixture",
-      "content_hash": "d250a59bbd9d161e31530510eeadfd1cb5bc526fbe29bdbcee6d93df4eff7aaa",
-      "id": "artifact:file:connector/fixtures/html/xiaomi_13t_firmware_topic.html:2c3d6d37c6",
-      "path": "connector/fixtures/html/xiaomi_13t_firmware_topic.html",
-      "source_record_id": "file:connector/fixtures/html/xiaomi_13t_firmware_topic.html:2c3d6d37c6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "c083ebe70eb27158cd2eff6f33393912f78b57ef9e2fedd49dd44943170c96f8",
-      "id": "artifact:file:connector/fixtures/normalized/synthetic_topic.json:2686b8f9ad",
-      "path": "connector/fixtures/normalized/synthetic_topic.json",
-      "source_record_id": "file:connector/fixtures/normalized/synthetic_topic.json:2686b8f9ad",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "manifest",
-      "content_hash": "df7533423ca4bbdc63c48da6d36528b8b28760eae6e7a6e635b1a66cfe6b1269",
-      "id": "artifact:file:connector/manifests/artifact_classes.yaml:702a5cec90",
-      "path": "connector/manifests/artifact_classes.yaml",
-      "source_record_id": "file:connector/manifests/artifact_classes.yaml:702a5cec90",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "manifest",
-      "content_hash": "fa52eb908766f7adff8eb35ced467f2728aa12a1b784e755cee455535426e34b",
-      "id": "artifact:file:connector/manifests/connector_manifest.yaml:747276e9b1",
-      "path": "connector/manifests/connector_manifest.yaml",
-      "source_record_id": "file:connector/manifests/connector_manifest.yaml:747276e9b1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "manifest",
-      "content_hash": "daf42dc2c068dc887ac90a440b7d2c8d51b49284509215a944cf3d2595f9892c",
-      "id": "artifact:file:connector/manifests/route_allowlist.yaml:1ba98f35b6",
-      "path": "connector/manifests/route_allowlist.yaml",
-      "source_record_id": "file:connector/manifests/route_allowlist.yaml:1ba98f35b6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "6d14a48eb9e66ba8d6a9390de5f5b169fc978048a258f122613bb6591025500b",
-      "id": "artifact:file:connector/profiles/focused-device.yaml:fd04eda279",
-      "path": "connector/profiles/focused-device.yaml",
-      "source_record_id": "file:connector/profiles/focused-device.yaml:fd04eda279",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "76bf37d127c2140f559886566f133621bced009f01486cffc01fc47e6f5b06d4",
-      "id": "artifact:file:connector/profiles/full-public.yaml:c4d3bf7d99",
-      "path": "connector/profiles/full-public.yaml",
-      "source_record_id": "file:connector/profiles/full-public.yaml:c4d3bf7d99",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "0bce169a8f64c4499d267c162d362dd72d54af73cec665c8c8a49e8222a38e2a",
-      "id": "artifact:file:connector/profiles/redmi-note-10-pro.yaml:1d40cf9ba8",
-      "path": "connector/profiles/redmi-note-10-pro.yaml",
-      "source_record_id": "file:connector/profiles/redmi-note-10-pro.yaml:1d40cf9ba8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "39be605242c7fdda5960ee0809fa1d6159cc57ab681ec6794e785b9beb1e4405",
-      "id": "artifact:file:connector/profiles/starter.yaml:86fb3508bf",
-      "path": "connector/profiles/starter.yaml",
-      "source_record_id": "file:connector/profiles/starter.yaml:86fb3508bf",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "27b9f07a650bcf196a1ce92960e368229fd65c9dfdb512bf2fe0df44bd4887a8",
-      "id": "artifact:file:connector/profiles/xiaomi-13t.yaml:07ad7539f8",
-      "path": "connector/profiles/xiaomi-13t.yaml",
-      "source_record_id": "file:connector/profiles/xiaomi-13t.yaml:07ad7539f8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "bf838a2bc6c872594aa486b798fe97ed738303035c030046c00487923aa983f0",
-      "id": "artifact:file:connector/profiles/xiaomi_13t_information_needs.json:89983a8209",
-      "path": "connector/profiles/xiaomi_13t_information_needs.json",
-      "source_record_id": "file:connector/profiles/xiaomi_13t_information_needs.json:89983a8209",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "682515886443c5a20e51dfe3d1c1425945d9a5ed6104b7449c8f2d7d0062327b",
-      "id": "artifact:file:connector/schemas/answer_packet.schema.json:3886462d56",
-      "path": "connector/schemas/answer_packet.schema.json",
-      "source_record_id": "file:connector/schemas/answer_packet.schema.json:3886462d56",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "5e2021fa2e7067ba7622e1f71ac4ce664475f38dd4562bcd3b8408f6f70fc7d3",
-      "id": "artifact:file:connector/schemas/applicability_report.schema.json:bfec791fa3",
-      "path": "connector/schemas/applicability_report.schema.json",
-      "source_record_id": "file:connector/schemas/applicability_report.schema.json:bfec791fa3",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "a1d725773053d085bb41c1e225b46ccb5b4193ef83494b687193341dda0089a9",
-      "id": "artifact:file:connector/schemas/claim.schema.json:32e75444c5",
-      "path": "connector/schemas/claim.schema.json",
-      "source_record_id": "file:connector/schemas/claim.schema.json:32e75444c5",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "4a3f832226e6d5f46d8af569e8840b14a536e19173b9f9b90d0c9625fd7f62ce",
-      "id": "artifact:file:connector/schemas/claim_relation.schema.json:383c535c0b",
-      "path": "connector/schemas/claim_relation.schema.json",
-      "source_record_id": "file:connector/schemas/claim_relation.schema.json:383c535c0b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "ae62a341644911f5bc59979682a9587c3384fdb782dc2d2614d4e1a5d7e8b60d",
-      "id": "artifact:file:connector/schemas/conflict_report.schema.json:5a9c8bd05f",
-      "path": "connector/schemas/conflict_report.schema.json",
-      "source_record_id": "file:connector/schemas/conflict_report.schema.json:5a9c8bd05f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "f4cb949e1c899f0a6a6df23f037a7fab786bc05b792f9dd060fda95964380c46",
-      "id": "artifact:file:connector/schemas/crawl_receipt.schema.json:b0b5287569",
-      "path": "connector/schemas/crawl_receipt.schema.json",
-      "source_record_id": "file:connector/schemas/crawl_receipt.schema.json:b0b5287569",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "970afff1f89fb9649338ff502e47dd8bf007ba25695bbdc8dac8c70414b303cf",
-      "id": "artifact:file:connector/schemas/evidence_packet.schema.json:22b1fd4258",
-      "path": "connector/schemas/evidence_packet.schema.json",
-      "source_record_id": "file:connector/schemas/evidence_packet.schema.json:22b1fd4258",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "65a733581bd931129c4e1c470d5b0db6015ca2ca48530e16f4d40809e77c7cc9",
-      "id": "artifact:file:connector/schemas/freshness_report.schema.json:116037cdf5",
-      "path": "connector/schemas/freshness_report.schema.json",
-      "source_record_id": "file:connector/schemas/freshness_report.schema.json:116037cdf5",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "d636cceb1249cf62d32e1e800dfea3fb1c83a5782b0eae08102c8702e08b63f1",
-      "id": "artifact:file:connector/schemas/graph_edge.schema.json:7cdc761c31",
-      "path": "connector/schemas/graph_edge.schema.json",
-      "source_record_id": "file:connector/schemas/graph_edge.schema.json:7cdc761c31",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "d29d1460aa033041c5c3a23240d08ef8294611a657a3f117697d958ad39a17ac",
-      "id": "artifact:file:connector/schemas/graph_node.schema.json:1582c817b6",
-      "path": "connector/schemas/graph_node.schema.json",
-      "source_record_id": "file:connector/schemas/graph_node.schema.json:1582c817b6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "6492ad1b0ab33d3e0ee56ee301e73330436b8687c37bafe0281ce183494bec16",
-      "id": "artifact:file:connector/schemas/index_manifest.schema.json:0bee62c710",
-      "path": "connector/schemas/index_manifest.schema.json",
-      "source_record_id": "file:connector/schemas/index_manifest.schema.json:0bee62c710",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "09a7c20fc4058dbcc2da1539ff096392f60a16e3f2d221d5114a2bb9aecfe8c0",
-      "id": "artifact:file:connector/schemas/materialize_receipt.schema.json:5aeacf8a1f",
-      "path": "connector/schemas/materialize_receipt.schema.json",
-      "source_record_id": "file:connector/schemas/materialize_receipt.schema.json:5aeacf8a1f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "747ce13425c702ad9bba2bf17de4d906bf02ed230afeeaedc290c580a55b5a42",
-      "id": "artifact:file:connector/schemas/normalized_post.schema.json:2b0ac6226c",
-      "path": "connector/schemas/normalized_post.schema.json",
-      "source_record_id": "file:connector/schemas/normalized_post.schema.json:2b0ac6226c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "2d793b431ba95040ba0830504c921efae35f8e2de7631da7d4c3fdd6ab78a1e8",
-      "id": "artifact:file:connector/schemas/normalized_topic.schema.json:9d8d8799e9",
-      "path": "connector/schemas/normalized_topic.schema.json",
-      "source_record_id": "file:connector/schemas/normalized_topic.schema.json:9d8d8799e9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "42c36293b7e7340e4f6912cc865751e587ceacadb7891a0231ac214a0a82118a",
-      "id": "artifact:file:connector/schemas/vector_index.schema.json:126017c593",
-      "path": "connector/schemas/vector_index.schema.json",
-      "source_record_id": "file:connector/schemas/vector_index.schema.json:126017c593",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "8a97ccde863f9fb9fea543caa7df488f1282ed119132df7ff1b09f9954b90c42",
-      "id": "artifact:file:connector/schemas/vector_manifest.schema.json:6a78740e7a",
-      "path": "connector/schemas/vector_manifest.schema.json",
-      "source_record_id": "file:connector/schemas/vector_manifest.schema.json:6a78740e7a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "schema",
-      "content_hash": "023af69f65a2469041f1a5ceba4a955238c11d821e59d05d38c3734f1a06238a",
-      "id": "artifact:file:connector/schemas/warning_report.schema.json:931d4eadc5",
-      "path": "connector/schemas/warning_report.schema.json",
-      "source_record_id": "file:connector/schemas/warning_report.schema.json:931d4eadc5",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "3b1f5d812aa49c9501772abc7e865ce5ddffd1b46dfe6129bf027236cf1f11be",
-      "id": "artifact:file:connector/seeds/forum_sections.yaml:f9c30e454c",
-      "path": "connector/seeds/forum_sections.yaml",
-      "source_record_id": "file:connector/seeds/forum_sections.yaml:f9c30e454c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "158db2409f57c8703227ed009a1338ff6f6b32a49ecc9168a456f66145ceada3",
-      "id": "artifact:file:connector/seeds/redmi_note_10_pro_topics.yaml:6c452750eb",
-      "path": "connector/seeds/redmi_note_10_pro_topics.yaml",
-      "source_record_id": "file:connector/seeds/redmi_note_10_pro_topics.yaml:6c452750eb",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "93f0b32259ca1929d0b3696c3b86cabb2f37ba0be10dce3c427deee73d43f9f7",
-      "id": "artifact:file:connector/seeds/reviews/xiaomi_13t_discovery_review.json:cb21d8f540",
-      "path": "connector/seeds/reviews/xiaomi_13t_discovery_review.json",
-      "source_record_id": "file:connector/seeds/reviews/xiaomi_13t_discovery_review.json:cb21d8f540",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "e5241100cdffe296a815a3d876f214e8acb5d69b4c187a92b680b7fcc1e9ce72",
-      "id": "artifact:file:connector/seeds/starter_topics.yaml:e44b371dc0",
-      "path": "connector/seeds/starter_topics.yaml",
-      "source_record_id": "file:connector/seeds/starter_topics.yaml:e44b371dc0",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "a7cd55c052c52ab1a1ce5ea8a0bdceb41918a811c0183b3bb51830273d5fdc76",
-      "id": "artifact:file:connector/seeds/xiaomi_13t_topics.yaml:674dae1d22",
-      "path": "connector/seeds/xiaomi_13t_topics.yaml",
-      "source_record_id": "file:connector/seeds/xiaomi_13t_topics.yaml:674dae1d22",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "e8780ca5c3bb9951786f598a7780ef7dd37d46bb3f081e2cfdc85f2148a56d55",
-      "id": "artifact:file:docs/agent_install_route.md:38c86ecaa7",
-      "path": "docs/AGENT_INSTALL_ROUTE.md",
-      "source_record_id": "file:docs/agent_install_route.md:38c86ecaa7",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "37a47f54a8f116a9b34cc6b5046e0a9c6dade8cf5f8541bad684816b26533fa1",
-      "id": "artifact:file:docs/architecture.md:ff21b6b9a3",
-      "path": "docs/ARCHITECTURE.md",
-      "source_record_id": "file:docs/architecture.md:ff21b6b9a3",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "f12802ef1b68e186148e3cc32667e5e0095ee5ff411778618398bbca76aa421b",
-      "id": "artifact:file:docs/connector_family_claim_contract.md:2fbbbc3cbc",
-      "path": "docs/CONNECTOR_FAMILY_CLAIM_CONTRACT.md",
-      "source_record_id": "file:docs/connector_family_claim_contract.md:2fbbbc3cbc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "3071d54f8cd242a65a15bdbc81717d87c7c2ce797e4d03b6eea561a14ab52777",
-      "id": "artifact:file:docs/connector_ready.md:547872a5f4",
-      "path": "docs/CONNECTOR_READY.md",
-      "source_record_id": "file:docs/connector_ready.md:547872a5f4",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "7611268a5a34e9e01ba929f45b0dbb576d86b5b4e9b9b5fe72184ea98718d609",
-      "id": "artifact:file:docs/coverage.md:d83910ec80",
-      "path": "docs/COVERAGE.md",
-      "source_record_id": "file:docs/coverage.md:d83910ec80",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "922de9b99ed3a1c77c4c0d87b28186a3f7a38e36f780d7a077a2985d689f2b53",
-      "id": "artifact:file:docs/discovery.md:e5ce7a4007",
-      "path": "docs/DISCOVERY.md",
-      "source_record_id": "file:docs/discovery.md:e5ce7a4007",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d0cc9f2459cd5e3b23068a1f0a801c727a2b9b4fa28d1a09b403f827f4be1898",
-      "id": "artifact:file:docs/external_storage.md:ff63a64d12",
-      "path": "docs/EXTERNAL_STORAGE.md",
-      "source_record_id": "file:docs/external_storage.md:ff63a64d12",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "3038841ca2a9700206e3e76f1520a6bca73023d185471debd602025326d2ff89",
-      "id": "artifact:file:docs/graph_model.md:72ed1bbd50",
-      "path": "docs/GRAPH_MODEL.md",
-      "source_record_id": "file:docs/graph_model.md:72ed1bbd50",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "013549f8278f90358e889103240a0897f3e3ac8a159eaac2797616157d817a43",
-      "id": "artifact:file:docs/install.md:93adeedb62",
-      "path": "docs/INSTALL.md",
-      "source_record_id": "file:docs/install.md:93adeedb62",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "274632b00825a482912d10bae6d15187824480b6a2950521dc0ece32acf5191d",
-      "id": "artifact:file:docs/limits_and_ethics.md:1c1a0f7ad1",
-      "path": "docs/LIMITS_AND_ETHICS.md",
-      "source_record_id": "file:docs/limits_and_ethics.md:1c1a0f7ad1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "b7481dbf9f00b808da91bebe8d20d34b379bbd6c5383152eab5e080ffb764a32",
-      "id": "artifact:file:docs/mcp_rollout.md:7592ebe12e",
-      "path": "docs/MCP_ROLLOUT.md",
-      "source_record_id": "file:docs/mcp_rollout.md:7592ebe12e",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "a972d6a205d3393237b55e0dc6a8d25f877459e04fbd4393ddc341640263e7dc",
-      "id": "artifact:file:docs/operations.md:3b441db82a",
-      "path": "docs/OPERATIONS.md",
-      "source_record_id": "file:docs/operations.md:3b441db82a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "cee1296acb8819aa114f6ff22975f5ef49c79a1540355ca44e7a8a938489b91a",
-      "id": "artifact:file:docs/query_model.md:dc059c6e17",
-      "path": "docs/QUERY_MODEL.md",
-      "source_record_id": "file:docs/query_model.md:dc059c6e17",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "166f36d08c6ae62f1271344137d6f8865a2706c5b532b39d5df142162fcdc0aa",
-      "id": "artifact:file:docs/refresh.md:b3e31c26e3",
-      "path": "docs/REFRESH.md",
-      "source_record_id": "file:docs/refresh.md:b3e31c26e3",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "374e43681cbc075ca5ac5c26c10ff358d023f9ead2aeb4a12eec67a5190e4c00",
-      "id": "artifact:file:docs/runtime_contract.md:fa011f8c69",
-      "path": "docs/RUNTIME_CONTRACT.md",
-      "source_record_id": "file:docs/runtime_contract.md:fa011f8c69",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "894e5487fe4017d399f140a74a0a07d7dd8341a61c0c22994d9f09143f85f242",
-      "id": "artifact:file:docs/seed_review.md:66f30773db",
-      "path": "docs/SEED_REVIEW.md",
-      "source_record_id": "file:docs/seed_review.md:66f30773db",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "4df1fc07f3162bd7c682505439397bf3cc40e22065ecc4cbe2980abd33de4d62",
-      "id": "artifact:file:docs/starter_proof.md:a06d166b7c",
-      "path": "docs/STARTER_PROOF.md",
-      "source_record_id": "file:docs/starter_proof.md:a06d166b7c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "ebe981e1e0af14b15b5fbb60f30df1218eaea3b91897a816b837c31f45431f5f",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0001-public-evidence-connector-skeleton.md:bd84906c13",
-      "path": "docs/decisions/AOA-4PDA-D-0001-public-evidence-connector-skeleton.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0001-public-evidence-connector-skeleton.md:bd84906c13",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "6be0ad0053320f119179d41619e4ea8f962839c5c565ee1d1dbb96a40fb7fcc1",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0002-ci-and-starter-proof-gate.md:3c9b0b7595",
-      "path": "docs/decisions/AOA-4PDA-D-0002-ci-and-starter-proof-gate.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0002-ci-and-starter-proof-gate.md:3c9b0b7595",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "9905e552ad73471bd38119134c3922f6a12005c9c7ab9a86fd22c0dc70cb1d4e",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0003-bm25-exact-starter-search.md:c875cc25e8",
-      "path": "docs/decisions/AOA-4PDA-D-0003-bm25-exact-starter-search.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0003-bm25-exact-starter-search.md:c875cc25e8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "ec87259ebe04603550f3edd8dc8d75ef29d48e4f6810b4efb98e7fac4d94b775",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0004-heuristic-entity-extraction-v1.md:2870ee5b33",
-      "path": "docs/decisions/AOA-4PDA-D-0004-heuristic-entity-extraction-v1.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0004-heuristic-entity-extraction-v1.md:2870ee5b33",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "cefbabbec616706ba4f196e2b2b72675df5e460726f9a2f866eb889c49b1372b",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0005-live-starter-proof-gate.md:3a954d6479",
-      "path": "docs/decisions/AOA-4PDA-D-0005-live-starter-proof-gate.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0005-live-starter-proof-gate.md:3a954d6479",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "3f441c7ecace579269b822fa2f1a7948560dbb4ede00156210b29db874bf62bb",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0006-local-starter-search-eval-pack.md:ad1e3a40b0",
-      "path": "docs/decisions/AOA-4PDA-D-0006-local-starter-search-eval-pack.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0006-local-starter-search-eval-pack.md:ad1e3a40b0",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "8f95727cac744622070ef24b3c8f5fa6c8c94e7fa02c36ccb800dd24b365c107",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0007-local-starter-graph-relation-eval-pack.md:eb2a52f89f",
-      "path": "docs/decisions/AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0007-local-starter-graph-relation-eval-pack.md:eb2a52f89f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "29cc5e84b44966b9bacd822ee145bd8a00fb8c4b53600ba978207baf6efb201f",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0008-starter-graph-relation-edges-v1.md:e02dc89fa9",
-      "path": "docs/decisions/AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0008-starter-graph-relation-edges-v1.md:e02dc89fa9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d6281ff89b7c96782fdf804fa6e9e2e6dd2d2d67e79f7ad2a7276cd2c708ea68",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0009-starter-graph-query-packets.md:de18ff01e9",
-      "path": "docs/decisions/AOA-4PDA-D-0009-starter-graph-query-packets.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0009-starter-graph-query-packets.md:de18ff01e9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "df44778d6bff082bf099aea3475767dff0bf73351ef3072236299bd4bc585d02",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0010-starter-answer-packets.md:a0bff30a0c",
-      "path": "docs/decisions/AOA-4PDA-D-0010-starter-answer-packets.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0010-starter-answer-packets.md:a0bff30a0c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d457c15353ddef8b9c2463a97c64d167fd931fac05719763d77739da299b49bf",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0011-repo-local-state-root.md:e38ec72c31",
-      "path": "docs/decisions/AOA-4PDA-D-0011-repo-local-state-root.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0011-repo-local-state-root.md:e38ec72c31",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d7c2336705ce88937df2c710c5bee683e7dbd333bd698aebd20764a9e795ffaa",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0012-live-starter-search-quality-eval.md:704f8ddb3e",
-      "path": "docs/decisions/AOA-4PDA-D-0012-live-starter-search-quality-eval.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0012-live-starter-search-quality-eval.md:704f8ddb3e",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "2dbee060b9323dc48cd63a99c973cb5538455bf6bb19027510860ca56921c8db",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0013-technical-token-normalization.md:a3b5e725bc",
-      "path": "docs/decisions/AOA-4PDA-D-0013-technical-token-normalization.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0013-technical-token-normalization.md:a3b5e725bc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "ea26daf50bcbd84baca1920011e645db413111021a2b78944c7d57920bf4ebda",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0014-focused-xiaomi-13t-profile.md:4ae8bc3f6b",
-      "path": "docs/decisions/AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0014-focused-xiaomi-13t-profile.md:4ae8bc3f6b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "2fbf413fee15c6db36dc30c2cd11b951109328b2c8e818bf0aa3d7bf2bccd957",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0015-xiaomi-entity-extraction-v2.md:45738141e9",
-      "path": "docs/decisions/AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0015-xiaomi-entity-extraction-v2.md:45738141e9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "67146281f2d227dcd9795fb9b4fc9ed6a8d2c9db13db02574b8f2bce1da3fed0",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0016-live-xiaomi-graph-query-eval.md:635171a355",
-      "path": "docs/decisions/AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0016-live-xiaomi-graph-query-eval.md:635171a355",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "ce1421c68df36e86e93078916d110d9dc54d16c61f299a6f2c69e31388e4575e",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0017-root-recovery-answer-packets.md:15813587b0",
-      "path": "docs/decisions/AOA-4PDA-D-0017-root-recovery-answer-packets.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0017-root-recovery-answer-packets.md:15813587b0",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "fda2049434059232230699afaefe8bfe83519b0f8d2dfe26b1e8e1e538a3c86e",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0018-connector-ready-audit.md:c02175c393",
-      "path": "docs/decisions/AOA-4PDA-D-0018-connector-ready-audit.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0018-connector-ready-audit.md:c02175c393",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "9b26303bbf58762417be42fac5e851de63f195b7e5d8fa579ffda0fe13c83298",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0019-answer-freshness-context.md:d511595d3f",
-      "path": "docs/decisions/AOA-4PDA-D-0019-answer-freshness-context.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0019-answer-freshness-context.md:d511595d3f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "09096d59349ef22a3ca468624a80d16ddff1bb0affd40091d396f555b3fbea3e",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0020-second-representative-profile.md:d7a32daf8f",
-      "path": "docs/decisions/AOA-4PDA-D-0020-second-representative-profile.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0020-second-representative-profile.md:d7a32daf8f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "553af71b6e436d28762d3b786e924c951d9741161a5b5cd4dc6b2aef542579ed",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0021-reference-profile-coverage-audit.md:b92322c610",
-      "path": "docs/decisions/AOA-4PDA-D-0021-reference-profile-coverage-audit.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0021-reference-profile-coverage-audit.md:b92322c610",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "b41a8ee6669b82d7ed493619fc33252bdb6f6293d5224d817b7080deeaef4642",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0022-reference-profile-refresh-audit.md:42c9c36ee1",
-      "path": "docs/decisions/AOA-4PDA-D-0022-reference-profile-refresh-audit.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0022-reference-profile-refresh-audit.md:42c9c36ee1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "a9285f9844244f0cea92c76941a3b33caadcd5d223856061153a3de1787c966a",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0023-reference-profile-discovery-audit.md:f193c58539",
-      "path": "docs/decisions/AOA-4PDA-D-0023-reference-profile-discovery-audit.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0023-reference-profile-discovery-audit.md:f193c58539",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "49179426e52a358e7f967012cf2f00e6ca24597c55e6cdd3bbcd6d57dc0d76a4",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0024-review-ready-discovery-candidates.md:51d3085fed",
-      "path": "docs/decisions/AOA-4PDA-D-0024-review-ready-discovery-candidates.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0024-review-ready-discovery-candidates.md:51d3085fed",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "250b4b58bd9f49c59fab74f4f7f8dd53c39b738155d53ddd7b2d8b637a3c429c",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0025-discovery-review-manifest.md:6a6cbfe455",
-      "path": "docs/decisions/AOA-4PDA-D-0025-discovery-review-manifest.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0025-discovery-review-manifest.md:6a6cbfe455",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "66082e327a9fdb6753c352885cc5c7d7f94ee3438297df0d05efdff4141d7fff",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0026-xiaomi-13t-reviewed-seed-expansion.md:09560a03c1",
-      "path": "docs/decisions/AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0026-xiaomi-13t-reviewed-seed-expansion.md:09560a03c1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "4ca3e9a8a81006be525913c877d867d9839c8fb4d8850833c37867c0dde0b522",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0027-discovery-pagination-defer-rule.md:1e48c02657",
-      "path": "docs/decisions/AOA-4PDA-D-0027-discovery-pagination-defer-rule.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0027-discovery-pagination-defer-rule.md:1e48c02657",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "fd4aeb6f358ce5c648ef43b22dc02b759f63d5c656e41b3da2f5353e3751fb26",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0028-deterministic-vector-hybrid-index.md:aef954134f",
-      "path": "docs/decisions/AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0028-deterministic-vector-hybrid-index.md:aef954134f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "876c3c2700565389f54ea85a52352b53252854f209e51db9b7c197762b043894",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0029-agent-install-route-verifier.md:cf9b380161",
-      "path": "docs/decisions/AOA-4PDA-D-0029-agent-install-route-verifier.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0029-agent-install-route-verifier.md:cf9b380161",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "47185ceecb0f3cae7a1e3286824e4b6eda083a670147f87dd5198c59e4d501dd",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0030-information-need-coverage.md:6f211478f7",
-      "path": "docs/decisions/AOA-4PDA-D-0030-information-need-coverage.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0030-information-need-coverage.md:6f211478f7",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "d9f875bd90f4b10daca4158634031228ad05c086687dd0e1d3eac5c217eb1d6e",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0031-answer-gap-awareness.md:5f7659b4e4",
-      "path": "docs/decisions/AOA-4PDA-D-0031-answer-gap-awareness.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0031-answer-gap-awareness.md:5f7659b4e4",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "6db99d70049706e9ef047aa5d7eccd979bd15ed2eb71174ce9d161f1a643b564",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0032-answer-evidence-chain.md:c88cebb38b",
-      "path": "docs/decisions/AOA-4PDA-D-0032-answer-evidence-chain.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0032-answer-evidence-chain.md:c88cebb38b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "e310652809b4b55a016fba2618ed9b9756377feed3a4cdaa69aece0883042aa2",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0033-deterministic-agent-answer.md:999abc8709",
-      "path": "docs/decisions/AOA-4PDA-D-0033-deterministic-agent-answer.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0033-deterministic-agent-answer.md:999abc8709",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "38f46f23dc1d97a58055aa3f23d12823bc76d706ee3828c2021a37300047e9f3",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0034-portable-mcp-rollout-contract.md:215e751dc6",
-      "path": "docs/decisions/AOA-4PDA-D-0034-portable-mcp-rollout-contract.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0034-portable-mcp-rollout-contract.md:215e751dc6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "b42fb12965f30da5e3cdc34d9e967379f793581f94ae6d1dd3665bf5a756acd2",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0035-deep-runtime-answer-grounding.md:cc3f6b5a5d",
-      "path": "docs/decisions/AOA-4PDA-D-0035-deep-runtime-answer-grounding.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0035-deep-runtime-answer-grounding.md:cc3f6b5a5d",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "4b2ee27e45bf1f57947135d7c96381727c1d2dc5720c2d22083fcd11c5c1e408",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0036-claim-conflict-freshness-runtime.md:a6529f58b3",
-      "path": "docs/decisions/AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0036-claim-conflict-freshness-runtime.md:a6529f58b3",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "e172ff6208c0b31b6e1a2b49b6f935340ad579c08104d0a4742040afe21dd5b9",
-      "id": "artifact:file:docs/decisions/aoa-4pda-d-0037-connector-family-claim-contract.md:35414bbef8",
-      "path": "docs/decisions/AOA-4PDA-D-0037-connector-family-claim-contract.md",
-      "source_record_id": "file:docs/decisions/aoa-4pda-d-0037-connector-family-claim-contract.md:35414bbef8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "32182ea5d455ba796d02b579117b2e4ed2ed4056a847ec20cd67da3f5225dc19",
-      "id": "artifact:file:docs/decisions/readme.md:e5ec0e7030",
-      "path": "docs/decisions/README.md",
-      "source_record_id": "file:docs/decisions/readme.md:e5ec0e7030",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "bfecf4d4dc92cdbb67c5096ba1b03e63c3f0b2b134788123663d264b1c4dde32",
-      "id": "artifact:file:evals/agents.md:97b1e9d3cd",
-      "path": "evals/AGENTS.md",
-      "source_record_id": "file:evals/agents.md:97b1e9d3cd",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "70a143c02133f621071047025a3bfaa8d75375e90fdc597ccda29a8c48055c7b",
-      "id": "artifact:file:evals/port.yaml:b027c5aa6b",
-      "path": "evals/PORT.yaml",
-      "source_record_id": "file:evals/port.yaml:b027c5aa6b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "3dc1e0bc74ea79259987e6ba51109b8607158779cb2fa738d162cd6bd6277b70",
-      "id": "artifact:file:evals/readme.md:a1a9eeb43d",
-      "path": "evals/README.md",
-      "source_record_id": "file:evals/readme.md:a1a9eeb43d",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "ea6b28b42e34060d62d88393bb306605ed454cdcbfbad3403949dff109fb7e12",
-      "id": "artifact:file:evals/intake/readme.md:d27b56ff43",
-      "path": "evals/intake/README.md",
-      "source_record_id": "file:evals/intake/readme.md:d27b56ff43",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "e65c7d4e5fc6db996120515d9b21450d5f91d0fc4d8d1b616f76a8c628d95153",
-      "id": "artifact:file:evals/reports/readme.md:ac5e016ca2",
-      "path": "evals/reports/README.md",
-      "source_record_id": "file:evals/reports/readme.md:ac5e016ca2",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "6ad44ac03c501d59757ea7bed6c8075f1bccdd5b03e2345dc91601990e860f0a",
-      "id": "artifact:file:evals/reports/connector-local-suite-route-pass-20260625.report.md:9363d2e2fc",
-      "path": "evals/reports/connector-local-suite-route-pass-20260625.report.md",
-      "source_record_id": "file:evals/reports/connector-local-suite-route-pass-20260625.report.md:9363d2e2fc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "e533bbe6f6ee4aa52803b5314628d08f3775b1e6fdd2129373567b10a84cf072",
-      "id": "artifact:file:evals/suites/readme.md:8611332c6f",
-      "path": "evals/suites/README.md",
-      "source_record_id": "file:evals/suites/readme.md:8611332c6f",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "8697253dd708d3635e60ad1e35e2ba8ee306630ccd921f2e9b41719bfe3a1d2b",
-      "id": "artifact:file:evals/suites/connector-local-quality-gates.suite.md:d0f035e0ca",
-      "path": "evals/suites/connector-local-quality-gates.suite.md",
-      "source_record_id": "file:evals/suites/connector-local-quality-gates.suite.md:d0f035e0ca",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "5759255fff028909fd0ca24a9b934c54f110717f291694155b731ceb9d2b59ff",
-      "id": "artifact:file:evals/suites/live_redmi_note_10_pro_search_quality.json:9ac76ff9b2",
-      "path": "evals/suites/live_redmi_note_10_pro_search_quality.json",
-      "source_record_id": "file:evals/suites/live_redmi_note_10_pro_search_quality.json:9ac76ff9b2",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "c45c8f46539be35061874a868689a2366a84457862a2830b93ffb014bcc67ea2",
-      "id": "artifact:file:evals/suites/live_starter_search_quality.json:93eaf99360",
-      "path": "evals/suites/live_starter_search_quality.json",
-      "source_record_id": "file:evals/suites/live_starter_search_quality.json:93eaf99360",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "4317b83867c36bfca85b19135b090fad3699231fff9bbddd2ceca82282080736",
-      "id": "artifact:file:evals/suites/live_xiaomi_13t_answer_quality.json:52d77785f8",
-      "path": "evals/suites/live_xiaomi_13t_answer_quality.json",
-      "source_record_id": "file:evals/suites/live_xiaomi_13t_answer_quality.json:52d77785f8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "4b3788a8a697084c5bdcacd066d27ec36d7ed131e47b5ef59ea552248cb7e315",
-      "id": "artifact:file:evals/suites/live_xiaomi_13t_graph_query_quality.json:507a675818",
-      "path": "evals/suites/live_xiaomi_13t_graph_query_quality.json",
-      "source_record_id": "file:evals/suites/live_xiaomi_13t_graph_query_quality.json:507a675818",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "6315cddb370975241c9ffab7e8cd9298394af845613f9a8d9df4ef6806bc1361",
-      "id": "artifact:file:evals/suites/live_xiaomi_13t_hybrid_query_quality.json:baa7113e2a",
-      "path": "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
-      "source_record_id": "file:evals/suites/live_xiaomi_13t_hybrid_query_quality.json:baa7113e2a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "5ab0f64ccea8e453036d24c355298cfb73657140ae6dd40c77c704636c37bc1a",
-      "id": "artifact:file:evals/suites/live_xiaomi_13t_ranking_pressure.json:6e5ffdebcf",
-      "path": "evals/suites/live_xiaomi_13t_ranking_pressure.json",
-      "source_record_id": "file:evals/suites/live_xiaomi_13t_ranking_pressure.json:6e5ffdebcf",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "ff5aca91a2ff1b4ba714d984d8b639623ef50db9dbdcc73bbb859ee026e75b6f",
-      "id": "artifact:file:evals/suites/live_xiaomi_13t_search_quality.json:fdacf3bfbc",
-      "path": "evals/suites/live_xiaomi_13t_search_quality.json",
-      "source_record_id": "file:evals/suites/live_xiaomi_13t_search_quality.json:fdacf3bfbc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "0956d7c5fad215eb2fb65f7d81cbacb5c4407041d1f20d3b58818f8f41896cc6",
-      "id": "artifact:file:evals/suites/starter_answer_packets.json:9f7439b3aa",
-      "path": "evals/suites/starter_answer_packets.json",
-      "source_record_id": "file:evals/suites/starter_answer_packets.json:9f7439b3aa",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "b80ae26f2e59815f822a91dd1a05dccd55693d910e9e57cc6d743284a1561228",
-      "id": "artifact:file:evals/suites/starter_claim_answer_packets.json:0406674f03",
-      "path": "evals/suites/starter_claim_answer_packets.json",
-      "source_record_id": "file:evals/suites/starter_claim_answer_packets.json:0406674f03",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "bf6740312d388211bcd467decb4aeb6a674b855c0fef591dbc0fffe5fe0a53e8",
-      "id": "artifact:file:evals/suites/starter_claim_conflict_relations.json:3880ed3d49",
-      "path": "evals/suites/starter_claim_conflict_relations.json",
-      "source_record_id": "file:evals/suites/starter_claim_conflict_relations.json:3880ed3d49",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "9f8171c0f96dd83812f00b9c7c33da9d77ba6bd7511bfda05854175980d18c70",
-      "id": "artifact:file:evals/suites/starter_graph_query_packets.json:34ac318fba",
-      "path": "evals/suites/starter_graph_query_packets.json",
-      "source_record_id": "file:evals/suites/starter_graph_query_packets.json:34ac318fba",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "dad3e79687f3fa0ed400bc417d8b9fd7c12d78969c95a21c9a385265cc763a70",
-      "id": "artifact:file:evals/suites/starter_graph_relations.json:6a84ce747c",
-      "path": "evals/suites/starter_graph_relations.json",
-      "source_record_id": "file:evals/suites/starter_graph_relations.json:6a84ce747c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "770095bcd742f7e76b2c1cca8138c0ed6f0327ec13ea2edbfdd24a050a7d4853",
-      "id": "artifact:file:evals/suites/starter_hybrid_query_packets.json:d1ff2f9e71",
-      "path": "evals/suites/starter_hybrid_query_packets.json",
-      "source_record_id": "file:evals/suites/starter_hybrid_query_packets.json:d1ff2f9e71",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "01866e2206174485666ba84202fec3a3a5dea2f386c9891a324d957c5bda2df7",
-      "id": "artifact:file:evals/suites/starter_search_quality.json:df59095a7b",
-      "path": "evals/suites/starter_search_quality.json",
-      "source_record_id": "file:evals/suites/starter_search_quality.json:df59095a7b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "198cecf5076a1c302178f2fdbf17805b4fe98e202a744017939831b51156d906",
-      "id": "artifact:file:evals/suites/xiaomi_13t_answer_packets.json:51c2bdabef",
-      "path": "evals/suites/xiaomi_13t_answer_packets.json",
-      "source_record_id": "file:evals/suites/xiaomi_13t_answer_packets.json:51c2bdabef",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "d93ef9913c9e2e6180645b477fe909522b93e71d7b2b3f10b9c0f69d987770d6",
-      "id": "artifact:file:evals/suites/xiaomi_13t_graph_relations.json:0103b782e5",
-      "path": "evals/suites/xiaomi_13t_graph_relations.json",
-      "source_record_id": "file:evals/suites/xiaomi_13t_graph_relations.json:0103b782e5",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "generated_readmodel",
-      "content_hash": "5570421da29947bcbc02ee594e5a4fd30d97aceb982fa274e39eae5635b854dc",
-      "id": "artifact:file:generated/connector_registry.min.json:f6de70cde9",
-      "path": "generated/connector_registry.min.json",
-      "source_record_id": "file:generated/connector_registry.min.json:f6de70cde9",
-      "surface_state": "generated_readmodel"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "a724146b48716a52586184a427ab2b9140bc5297a28a60dd9c757572f884f48a",
-      "id": "artifact:file:kag/agents.md:f80d68b85b",
-      "path": "kag/AGENTS.md",
-      "source_record_id": "file:kag/agents.md:f80d68b85b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "document",
-      "content_hash": "18bf584b8c03b6b7609a14c4d6ed84a898b942b37787721f628c09746c6b8756",
-      "id": "artifact:file:kag/readme.md:213631cc86",
-      "path": "kag/README.md",
-      "source_record_id": "file:kag/readme.md:213631cc86",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "b413a3e35fb0b175c6ef7e72824f64b21d9d8f978c780a955180d32a8f162725",
-      "id": "artifact:file:kag/edges/source_routes_to_storage_boundary.json:8c12cb4c11",
-      "path": "kag/edges/source_routes_to_storage_boundary.json",
-      "source_record_id": "file:kag/edges/source_routes_to_storage_boundary.json:8c12cb4c11",
-      "surface_state": "generated_readmodel"
-    },
-    {
-      "artifact_kind": "index",
-      "content_hash": "18cf5a50794e655e3997b2dba61335ce8b6e3038a7b8c2a709e9118cdf9b3f53",
-      "id": "artifact:file:kag/indexes/source_inventory.json:1416e51205",
-      "path": "kag/indexes/source_inventory.json",
-      "source_record_id": "file:kag/indexes/source_inventory.json:1416e51205",
-      "surface_state": "generated_readmodel"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "5756865a1176d3c00adb70a732b21a1cb01d8c3e1a75d4e45911b65103418fb7",
-      "id": "artifact:file:kag/manifest.json:0d25d90d08",
-      "path": "kag/manifest.json",
-      "source_record_id": "file:kag/manifest.json:0d25d90d08",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "6cb1effc59940119f6014c75053f2c8f06ee91f6417dc55f11b966991d2464be",
-      "id": "artifact:file:kag/nodes/source_home.json:a87a1f114c",
-      "path": "kag/nodes/source_home.json",
-      "source_record_id": "file:kag/nodes/source_home.json:a87a1f114c",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "config",
-      "content_hash": "b5b58bc5829519b79f200369499c499b7245e89c9f9fe474a676414bc40001a7",
-      "id": "artifact:file:kag/nodes/storage_boundary.json:45dfb2e4b0",
-      "path": "kag/nodes/storage_boundary.json",
-      "source_record_id": "file:kag/nodes/storage_boundary.json:45dfb2e4b0",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "projection",
-      "content_hash": "7b25a8da73717f2e190b6c61a8b6a614c05e465293a923635db89b8c5b69e0ab",
-      "id": "artifact:file:kag/projections/source_return.json:1a2a306538",
-      "path": "kag/projections/source_return.json",
-      "source_record_id": "file:kag/projections/source_return.json:1a2a306538",
-      "surface_state": "generated_readmodel"
-    },
-    {
-      "artifact_kind": "receipt",
-      "content_hash": "0658cebf3df9ec3f0314876424d865567ab49420c75bb14fd83d02e199f9fea9",
-      "id": "artifact:file:kag/receipts/validation_receipt.json:8e616be0cd",
-      "path": "kag/receipts/validation_receipt.json",
-      "source_record_id": "file:kag/receipts/validation_receipt.json:8e616be0cd",
-      "surface_state": "receipt"
-    },
-    {
-      "artifact_kind": "manifest",
-      "content_hash": "cb069715e0fc5783aaab38655047b27b38ff59783e3f12de222d20aafb6e491d",
-      "id": "artifact:file:pyproject.toml:50c86b7ed8",
-      "path": "pyproject.toml",
-      "source_record_id": "file:pyproject.toml:50c86b7ed8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "validator",
-      "content_hash": "db0f43cd325d840828a001ca50da48774587f6f8254dda6b1b4cbce5642c1250",
-      "id": "artifact:file:scripts/validate_connector.py:de39a47221",
-      "path": "scripts/validate_connector.py",
-      "source_record_id": "file:scripts/validate_connector.py:de39a47221",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "script",
-      "content_hash": "b3bff626f272db63479d20eede9f3be805a286ece7d6ff3ba9ceab1639e16fb3",
-      "id": "artifact:file:scripts/verify_agent_install_route.py:7a0ab3925d",
-      "path": "scripts/verify_agent_install_route.py",
-      "source_record_id": "file:scripts/verify_agent_install_route.py:7a0ab3925d",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "c2fb9e0f72b2c5ad169ec739f5402eefbf9d6b23241f6b34bb620f0cd168d92a",
-      "id": "artifact:file:src/aoa_4pda_connector/__init__.py:62c64fcf0a",
-      "path": "src/aoa_4pda_connector/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/__init__.py:62c64fcf0a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "2249e09f54c1d618bc9c063d72fd756ec44e5b3b7d0e61834dd360c28a4095b8",
-      "id": "artifact:file:src/aoa_4pda_connector/answer/__init__.py:17ab4be858",
-      "path": "src/aoa_4pda_connector/answer/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/answer/__init__.py:17ab4be858",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "4839117634dda5aeee7d7c8b7c6a60bc38cc9eeac4230fa6f04838c7c0dfc7df",
-      "id": "artifact:file:src/aoa_4pda_connector/chunk/__init__.py:85724410a6",
-      "path": "src/aoa_4pda_connector/chunk/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/chunk/__init__.py:85724410a6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "942c39847dd3af06fdaef1d3bf8c3eb2179593e8128c83da52be5ef823b7e12e",
-      "id": "artifact:file:src/aoa_4pda_connector/claims/__init__.py:da8e9f6a23",
-      "path": "src/aoa_4pda_connector/claims/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/claims/__init__.py:da8e9f6a23",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "3326fec33e70ce3afc5f731c8ae1ec1077ddc1a392ecab1eaf92ca626cce6348",
-      "id": "artifact:file:src/aoa_4pda_connector/cli.py:1193cea4c9",
-      "path": "src/aoa_4pda_connector/cli.py",
-      "source_record_id": "file:src/aoa_4pda_connector/cli.py:1193cea4c9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "98906e748d5377487a651e561502cf8a51b033bdf9c7646fd89e379140544d1a",
-      "id": "artifact:file:src/aoa_4pda_connector/config.py:e79dbc55f9",
-      "path": "src/aoa_4pda_connector/config.py",
-      "source_record_id": "file:src/aoa_4pda_connector/config.py:e79dbc55f9",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "e1c58d0215727457595f2d5cd5ec5d3b0084d4c44b90062dacfe284635695ab3",
-      "id": "artifact:file:src/aoa_4pda_connector/coverage/__init__.py:400d94ac96",
-      "path": "src/aoa_4pda_connector/coverage/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/coverage/__init__.py:400d94ac96",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "029c5826f698c0e089662453e4d0aa997bcd5d52314690612765289c6ed7cbc4",
-      "id": "artifact:file:src/aoa_4pda_connector/discovery/__init__.py:85b0d909e8",
-      "path": "src/aoa_4pda_connector/discovery/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/discovery/__init__.py:85b0d909e8",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "1f5a9bee930cb3799009445dd46b0b42aae159d6a826e14ebe2aa74f5e3a3657",
-      "id": "artifact:file:src/aoa_4pda_connector/evaluation/__init__.py:5c9335d993",
-      "path": "src/aoa_4pda_connector/evaluation/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/evaluation/__init__.py:5c9335d993",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "39bacfd9d53fe5f41bcc70ee3139065a5a474ff02f6b9ef01baba456117fd760",
-      "id": "artifact:file:src/aoa_4pda_connector/export/__init__.py:e2107c1444",
-      "path": "src/aoa_4pda_connector/export/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/export/__init__.py:e2107c1444",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "a18523d597f03e5475c0fb0900d50740f3e307adef32b076d0b4a5e1bd676f9c",
-      "id": "artifact:file:src/aoa_4pda_connector/fetch/__init__.py:8c85022d51",
-      "path": "src/aoa_4pda_connector/fetch/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/fetch/__init__.py:8c85022d51",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "8bd1b8866046a2ca0d70a026447d2e1e663c9d07801ed74738b87a510219556f",
-      "id": "artifact:file:src/aoa_4pda_connector/graph/__init__.py:2f690541c6",
-      "path": "src/aoa_4pda_connector/graph/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/graph/__init__.py:2f690541c6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "943c0b16687570603d0ddf97aafa5ee457b925b846d16312414ff3de06a3d684",
-      "id": "artifact:file:src/aoa_4pda_connector/index/__init__.py:504c64d155",
-      "path": "src/aoa_4pda_connector/index/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/index/__init__.py:504c64d155",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "455c089ffc271180c81e03eb01a25a56da3f1a6710d93d80059b506697542b36",
-      "id": "artifact:file:src/aoa_4pda_connector/normalize/__init__.py:889acf876b",
-      "path": "src/aoa_4pda_connector/normalize/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/normalize/__init__.py:889acf876b",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "0fad6df9ec2a0cc08657d385947e706e9d0f77bf8bfe794bee9b886140bbe592",
-      "id": "artifact:file:src/aoa_4pda_connector/parse/__init__.py:a765af4bdc",
-      "path": "src/aoa_4pda_connector/parse/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/parse/__init__.py:a765af4bdc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "d9db035a535f48602dd9dbf9f5791efeb849682cd67732b4178c0d7afb71c183",
-      "id": "artifact:file:src/aoa_4pda_connector/policy/__init__.py:9a1cf35016",
-      "path": "src/aoa_4pda_connector/policy/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/policy/__init__.py:9a1cf35016",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "cedd13e136be28d0e1f5af663e0ba6e68113fb9e6dcb8763c643e1f4d0d205fc",
-      "id": "artifact:file:src/aoa_4pda_connector/policy/rules.py:d33255b0ac",
-      "path": "src/aoa_4pda_connector/policy/rules.py",
-      "source_record_id": "file:src/aoa_4pda_connector/policy/rules.py:d33255b0ac",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "28adff8368d7b9446fec6303adf1922d6e2d9d21ac77aac39678b93174c5d070",
-      "id": "artifact:file:src/aoa_4pda_connector/query/__init__.py:aae0912091",
-      "path": "src/aoa_4pda_connector/query/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/query/__init__.py:aae0912091",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "a3a730cef02abf9b40ea84daf23de0ffa1e7f4258eaaee52a9b380423cf25b75",
-      "id": "artifact:file:src/aoa_4pda_connector/readiness/__init__.py:c913859171",
-      "path": "src/aoa_4pda_connector/readiness/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/readiness/__init__.py:c913859171",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "5826896756320e316f3dae9af6b07154acbf61365375cb333a4f4b22035e6bf7",
-      "id": "artifact:file:src/aoa_4pda_connector/refresh/__init__.py:91e151cdbc",
-      "path": "src/aoa_4pda_connector/refresh/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/refresh/__init__.py:91e151cdbc",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "2a1a3134fb99cb5f9f2f32b9824947709194272c12ce3d12cf97e1ae270a065a",
-      "id": "artifact:file:src/aoa_4pda_connector/serve/__init__.py:249acde47a",
-      "path": "src/aoa_4pda_connector/serve/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/serve/__init__.py:249acde47a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "4bcc9ff18cc7b137707ab92c4412b837a4f16a3455347084ff1c8384b0c6aafc",
-      "id": "artifact:file:src/aoa_4pda_connector/sources/__init__.py:5984016420",
-      "path": "src/aoa_4pda_connector/sources/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/sources/__init__.py:5984016420",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "727d2d68472b95eb23e4cbf4d858831f9495898fb24b5ebb7475a1de0f9f0911",
-      "id": "artifact:file:src/aoa_4pda_connector/storage/__init__.py:fcd9a33223",
-      "path": "src/aoa_4pda_connector/storage/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/storage/__init__.py:fcd9a33223",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "source_code",
-      "content_hash": "9a57a563818ddf85de7e6444fdf03acbd7396933eae2d22fccc95b6c0871a9c6",
-      "id": "artifact:file:src/aoa_4pda_connector/vector/__init__.py:f3c66d7959",
-      "path": "src/aoa_4pda_connector/vector/__init__.py",
-      "source_record_id": "file:src/aoa_4pda_connector/vector/__init__.py:f3c66d7959",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "75bea16c5ebf4acb942d80265d541d7aa8ca022b1714796d4f5a75e80b6f6028",
-      "id": "artifact:file:tests/contract/test_fixtures_and_cli.py:b979c19001",
-      "path": "tests/contract/test_fixtures_and_cli.py",
-      "source_record_id": "file:tests/contract/test_fixtures_and_cli.py:b979c19001",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "ebe3844598a89bcf34ddf28cb2ffaf7c4858018981a30610391e449290fac864",
-      "id": "artifact:file:tests/integration/test_agent_install_verifier.py:6c82b254b2",
-      "path": "tests/integration/test_agent_install_verifier.py",
-      "source_record_id": "file:tests/integration/test_agent_install_verifier.py:6c82b254b2",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "60842a10074160803782d2f424c89c0bcae40f3c47bd53b5eb1f61d3dd9c5f67",
-      "id": "artifact:file:tests/integration/test_validator.py:4ec0e84ff6",
-      "path": "tests/integration/test_validator.py",
-      "source_record_id": "file:tests/integration/test_validator.py:4ec0e84ff6",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "daef0bf1213854748c411209aebd35e6b1d2ae0f8141817e139a38ea61b121fa",
-      "id": "artifact:file:tests/unit/test_answer_packet.py:c0a7bd3535",
-      "path": "tests/unit/test_answer_packet.py",
-      "source_record_id": "file:tests/unit/test_answer_packet.py:c0a7bd3535",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "2dee139a060205686da22dd24cb0123f9ba32fb2606a15d954a1accf6a6b9af7",
-      "id": "artifact:file:tests/unit/test_chunking.py:f17d3e03e1",
-      "path": "tests/unit/test_chunking.py",
-      "source_record_id": "file:tests/unit/test_chunking.py:f17d3e03e1",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "1c6bb45720c8b7b69bd6ddc8f56d1242005b039c6618ff5fd5684fe201654838",
-      "id": "artifact:file:tests/unit/test_crawl_pagination.py:04c0622462",
-      "path": "tests/unit/test_crawl_pagination.py",
-      "source_record_id": "file:tests/unit/test_crawl_pagination.py:04c0622462",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "30641120692720e8fc5b1d17c4530a23da728290d1f592b42e54829b282fa47c",
-      "id": "artifact:file:tests/unit/test_entities_and_graph.py:32af1f4882",
-      "path": "tests/unit/test_entities_and_graph.py",
-      "source_record_id": "file:tests/unit/test_entities_and_graph.py:32af1f4882",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "71c9a6ad5a22c691ad8512a2025d97756a8e640931e1caa92e5186cc9715d306",
-      "id": "artifact:file:tests/unit/test_graph_query_packet.py:186db5898e",
-      "path": "tests/unit/test_graph_query_packet.py",
-      "source_record_id": "file:tests/unit/test_graph_query_packet.py:186db5898e",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "3f6d4344f5d9572659fc5a31cf93cdbc3ccc36cad43e60f5931bf2b2c5883b62",
-      "id": "artifact:file:tests/unit/test_parse_and_index.py:7cc537e18a",
-      "path": "tests/unit/test_parse_and_index.py",
-      "source_record_id": "file:tests/unit/test_parse_and_index.py:7cc537e18a",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "26d06f576e1a75110d88128c269168258a4fd6568b2ddc304d58a8c731d7456c",
-      "id": "artifact:file:tests/unit/test_policy_rules.py:01fe2bd0a0",
-      "path": "tests/unit/test_policy_rules.py",
-      "source_record_id": "file:tests/unit/test_policy_rules.py:01fe2bd0a0",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "eead43ff69f93389f672104ad72cede984032bce2bda189593fc8905526aba2b",
-      "id": "artifact:file:tests/unit/test_search_eval.py:0eeacc05ec",
-      "path": "tests/unit/test_search_eval.py",
-      "source_record_id": "file:tests/unit/test_search_eval.py:0eeacc05ec",
-      "surface_state": "authored_source"
-    },
-    {
-      "artifact_kind": "test",
-      "content_hash": "f2e4652ab7d0e258dc149c16a0d6350fde066ba19545f83b3ffd5c9158b497f9",
-      "id": "artifact:file:tests/unit/test_validate_connector_policy.py:032cbb9aed",
-      "path": "tests/unit/test_validate_connector_policy.py",
-      "source_record_id": "file:tests/unit/test_validate_connector_policy.py:032cbb9aed",
-      "surface_state": "authored_source"
-    }
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f140b3907b029872f74d0a37","artifact_kind":"document","content_hash":"ed8520a40a4623244150ff45190f17f408da5ee8fa57d71f8c29539e767b6fef","id":"aoa:aoa-4pda-connector:artifact:c48b09d1eb9fe504dea19fd7","lineage_path":".connector-state/AGENTS.md","mime":"text/markdown","path":".connector-state/AGENTS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a9d1136f8d6c1a4894ff2797"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e85cf54f6965a2cc5625f3aa","artifact_kind":"document","content_hash":"145dba80f1b6bd1568b18b48d3a8c42fe0208195caf224b6e61d591b822618fb","id":"aoa:aoa-4pda-connector:artifact:377f66e180bd91fd0a479887","lineage_path":".connector-state/README.md","mime":"text/markdown","path":".connector-state/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:749cd672ccaad48aa3346330"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f968ef3721d0ddd905d1b4a6","artifact_kind":"directory_marker","content_hash":"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b","id":"aoa:aoa-4pda-connector:artifact:9accf753951b664ae3e2e2bf","lineage_path":".connector-state/artifacts/.gitkeep","mime":"text/plain","path":".connector-state/artifacts/.gitkeep","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d71d0f4e21eb1429a2dc583a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5b0bb1e7f162993de79dd6ea","artifact_kind":"directory_marker","content_hash":"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b","id":"aoa:aoa-4pda-connector:artifact:ffb60a731046fa6ceb4e8ba0","lineage_path":".connector-state/cache/.gitkeep","mime":"text/plain","path":".connector-state/cache/.gitkeep","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e997f6b0dd6e81d8e436adde"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:59e17a14d840e284fb55365b","artifact_kind":"directory_marker","content_hash":"01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b","id":"aoa:aoa-4pda-connector:artifact:c10ea2dd5030b4f0098fa68d","lineage_path":".connector-state/data/.gitkeep","mime":"text/plain","path":".connector-state/data/.gitkeep","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:fcdc95590bf3699dcf5f85ec"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:03ac9879d677720d331810ee","artifact_kind":"config","content_hash":"9aa4ed24fb5e24bb66e002fab9cfeec5157a11546dae24081a1d1e469ab4b134","id":"aoa:aoa-4pda-connector:artifact:a3046da0d15a27e89f2afe63","lineage_path":".env.example","mime":"text/plain","path":".env.example","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c804257f0b90885b9db1c833"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:0158544dfaa3cbab18659e2b","artifact_kind":"config","content_hash":"619d50c9b0e37c8fe8ad78a81ac2a5034a63d1358528ff4f50a3d6dcbf9f341f","id":"aoa:aoa-4pda-connector:artifact:a5c0f08bc43f53a0451cad4a","lineage_path":".github/workflows/validate.yml","mime":"application/yaml","path":".github/workflows/validate.yml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a571852c72aff295c0854c80"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:2f9f82df1382bc0815e8d0f2","artifact_kind":"owner_metadata","content_hash":"aa94df76f8942c582ac9d19e77a363208a5ecc51633d68a0958bda23f413bd69","id":"aoa:aoa-4pda-connector:artifact:bc37d034bad564583790a46f","lineage_path":".gitignore","mime":"text/plain","path":".gitignore","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:17def587b328c935399176c0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b83d517415a848555f95263d","artifact_kind":"document","content_hash":"8f7a68300cfbb4eac670e1b94b40ac054c6a860d6ab2dc213b77493540a3f679","id":"aoa:aoa-4pda-connector:artifact:a54ff182c7e8acf56acfd6e4","lineage_path":"AGENTS.md","mime":"text/markdown","path":"AGENTS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e144b737faac6b59b1367255"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e990a8fc7d7d388804c8450d","artifact_kind":"document","content_hash":"23f32ebc033c7f625b2c0bb8c340fdd6145aeac658144db03818dd23b9611078","id":"aoa:aoa-4pda-connector:artifact:22819d489ee6bbea874f5a03","lineage_path":"BOUNDARIES.md","mime":"text/markdown","path":"BOUNDARIES.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1bcbba3214af549034d9d0dc"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8d012abe2c7208dd08ddfbaf","artifact_kind":"document","content_hash":"4b99ad6c8639f030a36fdb783b0a840fbd514b00de3fdd4361a87249fce2083e","id":"aoa:aoa-4pda-connector:artifact:06572a96a58dc510037d5efa","lineage_path":"CHANGELOG.md","mime":"text/markdown","path":"CHANGELOG.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9b519f62bdc2a1bc097df20d"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c27e5d4d0e405f99664f875c","artifact_kind":"document","content_hash":"14e539628373712dbc1b286132225850b0c4a3dbc057605a4af104c5798dbafd","id":"aoa:aoa-4pda-connector:artifact:91d16dd057bd39f6431e90a1","lineage_path":"CHARTER.md","mime":"text/markdown","path":"CHARTER.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:364b16a243548cd585b83b2a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:02667383c2c1c40f9eb457fe","artifact_kind":"document","content_hash":"9f15b53b2efc7fef759fce8aa01e92add24473bcf5af4ed27f719efb7bfb0999","id":"aoa:aoa-4pda-connector:artifact:b335630551682c19a781afeb","lineage_path":"README.md","mime":"text/markdown","path":"README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1e67306c2d606bc01663018f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d5d69b020c1c1e6ffad33a9c","artifact_kind":"document","content_hash":"be1ff54f309eb8700ab7d6d10e3f2989690752d6d1a0dc3e8cc46bcd39c7815f","id":"aoa:aoa-4pda-connector:artifact:683343bdf93f55ed3cada861","lineage_path":"ROADMAP.md","mime":"text/markdown","path":"ROADMAP.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:0157e3f94169dc92e7927fdc"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:4416a705ff30f1f2ce6057f4","artifact_kind":"document","content_hash":"b4ea332ce5e20556f7e74ba8ffd41428e818993c47696f842810f687e3a446c7","id":"aoa:aoa-4pda-connector:artifact:5aa00cda8edb94031adb99c5","lineage_path":"connector/README.md","mime":"text/markdown","path":"connector/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:888ad6ac864022436d30dbea"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5b182089ed064b13bfbf0e28","artifact_kind":"document","content_hash":"a7d38edc7fa8bf698cb6f418ba07ac49d5a6290d8b1a9275b2c2b3a875b83397","id":"aoa:aoa-4pda-connector:artifact:1ec0689ca44c34dd0d3260ff","lineage_path":"connector/SOURCE_POLICY.md","mime":"text/markdown","path":"connector/SOURCE_POLICY.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:78fcc2840a34cc81731fa0d2"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b717c2235ba9dfed919ac594","artifact_kind":"document","content_hash":"d5cae0a40a12c23de586540304125273e4d7f72053ac0cbd09cf77388819df50","id":"aoa:aoa-4pda-connector:artifact:aef066cc092465374fe3f115","lineage_path":"connector/STORAGE_POLICY.md","mime":"text/markdown","path":"connector/STORAGE_POLICY.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:fd7292466d3b71f3a7b916e1"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:af642c207016608d890ae20a","artifact_kind":"config","content_hash":"d475112f4c22d3468d8a15849aa89c1f1c1051f89cb6428cdf503e9a99567b84","id":"aoa:aoa-4pda-connector:artifact:02c94c3b87ecfbc1dda4e08f","lineage_path":"connector/examples/evidence_packets/synthetic_bootloop_packet.json","mime":"application/json","path":"connector/examples/evidence_packets/synthetic_bootloop_packet.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:0827d67da1de6bf3a26cde63"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:48ecdc7fe77ccf658350aee8","artifact_kind":"text_artifact","content_hash":"8a85ae25b3d768955056ecbfb0c7436b325b8a45f1f0c848530059a991ffb717","id":"aoa:aoa-4pda-connector:artifact:4b9617a85ae76fd1d979cd74","lineage_path":"connector/examples/queries/starter_queries.txt","mime":"text/plain","path":"connector/examples/queries/starter_queries.txt","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f58637902a42e4a12677ac62"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:1543016aa7648b8aee5ad375","artifact_kind":"config","content_hash":"38f81f7f58a79f4b7114167787e11221fedc29ae1eacebe260831d10cc0bc210","id":"aoa:aoa-4pda-connector:artifact:d2409241494abe646f5f8087","lineage_path":"connector/fixtures/expected_packets/synthetic_bootloop_packet.json","mime":"application/json","path":"connector/fixtures/expected_packets/synthetic_bootloop_packet.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:99130583d16edd03a9a6cac0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b270626c9347903d3c512ef4","artifact_kind":"fixture","content_hash":"7208eac51dcc2880dac391749d726f25fca24b3bccf5faba0aa6a7fdaf2aee60","id":"aoa:aoa-4pda-connector:artifact:c9631d11307ce655451a9b96","lineage_path":"connector/fixtures/html/claim_conflict_topic.html","mime":"text/html","path":"connector/fixtures/html/claim_conflict_topic.html","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c5369d5b81e89fa0e88bf372"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3beac6a2e4deed04ff027b83","artifact_kind":"fixture","content_hash":"6c3e8cb4f6b4d7877b75e795ee36e733f95c27ff0adda0011d1e0aa8a60b6772","id":"aoa:aoa-4pda-connector:artifact:29f8c2d061a819dd190ba498","lineage_path":"connector/fixtures/html/live_shape_topic.html","mime":"text/html","path":"connector/fixtures/html/live_shape_topic.html","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9fd76f361d3b94bd9115be57"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:78379851a61d6f3add56f6d0","artifact_kind":"fixture","content_hash":"afb456b87068ee7451d8b4ba5e36d812272d327e51de1daa36f307a87ff9b131","id":"aoa:aoa-4pda-connector:artifact:fc809a46a6d34535b1ecebbf","lineage_path":"connector/fixtures/html/synthetic_topic.html","mime":"text/html","path":"connector/fixtures/html/synthetic_topic.html","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:38218a44bba9ba10bb5a2f08"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:047ef8acbd6b20c9d00d84fe","artifact_kind":"fixture","content_hash":"d250a59bbd9d161e31530510eeadfd1cb5bc526fbe29bdbcee6d93df4eff7aaa","id":"aoa:aoa-4pda-connector:artifact:2c3d6d37c6d86faaf0748976","lineage_path":"connector/fixtures/html/xiaomi_13t_firmware_topic.html","mime":"text/html","path":"connector/fixtures/html/xiaomi_13t_firmware_topic.html","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9dfb5483929201804a77193e"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e2a13ba32ce5ad5d3507a0b0","artifact_kind":"config","content_hash":"c083ebe70eb27158cd2eff6f33393912f78b57ef9e2fedd49dd44943170c96f8","id":"aoa:aoa-4pda-connector:artifact:2686b8f9adeabb6c8d66ae98","lineage_path":"connector/fixtures/normalized/synthetic_topic.json","mime":"application/json","path":"connector/fixtures/normalized/synthetic_topic.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:2e3d122b92b4e7db07da0696"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:863fa22021e8829826886bb2","artifact_kind":"manifest","content_hash":"df7533423ca4bbdc63c48da6d36528b8b28760eae6e7a6e635b1a66cfe6b1269","id":"aoa:aoa-4pda-connector:artifact:702a5cec90358a6661e4e9bb","lineage_path":"connector/manifests/artifact_classes.yaml","mime":"application/yaml","path":"connector/manifests/artifact_classes.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:2e459d6009724757c2aef416"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8d7fa6f2c796e8fcfaf73a9d","artifact_kind":"manifest","content_hash":"fa52eb908766f7adff8eb35ced467f2728aa12a1b784e755cee455535426e34b","id":"aoa:aoa-4pda-connector:artifact:747276e9b10f21d3c6259131","lineage_path":"connector/manifests/connector_manifest.yaml","mime":"application/yaml","path":"connector/manifests/connector_manifest.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b528cc5d7929ba9a3237bb08"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9919534db2a038a8042d4f6f","artifact_kind":"manifest","content_hash":"daf42dc2c068dc887ac90a440b7d2c8d51b49284509215a944cf3d2595f9892c","id":"aoa:aoa-4pda-connector:artifact:1ba98f35b6065a23e1a3c9c2","lineage_path":"connector/manifests/route_allowlist.yaml","mime":"application/yaml","path":"connector/manifests/route_allowlist.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:99d909f01be2adb46072c08b"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3600a30cbbc6110f6a21f1df","artifact_kind":"config","content_hash":"6d14a48eb9e66ba8d6a9390de5f5b169fc978048a258f122613bb6591025500b","id":"aoa:aoa-4pda-connector:artifact:fd04eda2798517bac6ee0f39","lineage_path":"connector/profiles/focused-device.yaml","mime":"application/yaml","path":"connector/profiles/focused-device.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4b800a106b436975420d74ab"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:fb329d2c8eb9006ecdb7e6f7","artifact_kind":"config","content_hash":"76bf37d127c2140f559886566f133621bced009f01486cffc01fc47e6f5b06d4","id":"aoa:aoa-4pda-connector:artifact:c4d3bf7d994ac80f8abaecff","lineage_path":"connector/profiles/full-public.yaml","mime":"application/yaml","path":"connector/profiles/full-public.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:97f7971fbe962d8acfccae6b"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5ed4adfbd7699144dbcd2f8b","artifact_kind":"config","content_hash":"0bce169a8f64c4499d267c162d362dd72d54af73cec665c8c8a49e8222a38e2a","id":"aoa:aoa-4pda-connector:artifact:1d40cf9ba84654a0caf6b107","lineage_path":"connector/profiles/redmi-note-10-pro.yaml","mime":"application/yaml","path":"connector/profiles/redmi-note-10-pro.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:61027c4688182625f99af319"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:31714a00b0f49ede21d8b195","artifact_kind":"config","content_hash":"39be605242c7fdda5960ee0809fa1d6159cc57ab681ec6794e785b9beb1e4405","id":"aoa:aoa-4pda-connector:artifact:86fb3508bf16612d33428258","lineage_path":"connector/profiles/starter.yaml","mime":"application/yaml","path":"connector/profiles/starter.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:917924661db1cb0e8ee406c8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c9a9a4a252507e8bda8ab401","artifact_kind":"config","content_hash":"27b9f07a650bcf196a1ce92960e368229fd65c9dfdb512bf2fe0df44bd4887a8","id":"aoa:aoa-4pda-connector:artifact:07ad7539f819c4b6f60911a6","lineage_path":"connector/profiles/xiaomi-13t.yaml","mime":"application/yaml","path":"connector/profiles/xiaomi-13t.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a3d9db166a501ec70913b4d4"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8c6ef81bff867c70e04c3035","artifact_kind":"config","content_hash":"bf838a2bc6c872594aa486b798fe97ed738303035c030046c00487923aa983f0","id":"aoa:aoa-4pda-connector:artifact:89983a8209aa7935f2cb340e","lineage_path":"connector/profiles/xiaomi_13t_information_needs.json","mime":"application/json","path":"connector/profiles/xiaomi_13t_information_needs.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e3cdb1315f45e8f7dfe842c3"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:70d163870bb7ea842eb36b4b","artifact_kind":"schema","content_hash":"682515886443c5a20e51dfe3d1c1425945d9a5ed6104b7449c8f2d7d0062327b","id":"aoa:aoa-4pda-connector:artifact:3886462d5604c8c4b735036c","lineage_path":"connector/schemas/answer_packet.schema.json","mime":"application/json","path":"connector/schemas/answer_packet.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:5f0e1de953b485c79481b1dd"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e52930a5523911b0a4a3cc7e","artifact_kind":"schema","content_hash":"5e2021fa2e7067ba7622e1f71ac4ce664475f38dd4562bcd3b8408f6f70fc7d3","id":"aoa:aoa-4pda-connector:artifact:bfec791fa387e6ca3e8d3752","lineage_path":"connector/schemas/applicability_report.schema.json","mime":"application/json","path":"connector/schemas/applicability_report.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:6768339f749a679456b3f607"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d40c657338c00d2dcf2578ec","artifact_kind":"schema","content_hash":"a1d725773053d085bb41c1e225b46ccb5b4193ef83494b687193341dda0089a9","id":"aoa:aoa-4pda-connector:artifact:32e75444c5948df7e0b1e7fa","lineage_path":"connector/schemas/claim.schema.json","mime":"application/json","path":"connector/schemas/claim.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3b9c237a446efb9e808d6e62"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ad3ed9b6b1ec59b8724003c4","artifact_kind":"schema","content_hash":"4a3f832226e6d5f46d8af569e8840b14a536e19173b9f9b90d0c9625fd7f62ce","id":"aoa:aoa-4pda-connector:artifact:383c535c0b3acf1a8dd281cb","lineage_path":"connector/schemas/claim_relation.schema.json","mime":"application/json","path":"connector/schemas/claim_relation.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:18d0ee28d52054b205a5d40e"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:376d77d0a221c6195f317a15","artifact_kind":"schema","content_hash":"ae62a341644911f5bc59979682a9587c3384fdb782dc2d2614d4e1a5d7e8b60d","id":"aoa:aoa-4pda-connector:artifact:5a9c8bd05fce96cb59dc8dcf","lineage_path":"connector/schemas/conflict_report.schema.json","mime":"application/json","path":"connector/schemas/conflict_report.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:0d737c147a7c226be242b1c1"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5b4827d07af0c1cf4449c688","artifact_kind":"schema","content_hash":"f4cb949e1c899f0a6a6df23f037a7fab786bc05b792f9dd060fda95964380c46","id":"aoa:aoa-4pda-connector:artifact:b0b5287569ea6de0c6023a8c","lineage_path":"connector/schemas/crawl_receipt.schema.json","mime":"application/json","path":"connector/schemas/crawl_receipt.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:010ac3b174bef32016a53b6a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8236d66e3d465fd0ca4e746b","artifact_kind":"schema","content_hash":"970afff1f89fb9649338ff502e47dd8bf007ba25695bbdc8dac8c70414b303cf","id":"aoa:aoa-4pda-connector:artifact:22b1fd425863053e41411674","lineage_path":"connector/schemas/evidence_packet.schema.json","mime":"application/json","path":"connector/schemas/evidence_packet.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f227193f342e134130ddf73b"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3898984c9e8bba5c0fa95fa8","artifact_kind":"schema","content_hash":"65a733581bd931129c4e1c470d5b0db6015ca2ca48530e16f4d40809e77c7cc9","id":"aoa:aoa-4pda-connector:artifact:116037cdf5557f0eda860bc9","lineage_path":"connector/schemas/freshness_report.schema.json","mime":"application/json","path":"connector/schemas/freshness_report.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:6ada67ceb2e5dfa25d07faf8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ac0c95e4c0931d66dd586097","artifact_kind":"schema","content_hash":"d636cceb1249cf62d32e1e800dfea3fb1c83a5782b0eae08102c8702e08b63f1","id":"aoa:aoa-4pda-connector:artifact:7cdc761c3198c74623fc89dd","lineage_path":"connector/schemas/graph_edge.schema.json","mime":"application/json","path":"connector/schemas/graph_edge.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b9ce7b942ac14611bb8224d0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b20469850b831194c8968c09","artifact_kind":"schema","content_hash":"d29d1460aa033041c5c3a23240d08ef8294611a657a3f117697d958ad39a17ac","id":"aoa:aoa-4pda-connector:artifact:1582c817b6725b164225ceeb","lineage_path":"connector/schemas/graph_node.schema.json","mime":"application/json","path":"connector/schemas/graph_node.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:7d0be8d30fdcd1ffa177fac0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:42599c1c8de6d89fd582de66","artifact_kind":"schema","content_hash":"6492ad1b0ab33d3e0ee56ee301e73330436b8687c37bafe0281ce183494bec16","id":"aoa:aoa-4pda-connector:artifact:0bee62c7109961bf8ad8bcc2","lineage_path":"connector/schemas/index_manifest.schema.json","mime":"application/json","path":"connector/schemas/index_manifest.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d6624222d0e7a19495499240"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5f522ee6ecedd3a009bccaf7","artifact_kind":"schema","content_hash":"09a7c20fc4058dbcc2da1539ff096392f60a16e3f2d221d5114a2bb9aecfe8c0","id":"aoa:aoa-4pda-connector:artifact:5aeacf8a1f48a8c8e307c865","lineage_path":"connector/schemas/materialize_receipt.schema.json","mime":"application/json","path":"connector/schemas/materialize_receipt.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:40c77091ad57773843870acd"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:7d3b39779c48ae8a783a337a","artifact_kind":"schema","content_hash":"747ce13425c702ad9bba2bf17de4d906bf02ed230afeeaedc290c580a55b5a42","id":"aoa:aoa-4pda-connector:artifact:2b0ac6226c78dbc34b37a4ac","lineage_path":"connector/schemas/normalized_post.schema.json","mime":"application/json","path":"connector/schemas/normalized_post.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3ed42dce6cdd7701af235cf7"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c9794397b653daf6ae6a0cfc","artifact_kind":"schema","content_hash":"2d793b431ba95040ba0830504c921efae35f8e2de7631da7d4c3fdd6ab78a1e8","id":"aoa:aoa-4pda-connector:artifact:9d8d8799e9a19ad68b0d6a0c","lineage_path":"connector/schemas/normalized_topic.schema.json","mime":"application/json","path":"connector/schemas/normalized_topic.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d90aa82cf045b5e91324b0ac"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:45038a6649dc6a99facba70e","artifact_kind":"schema","content_hash":"42c36293b7e7340e4f6912cc865751e587ceacadb7891a0231ac214a0a82118a","id":"aoa:aoa-4pda-connector:artifact:126017c5937d3eaa744aec13","lineage_path":"connector/schemas/vector_index.schema.json","mime":"application/json","path":"connector/schemas/vector_index.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:71c741402c6585e0905ac789"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d585ab668973be8775a81d54","artifact_kind":"schema","content_hash":"8a97ccde863f9fb9fea543caa7df488f1282ed119132df7ff1b09f9954b90c42","id":"aoa:aoa-4pda-connector:artifact:6a78740e7a193628eb6695da","lineage_path":"connector/schemas/vector_manifest.schema.json","mime":"application/json","path":"connector/schemas/vector_manifest.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:024f6a108a12647323b58d97"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:16beb3cc2e63b661b5cb128b","artifact_kind":"schema","content_hash":"023af69f65a2469041f1a5ceba4a955238c11d821e59d05d38c3734f1a06238a","id":"aoa:aoa-4pda-connector:artifact:931d4eadc5ff3f80d734a323","lineage_path":"connector/schemas/warning_report.schema.json","mime":"application/json","path":"connector/schemas/warning_report.schema.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:24bf79c18933429b93c80f7a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:75f3669aa88c0994b4958c52","artifact_kind":"config","content_hash":"3b1f5d812aa49c9501772abc7e865ce5ddffd1b46dfe6129bf027236cf1f11be","id":"aoa:aoa-4pda-connector:artifact:f9c30e454c8465bcf5269880","lineage_path":"connector/seeds/forum_sections.yaml","mime":"application/yaml","path":"connector/seeds/forum_sections.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a9b1fc29379faaf6a5e59712"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:29055d2e9aaa11088e9e97f7","artifact_kind":"config","content_hash":"158db2409f57c8703227ed009a1338ff6f6b32a49ecc9168a456f66145ceada3","id":"aoa:aoa-4pda-connector:artifact:6c452750ebc3e603ff21d95c","lineage_path":"connector/seeds/redmi_note_10_pro_topics.yaml","mime":"application/yaml","path":"connector/seeds/redmi_note_10_pro_topics.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:ba44851e1dfaa917bb2457d6"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:cdedcf989fc760005128250a","artifact_kind":"config","content_hash":"93f0b32259ca1929d0b3696c3b86cabb2f37ba0be10dce3c427deee73d43f9f7","id":"aoa:aoa-4pda-connector:artifact:cb21d8f540f2f67defa6586c","lineage_path":"connector/seeds/reviews/xiaomi_13t_discovery_review.json","mime":"application/json","path":"connector/seeds/reviews/xiaomi_13t_discovery_review.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8630747bfa48242c42193a5b"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ff811cf20285c6b908dc4080","artifact_kind":"config","content_hash":"e5241100cdffe296a815a3d876f214e8acb5d69b4c187a92b680b7fcc1e9ce72","id":"aoa:aoa-4pda-connector:artifact:e44b371dc07519b235e20852","lineage_path":"connector/seeds/starter_topics.yaml","mime":"application/yaml","path":"connector/seeds/starter_topics.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:834a348604c21a208dc3f555"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e0aa07f5b4229a4de8202adc","artifact_kind":"config","content_hash":"a7cd55c052c52ab1a1ce5ea8a0bdceb41918a811c0183b3bb51830273d5fdc76","id":"aoa:aoa-4pda-connector:artifact:674dae1d22e712ede9575d3f","lineage_path":"connector/seeds/xiaomi_13t_topics.yaml","mime":"application/yaml","path":"connector/seeds/xiaomi_13t_topics.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:11c38abc7c19c4fa70e6ddf1"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b608ceb32689b835b1085cd4","artifact_kind":"document","content_hash":"e8780ca5c3bb9951786f598a7780ef7dd37d46bb3f081e2cfdc85f2148a56d55","id":"aoa:aoa-4pda-connector:artifact:38c86ecaa79ed3efa73183dd","lineage_path":"docs/AGENT_INSTALL_ROUTE.md","mime":"text/markdown","path":"docs/AGENT_INSTALL_ROUTE.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3197be70ea19d49f757d53df"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c71af13bb7a286ac4dac7245","artifact_kind":"document","content_hash":"37a47f54a8f116a9b34cc6b5046e0a9c6dade8cf5f8541bad684816b26533fa1","id":"aoa:aoa-4pda-connector:artifact:ff21b6b9a3a33e9d9056ac96","lineage_path":"docs/ARCHITECTURE.md","mime":"text/markdown","path":"docs/ARCHITECTURE.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3717ef6817a74b3b458e04ca"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f24c3312a320f4bb19a2a54e","artifact_kind":"document","content_hash":"f12802ef1b68e186148e3cc32667e5e0095ee5ff411778618398bbca76aa421b","id":"aoa:aoa-4pda-connector:artifact:2fbbbc3cbc966fcfc236c963","lineage_path":"docs/CONNECTOR_FAMILY_CLAIM_CONTRACT.md","mime":"text/markdown","path":"docs/CONNECTOR_FAMILY_CLAIM_CONTRACT.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:68ed09182ea9ec1045a07f73"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d6b081426e08f473556905de","artifact_kind":"document","content_hash":"3071d54f8cd242a65a15bdbc81717d87c7c2ce797e4d03b6eea561a14ab52777","id":"aoa:aoa-4pda-connector:artifact:547872a5f4a449146ad6d2c8","lineage_path":"docs/CONNECTOR_READY.md","mime":"text/markdown","path":"docs/CONNECTOR_READY.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:54f068e13117b8d2232d6d86"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9a5a2badc9c06ba44480b3f3","artifact_kind":"document","content_hash":"7611268a5a34e9e01ba929f45b0dbb576d86b5b4e9b9b5fe72184ea98718d609","id":"aoa:aoa-4pda-connector:artifact:d83910ec8052fccaee83f097","lineage_path":"docs/COVERAGE.md","mime":"text/markdown","path":"docs/COVERAGE.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f3307c17faf22708cf44b5fb"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:fe2596f82e280f3ba064d129","artifact_kind":"document","content_hash":"922de9b99ed3a1c77c4c0d87b28186a3f7a38e36f780d7a077a2985d689f2b53","id":"aoa:aoa-4pda-connector:artifact:e5ce7a400706263a38ec306b","lineage_path":"docs/DISCOVERY.md","mime":"text/markdown","path":"docs/DISCOVERY.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:5f14453aeb25e09d6449342e"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f1edd925674bc621fedc0082","artifact_kind":"document","content_hash":"d0cc9f2459cd5e3b23068a1f0a801c727a2b9b4fa28d1a09b403f827f4be1898","id":"aoa:aoa-4pda-connector:artifact:ff63a64d1286ff588ec04575","lineage_path":"docs/EXTERNAL_STORAGE.md","mime":"text/markdown","path":"docs/EXTERNAL_STORAGE.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b5726ba538a562280d31925f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b2931d123b0f68dcad0506fe","artifact_kind":"document","content_hash":"3038841ca2a9700206e3e76f1520a6bca73023d185471debd602025326d2ff89","id":"aoa:aoa-4pda-connector:artifact:72ed1bbd50d1e98278f415c5","lineage_path":"docs/GRAPH_MODEL.md","mime":"text/markdown","path":"docs/GRAPH_MODEL.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:ef7d5ee031987ade244eb766"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:a34cd676367c49513fad4ee7","artifact_kind":"document","content_hash":"013549f8278f90358e889103240a0897f3e3ac8a159eaac2797616157d817a43","id":"aoa:aoa-4pda-connector:artifact:93adeedb62ae4160af1d8713","lineage_path":"docs/INSTALL.md","mime":"text/markdown","path":"docs/INSTALL.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:7a2d18ab7d67079930380241"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f69628155bbe6991b598ed1b","artifact_kind":"document","content_hash":"274632b00825a482912d10bae6d15187824480b6a2950521dc0ece32acf5191d","id":"aoa:aoa-4pda-connector:artifact:1c1a0f7ad1e8cfda35612368","lineage_path":"docs/LIMITS_AND_ETHICS.md","mime":"text/markdown","path":"docs/LIMITS_AND_ETHICS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b115a9f978931e12cf85eaf4"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3835c8680e37e816f563de9e","artifact_kind":"document","content_hash":"b7481dbf9f00b808da91bebe8d20d34b379bbd6c5383152eab5e080ffb764a32","id":"aoa:aoa-4pda-connector:artifact:7592ebe12e24b5f2c1b40033","lineage_path":"docs/MCP_ROLLOUT.md","mime":"text/markdown","path":"docs/MCP_ROLLOUT.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e218cc0d24e974a7ecd0a324"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8f3070014b5d3d2bf505f81c","artifact_kind":"document","content_hash":"a972d6a205d3393237b55e0dc6a8d25f877459e04fbd4393ddc341640263e7dc","id":"aoa:aoa-4pda-connector:artifact:3b441db82a6aa05a4005032f","lineage_path":"docs/OPERATIONS.md","mime":"text/markdown","path":"docs/OPERATIONS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4fdb7a9e43944510d096a3e0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:494ccee4617f42bd4088cc08","artifact_kind":"document","content_hash":"cee1296acb8819aa114f6ff22975f5ef49c79a1540355ca44e7a8a938489b91a","id":"aoa:aoa-4pda-connector:artifact:dc059c6e179d84850bca916f","lineage_path":"docs/QUERY_MODEL.md","mime":"text/markdown","path":"docs/QUERY_MODEL.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:58db9e44e1ba4973a5b77ae9"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:bc8ce6c07d2f115c11b17640","artifact_kind":"document","content_hash":"166f36d08c6ae62f1271344137d6f8865a2706c5b532b39d5df142162fcdc0aa","id":"aoa:aoa-4pda-connector:artifact:b3e31c26e386a649bb6a929c","lineage_path":"docs/REFRESH.md","mime":"text/markdown","path":"docs/REFRESH.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:33bd44b1f34d288002ef24e5"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ac7093e9defc14d8fefc55a9","artifact_kind":"document","content_hash":"374e43681cbc075ca5ac5c26c10ff358d023f9ead2aeb4a12eec67a5190e4c00","id":"aoa:aoa-4pda-connector:artifact:fa011f8c69f98428a5758cc9","lineage_path":"docs/RUNTIME_CONTRACT.md","mime":"text/markdown","path":"docs/RUNTIME_CONTRACT.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:16cf11dbe7eda55f1270974c"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:82d195a3013206d28c74f3ba","artifact_kind":"document","content_hash":"894e5487fe4017d399f140a74a0a07d7dd8341a61c0c22994d9f09143f85f242","id":"aoa:aoa-4pda-connector:artifact:66f30773dbf7d28dedd32c12","lineage_path":"docs/SEED_REVIEW.md","mime":"text/markdown","path":"docs/SEED_REVIEW.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:ef00a47e544c32fd917f31db"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5c2484d2fd7fa22bda462815","artifact_kind":"document","content_hash":"4df1fc07f3162bd7c682505439397bf3cc40e22065ecc4cbe2980abd33de4d62","id":"aoa:aoa-4pda-connector:artifact:a06d166b7c2914561846ba0c","lineage_path":"docs/STARTER_PROOF.md","mime":"text/markdown","path":"docs/STARTER_PROOF.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c5545b4c04129bdf4d072e78"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f35b34ed2e9edef118de2d36","artifact_kind":"document","content_hash":"ebe981e1e0af14b15b5fbb60f30df1218eaea3b91897a816b837c31f45431f5f","id":"aoa:aoa-4pda-connector:artifact:bd84906c134cf5f73ca7b96e","lineage_path":"docs/decisions/AOA-4PDA-D-0001-public-evidence-connector-skeleton.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0001-public-evidence-connector-skeleton.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:85e9bcd8084a49a9f5910b20"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:df2a1b3a85d18bea301f4631","artifact_kind":"document","content_hash":"6be0ad0053320f119179d41619e4ea8f962839c5c565ee1d1dbb96a40fb7fcc1","id":"aoa:aoa-4pda-connector:artifact:3c9b0b7595376e4ee702daa7","lineage_path":"docs/decisions/AOA-4PDA-D-0002-ci-and-starter-proof-gate.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0002-ci-and-starter-proof-gate.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1f0959281b649a5fd68ca2e1"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ee7d95c800523949c547e69e","artifact_kind":"document","content_hash":"9905e552ad73471bd38119134c3922f6a12005c9c7ab9a86fd22c0dc70cb1d4e","id":"aoa:aoa-4pda-connector:artifact:c875cc25e82c5104fd383a7e","lineage_path":"docs/decisions/AOA-4PDA-D-0003-bm25-exact-starter-search.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0003-bm25-exact-starter-search.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8c83b76ab3e8ee623a08f88e"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:73b7e942caf4c513dc5f7e42","artifact_kind":"document","content_hash":"ec87259ebe04603550f3edd8dc8d75ef29d48e4f6810b4efb98e7fac4d94b775","id":"aoa:aoa-4pda-connector:artifact:2870ee5b33be5f0eecb8ab08","lineage_path":"docs/decisions/AOA-4PDA-D-0004-heuristic-entity-extraction-v1.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0004-heuristic-entity-extraction-v1.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:fff33b8177beecc1f643b959"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d94be53238ca87e736a518be","artifact_kind":"document","content_hash":"cefbabbec616706ba4f196e2b2b72675df5e460726f9a2f866eb889c49b1372b","id":"aoa:aoa-4pda-connector:artifact:3a954d6479db06ea4d367b21","lineage_path":"docs/decisions/AOA-4PDA-D-0005-live-starter-proof-gate.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0005-live-starter-proof-gate.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:82f7a85b536bd211f7f524ce"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:223df19ee682bdeb41165a82","artifact_kind":"document","content_hash":"3f441c7ecace579269b822fa2f1a7948560dbb4ede00156210b29db874bf62bb","id":"aoa:aoa-4pda-connector:artifact:ad1e3a40b0732be08b4311e3","lineage_path":"docs/decisions/AOA-4PDA-D-0006-local-starter-search-eval-pack.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0006-local-starter-search-eval-pack.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:006bbcc0fd14c25a06701679"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ccd8ce81370d110de4258eb2","artifact_kind":"document","content_hash":"8f95727cac744622070ef24b3c8f5fa6c8c94e7fa02c36ccb800dd24b365c107","id":"aoa:aoa-4pda-connector:artifact:eb2a52f89f59e19ee8d62500","lineage_path":"docs/decisions/AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0007-local-starter-graph-relation-eval-pack.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d7792d084b80a2cbafe61e64"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f4b7bca842f692e1a8672dd9","artifact_kind":"document","content_hash":"29cc5e84b44966b9bacd822ee145bd8a00fb8c4b53600ba978207baf6efb201f","id":"aoa:aoa-4pda-connector:artifact:e02dc89fa933a9dddafc765c","lineage_path":"docs/decisions/AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0008-starter-graph-relation-edges-v1.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:5f9a81d8a8a761d4d4ce5f5f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3dd209e0f0237707164d4e4c","artifact_kind":"document","content_hash":"d6281ff89b7c96782fdf804fa6e9e2e6dd2d2d67e79f7ad2a7276cd2c708ea68","id":"aoa:aoa-4pda-connector:artifact:de18ff01e9da194f675ff5de","lineage_path":"docs/decisions/AOA-4PDA-D-0009-starter-graph-query-packets.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0009-starter-graph-query-packets.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a05582168545d5176e6ce2d9"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e4ec626b0c13274c583c21f7","artifact_kind":"document","content_hash":"df44778d6bff082bf099aea3475767dff0bf73351ef3072236299bd4bc585d02","id":"aoa:aoa-4pda-connector:artifact:a0bff30a0c78c30f82d2e3d7","lineage_path":"docs/decisions/AOA-4PDA-D-0010-starter-answer-packets.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0010-starter-answer-packets.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:87276f3b86211137373ca4b7"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:056cb3faa294c0cb013ce04e","artifact_kind":"document","content_hash":"d457c15353ddef8b9c2463a97c64d167fd931fac05719763d77739da299b49bf","id":"aoa:aoa-4pda-connector:artifact:e38ec72c3174f26e77ae641e","lineage_path":"docs/decisions/AOA-4PDA-D-0011-repo-local-state-root.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0011-repo-local-state-root.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f4e6bc1e7ef8c58d51ff6ac8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d9d1babaec861b6921ea2e18","artifact_kind":"document","content_hash":"d7c2336705ce88937df2c710c5bee683e7dbd333bd698aebd20764a9e795ffaa","id":"aoa:aoa-4pda-connector:artifact:704f8ddb3e74ee2ec4fe746c","lineage_path":"docs/decisions/AOA-4PDA-D-0012-live-starter-search-quality-eval.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0012-live-starter-search-quality-eval.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:131a2071f1ac4f28cad0c211"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c9257b7bd920f17de3cb66b3","artifact_kind":"document","content_hash":"2dbee060b9323dc48cd63a99c973cb5538455bf6bb19027510860ca56921c8db","id":"aoa:aoa-4pda-connector:artifact:a3b5e725bcea3ffb820743f3","lineage_path":"docs/decisions/AOA-4PDA-D-0013-technical-token-normalization.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0013-technical-token-normalization.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f1939aed0fde497c26aa519c"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:4d336514957ee7d3c4d27610","artifact_kind":"document","content_hash":"ea26daf50bcbd84baca1920011e645db413111021a2b78944c7d57920bf4ebda","id":"aoa:aoa-4pda-connector:artifact:4ae8bc3f6b4089acfd200499","lineage_path":"docs/decisions/AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0014-focused-xiaomi-13t-profile.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:48d499dc8c36edd25bb16db1"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c19dc61fde56748014e4c18d","artifact_kind":"document","content_hash":"2fbf413fee15c6db36dc30c2cd11b951109328b2c8e818bf0aa3d7bf2bccd957","id":"aoa:aoa-4pda-connector:artifact:45738141e995b9dad7c38b95","lineage_path":"docs/decisions/AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0015-xiaomi-entity-extraction-v2.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:06dff9ae9c401d9d3a854fed"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c92563289fba176cf1a2e128","artifact_kind":"document","content_hash":"67146281f2d227dcd9795fb9b4fc9ed6a8d2c9db13db02574b8f2bce1da3fed0","id":"aoa:aoa-4pda-connector:artifact:635171a355067d71523ea28d","lineage_path":"docs/decisions/AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0016-live-xiaomi-graph-query-eval.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:16b4ad42cfb37600b31dc058"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:29e83f8d50bc0eabd631487e","artifact_kind":"document","content_hash":"ce1421c68df36e86e93078916d110d9dc54d16c61f299a6f2c69e31388e4575e","id":"aoa:aoa-4pda-connector:artifact:15813587b07b2814b9b46c1c","lineage_path":"docs/decisions/AOA-4PDA-D-0017-root-recovery-answer-packets.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0017-root-recovery-answer-packets.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8c594ef8c7a21996532e4f80"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:80a9295f3c085b23ed9c0424","artifact_kind":"document","content_hash":"fda2049434059232230699afaefe8bfe83519b0f8d2dfe26b1e8e1e538a3c86e","id":"aoa:aoa-4pda-connector:artifact:c02175c3935a4d0c0aa569c7","lineage_path":"docs/decisions/AOA-4PDA-D-0018-connector-ready-audit.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0018-connector-ready-audit.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:fca975687acbeaf5d25351cd"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f5832455dac4757c73746331","artifact_kind":"document","content_hash":"9b26303bbf58762417be42fac5e851de63f195b7e5d8fa579ffda0fe13c83298","id":"aoa:aoa-4pda-connector:artifact:d511595d3feda0f735f69240","lineage_path":"docs/decisions/AOA-4PDA-D-0019-answer-freshness-context.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0019-answer-freshness-context.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:09663115a7734485d21ab4c9"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6431af93920141c7969e6e0f","artifact_kind":"document","content_hash":"09096d59349ef22a3ca468624a80d16ddff1bb0affd40091d396f555b3fbea3e","id":"aoa:aoa-4pda-connector:artifact:d7a32daf8f6a048b3fcffd44","lineage_path":"docs/decisions/AOA-4PDA-D-0020-second-representative-profile.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0020-second-representative-profile.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b3d9a55a988ffb1fbf9b6770"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:38c1930ea14a2625d03ad680","artifact_kind":"document","content_hash":"553af71b6e436d28762d3b786e924c951d9741161a5b5cd4dc6b2aef542579ed","id":"aoa:aoa-4pda-connector:artifact:b92322c6107ecb9a976b9db3","lineage_path":"docs/decisions/AOA-4PDA-D-0021-reference-profile-coverage-audit.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0021-reference-profile-coverage-audit.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:895877e23d619221d8ca9fa9"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6a32d3bc88b38f52318c04b4","artifact_kind":"document","content_hash":"b41a8ee6669b82d7ed493619fc33252bdb6f6293d5224d817b7080deeaef4642","id":"aoa:aoa-4pda-connector:artifact:42c9c36ee180a0bf592fb067","lineage_path":"docs/decisions/AOA-4PDA-D-0022-reference-profile-refresh-audit.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0022-reference-profile-refresh-audit.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9109b0027a4d59cfce8de035"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:344491b6e10bcb9e46288134","artifact_kind":"document","content_hash":"a9285f9844244f0cea92c76941a3b33caadcd5d223856061153a3de1787c966a","id":"aoa:aoa-4pda-connector:artifact:f193c58539e99ce689819d5a","lineage_path":"docs/decisions/AOA-4PDA-D-0023-reference-profile-discovery-audit.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0023-reference-profile-discovery-audit.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c3e0aae3897a53496b0a7858"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:94dc343436bf71a380673ee8","artifact_kind":"document","content_hash":"49179426e52a358e7f967012cf2f00e6ca24597c55e6cdd3bbcd6d57dc0d76a4","id":"aoa:aoa-4pda-connector:artifact:51d3085fed7f502098dafd18","lineage_path":"docs/decisions/AOA-4PDA-D-0024-review-ready-discovery-candidates.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0024-review-ready-discovery-candidates.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:eac91891c0bd96d2e49a64d8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6dc367ff211275960c397ed7","artifact_kind":"document","content_hash":"250b4b58bd9f49c59fab74f4f7f8dd53c39b738155d53ddd7b2d8b637a3c429c","id":"aoa:aoa-4pda-connector:artifact:6a6cbfe455c44602f6d4f17c","lineage_path":"docs/decisions/AOA-4PDA-D-0025-discovery-review-manifest.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0025-discovery-review-manifest.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9edf225ee78b24cee4d16419"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d9bc6e8154ba8023a2914804","artifact_kind":"document","content_hash":"66082e327a9fdb6753c352885cc5c7d7f94ee3438297df0d05efdff4141d7fff","id":"aoa:aoa-4pda-connector:artifact:09560a03c1b337ea1b73f571","lineage_path":"docs/decisions/AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0026-xiaomi-13t-reviewed-seed-expansion.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:cbd4357934ded1b380a93752"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ed27ec2db5508cd1220492c0","artifact_kind":"document","content_hash":"4ca3e9a8a81006be525913c877d867d9839c8fb4d8850833c37867c0dde0b522","id":"aoa:aoa-4pda-connector:artifact:1e48c02657d4c8ea743c8fd5","lineage_path":"docs/decisions/AOA-4PDA-D-0027-discovery-pagination-defer-rule.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0027-discovery-pagination-defer-rule.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:07735cad1d5f1fc6bbe6a5a7"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d2dd14954d5a5824dd18a85f","artifact_kind":"document","content_hash":"fd4aeb6f358ce5c648ef43b22dc02b759f63d5c656e41b3da2f5353e3751fb26","id":"aoa:aoa-4pda-connector:artifact:aef954134f054abe775698a7","lineage_path":"docs/decisions/AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0028-deterministic-vector-hybrid-index.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:6a2d721a5e304f8c901b87d8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b84ebf939a20355d6ec7ece7","artifact_kind":"document","content_hash":"876c3c2700565389f54ea85a52352b53252854f209e51db9b7c197762b043894","id":"aoa:aoa-4pda-connector:artifact:cf9b380161fb7c4ddfdb8696","lineage_path":"docs/decisions/AOA-4PDA-D-0029-agent-install-route-verifier.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0029-agent-install-route-verifier.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:84242474dd05f3c12ac8feb0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:fec2a746cacf32ac4be79600","artifact_kind":"document","content_hash":"47185ceecb0f3cae7a1e3286824e4b6eda083a670147f87dd5198c59e4d501dd","id":"aoa:aoa-4pda-connector:artifact:6f211478f79bb59eb9ebb23d","lineage_path":"docs/decisions/AOA-4PDA-D-0030-information-need-coverage.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0030-information-need-coverage.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:0c0e549020accd4e4349268f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:3caacb8ae1ba48b5af58f055","artifact_kind":"document","content_hash":"d9f875bd90f4b10daca4158634031228ad05c086687dd0e1d3eac5c217eb1d6e","id":"aoa:aoa-4pda-connector:artifact:5f7659b4e47622985f326adf","lineage_path":"docs/decisions/AOA-4PDA-D-0031-answer-gap-awareness.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0031-answer-gap-awareness.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:cee7b09ecc5e234a26f02749"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:48ccab802c6091853f78ec8e","artifact_kind":"document","content_hash":"6db99d70049706e9ef047aa5d7eccd979bd15ed2eb71174ce9d161f1a643b564","id":"aoa:aoa-4pda-connector:artifact:c88cebb38bf3d36a3f979e36","lineage_path":"docs/decisions/AOA-4PDA-D-0032-answer-evidence-chain.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0032-answer-evidence-chain.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e2820e44417a6ff6843385c0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:640f8bad5698ebfbb987edb0","artifact_kind":"document","content_hash":"e310652809b4b55a016fba2618ed9b9756377feed3a4cdaa69aece0883042aa2","id":"aoa:aoa-4pda-connector:artifact:999abc8709eb9c5d0d1c5b24","lineage_path":"docs/decisions/AOA-4PDA-D-0033-deterministic-agent-answer.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0033-deterministic-agent-answer.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b871a35078a0ebc334991fad"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8295d6fe27dd444e817bbb27","artifact_kind":"document","content_hash":"38f46f23dc1d97a58055aa3f23d12823bc76d706ee3828c2021a37300047e9f3","id":"aoa:aoa-4pda-connector:artifact:215e751dc6eb0a9ba6d31167","lineage_path":"docs/decisions/AOA-4PDA-D-0034-portable-mcp-rollout-contract.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0034-portable-mcp-rollout-contract.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a327cf0ca5ee92ab34dac9aa"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:dd08d2e89aa70637956d5f52","artifact_kind":"document","content_hash":"b42fb12965f30da5e3cdc34d9e967379f793581f94ae6d1dd3665bf5a756acd2","id":"aoa:aoa-4pda-connector:artifact:cc3f6b5a5d00ea093dd1f534","lineage_path":"docs/decisions/AOA-4PDA-D-0035-deep-runtime-answer-grounding.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0035-deep-runtime-answer-grounding.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:598d6c27826a70d988073938"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f71f970472f0b68eb00b6d74","artifact_kind":"document","content_hash":"4b2ee27e45bf1f57947135d7c96381727c1d2dc5720c2d22083fcd11c5c1e408","id":"aoa:aoa-4pda-connector:artifact:a6529f58b39eb3015cc767e3","lineage_path":"docs/decisions/AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4e4778988d712096bf696f69"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:25cc303e35533d7518033ab5","artifact_kind":"document","content_hash":"e172ff6208c0b31b6e1a2b49b6f935340ad579c08104d0a4742040afe21dd5b9","id":"aoa:aoa-4pda-connector:artifact:35414bbef8727afb8d2a7bd5","lineage_path":"docs/decisions/AOA-4PDA-D-0037-connector-family-claim-contract.md","mime":"text/markdown","path":"docs/decisions/AOA-4PDA-D-0037-connector-family-claim-contract.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:00fb18f4587c3a3e3c5706f8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b82b27b2455023847f28ffc8","artifact_kind":"document","content_hash":"32182ea5d455ba796d02b579117b2e4ed2ed4056a847ec20cd67da3f5225dc19","id":"aoa:aoa-4pda-connector:artifact:e5ec0e7030077b7cf1bfed98","lineage_path":"docs/decisions/README.md","mime":"text/markdown","path":"docs/decisions/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:43002cd6fb698d1db93bf306"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c4c1f0c96cfce7cfd4d59c54","artifact_kind":"document","content_hash":"bfecf4d4dc92cdbb67c5096ba1b03e63c3f0b2b134788123663d264b1c4dde32","id":"aoa:aoa-4pda-connector:artifact:97b1e9d3cdd5039f97903b28","lineage_path":"evals/AGENTS.md","mime":"text/markdown","path":"evals/AGENTS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:df0e315139d69e8a384445f4"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8570c17992500d3a96e4035d","artifact_kind":"config","content_hash":"70a143c02133f621071047025a3bfaa8d75375e90fdc597ccda29a8c48055c7b","id":"aoa:aoa-4pda-connector:artifact:b027c5aa6bfa309e504db8b6","lineage_path":"evals/PORT.yaml","mime":"application/yaml","path":"evals/PORT.yaml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:31f03f457d1651cd3a011982"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d8b9eaac1262af57b3bd85ae","artifact_kind":"document","content_hash":"3dc1e0bc74ea79259987e6ba51109b8607158779cb2fa738d162cd6bd6277b70","id":"aoa:aoa-4pda-connector:artifact:a1a9eeb43d4de7693b860e12","lineage_path":"evals/README.md","mime":"text/markdown","path":"evals/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:6aa96d8651a2ab7ce6691986"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8c6e6187a68a4726a3a6b228","artifact_kind":"document","content_hash":"ea6b28b42e34060d62d88393bb306605ed454cdcbfbad3403949dff109fb7e12","id":"aoa:aoa-4pda-connector:artifact:d27b56ff431893151fb5396d","lineage_path":"evals/intake/README.md","mime":"text/markdown","path":"evals/intake/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8de2165f789fc84c8bc20594"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e206ca045c6a2acb3dcd0cbe","artifact_kind":"document","content_hash":"e65c7d4e5fc6db996120515d9b21450d5f91d0fc4d8d1b616f76a8c628d95153","id":"aoa:aoa-4pda-connector:artifact:ac5e016ca22d8a30850c20d8","lineage_path":"evals/reports/README.md","mime":"text/markdown","path":"evals/reports/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:694aefd54c800c787bbbb0ca"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:7d2fc71c9fd9591b2e504f34","artifact_kind":"document","content_hash":"6ad44ac03c501d59757ea7bed6c8075f1bccdd5b03e2345dc91601990e860f0a","id":"aoa:aoa-4pda-connector:artifact:9363d2e2fca41bfb91b32d91","lineage_path":"evals/reports/connector-local-suite-route-pass-20260625.report.md","mime":"text/markdown","path":"evals/reports/connector-local-suite-route-pass-20260625.report.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d872e9be62162a84a94c82b8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:53b36deb93627c0f49a97bf8","artifact_kind":"document","content_hash":"e533bbe6f6ee4aa52803b5314628d08f3775b1e6fdd2129373567b10a84cf072","id":"aoa:aoa-4pda-connector:artifact:8611332c6fcbad7921c5cd0c","lineage_path":"evals/suites/README.md","mime":"text/markdown","path":"evals/suites/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b0df9ed637fbe37ecce97a11"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9e660a266a75f07182996fa5","artifact_kind":"document","content_hash":"8697253dd708d3635e60ad1e35e2ba8ee306630ccd921f2e9b41719bfe3a1d2b","id":"aoa:aoa-4pda-connector:artifact:d0f035e0ca7e50a1aa135239","lineage_path":"evals/suites/connector-local-quality-gates.suite.md","mime":"text/markdown","path":"evals/suites/connector-local-quality-gates.suite.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a0614f0c9f49046c2a0dd4fa"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:fe113f181feb2bc6fbacbede","artifact_kind":"config","content_hash":"5759255fff028909fd0ca24a9b934c54f110717f291694155b731ceb9d2b59ff","id":"aoa:aoa-4pda-connector:artifact:9ac76ff9b2f3647e345bb2f8","lineage_path":"evals/suites/live_redmi_note_10_pro_search_quality.json","mime":"application/json","path":"evals/suites/live_redmi_note_10_pro_search_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:0b008b3ba621be0d0067bebe"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d105ee1035b53b682c2db2f2","artifact_kind":"config","content_hash":"c45c8f46539be35061874a868689a2366a84457862a2830b93ffb014bcc67ea2","id":"aoa:aoa-4pda-connector:artifact:93eaf993601909f29b389f1a","lineage_path":"evals/suites/live_starter_search_quality.json","mime":"application/json","path":"evals/suites/live_starter_search_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8d6e8e37424476cd3c051a55"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:2d5ffcec31fd2aec417307d7","artifact_kind":"config","content_hash":"4317b83867c36bfca85b19135b090fad3699231fff9bbddd2ceca82282080736","id":"aoa:aoa-4pda-connector:artifact:52d77785f87754aca3686351","lineage_path":"evals/suites/live_xiaomi_13t_answer_quality.json","mime":"application/json","path":"evals/suites/live_xiaomi_13t_answer_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:903fbd872b4c2afb6dc4c909"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9a132ebc039cb60c54191b40","artifact_kind":"config","content_hash":"4b3788a8a697084c5bdcacd066d27ec36d7ed131e47b5ef59ea552248cb7e315","id":"aoa:aoa-4pda-connector:artifact:507a67581821d75bd960e552","lineage_path":"evals/suites/live_xiaomi_13t_graph_query_quality.json","mime":"application/json","path":"evals/suites/live_xiaomi_13t_graph_query_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:993d9a0454f78c7244f0d5c6"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:a50a20ff816d192d2e48e891","artifact_kind":"config","content_hash":"6315cddb370975241c9ffab7e8cd9298394af845613f9a8d9df4ef6806bc1361","id":"aoa:aoa-4pda-connector:artifact:baa7113e2a860cc247ffd527","lineage_path":"evals/suites/live_xiaomi_13t_hybrid_query_quality.json","mime":"application/json","path":"evals/suites/live_xiaomi_13t_hybrid_query_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:cfe1914ff66f7bb3f789d016"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c0e9d6ed71ed54892c5c7c97","artifact_kind":"config","content_hash":"5ab0f64ccea8e453036d24c355298cfb73657140ae6dd40c77c704636c37bc1a","id":"aoa:aoa-4pda-connector:artifact:6e5ffdebcf9924afd019b721","lineage_path":"evals/suites/live_xiaomi_13t_ranking_pressure.json","mime":"application/json","path":"evals/suites/live_xiaomi_13t_ranking_pressure.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1dfc22a78dd93fafd7da7e31"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8af85b378b03bab6e8b8932a","artifact_kind":"config","content_hash":"ff5aca91a2ff1b4ba714d984d8b639623ef50db9dbdcc73bbb859ee026e75b6f","id":"aoa:aoa-4pda-connector:artifact:fdacf3bfbc416793bf3d45cd","lineage_path":"evals/suites/live_xiaomi_13t_search_quality.json","mime":"application/json","path":"evals/suites/live_xiaomi_13t_search_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:32c651e3f860637b5ccba273"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:245f62e7cc9f3a8b1eee0f5c","artifact_kind":"config","content_hash":"0956d7c5fad215eb2fb65f7d81cbacb5c4407041d1f20d3b58818f8f41896cc6","id":"aoa:aoa-4pda-connector:artifact:9f7439b3aab0cc02cd8e95fe","lineage_path":"evals/suites/starter_answer_packets.json","mime":"application/json","path":"evals/suites/starter_answer_packets.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:df5a7a338736fd59c1b03f15"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:1a06921c2cf4567d3d51bf67","artifact_kind":"config","content_hash":"b80ae26f2e59815f822a91dd1a05dccd55693d910e9e57cc6d743284a1561228","id":"aoa:aoa-4pda-connector:artifact:0406674f038a13735575f3e1","lineage_path":"evals/suites/starter_claim_answer_packets.json","mime":"application/json","path":"evals/suites/starter_claim_answer_packets.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d9c5434479794596ab2d3d30"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:638d2a35b4131c072fbc1cda","artifact_kind":"config","content_hash":"bf6740312d388211bcd467decb4aeb6a674b855c0fef591dbc0fffe5fe0a53e8","id":"aoa:aoa-4pda-connector:artifact:3880ed3d49acdbd8c555ca89","lineage_path":"evals/suites/starter_claim_conflict_relations.json","mime":"application/json","path":"evals/suites/starter_claim_conflict_relations.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4e450e0175a03d4a98be55ca"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:391981606d729c2aec36bff1","artifact_kind":"config","content_hash":"9f8171c0f96dd83812f00b9c7c33da9d77ba6bd7511bfda05854175980d18c70","id":"aoa:aoa-4pda-connector:artifact:34ac318fba077f806ac47d45","lineage_path":"evals/suites/starter_graph_query_packets.json","mime":"application/json","path":"evals/suites/starter_graph_query_packets.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4d7967679b70c0cdbc6d4cb3"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d7a401f336a16a5c422906f2","artifact_kind":"config","content_hash":"dad3e79687f3fa0ed400bc417d8b9fd7c12d78969c95a21c9a385265cc763a70","id":"aoa:aoa-4pda-connector:artifact:6a84ce747ca1b35318875512","lineage_path":"evals/suites/starter_graph_relations.json","mime":"application/json","path":"evals/suites/starter_graph_relations.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:24a09e90b1d9631744a251a3"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:7c50ddfa06bf995729ced416","artifact_kind":"config","content_hash":"770095bcd742f7e76b2c1cca8138c0ed6f0327ec13ea2edbfdd24a050a7d4853","id":"aoa:aoa-4pda-connector:artifact:d1ff2f9e712870a6c24cbe88","lineage_path":"evals/suites/starter_hybrid_query_packets.json","mime":"application/json","path":"evals/suites/starter_hybrid_query_packets.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:770ac9e21c04758294e203f5"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e5ca0422997e12034330d0d0","artifact_kind":"config","content_hash":"01866e2206174485666ba84202fec3a3a5dea2f386c9891a324d957c5bda2df7","id":"aoa:aoa-4pda-connector:artifact:df59095a7b246999c23c2b75","lineage_path":"evals/suites/starter_search_quality.json","mime":"application/json","path":"evals/suites/starter_search_quality.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:5281548a82b1c6804ff78a4a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b004bd1094436ffd028c8d3b","artifact_kind":"config","content_hash":"198cecf5076a1c302178f2fdbf17805b4fe98e202a744017939831b51156d906","id":"aoa:aoa-4pda-connector:artifact:51c2bdabef1f91a46959328e","lineage_path":"evals/suites/xiaomi_13t_answer_packets.json","mime":"application/json","path":"evals/suites/xiaomi_13t_answer_packets.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:835090c2c5cb3ac3adff1d44"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:2c38ff120d171a64300d14d4","artifact_kind":"config","content_hash":"d93ef9913c9e2e6180645b477fe909522b93e71d7b2b3f10b9c0f69d987770d6","id":"aoa:aoa-4pda-connector:artifact:0103b782e5626f59db7ae45d","lineage_path":"evals/suites/xiaomi_13t_graph_relations.json","mime":"application/json","path":"evals/suites/xiaomi_13t_graph_relations.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:fbafb4ac7c5db94af9307f80"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:02bc4514a4cea858ef40a086","artifact_kind":"generated_readmodel","content_hash":"5570421da29947bcbc02ee594e5a4fd30d97aceb982fa274e39eae5635b854dc","id":"aoa:aoa-4pda-connector:artifact:f6de70cde96cff6da1a9dc46","lineage_path":"generated/connector_registry.min.json","mime":"application/json","path":"generated/connector_registry.min.json","provenance_ref":"deterministic","surface_state":"generated_readmodel","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:099362a50749dc29ee872524"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8709d82b062c4ac6ea3ef48a","artifact_kind":"document","content_hash":"a724146b48716a52586184a427ab2b9140bc5297a28a60dd9c757572f884f48a","id":"aoa:aoa-4pda-connector:artifact:f80d68b85bc445f7b8bc4a73","lineage_path":"kag/AGENTS.md","mime":"text/markdown","path":"kag/AGENTS.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f2fb2e4176ec488665ed1275"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ef3118d435004a57cd43ea06","artifact_kind":"document","content_hash":"18bf584b8c03b6b7609a14c4d6ed84a898b942b37787721f628c09746c6b8756","id":"aoa:aoa-4pda-connector:artifact:213631cc86c1c0c7bdb579f5","lineage_path":"kag/README.md","mime":"text/markdown","path":"kag/README.md","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:dd6802c3a2e1971827f86c43"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d19a3aad323d95063df940b7","artifact_kind":"config","content_hash":"b413a3e35fb0b175c6ef7e72824f64b21d9d8f978c780a955180d32a8f162725","id":"aoa:aoa-4pda-connector:artifact:8c12cb4c115b45c72311b213","lineage_path":"kag/edges/source_routes_to_storage_boundary.json","mime":"application/json","path":"kag/edges/source_routes_to_storage_boundary.json","provenance_ref":"deterministic","surface_state":"generated_readmodel","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:4377090f7e0773a6c4658683"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f30d34fd0e9e3e4556c567a5","artifact_kind":"index","content_hash":"18cf5a50794e655e3997b2dba61335ce8b6e3038a7b8c2a709e9118cdf9b3f53","id":"aoa:aoa-4pda-connector:artifact:1416e51205dd8339ed9f4b66","lineage_path":"kag/indexes/source_inventory.json","mime":"application/json","path":"kag/indexes/source_inventory.json","provenance_ref":"deterministic","surface_state":"generated_readmodel","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:6006985f1246662df1135f5f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:63e7793daa4ee5bda755e27c","artifact_kind":"config","content_hash":"5756865a1176d3c00adb70a732b21a1cb01d8c3e1a75d4e45911b65103418fb7","id":"aoa:aoa-4pda-connector:artifact:0d25d90d0812762fd5378e2f","lineage_path":"kag/manifest.json","mime":"application/json","path":"kag/manifest.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:743e59d68d140717b0465717"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5089fd96a239b7b7a3aa2cca","artifact_kind":"config","content_hash":"6cb1effc59940119f6014c75053f2c8f06ee91f6417dc55f11b966991d2464be","id":"aoa:aoa-4pda-connector:artifact:a87a1f114ca78cbfb08f3359","lineage_path":"kag/nodes/source_home.json","mime":"application/json","path":"kag/nodes/source_home.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1b2ed63fef60f84b1c5bc526"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:65a400c899919ca456af159c","artifact_kind":"config","content_hash":"b5b58bc5829519b79f200369499c499b7245e89c9f9fe474a676414bc40001a7","id":"aoa:aoa-4pda-connector:artifact:45dfb2e4b04a03b42e00e4c7","lineage_path":"kag/nodes/storage_boundary.json","mime":"application/json","path":"kag/nodes/storage_boundary.json","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3bcefceb439161185199c4fd"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:e089fc60b5cfcdf865e663da","artifact_kind":"projection","content_hash":"7b25a8da73717f2e190b6c61a8b6a614c05e465293a923635db89b8c5b69e0ab","id":"aoa:aoa-4pda-connector:artifact:1a2a306538ed63040bdeab56","lineage_path":"kag/projections/source_return.json","mime":"application/json","path":"kag/projections/source_return.json","provenance_ref":"deterministic","surface_state":"generated_readmodel","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:cf3ffae571c193f8f2f7320d"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6723d207654f57f82b4c70fc","artifact_kind":"receipt","content_hash":"0658cebf3df9ec3f0314876424d865567ab49420c75bb14fd83d02e199f9fea9","id":"aoa:aoa-4pda-connector:artifact:8e616be0cdf2b775b3d0fcfd","lineage_path":"kag/receipts/validation_receipt.json","mime":"application/json","path":"kag/receipts/validation_receipt.json","provenance_ref":"deterministic","surface_state":"receipt","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:7d9cae05f3cf9e8b1d9da994"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6965b734adff9601aecc01b0","artifact_kind":"manifest","content_hash":"cb069715e0fc5783aaab38655047b27b38ff59783e3f12de222d20aafb6e491d","id":"aoa:aoa-4pda-connector:artifact:50c86b7ed8ac2cf95bd48334","lineage_path":"pyproject.toml","mime":"application/toml","path":"pyproject.toml","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:173e4496bd71ae5491434af3"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:225a443cdc4554beba49b277","artifact_kind":"validator","content_hash":"db0f43cd325d840828a001ca50da48774587f6f8254dda6b1b4cbce5642c1250","id":"aoa:aoa-4pda-connector:artifact:de39a4722143afd5fd9d1e43","lineage_path":"scripts/validate_connector.py","mime":"text/x-python","path":"scripts/validate_connector.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c5100ba815def21e63d9af37"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:226f770838b9c17bc7d2e5db","artifact_kind":"script","content_hash":"b3bff626f272db63479d20eede9f3be805a286ece7d6ff3ba9ceab1639e16fb3","id":"aoa:aoa-4pda-connector:artifact:7a0ab3925db6f540c1885fb7","lineage_path":"scripts/verify_agent_install_route.py","mime":"text/x-python","path":"scripts/verify_agent_install_route.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b0a58b51b6a526f1d229f2ab"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:f3b5b0abb1736c2214904cd3","artifact_kind":"source_code","content_hash":"c2fb9e0f72b2c5ad169ec739f5402eefbf9d6b23241f6b34bb620f0cd168d92a","id":"aoa:aoa-4pda-connector:artifact:62c64fcf0ace5208ba5f4e6a","lineage_path":"src/aoa_4pda_connector/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9d8ed40310f9393db3ed224d"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d63631a912163e0f4aad81c7","artifact_kind":"source_code","content_hash":"2249e09f54c1d618bc9c063d72fd756ec44e5b3b7d0e61834dd360c28a4095b8","id":"aoa:aoa-4pda-connector:artifact:17ab4be858cdcfe85c361351","lineage_path":"src/aoa_4pda_connector/answer/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/answer/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b7e8f6db2af2a508c1da3415"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:62ecea2b21acc46dfe26c7b4","artifact_kind":"source_code","content_hash":"4839117634dda5aeee7d7c8b7c6a60bc38cc9eeac4230fa6f04838c7c0dfc7df","id":"aoa:aoa-4pda-connector:artifact:85724410a654b11fb78bc7c3","lineage_path":"src/aoa_4pda_connector/chunk/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/chunk/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:25922d29ed776387e9ce45a5"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:8494f486f6b87cbbec1de0d7","artifact_kind":"source_code","content_hash":"942c39847dd3af06fdaef1d3bf8c3eb2179593e8128c83da52be5ef823b7e12e","id":"aoa:aoa-4pda-connector:artifact:da8e9f6a23533d19c224f1a1","lineage_path":"src/aoa_4pda_connector/claims/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/claims/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:791ffb5553ee696c8ddbed48"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:91e5f39d8029a344fdcf63ad","artifact_kind":"source_code","content_hash":"3326fec33e70ce3afc5f731c8ae1ec1077ddc1a392ecab1eaf92ca626cce6348","id":"aoa:aoa-4pda-connector:artifact:1193cea4c906e6ed8c2db62d","lineage_path":"src/aoa_4pda_connector/cli.py","mime":"text/x-python","path":"src/aoa_4pda_connector/cli.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:2a68559abcf7d5c8fe3103be"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:927dcc1a352eff6263b9083e","artifact_kind":"source_code","content_hash":"98906e748d5377487a651e561502cf8a51b033bdf9c7646fd89e379140544d1a","id":"aoa:aoa-4pda-connector:artifact:e79dbc55f9b3fae8780f7d0b","lineage_path":"src/aoa_4pda_connector/config.py","mime":"text/x-python","path":"src/aoa_4pda_connector/config.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:91195c7aba265509fb6e8ae6"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ae3e0e12a40cfa4d8daa622b","artifact_kind":"source_code","content_hash":"e1c58d0215727457595f2d5cd5ec5d3b0084d4c44b90062dacfe284635695ab3","id":"aoa:aoa-4pda-connector:artifact:400d94ac9634f8fd4d17ae98","lineage_path":"src/aoa_4pda_connector/coverage/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/coverage/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:64e0f7d7f4264a3bdf862067"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:401028c5ccb0a08337de061b","artifact_kind":"source_code","content_hash":"029c5826f698c0e089662453e4d0aa997bcd5d52314690612765289c6ed7cbc4","id":"aoa:aoa-4pda-connector:artifact:85b0d909e8a6f7897111365d","lineage_path":"src/aoa_4pda_connector/discovery/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/discovery/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1fac09dbfa670bbb52f5d0eb"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:53d64eb2137a89ad8149a3c2","artifact_kind":"source_code","content_hash":"1f5a9bee930cb3799009445dd46b0b42aae159d6a826e14ebe2aa74f5e3a3657","id":"aoa:aoa-4pda-connector:artifact:5c9335d99328b21c92f6647b","lineage_path":"src/aoa_4pda_connector/evaluation/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/evaluation/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:bfee4295bcd267ba0aa9d977"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ee5ae0b4361bada244ce8b44","artifact_kind":"source_code","content_hash":"39bacfd9d53fe5f41bcc70ee3139065a5a474ff02f6b9ef01baba456117fd760","id":"aoa:aoa-4pda-connector:artifact:e2107c14440bc5ff56b6929f","lineage_path":"src/aoa_4pda_connector/export/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/export/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:f309aee109ea1f6cbe5ed650"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:fce72f21f63c2f2a862e575f","artifact_kind":"source_code","content_hash":"a18523d597f03e5475c0fb0900d50740f3e307adef32b076d0b4a5e1bd676f9c","id":"aoa:aoa-4pda-connector:artifact:8c85022d510e3c7e24d0a0ef","lineage_path":"src/aoa_4pda_connector/fetch/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/fetch/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:c7a7e52cb699047dd0f1a09f"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:d2b6fef33d3399677c66ff21","artifact_kind":"source_code","content_hash":"8bd1b8866046a2ca0d70a026447d2e1e663c9d07801ed74738b87a510219556f","id":"aoa:aoa-4pda-connector:artifact:2f690541c6c92033c6baa659","lineage_path":"src/aoa_4pda_connector/graph/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/graph/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:210908755dbcf740049a3bf2"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:59ac9af523ee80fac65e5a26","artifact_kind":"source_code","content_hash":"943c0b16687570603d0ddf97aafa5ee457b925b846d16312414ff3de06a3d684","id":"aoa:aoa-4pda-connector:artifact:504c64d1554641350b192575","lineage_path":"src/aoa_4pda_connector/index/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/index/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a51a9224771373ab9001bd10"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:aa29dcf9c72885b5d69172be","artifact_kind":"source_code","content_hash":"455c089ffc271180c81e03eb01a25a56da3f1a6710d93d80059b506697542b36","id":"aoa:aoa-4pda-connector:artifact:889acf876bf26c0f43737124","lineage_path":"src/aoa_4pda_connector/normalize/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/normalize/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:452b2ec13c8d17f6640c9b05"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:a5fbf5b73f592d14e3bd2212","artifact_kind":"source_code","content_hash":"0fad6df9ec2a0cc08657d385947e706e9d0f77bf8bfe794bee9b886140bbe592","id":"aoa:aoa-4pda-connector:artifact:a765af4bdcf49a9e558652b5","lineage_path":"src/aoa_4pda_connector/parse/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/parse/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9c81165d7059bca8a970105e"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:cfa8ce6f5e131b1a00ffc7b6","artifact_kind":"source_code","content_hash":"d9db035a535f48602dd9dbf9f5791efeb849682cd67732b4178c0d7afb71c183","id":"aoa:aoa-4pda-connector:artifact:9a1cf35016f3256c65a95ecd","lineage_path":"src/aoa_4pda_connector/policy/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/policy/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:462df68f86ca42e46bd5e2f0"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:25f545b4538ac33ec5d5422c","artifact_kind":"source_code","content_hash":"cedd13e136be28d0e1f5af663e0ba6e68113fb9e6dcb8763c643e1f4d0d205fc","id":"aoa:aoa-4pda-connector:artifact:d33255b0acf22491430996ec","lineage_path":"src/aoa_4pda_connector/policy/rules.py","mime":"text/x-python","path":"src/aoa_4pda_connector/policy/rules.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9774b0af00ad0caa35688018"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:353589be0f38a8adbd1bcec4","artifact_kind":"source_code","content_hash":"28adff8368d7b9446fec6303adf1922d6e2d9d21ac77aac39678b93174c5d070","id":"aoa:aoa-4pda-connector:artifact:aae0912091c3ae5bb61575ee","lineage_path":"src/aoa_4pda_connector/query/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/query/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:1071df77fdff0f9ba46be424"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:26f1c0d0ef2469d816315fdd","artifact_kind":"source_code","content_hash":"a3a730cef02abf9b40ea84daf23de0ffa1e7f4258eaaee52a9b380423cf25b75","id":"aoa:aoa-4pda-connector:artifact:c91385917104df37e98e45f0","lineage_path":"src/aoa_4pda_connector/readiness/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/readiness/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:b2a8da1acf4ba8d71aca075a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:ee507e5425e30c048ace58fd","artifact_kind":"source_code","content_hash":"5826896756320e316f3dae9af6b07154acbf61365375cb333a4f4b22035e6bf7","id":"aoa:aoa-4pda-connector:artifact:91e151cdbc76f944a93aac3b","lineage_path":"src/aoa_4pda_connector/refresh/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/refresh/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:439cfb272f8c2f9aa055482a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:1521243936fb55d6c431ceca","artifact_kind":"source_code","content_hash":"2a1a3134fb99cb5f9f2f32b9824947709194272c12ce3d12cf97e1ae270a065a","id":"aoa:aoa-4pda-connector:artifact:249acde47aaa30844a632bde","lineage_path":"src/aoa_4pda_connector/serve/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/serve/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:5d53d95c412fa451409c1505"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:74d8670878f45cf7d615ce8e","artifact_kind":"source_code","content_hash":"4bcc9ff18cc7b137707ab92c4412b837a4f16a3455347084ff1c8384b0c6aafc","id":"aoa:aoa-4pda-connector:artifact:598401642076fb59fb86d8d4","lineage_path":"src/aoa_4pda_connector/sources/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/sources/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:765345f25c173d5b86bb3852"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:a778114eec2189b9ac29dffd","artifact_kind":"source_code","content_hash":"727d2d68472b95eb23e4cbf4d858831f9495898fb24b5ebb7475a1de0f9f0911","id":"aoa:aoa-4pda-connector:artifact:fcd9a33223246250c504ff49","lineage_path":"src/aoa_4pda_connector/storage/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/storage/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:a3a50602082708d9d4089b05"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:22dfb52fe9b6abd5f2ef980d","artifact_kind":"source_code","content_hash":"9a57a563818ddf85de7e6444fdf03acbd7396933eae2d22fccc95b6c0871a9c6","id":"aoa:aoa-4pda-connector:artifact:f3c66d7959b5e87411519618","lineage_path":"src/aoa_4pda_connector/vector/__init__.py","mime":"text/x-python","path":"src/aoa_4pda_connector/vector/__init__.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9d5e9f64fcd9cf3e8b3c5610"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:b67539367a46f8eeae3fecd8","artifact_kind":"test","content_hash":"75bea16c5ebf4acb942d80265d541d7aa8ca022b1714796d4f5a75e80b6f6028","id":"aoa:aoa-4pda-connector:artifact:b979c19001b761716803551f","lineage_path":"tests/contract/test_fixtures_and_cli.py","mime":"text/x-python","path":"tests/contract/test_fixtures_and_cli.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:3ecf6d468b294ce161105c61"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:c6314829171ca9ac02e00a29","artifact_kind":"test","content_hash":"ebe3844598a89bcf34ddf28cb2ffaf7c4858018981a30610391e449290fac864","id":"aoa:aoa-4pda-connector:artifact:6c82b254b214761780a653d8","lineage_path":"tests/integration/test_agent_install_verifier.py","mime":"text/x-python","path":"tests/integration/test_agent_install_verifier.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e9ecb6977c0f1b77114289b4"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5de6a27f499a57253b6f206a","artifact_kind":"test","content_hash":"60842a10074160803782d2f424c89c0bcae40f3c47bd53b5eb1f61d3dd9c5f67","id":"aoa:aoa-4pda-connector:artifact:4ec0e84ff6bad800ce7cb6a3","lineage_path":"tests/integration/test_validator.py","mime":"text/x-python","path":"tests/integration/test_validator.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d33860f58b40b82f10dcda0a"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:53d9fb6f4a8e34725f035927","artifact_kind":"test","content_hash":"daef0bf1213854748c411209aebd35e6b1d2ae0f8141817e139a38ea61b121fa","id":"aoa:aoa-4pda-connector:artifact:c0a7bd3535589e4bf9ef98cd","lineage_path":"tests/unit/test_answer_packet.py","mime":"text/x-python","path":"tests/unit/test_answer_packet.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:51e2301bb46124cd2c1f2032"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9c6b2c7e3cebf5840cd41d5b","artifact_kind":"test","content_hash":"2dee139a060205686da22dd24cb0123f9ba32fb2606a15d954a1accf6a6b9af7","id":"aoa:aoa-4pda-connector:artifact:f17d3e03e16cfc6caa2f1b1b","lineage_path":"tests/unit/test_chunking.py","mime":"text/x-python","path":"tests/unit/test_chunking.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:22b7560097e318223221427c"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:21e6f30073d16cb09d4856ff","artifact_kind":"test","content_hash":"1c6bb45720c8b7b69bd6ddc8f56d1242005b039c6618ff5fd5684fe201654838","id":"aoa:aoa-4pda-connector:artifact:04c062246255c282a7197f2d","lineage_path":"tests/unit/test_crawl_pagination.py","mime":"text/x-python","path":"tests/unit/test_crawl_pagination.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:d7ef6cd063668ad196e208ec"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:9699ab17b396538347bf7e0f","artifact_kind":"test","content_hash":"30641120692720e8fc5b1d17c4530a23da728290d1f592b42e54829b282fa47c","id":"aoa:aoa-4pda-connector:artifact:32af1f48825cf8fbd25e72c0","lineage_path":"tests/unit/test_entities_and_graph.py","mime":"text/x-python","path":"tests/unit/test_entities_and_graph.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:38d70fd1a9cc35d9a3eae53d"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:5c0512e0a0314267d474b3da","artifact_kind":"test","content_hash":"71c9a6ad5a22c691ad8512a2025d97756a8e640931e1caa92e5186cc9715d306","id":"aoa:aoa-4pda-connector:artifact:186db5898e6e089c6508b9f3","lineage_path":"tests/unit/test_graph_query_packet.py","mime":"text/x-python","path":"tests/unit/test_graph_query_packet.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:9036c2c98b01df1de34e885c"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:01d9679358b8cac71677c20a","artifact_kind":"test","content_hash":"3f6d4344f5d9572659fc5a31cf93cdbc3ccc36cad43e60f5931bf2b2c5883b62","id":"aoa:aoa-4pda-connector:artifact:7cc537e18a0f36df5247654b","lineage_path":"tests/unit/test_parse_and_index.py","mime":"text/x-python","path":"tests/unit/test_parse_and_index.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:ebe83b39587ef4e2c94fbca7"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6a0ad64d3ef0246189de79fa","artifact_kind":"test","content_hash":"26d06f576e1a75110d88128c269168258a4fd6568b2ddc304d58a8c731d7456c","id":"aoa:aoa-4pda-connector:artifact:01fe2bd0a0cc898593eda798","lineage_path":"tests/unit/test_policy_rules.py","mime":"text/x-python","path":"tests/unit/test_policy_rules.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:8c6eec33852ba012235992a8"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:6c50511d29abef5a6ee963bf","artifact_kind":"test","content_hash":"eead43ff69f93389f672104ad72cede984032bce2bda189593fc8905526aba2b","id":"aoa:aoa-4pda-connector:artifact:0eeacc05ecdbccd9577b6abc","lineage_path":"tests/unit/test_search_eval.py","mime":"text/x-python","path":"tests/unit/test_search_eval.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:e0cd9e4ae93acc123df97ee5"},
+    {"anchor_id":"aoa:aoa-4pda-connector:anchor:7c4e2040b04eadcdb455d688","artifact_kind":"test","content_hash":"f2e4652ab7d0e258dc149c16a0d6350fde066ba19545f83b3ffd5c9158b497f9","id":"aoa:aoa-4pda-connector:artifact:032cbb9aede8e510050b1a32","lineage_path":"tests/unit/test_validate_connector_policy.py","mime":"text/x-python","path":"tests/unit/test_validate_connector_policy.py","provenance_ref":"deterministic","surface_state":"authored_source","temporal_ref":"current","trust_ref":"deterministic","version_id":"aoa:aoa-4pda-connector:artifact-version:67071c2ca234075856df1844"}
   ],
   "index_identity": {
     "artifact_kind": "repository_artifact_index",
-    "content_digest": "5c17ec92c4b18f2e4861b56f7c684f154387e4b2181a1bf5852e0b0d43bc8b2f",
+    "content_digest": "0df632a2530f82889ef031175fd2c1ef4a0f474f77385db4e27c11551cbb5ed9",
     "index_kind": "artifact",
     "local_id": "index:repo-local:artifacts",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-repository-index.schema.json"
   },
+  "profiles": {
+    "extractors": {
+      "aoa-repo-local-kag@2": {
+        "name": "aoa-repo-local-kag",
+        "version": "2"
+      }
+    },
+    "parsers": {},
+    "provenance": {
+      "declared": {
+        "extractor_ref": "aoa-repo-local-kag@2",
+        "mode": "declared"
+      },
+      "deterministic": {
+        "extractor_ref": "aoa-repo-local-kag@2",
+        "mode": "deterministic"
+      },
+      "inferred": {
+        "extractor_ref": "aoa-repo-local-kag@2",
+        "mode": "inferred"
+      },
+      "observed": {
+        "extractor_ref": "aoa-repo-local-kag@2",
+        "mode": "observed"
+      }
+    },
+    "temporal": {
+      "current": {
+        "state": "current",
+        "valid_from": "",
+        "valid_to": ""
+      },
+      "historical": {
+        "state": "historical",
+        "valid_from": "",
+        "valid_to": ""
+      }
+    },
+    "trust": {
+      "declared": {
+        "class": "declared",
+        "confidence": 0.75
+      },
+      "deterministic": {
+        "class": "deterministic",
+        "confidence": 1.0
+      },
+      "inferred": {
+        "class": "inferred",
+        "confidence": 0.5
+      },
+      "observed": {
+        "class": "observed",
+        "confidence": 1.0
+      }
+    }
+  },
   "registry_output": {
-    "consumer": "aoa-kag-mcp",
+    "consumer": "aoa-kag",
     "resource_shape": "repo-local-artifact-index",
     "stable_fields": [
       "id",
+      "version_id",
       "artifact_kind",
-      "source_record_id",
+      "anchor_id",
       "path",
-      "content_hash"
+      "content_hash",
+      "provenance_ref",
+      "temporal_ref",
+      "trust_ref"
     ]
   },
   "repo": {
     "git_ref": "git-index-source-tree",
     "name": "aoa-4pda-connector",
+    "namespace": "aoa:aoa-4pda-connector",
     "owner_type": "connector",
     "root": "."
   },
-  "schema_version": "aoa-repo-local-kag-repository-index-v1",
+  "schema_version": "aoa-repo-local-kag-repository-index-v2",
   "source_index": {
-    "content_digest": "dcb61d5da15e13409784e63f13ffe18e126751679bcdbbca4608525b7b5e6e08",
+    "content_digest": "bab8de19473c5081b8281402d5e1afc9a3e88aca3687762e5eeb075e8daa9787",
     "local_id": "index:repo-local:source-surfaces",
     "path": "kag/indexes/source_surface_index.json"
   },
