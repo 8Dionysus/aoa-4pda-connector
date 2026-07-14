@@ -6,24 +6,13 @@ means the public method, storage route, bounded corpus pipeline, local
 search/graph/answer path, and quality gates are reproducible enough for an
 agent or operator to install and extend the connector safely.
 
-## Audit Command
+## Executable Surface
 
-Run the local readiness audit:
-
-```bash
-aoa-4pda ready
-```
-
-The command does not touch the network, crawl, rebuild artifacts, or write
-generated data. It reads repository surfaces and configured storage receipts,
-then reports each criterion as `achieved`, `partial`, or `missing`.
-
-Use strict mode when a workflow must fail until the maturity target is fully
-met:
-
-```bash
-aoa-4pda ready --strict
-```
+The CLI readiness action owns exact invocation and strict-mode syntax. It does
+not touch the network, crawl, rebuild artifacts, or write generated data. It
+reads repository surfaces and configured storage receipts, then reports each
+criterion as `achieved`, `partial`, or `missing`. `AGENTS.md` owns the short
+operator route and CI owns the required automated invocation.
 
 ## Criteria
 

@@ -16,13 +16,8 @@ accepted eval verdicts belong to `aoa-evals`.
 ## Decision
 
 Activate `evals/` as a repo-local eval port and add a starter search quality
-suite:
-
-```bash
-aoa-4pda eval search-quality
-```
-
-The command reads `evals/suites/starter_search_quality.json`, builds a
+suite whose execution is owned by the CLI. The action reads
+`evals/suites/starter_search_quality.json`, builds a
 temporary chunk index from public-safe synthetic normalized fixtures, checks
 expected top posts/chunks, source refs, exact terms, query report unit, and the
 internal-search boundary, then deletes the temporary artifacts.

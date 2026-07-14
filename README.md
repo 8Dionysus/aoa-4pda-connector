@@ -23,6 +23,7 @@ databases.
 | Schemas | `connector/schemas/` |
 | Synthetic fixtures | `connector/fixtures/` |
 | Local eval port | `evals/PORT.yaml`, `evals/suites/` |
+| Local stats port | `stats/port.manifest.json`, `stats/packets/` |
 | Starter profiles and seeds | `connector/profiles/`, `connector/seeds/` |
 | Install and proof routes | `docs/INSTALL.md`, `docs/AGENT_INSTALL_ROUTE.md`, `docs/STARTER_PROOF.md` |
 | Profile discovery, seed review, coverage, and refresh audits | `docs/DISCOVERY.md`, `docs/SEED_REVIEW.md`, `docs/COVERAGE.md`, `docs/REFRESH.md` |
@@ -30,47 +31,22 @@ databases.
 | Connector-family claim doctrine | `docs/CONNECTOR_FAMILY_CLAIM_CONTRACT.md` |
 | Validation | `scripts/validate_connector.py`, `tests/` |
 
-## Safe Quickstart
+## Operator Route
 
-```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install -e ".[dev]"
-python scripts/verify_agent_install_route.py
-python scripts/validate_connector.py
-python -m pytest -q
-aoa-4pda doctor
-aoa-4pda storage status
-aoa-4pda policy check
-aoa-4pda profile inspect xiaomi-13t
-aoa-4pda profile inspect redmi-note-10-pro
-aoa-4pda ready
-aoa-4pda discovery audit xiaomi-13t
-aoa-4pda discovery review xiaomi-13t
-aoa-4pda coverage audit xiaomi-13t
-aoa-4pda refresh audit xiaomi-13t
-aoa-4pda proof starter
-aoa-4pda materialize fixture
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval hybrid-query-packets
-aoa-4pda eval answer-packets
-```
+`AGENTS.md` owns the short operator route. `pyproject.toml` exposes the
+`aoa-4pda` CLI, `scripts/verify_agent_install_route.py` owns the executable
+fresh-copy sequence, `scripts/validate_connector.py` owns repository
+validation, and `.github/workflows/validate.yml` owns the CI sequence. The
+install and operations documents explain the posture and route to those
+surfaces instead of duplicating their command catalogs.
 
-The default skeleton does not crawl 4PDA. Crawling requires explicit operator
-intent and a bounded profile. If storage roots are not configured, the CLI uses
-the ignored repo-local `.connector-state/` root for small starter runs.
+The default connector does not crawl 4PDA. Network work requires explicit
+operator intent and a bounded profile. Without configured external roots, the
+CLI uses ignored repo-local `.connector-state/` storage for small starter runs.
 
 ## Storage Roots
 
-By default, generated connector state goes to ignored repo-local storage:
-
-```bash
-aoa-4pda init --apply
-```
-
-This creates or confirms:
+By default, generated connector state goes to the ignored repo-local scaffold:
 
 ```text
 .connector-state/data
@@ -78,34 +54,17 @@ This creates or confirms:
 .connector-state/artifacts
 ```
 
-For larger runs, override the roots with external storage:
-
-```bash
-export CONNECTOR_FAMILY_ROOT=/path/to/connector-databases
-export CONNECTOR_INSTANCE_ROOT="$CONNECTOR_FAMILY_ROOT/aoa-4pda-connector"
-export CONNECTOR_DATA_ROOT="$CONNECTOR_INSTANCE_ROOT/data"
-export CONNECTOR_CACHE_ROOT="$CONNECTOR_INSTANCE_ROOT/cache"
-export CONNECTOR_ARTIFACT_ROOT="$CONNECTOR_INSTANCE_ROOT/artifacts"
-```
-
-The `.connector-state/` scaffold is tracked, but generated content inside it is
-ignored by Git.
-
-To create a tiny no-network local database for smoke testing:
-
-```bash
-aoa-4pda materialize fixture
-aoa-4pda query-hybrid "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
-```
+For larger runs, the three `CONNECTOR_*_ROOT` variables route data, cache, and
+artifacts to external storage. `connector/STORAGE_POLICY.md` owns their meaning
+and `docs/EXTERNAL_STORAGE.md` explains the portable layout. The
+`.connector-state/` scaffold is tracked, but generated content inside it is
+ignored by Git. The CLI and fresh-copy verifier own fixture materialization and
+smoke execution.
 
 ## Focused Device Route
 
-The first focused-device profile is Xiaomi 13T:
-
-```bash
-aoa-4pda profile inspect xiaomi-13t
-```
+The first focused-device profile is Xiaomi 13T. Its authored route lives in
+`connector/profiles/xiaomi-13t.yaml`.
 
 The profile uses `connector/seeds/xiaomi_13t_topics.yaml` and starts from
 public seed windows for discussion, firmware, battery/runtime issues, and
@@ -133,11 +92,7 @@ top-N recall, while graph-query and answer gates own relation-aware top ranking
 for hard root/recovery questions.
 
 The second representative focused-device profile is prepared for Redmi Note
-10 Pro:
-
-```bash
-aoa-4pda profile inspect redmi-note-10-pro
-```
+10 Pro in `connector/profiles/redmi-note-10-pro.yaml`.
 
 It reuses reviewed public starter-topic routes as its own bounded seed windows
 for `sweet`, `boot.img`, `recovery.img`, Magisk, TWRP, and MIUI retrieval
@@ -224,36 +179,23 @@ are intentionally ignored local state, not committed repository content.
 small public-safe cases, and compact runner reports. Central proof doctrine,
 accepted verdicts, scoring authority, and regression truth stay in `aoa-evals`.
 
-Run the starter retrieval eval:
-
-```bash
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval hybrid-query-packets
-aoa-4pda eval answer-packets
-aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
-```
-
-After a bounded live starter run has been crawled, normalized, and indexed, run
-the live search-quality gate:
-
-```bash
-aoa-4pda eval live-search-quality --run latest
-```
-
-For a Xiaomi 13T run, use the focused suite:
-
-```bash
-aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
-aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_ranking_pressure.json
-aoa-4pda eval live-hybrid-query-quality --run latest --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json
-aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
-aoa-4pda eval live-answer-quality --run latest --suite evals/suites/live_xiaomi_13t_answer_quality.json
-```
+The CLI evaluation subcommands own exact invocation syntax. The fresh-copy
+verifier owns the no-network starter sequence; profile `quality_gates` map
+focused Xiaomi 13T routes to their suites; CI owns the required automated
+sequence.
 
 The no-network evals build temporary chunk/index/vector/graph artifacts from
 synthetic or sanitized fixtures and delete them after the run. The live search,
 graph-query, hybrid, and answer routes read existing configured storage
 receipts and named keyword/vector/graph artifacts; they do not crawl, commit
 generated artifacts, or create central proof verdicts.
+
+## Local Stats Route
+
+`stats/` asks one narrower question over connector-authored declarations: what
+fraction of the current deep-required Xiaomi 13T information needs have
+complete routes to existing case ids in their profile-mapped suites. The
+reference ratio is `15 / 15` at the named source revision. It is static route
+coverage, not evidence that cases ran or passed, that a corpus is current, or
+that the connector is ready. Shared grammar and cross-owner validation remain
+owned by `aoa-stats`.

@@ -57,6 +57,7 @@ the normalized post or public source URL as evidence authority.
 | Evidence packet | examples/exported packets | answer support, not site truth |
 | Graph query context | `graph_context` in packets | derived navigation over cited posts |
 | Answer packet | `aoa_4pda_answer_packet_v1` | deterministic agent handoff, not source truth |
+| Local stats packet | `stats/packets/` | derived reference view over connector-authored route declarations |
 
 Generated indexes, vectors, and graphs help navigation. They do not replace
 source URLs or policy receipts.
@@ -95,3 +96,12 @@ actually present for a named run, also without touching the network.
 `aoa-4pda refresh audit
 <profile>` audits crawl age, derived receipt ordering, and refresh need before
 an operator chooses whether to run another bounded crawl.
+
+## Stats Port
+
+`stats/` exposes a reference-only ratio over deep-required Xiaomi 13T
+information needs and their declared case routes through the profile suite map.
+The matrix and suites remain the source-authored owners; the packet stores no
+raw 4PDA content and performs no live storage read. Shared contracts and
+cross-owner validation remain in `aoa-stats`, while eval execution and verdict
+authority remain outside this repository's stats surface.

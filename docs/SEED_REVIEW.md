@@ -5,25 +5,10 @@ discovery and seed expansion. It compares current discovery candidates with a
 repo-local review manifest and reports what is accepted, rejected, deferred, or
 still unreviewed.
 
-## Command
+## Executable Surface
 
-```bash
-aoa-4pda discovery review xiaomi-13t
-```
-
-Inspect a named run:
-
-```bash
-aoa-4pda discovery review xiaomi-13t --run <run-id>
-```
-
-Use a custom manifest:
-
-```bash
-aoa-4pda discovery review xiaomi-13t --run <run-id> --manifest <path>
-```
-
-The command reads the discovery audit and the review manifest. It does not
+The CLI discovery-review action owns profile, named-run, and manifest override
+syntax. It reads the discovery audit and the review manifest. It does not
 touch the network, edit seeds, crawl, rebuild artifacts, use 4PDA internal
 search, or download attachments.
 
@@ -71,16 +56,15 @@ When `reviewed_pending_seed_update` appears:
 1. edit `connector/seeds/xiaomi_13t_topics.yaml` with only accepted public
    candidates
 2. do not crawl until the operator confirms the bounded update
-3. run `aoa-4pda crawl --profile xiaomi-13t`
-4. run normalize, build-index, build-vector, and build-graph against the same
-   run
-5. rerun `aoa-4pda discovery review xiaomi-13t`, `coverage audit`,
-   `refresh audit`, and live quality gates
+3. materialize the confirmed profile through one ordered crawl, normalize,
+   keyword-index, vector-index, and graph chain
+4. re-inspect discovery review, coverage, refresh, and live quality gates
+   against that same named run
 
 The review manifest is a seed-review surface, not a source-of-truth claim about
 4PDA and not permission to crawl.
 
-When the command reports `reviewed` but `coverage audit` reports `partial`, the
+When seed review reports `reviewed` but coverage reports `partial`, the
 next missing step is materialization of the current seed plan, not more seed
 review.
 

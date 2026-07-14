@@ -42,45 +42,13 @@ not crawl, commit generated corpora, or promote local runner output into central
 
 ## Applied Checks
 
-Local port:
+The central local-port validator reported `ok: true`; the connector validator
+reported `status: ok`; and the focused validator/install tests reported two
+passing tests. Exact historical invocations remain recoverable from the owning
+executable surfaces and GitHub run evidence rather than being duplicated in
+this report.
 
-```bash
-python /srv/AbyssOS/aoa-evals/scripts/validate_local_eval_port.py --target-root /srv/AbyssOS/connectors/aoa-4pda-connector --json
-```
-
-Observed result: `ok: true`.
-
-Connector validator:
-
-```bash
-python scripts/validate_connector.py
-```
-
-Observed result: `status: ok`.
-
-Focused tests:
-
-```bash
-python -m pytest -q tests/integration/test_validator.py tests/integration/test_agent_install_verifier.py
-```
-
-Observed result:
-
-```text
-2 passed
-```
-
-No-network local suite runners:
-
-```bash
-PYTHONPATH=src python -m aoa_4pda_connector.cli eval search-quality
-PYTHONPATH=src python -m aoa_4pda_connector.cli eval graph-relations
-PYTHONPATH=src python -m aoa_4pda_connector.cli eval graph-query-packets
-PYTHONPATH=src python -m aoa_4pda_connector.cli eval hybrid-query-packets
-PYTHONPATH=src python -m aoa_4pda_connector.cli eval answer-packets
-```
-
-Observed result:
+The no-network local suite runners reported:
 
 - `search-quality`: 4/4 cases passed, `network_touched: false`.
 - `graph-relations`: 1/1 case passed, `network_touched: false`.

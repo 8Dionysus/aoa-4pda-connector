@@ -90,7 +90,11 @@
   receipt, quality-gate, heavy-data, and runtime-contract readiness
   - local materialized Xiaomi 13T run proves the retrieval path while
     information-need coverage keeps future deep-profile expansion gaps visible
-  - current Xiaomi 13T matrix has 10/10 classes covered by local eval routes
-    before strict ready can honestly claim the reference profile is useful
+  - current Xiaomi 13T matrix has 15/15 deep-required classes covered by local
+    eval routes before strict ready can honestly claim the reference profile is
+    useful
 - `abyss-stack` MCP/runtime adapter that consumes installed connector roots
   without moving corpora into Git
+- root `stats/` port for the static Xiaomi 13T deep information-need eval-route
+  ratio, with central `aoa-stats` contract validation and no runtime/eval
+  verdict claim

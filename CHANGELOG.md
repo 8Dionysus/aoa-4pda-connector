@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added the root `stats/` port with a reference-only `15 / 15` Xiaomi 13T deep
+  information-need eval-route ratio, central contract validation, manual
+  zero/gap/unknown invariants, and no claim of eval success or connector
+  readiness.
+- Moved validation and command catalogs out of ordinary Markdown into the CLI,
+  executable validators, tests, workflow, and the appropriate `AGENTS.md`
+  route; repository validation now rejects command fences outside `AGENTS.md`.
 - Initial GitHub-publishable skeleton for `aoa-4pda-connector`.
 - Added policy, storage, schemas, fixtures, CLI stubs, validator, and tests.
 - Added BM25 + exact-token starter search with query reports, score
@@ -106,8 +113,8 @@
 - Reached local `connector-ready-v1` on the materialized Xiaomi 13T run with
   strict coverage, refresh, discovery-review, search, ranking-pressure, graph,
   answer, validator, pytest, compile, and diff checks green.
-- The information-need gate now reports the current Xiaomi 13T matrix as 10/10
-  covered on run `20260621T194521Z__crawl`, while still making future
+- At that landing, the information-need gate reported its then-current Xiaomi
+  13T matrix as 10/10 covered on run `20260621T194521Z__crawl`, while making future
   expansion gaps explicit.
 - Added a deterministic no-model vector index, `build-vector`, `query-hybrid`,
   vector receipts/schemas, and a starter hybrid query eval so keyword/vector

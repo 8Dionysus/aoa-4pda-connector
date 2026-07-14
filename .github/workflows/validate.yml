@@ -9,6 +9,8 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      AOA_STATS_REVISION: ae87240bd5f1b64769fcf39b4eae67363cee9f38
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,6 +30,25 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
+
+      - name: Fetch pinned aoa-stats contract owner
+        env:
+          AOA_STATS_ROOT: ${{ runner.temp }}/aoa-stats
+        run: |
+          git init --quiet "$AOA_STATS_ROOT"
+          git -C "$AOA_STATS_ROOT" fetch --quiet --no-tags --depth=1 https://github.com/8Dionysus/aoa-stats.git "$AOA_STATS_REVISION"
+          git -C "$AOA_STATS_ROOT" checkout --quiet --detach FETCH_HEAD
+          test "$(git -C "$AOA_STATS_ROOT" rev-parse HEAD)" = "$AOA_STATS_REVISION"
+
+      - name: Install pinned stats validation dependencies
+        env:
+          AOA_STATS_ROOT: ${{ runner.temp }}/aoa-stats
+        run: python -m pip install --disable-pip-version-check -r "$AOA_STATS_ROOT/requirements-dev.txt"
+
+      - name: Validate local stats port
+        env:
+          AOA_STATS_ROOT: ${{ runner.temp }}/aoa-stats
+        run: python scripts/validate_local_stats_port.py
 
       - name: Validate skeleton
         run: python scripts/validate_connector.py

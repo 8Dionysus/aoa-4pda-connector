@@ -1,0 +1,120 @@
+{
+  "schema_version": "aoa_stats_local_port_v1",
+  "contract_version": "1.0.0",
+  "owner_repo": "aoa-4pda-connector",
+  "status": "active",
+  "owner_boundary_ref": "AGENTS.md",
+  "central_contract_refs": [
+    "aoa-stats:stats/measurement-contract/measurement-contract.schema.json",
+    "aoa-stats:stats/measurement-contract/measurement-packet.schema.json"
+  ],
+  "evidence_posture": {
+    "live_state": "reference_only",
+    "privacy": "public",
+    "raw_content_allowed": false
+  },
+  "questions": [
+    {
+      "id": "question:xiaomi-13t-deep-information-need-eval-route-ratio",
+      "question": "What fraction of current deep-required Xiaomi 13T information needs have complete declared routes to case ids in their profile-mapped local eval suites?",
+      "consumer_refs": [
+        "stats/README.md",
+        "docs/COVERAGE.md",
+        "ROADMAP.md"
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "schema_version": "aoa_stats_measurement_contract_v1",
+      "measurement_id": "aoa-4pda-connector/xiaomi-13t-deep-information-need-eval-route-ratio",
+      "contract_version": "1.0.0",
+      "owner_repo": "aoa-4pda-connector",
+      "question_ref": "question:xiaomi-13t-deep-information-need-eval-route-ratio",
+      "semantic_class": "statistic",
+      "statistic": "ratio",
+      "object_kind": "deep-information-need",
+      "unit": {
+        "symbol": "1",
+        "quantity": "proportion"
+      },
+      "population": {
+        "subject": "current deep-required information needs in the supported Xiaomi 13T connector profile",
+        "definition": "one unique non-empty need_id marked required_for_deep_profile=true in the current aoa_4pda_information_need_matrix_v1 document whose profile_id matches the supported Xiaomi 13T profile",
+        "inclusion_rule": "every valid unique deep-required need in the complete current Xiaomi 13T information-need matrix",
+        "exclusion_rule": "non-deep needs, seed and page materialization, crawl receipts, eval execution or verdicts, source content, answer correctness, freshness, discovery state, runtime state, and central proof state",
+        "sampling": "census"
+      },
+      "window": {
+        "temporality": "instant",
+        "clock": "owner_defined"
+      },
+      "dimensions": {
+        "allowed": [],
+        "prohibited": [
+          "need_id",
+          "case_id",
+          "suite_id",
+          "topic_id",
+          "post_id",
+          "user_id"
+        ]
+      },
+      "aggregation": {
+        "operator": "none",
+        "across": []
+      },
+      "missingness": {
+        "states": [
+          "missing",
+          "unknown",
+          "stale"
+        ],
+        "zero_is_observation": true
+      },
+      "uncertainty": {
+        "required": false,
+        "methods": [
+          "not_applicable"
+        ]
+      },
+      "provenance": {
+        "evidence_refs_required": true,
+        "source_revision_required": true
+      },
+      "lifecycle": {
+        "status": "active",
+        "compatible_with": []
+      },
+      "privacy": {
+        "classification": "public",
+        "raw_content_allowed": false,
+        "sensitive_dimensions_allowed": false
+      },
+      "live_state": {
+        "capability": "reference_only"
+      },
+      "authority_ceiling": "Reports only the fraction of current valid unique deep-required Xiaomi 13T information needs whose declared local eval case ids all resolve through the current profile suite map at one source revision; it does not establish case execution or success, retrieval or answer quality, source adequacy, corpus materialization, freshness, discovery completeness, connector readiness, central proof verdicts, or runtime health."
+    }
+  ],
+  "exports": [
+    {
+      "measurement_id": "aoa-4pda-connector/xiaomi-13t-deep-information-need-eval-route-ratio",
+      "posture": "reference",
+      "packet_refs": [
+        "stats/packets/xiaomi-13t-deep-information-need-eval-route-ratio.reference.json"
+      ],
+      "evidence_refs": [
+        "connector/profiles/xiaomi-13t.yaml",
+        "connector/profiles/xiaomi_13t_information_needs.json",
+        "evals/suites/live_xiaomi_13t_search_quality.json",
+        "evals/suites/live_xiaomi_13t_ranking_pressure.json",
+        "evals/suites/live_xiaomi_13t_hybrid_query_quality.json",
+        "evals/suites/live_xiaomi_13t_graph_query_quality.json",
+        "evals/suites/live_xiaomi_13t_answer_quality.json",
+        "evals/suites/starter_claim_conflict_relations.json",
+        "evals/suites/starter_claim_answer_packets.json"
+      ]
+    }
+  ]
+}

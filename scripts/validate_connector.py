@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -19,6 +20,7 @@ REQUIRED_FILES = [
     ".env.example",
     ".gitignore",
     "scripts/verify_agent_install_route.py",
+    "scripts/validate_local_stats_port.py",
     ".connector-state/AGENTS.md",
     ".connector-state/README.md",
     "connector/SOURCE_POLICY.md",
@@ -38,6 +40,10 @@ REQUIRED_FILES = [
     "connector/manifests/artifact_classes.yaml",
     "connector/manifests/route_allowlist.yaml",
     "evals/PORT.yaml",
+    "stats/AGENTS.md",
+    "stats/README.md",
+    "stats/port.manifest.json",
+    "stats/packets/xiaomi-13t-deep-information-need-eval-route-ratio.reference.json",
     "evals/suites/starter_answer_packets.json",
     "evals/suites/starter_claim_answer_packets.json",
     "evals/suites/starter_claim_conflict_relations.json",
@@ -114,6 +120,8 @@ REQUIRED_DIRS = [
     "evals/suites",
     "evals/intake",
     "evals/reports",
+    "stats",
+    "stats/packets",
     "connector/seeds/reviews",
     "generated",
     "kag",
@@ -201,6 +209,22 @@ IGNORED_LOCAL_CACHE_DIR_NAMES = {
 ALLOWED_REPO_LOCAL_STATE_ROOT = ".connector-state"
 ALLOWED_KAG_RECORD_DIRS = {("kag", "indexes")}
 
+SHELL_FENCE_LANGUAGES = {
+    "bash",
+    "cmd",
+    "console",
+    "powershell",
+    "pwsh",
+    "sh",
+    "shell",
+    "zsh",
+}
+COMMAND_LINE = re.compile(
+    r"^\s*(?:[$>]\s*)?(?:aoa(?:-[a-z0-9-]+)?|cd|curl|docker|export|git|make|nox|pip|podman|pytest|python3?|systemctl|tox|uv|wget)\b",
+    re.IGNORECASE,
+)
+MARKDOWN_SCAN_EXCLUDES = {".deps", ".git", ".pytest_cache", "archive", "legacy"}
+
 
 def _is_allowed_kag_record_path(path: Path, rel_parts: tuple[str, ...]) -> bool:
     if len(rel_parts) == 2 and tuple(rel_parts) in ALLOWED_KAG_RECORD_DIRS:
@@ -262,6 +286,7 @@ def main() -> int:
         *repo_root.glob("evals/suites/**/*.json"),
         *repo_root.glob("generated/**/*.json"),
         *repo_root.glob("kag/**/*.json"),
+        *repo_root.glob("stats/**/*.json"),
     ]:
         _load_json(path, errors)
 
@@ -281,6 +306,7 @@ def main() -> int:
             errors.append(error)
 
     _check_text(repo_root, errors, warnings)
+    _check_markdown_command_blocks(repo_root, errors)
     _check_eval_port(repo_root, errors)
     _check_seed_review(repo_root, errors)
 
@@ -305,6 +331,53 @@ def _load_json(path: Path, errors: list[str]) -> None:
         json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         errors.append(f"invalid json {path}: {exc}")
+
+
+def _check_markdown_command_blocks(repo_root: Path, errors: list[str]) -> None:
+    for path in sorted(repo_root.rglob("*.md")):
+        rel = path.relative_to(repo_root)
+        if path.name == "AGENTS.md" or any(part in MARKDOWN_SCAN_EXCLUDES for part in rel.parts):
+            continue
+
+        lines = path.read_text(encoding="utf-8").splitlines()
+        fence_start: int | None = None
+        fence_marker = ""
+        fence_language = ""
+        fence_body: list[str] = []
+        for line_number, line in enumerate(lines, start=1):
+            stripped = line.lstrip()
+            marker = stripped[:3] if stripped.startswith(("```", "~~~")) else ""
+            if fence_start is None and marker:
+                fence_start = line_number
+                fence_marker = marker
+                fence_info = stripped[3:].strip()
+                fence_language = fence_info.split(maxsplit=1)[0].casefold() if fence_info else ""
+                fence_body = []
+                continue
+            if fence_start is not None and stripped.startswith(fence_marker):
+                command_like = fence_language in SHELL_FENCE_LANGUAGES or any(
+                    COMMAND_LINE.match(body_line) for body_line in fence_body
+                )
+                if command_like:
+                    errors.append(
+                        f"command block outside AGENTS.md: {rel}:{fence_start}-{line_number}"
+                    )
+                fence_start = None
+                fence_marker = ""
+                fence_language = ""
+                fence_body = []
+                continue
+            if fence_start is not None:
+                fence_body.append(line)
+
+        if fence_start is not None:
+            command_like = fence_language in SHELL_FENCE_LANGUAGES or any(
+                COMMAND_LINE.match(body_line) for body_line in fence_body
+            )
+            if command_like:
+                errors.append(
+                    f"unterminated command block outside AGENTS.md: {rel}:{fence_start}"
+                )
 
 
 def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None:
@@ -336,7 +409,6 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
 
     for token in [
         "connector-ready-v1",
-        "aoa-4pda ready",
         "achieved",
         "partial",
         "missing",
@@ -348,8 +420,6 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
 
     for token in [
         "reference-profile-discovery-v1",
-        "aoa-4pda discovery audit xiaomi-13t",
-        "aoa-4pda discovery review xiaomi-13t",
         "missing_run",
         "needs_seed_review",
         "no_new_candidates",
@@ -358,14 +428,9 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     ]:
         if token not in discovery_doc:
             errors.append(f"discovery doc missing token: {token}")
-        if token == "aoa-4pda discovery audit xiaomi-13t" and (
-            token not in install_doc or token not in agent_install_doc
-        ):
-            errors.append(f"install route missing discovery command token: {token}")
 
     for token in [
         "reference-profile-seed-review-v1",
-        "aoa-4pda discovery review xiaomi-13t",
         "missing_review",
         "needs_review",
         "reviewed_pending_seed_update",
@@ -374,18 +439,10 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
     ]:
         if token not in seed_review_doc:
             errors.append(f"seed review doc missing token: {token}")
-        if token == "aoa-4pda discovery review xiaomi-13t" and (
-            token not in install_doc or token not in agent_install_doc
-        ):
-            errors.append(f"install route missing seed review command token: {token}")
 
-    for token in ["reference-profile-coverage-v1", "aoa-4pda coverage audit xiaomi-13t", "no_run", "coverage_ready"]:
+    for token in ["reference-profile-coverage-v1", "no_run", "coverage_ready"]:
         if token not in coverage_doc:
             errors.append(f"coverage doc missing token: {token}")
-        if token == "aoa-4pda coverage audit xiaomi-13t" and (
-            token not in install_doc or token not in agent_install_doc
-        ):
-            errors.append(f"install route missing coverage command token: {token}")
 
     for token in [
         "information_need_matrix",
@@ -396,13 +453,9 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
         if token not in coverage_doc and token not in ready_doc:
             errors.append(f"information-need coverage docs missing token: {token}")
 
-    for token in ["reference-profile-refresh-v1", "aoa-4pda refresh audit xiaomi-13t", "missing_run", "needs_refresh", "fresh"]:
+    for token in ["reference-profile-refresh-v1", "missing_run", "needs_refresh", "fresh"]:
         if token not in refresh_doc:
             errors.append(f"refresh doc missing token: {token}")
-        if token == "aoa-4pda refresh audit xiaomi-13t" and (
-            token not in install_doc or token not in agent_install_doc
-        ):
-            errors.append(f"install route missing refresh command token: {token}")
 
     for token in [
         "abyss-stack",
@@ -435,9 +488,13 @@ def _check_text(repo_root: Path, errors: list[str], warnings: list[str]) -> None
         if token not in mcp_rollout:
             errors.append(f"MCP rollout doc missing token: {token}")
 
-    install_verifier = "python scripts/verify_agent_install_route.py"
-    if install_verifier not in install_doc or install_verifier not in agent_install_doc:
-        errors.append(f"install route missing agent install verifier token: {install_verifier}")
+    for doc_name, doc_text in [
+        ("docs/INSTALL.md", install_doc),
+        ("docs/AGENT_INSTALL_ROUTE.md", agent_install_doc),
+    ]:
+        for owner_ref in ["AGENTS.md", "pyproject.toml", "scripts/verify_agent_install_route.py"]:
+            if owner_ref not in doc_text:
+                errors.append(f"{doc_name} missing executable owner ref: {owner_ref}")
 
     for profile in (repo_root / "connector" / "profiles").glob("*.yaml"):
         text = profile.read_text(encoding="utf-8")

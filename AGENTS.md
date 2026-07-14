@@ -19,6 +19,8 @@ This repository owns:
   method skeletons
 - evidence packet, normalized topic/post, index manifest, and graph schemas
 - small synthetic fixtures, eval query seeds, and install/doctor routes
+- connector-local information-need declarations and bounded statistics over
+  their declared eval routes
 - validator checks that keep large generated data out of Git
 
 It does not own:
@@ -28,7 +30,8 @@ It does not own:
   routes
 - full raw captures, large indexes, graph databases, embeddings, or caches
 - runtime/MCP deployment, which belongs in `abyss-stack`
-- memory, proof, routing, or KAG doctrine owned by sibling AoA layers
+- shared stats grammar, central proof, memory, routing, or KAG doctrine owned
+  by sibling AoA layers
 
 ## Start Here
 
@@ -40,7 +43,8 @@ It does not own:
 6. `docs/ARCHITECTURE.md`
 7. `docs/INSTALL.md`
 8. `docs/AGENT_INSTALL_ROUTE.md`
-9. `docs/decisions/README.md`
+9. `stats/AGENTS.md` when changing local statistical questions
+10. `docs/decisions/README.md`
 
 Before large data, runtime, AI, or benchmark work, also read
 `/etc/abyss-machine/AGENTS.md` and `/etc/abyss-machine/storage-policy.json`.
@@ -65,6 +69,7 @@ Run from the repository root:
 
 ```bash
 python scripts/validate_connector.py
+python scripts/validate_local_stats_port.py
 python -m pytest -q
 PYTHONPATH=src python -m aoa_4pda_connector.cli ready
 PYTHONPATH=src python -m aoa_4pda_connector.cli discovery audit xiaomi-13t
@@ -74,6 +79,8 @@ PYTHONPATH=src python -m aoa_4pda_connector.cli refresh audit xiaomi-13t
 ```
 
 The validator must stay safe on a fresh clone with no external storage mounted.
+The stats wrapper requires a compatible central `aoa-stats` checkout and fails
+when that owner validator is unavailable; CI supplies a pinned checkout.
 The readiness audit must stay no-network and may report `not_ready` while the
 long connector-ready loop is still active.
 

@@ -17,13 +17,8 @@ storage roots, not Git.
 
 ## Decision
 
-Add a local live search-quality eval:
-
-```bash
-aoa-4pda eval live-search-quality --run <run-id>
-```
-
-The command reads `evals/suites/live_starter_search_quality.json`, loads the
+Add a local live search-quality eval whose execution is owned by the CLI. The
+action reads `evals/suites/live_starter_search_quality.json`, loads the
 crawl, normalize, and index receipts for the named run, then queries the
 existing keyword index. It checks expected top evidence, source URLs, exact
 terms, specific-term reporting, and the internal-search boundary.

@@ -16,6 +16,8 @@ to public source URLs.
 - reproducible install and doctor route
 - safe crawler/parser/normalizer/index/graph/query skeletons
 - schemas and small fixtures for evidence packets
+- local information-need declarations and bounded statistics over their route
+  coverage
 - local validation that prevents heavy artifacts from entering Git
 
 ## Does Not Own
@@ -25,8 +27,8 @@ to public source URLs.
   routes
 - large generated corpora, indexes, graph databases, vector stores, or caches
 - runtime access-plane deployment
+- shared statistical grammar or central eval verdict authority
 
 ## Principle
 
 Git stores the method. External storage carries the mass.
-

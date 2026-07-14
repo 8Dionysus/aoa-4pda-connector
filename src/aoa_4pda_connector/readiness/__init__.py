@@ -13,28 +13,6 @@ from aoa_4pda_connector.storage import storage_status
 
 READY_TARGET = "connector-ready-v1"
 
-REQUIRED_INSTALL_TOKENS = [
-    'python -m pip install -e ".[dev]"',
-    "python scripts/verify_agent_install_route.py",
-    "python scripts/validate_connector.py",
-    "python -m pytest -q",
-    "aoa-4pda doctor",
-    "aoa-4pda storage status",
-    "aoa-4pda proof starter",
-    "aoa-4pda materialize fixture",
-    "aoa-4pda discovery audit xiaomi-13t",
-    "aoa-4pda discovery review xiaomi-13t",
-    "aoa-4pda coverage audit xiaomi-13t",
-    "aoa-4pda refresh audit xiaomi-13t",
-    "aoa-4pda eval search-quality",
-    "aoa-4pda eval graph-relations",
-    "aoa-4pda eval graph-query-packets",
-    "aoa-4pda eval hybrid-query-packets",
-    "aoa-4pda eval answer-packets",
-    "aoa-4pda eval claim-relations",
-    "aoa-4pda eval claim-answer-packets",
-]
-
 REQUIRED_STARTER_SURFACES = [
     "connector/fixtures/normalized/synthetic_topic.json",
     "connector/fixtures/html/live_shape_topic.html",
@@ -178,38 +156,59 @@ def _fresh_clone_install_route(repo_root: Path) -> dict[str, object]:
     install_doc = repo_root / "docs" / "INSTALL.md"
     agent_doc = repo_root / "docs" / "AGENT_INSTALL_ROUTE.md"
     pyproject = repo_root / "pyproject.toml"
-    install_text = _read_text(install_doc)
-    agent_text = _read_text(agent_doc)
-    missing_tokens = [
-        token
-        for token in REQUIRED_INSTALL_TOKENS
-        if token not in install_text or token not in agent_text
-    ]
+    verifier = repo_root / "scripts" / "verify_agent_install_route.py"
+    validator = repo_root / "scripts" / "validate_connector.py"
+    workflow = repo_root / ".github" / "workflows" / "validate.yml"
+    required_surfaces = [install_doc, agent_doc, pyproject, verifier, validator, workflow]
+    missing_surfaces = [str(path.relative_to(repo_root)) for path in required_surfaces if not path.is_file()]
     pyproject_text = _read_text(pyproject)
+    verifier_text = _read_text(verifier)
+    workflow_text = _read_text(workflow)
     script_declared = 'aoa-4pda = "aoa_4pda_connector.cli:main"' in pyproject_text
-    status = "achieved" if not missing_tokens and script_declared else "missing"
+    verifier_owns_route = all(
+        token in verifier_text
+        for token in [
+            "aoa_4pda_agent_install_route_verify_v1",
+            "def _route_steps(",
+            'Step("validate_connector"',
+            'Step("materialize_fixture"',
+        ]
+    )
+    workflow_runs_verifier = "scripts/verify_agent_install_route.py" in workflow_text
+    status = (
+        "achieved"
+        if not missing_surfaces and script_declared and verifier_owns_route and workflow_runs_verifier
+        else "missing"
+    )
     return _criterion(
         "fresh_clone_install_route",
         status,
-        "Fresh clone install route is documented, exposes the aoa-4pda CLI entrypoint, and includes a fresh-copy verifier.",
+        "Fresh clone installation has orientation docs, an installed CLI entrypoint, an executable fresh-copy verifier, and a CI-owned invocation.",
         {
             "install_doc": _exists(install_doc),
             "agent_install_doc": _exists(agent_doc),
-            "missing_install_tokens": missing_tokens,
+            "missing_surfaces": missing_surfaces,
             "cli_entrypoint_declared": script_declared,
+            "fresh_copy_verifier_owns_route": verifier_owns_route,
+            "workflow_runs_fresh_copy_verifier": workflow_runs_verifier,
         },
-        "Align docs/INSTALL.md and docs/AGENT_INSTALL_ROUTE.md with the fresh-clone command set.",
+        "Restore the executable fresh-copy verifier, CLI entrypoint, CI invocation, or their orientation docs.",
     )
 
 
 def _offline_starter_gates(repo_root: Path) -> dict[str, object]:
     missing = _missing_paths(repo_root, REQUIRED_STARTER_SURFACES)
     proof_doc = repo_root / "docs" / "STARTER_PROOF.md"
-    proof_doc_mentions = all(
-        token in _read_text(proof_doc)
-        for token in ["aoa-4pda proof starter", "aoa-4pda materialize fixture", "network_touched: false"]
+    cli_text = _read_text(repo_root / "src" / "aoa_4pda_connector" / "cli.py")
+    verifier_text = _read_text(repo_root / "scripts" / "verify_agent_install_route.py")
+    cli_wired = all(
+        token in cli_text
+        for token in ["cmd_proof_starter", "cmd_materialize_fixture", '"network_touched": False']
     )
-    status = "achieved" if not missing and proof_doc_mentions else "missing"
+    verifier_wired = all(
+        token in verifier_text for token in ['Step("starter_proof"', 'Step("materialize_fixture"']
+    )
+    status = "achieved" if not missing and proof_doc.is_file() and cli_wired and verifier_wired else "missing"
     return _criterion(
         "offline_starter_gates",
         status,
@@ -217,9 +216,10 @@ def _offline_starter_gates(repo_root: Path) -> dict[str, object]:
         {
             "missing_surfaces": missing,
             "starter_proof_doc": _exists(proof_doc),
-            "starter_proof_doc_mentions_offline_route": proof_doc_mentions,
+            "starter_cli_wired": cli_wired,
+            "fresh_copy_verifier_wired": verifier_wired,
         },
-        "Restore starter fixture/eval surfaces and docs before expanding live routes.",
+        "Restore starter fixture/eval surfaces, executable CLI wiring, verifier coverage, or orientation docs before expanding live routes.",
     )
 
 
@@ -253,7 +253,6 @@ def _discovery_audit_gate(repo_root: Path) -> dict[str, object]:
     module_text = _read_text(discovery_module)
     required_doc_tokens = [
         "reference-profile-discovery-v1",
-        "aoa-4pda discovery audit xiaomi-13t",
         "missing_run",
         "needs_seed_review",
         "no_new_candidates",
@@ -327,7 +326,6 @@ def _coverage_audit_gate(repo_root: Path) -> dict[str, object]:
     module_text = _read_text(coverage_module)
     required_doc_tokens = [
         "reference-profile-coverage-v1",
-        "aoa-4pda coverage audit xiaomi-13t",
         "no_run",
         "partial",
         "coverage_ready",
@@ -441,7 +439,6 @@ def _refresh_audit_gate(repo_root: Path) -> dict[str, object]:
     module_text = _read_text(refresh_module)
     required_doc_tokens = [
         "reference-profile-refresh-v1",
-        "aoa-4pda refresh audit xiaomi-13t",
         "missing_run",
         "needs_refresh",
         "fresh",
@@ -731,6 +728,9 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
             "aoa-4pda refresh audit",
             "aoa-4pda discovery review",
             "python scripts/verify_agent_install_route.py",
+            "python scripts/validate_local_stats_port.py",
+            "AOA_STATS_REVISION",
+            "$AOA_STATS_ROOT/requirements-dev.txt",
         ]
     )
     validator_mentions_ready = "docs/CONNECTOR_READY.md" in validator_text and "docs/RUNTIME_CONTRACT.md" in validator_text
@@ -738,7 +738,7 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
     return _criterion(
         "validation_and_ci_contract",
         status,
-        "Validator, pytest, relevant eval suites, and GitHub CI are wired into the repo route.",
+        "Validator, local stats contract, pytest, relevant eval suites, and GitHub CI are wired into the repo route.",
         {
             "workflow": _exists(workflow),
             "workflow_runs_validator": "python scripts/validate_connector.py" in workflow_text,
@@ -748,9 +748,14 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
             "workflow_runs_coverage_audit": "aoa-4pda coverage audit" in workflow_text,
             "workflow_runs_refresh_audit": "aoa-4pda refresh audit" in workflow_text,
             "workflow_runs_agent_install_verifier": "python scripts/verify_agent_install_route.py" in workflow_text,
+            "workflow_runs_local_stats_validator": "python scripts/validate_local_stats_port.py" in workflow_text,
+            "workflow_pins_stats_contract_owner": "AOA_STATS_REVISION" in workflow_text,
+            "workflow_installs_stats_validation_dependencies": (
+                "$AOA_STATS_ROOT/requirements-dev.txt" in workflow_text
+            ),
             "validator_checks_ready_docs": validator_mentions_ready,
         },
-        "Wire connector-ready docs into the validator and confirm GitHub CI during landing.",
+        "Restore executable validator, stats, test, eval, or fresh-copy CI wiring and confirm GitHub checks during landing.",
     )
 
 

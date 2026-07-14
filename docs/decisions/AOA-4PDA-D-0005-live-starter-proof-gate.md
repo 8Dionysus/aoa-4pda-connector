@@ -12,18 +12,12 @@ packets into Git.
 
 ## Decision
 
-Add a live starter proof command that verifies an already-built bounded starter
-run in external storage:
+Add a live starter proof action that verifies an already-built bounded starter
+run in external storage. Exact invocation remains owned by the CLI.
 
-```bash
-aoa-4pda proof live-starter --run latest --query "Redmi Note 10 Pro TWRP boot.img"
-```
-
-The live route remains explicitly staged:
-
-```text
-crawl -> normalize -> build-index -> build-graph -> proof live-starter
-```
+The live route remains explicitly staged from crawl through normalization,
+index and graph construction, then the live-starter proof. Exact execution is
+owned by the CLI and receipt chain.
 
 `proof live-starter` does not crawl. It reads receipts, the keyword index, the
 graph export, and a local query result from configured external roots. It checks

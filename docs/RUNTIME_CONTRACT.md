@@ -12,39 +12,20 @@ agents and the OS Abyss route where the runtime package lives under
 
 ## Storage Inputs
 
-Runtime consumers configure the same roots as operators:
-
-```bash
-export CONNECTOR_DATA_ROOT=/path/to/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/aoa-4pda-connector/artifacts
-```
-
-All generated state remains under those roots or under the ignored
+Runtime consumers configure the same `CONNECTOR_DATA_ROOT`,
+`CONNECTOR_CACHE_ROOT`, and `CONNECTOR_ARTIFACT_ROOT` inputs as operators. All
+generated state remains under those roots or under the ignored
 `.connector-state/` fallback for small local runs.
 
 ## Stable CLI Surfaces
 
-The runtime access plane should call `aoa-4pda` commands and read JSON from
-stdout:
+The runtime access plane calls the installed `aoa-4pda` entrypoint and reads
+JSON from stdout. The stable action families are diagnosis, storage status,
+readiness, discovery, seed review, coverage, refresh, keyword/graph/hybrid
+query, deterministic answer, and focused local eval reads. `pyproject.toml` and
+the CLI parser own exact syntax; packet schemas own output identity.
 
-- `aoa-4pda doctor`
-- `aoa-4pda storage status`
-- `aoa-4pda ready`
-- `aoa-4pda discovery audit <profile> --run <run-id>`
-- `aoa-4pda discovery review <profile> --run <run-id>`
-- `aoa-4pda coverage audit <profile> --run <run-id>`
-- `aoa-4pda refresh audit <profile> --run <run-id>`
-- `aoa-4pda query "<query>" --run <run-id>`
-- `aoa-4pda query-graph "<query>" --run <run-id>`
-- `aoa-4pda query-hybrid "<query>" --run <run-id>`
-- `aoa-4pda answer "<query>" --run <run-id>`
-- `aoa-4pda eval live-search-quality --run <run-id> --suite <suite>`
-- `aoa-4pda eval live-hybrid-query-quality --run <run-id> --suite <suite>`
-- `aoa-4pda eval live-graph-query-quality --run <run-id> --suite <suite>`
-- `aoa-4pda eval live-answer-quality --run <run-id> --suite <suite>`
-
-These commands must not use 4PDA internal search, private routes, attachment
+These actions must not use 4PDA internal search, private routes, attachment
 downloads, or generated Git artifacts.
 
 ## JSON Outputs

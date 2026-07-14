@@ -11,19 +11,12 @@ scaffold. Heavy mutable artifacts must stay outside Git history.
 | `CONNECTOR_CACHE_ROOT` | rebuildable indexes and parser/cache state |
 | `CONNECTOR_ARTIFACT_ROOT` | graph DBs, evidence exports, and run receipts |
 
-Example:
-
-```bash
-export CONNECTOR_DATA_ROOT=.connector-state/data
-export CONNECTOR_CACHE_ROOT=.connector-state/cache
-export CONNECTOR_ARTIFACT_ROOT=.connector-state/artifacts
-```
-
 If these variables are unset, the CLI uses the same repo-local default rooted
 at `.connector-state/`.
 
-Use `aoa-4pda storage status` to inspect which route is active. Add
-`--measure` when you need recursive file counts and byte totals.
+The CLI storage status surface reports which route is active and can optionally
+measure recursive file counts and byte totals. Exact syntax belongs to the CLI
+help and the executable operator route in `AGENTS.md`.
 
 ## Repo-Local State
 
@@ -42,16 +35,6 @@ raw captures, indexes, graph databases, vector stores, receipts, or full
 exports from this tree.
 
 ## External Storage Route
-
-For larger runs, point the roots to external storage:
-
-```bash
-export CONNECTOR_FAMILY_ROOT=/path/to/connector-databases
-export CONNECTOR_INSTANCE_ROOT="$CONNECTOR_FAMILY_ROOT/aoa-4pda-connector"
-export CONNECTOR_DATA_ROOT="$CONNECTOR_INSTANCE_ROOT/data"
-export CONNECTOR_CACHE_ROOT="$CONNECTOR_INSTANCE_ROOT/cache"
-export CONNECTOR_ARTIFACT_ROOT="$CONNECTOR_INSTANCE_ROOT/artifacts"
-```
 
 `CONNECTOR_FAMILY_ROOT` is a documentation convention rather than a required
 CLI variable. It gives agents and operators a portable head folder for many
@@ -72,8 +55,9 @@ and cache directories.
 
 ## Fresh Clone Rule
 
-`python scripts/validate_connector.py` and `aoa-4pda doctor` must work on a
-fresh clone without external storage mounted. Missing environment roots should
-fall back to `.connector-state/` until the operator chooses an external route.
-`aoa-4pda materialize fixture` may create a tiny queryable local database under
-the configured roots without touching the network.
+The repository validator and CLI doctor path must work on a fresh clone without
+external storage mounted. Missing environment roots fall back to
+`.connector-state/` until the operator chooses an external route. Fixture
+materialization may create a tiny queryable local database under the configured
+roots without touching the network; exact execution belongs to the CLI and
+fresh-copy verifier.

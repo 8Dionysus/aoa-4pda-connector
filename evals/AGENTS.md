@@ -38,10 +38,10 @@ It does not own:
 
 ## Validation
 
-From the repository root:
+Run the compatible central `aoa-evals` local-port validator when that owner
+checkout is available. From this repository root, run:
 
 ```bash
-python /srv/AbyssOS/aoa-evals/scripts/validate_local_eval_port.py --target-root . --json
 python scripts/validate_connector.py
 python -m pytest -q
 ```

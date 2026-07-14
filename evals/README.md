@@ -19,18 +19,10 @@ central bundle adoption stay in `aoa-evals`.
 
 ## Local Suites
 
-The connector-native JSON suites are runner inputs for local CLI checks such
-as:
-
-```bash
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval answer-packets
-aoa-4pda eval live-search-quality --run <run-id>
-aoa-4pda eval live-graph-query-quality --run <run-id>
-aoa-4pda eval live-answer-quality --run <run-id>
-```
+The connector-native JSON suites are inputs to the local evaluation action
+families documented in `suites/README.md`. The CLI evaluation parser owns exact
+syntax, the fresh-copy verifier owns the starter execution sequence, and CI
+owns the required automated route.
 
 No-network suites use synthetic or sanitized fixtures. Live suites read an
 already-materialized bounded run from configured storage and must not crawl or
