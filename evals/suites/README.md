@@ -63,24 +63,6 @@ Together they verify:
   counts, freshness context, deterministic cited agent-answer brief,
   evidence-chain handoff, nuance report, and relation edges
 
-Run it with:
-
-```bash
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval answer-packets
-aoa-4pda eval claim-relations
-aoa-4pda eval claim-answer-packets
-aoa-4pda eval answer-packets --suite evals/suites/xiaomi_13t_answer_packets.json
-aoa-4pda eval live-search-quality --run <run-id>
-aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_search_quality.json
-aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_redmi_note_10_pro_search_quality.json
-aoa-4pda eval live-search-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_ranking_pressure.json
-aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
-aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json
-aoa-4pda eval graph-relations --suite evals/suites/xiaomi_13t_graph_relations.json
-```
-
-This is local connector evidence only. Central proof authority remains in
-`aoa-evals`.
+The CLI evaluation surface maps action families and suite paths to the local
+runners; exact syntax belongs there and in executable CI. These suites produce
+local connector evidence only. Central proof authority remains in `aoa-evals`.

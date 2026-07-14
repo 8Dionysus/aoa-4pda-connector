@@ -6,25 +6,10 @@ already-stored public crawl snapshots and reports public topic links that are
 visible in the local evidence but not yet represented by the profile seed
 plan or already-fetched seed windows.
 
-## Command
+## Executable Surface
 
-```bash
-aoa-4pda discovery audit xiaomi-13t
-```
-
-Inspect a named run:
-
-```bash
-aoa-4pda discovery audit xiaomi-13t --run <run-id>
-```
-
-Limit emitted candidates:
-
-```bash
-aoa-4pda discovery audit xiaomi-13t --run <run-id> --limit 50
-```
-
-The command reads the crawl receipt and raw snapshot paths from configured
+The CLI discovery-audit action owns profile, named-run, and result-limit
+syntax. It reads the crawl receipt and raw snapshot paths from configured
 storage. It does not touch the network, write generated artifacts, use 4PDA
 internal search, or download attachments.
 
@@ -67,20 +52,14 @@ not proof that an unseeded topic belongs in the reference profile.
 
 ## Review Route
 
-When candidates appear:
+When candidates appear, review the high-priority JSON evidence, then either:
 
-```bash
-aoa-4pda discovery audit xiaomi-13t --run latest
-```
-
-Review high-priority JSON candidates, then either:
-
-- run `aoa-4pda discovery review xiaomi-13t --run latest` to compare current
-  candidates with the seed-review manifest
+- use the CLI seed-review action to compare current candidates with the
+  seed-review manifest
 - add accepted public topic windows to `connector/seeds/xiaomi_13t_topics.yaml`
 - leave rejected candidates out of seeds with a short rationale in a follow-up
   note or decision
-- rerun `coverage audit`, `refresh audit`, and live quality gates after the
-  next bounded crawl
+- inspect coverage, refresh, and live quality gates after the next bounded
+  crawl
 
 The audit is a discovery review surface, not permission to crawl broadly.

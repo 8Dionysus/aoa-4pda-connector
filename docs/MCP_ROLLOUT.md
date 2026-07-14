@@ -26,20 +26,10 @@ graphs, vector stores, receipts, or caches into Git.
 
 ## Required Roots
 
-Runtime consumers configure the same storage roots as the connector CLI:
-
-```bash
-export CONNECTOR_DATA_ROOT=/path/to/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/aoa-4pda-connector/artifacts
-```
-
-For grouped connector storage, consumers may also set:
-
-```bash
-export CONNECTOR_FAMILY_ROOT=/path/to/connector-databases
-export CONNECTOR_INSTANCE_ROOT="$CONNECTOR_FAMILY_ROOT/aoa-4pda-connector"
-```
+Runtime consumers configure the same `CONNECTOR_DATA_ROOT`,
+`CONNECTOR_CACHE_ROOT`, and `CONNECTOR_ARTIFACT_ROOT` inputs as the connector
+CLI. A deployment may additionally use a connector-family head directory as a
+local convention, but the three explicit roots remain the portable contract.
 
 Fresh clones may use the ignored `.connector-state/` fallback for fixture and
 small smoke runs. Larger crawls and reference runs should live in external
@@ -47,15 +37,10 @@ storage.
 
 ## Wrapped CLI Contract
 
-The first MCP slice is read-only and local-only. It may wrap these commands:
-
-- `aoa-4pda doctor`
-- `aoa-4pda storage status`
-- `aoa-4pda ready`
-- `aoa-4pda query "<query>" --run <run-id>`
-- `aoa-4pda query-graph "<query>" --run <run-id>`
-- `aoa-4pda query-hybrid "<query>" --run <run-id>`
-- `aoa-4pda answer "<query>" --run <run-id>`
+The first MCP slice is read-only and local-only. It may wrap connector
+diagnosis, storage status, readiness, keyword/graph/hybrid query, and
+deterministic answer actions. `pyproject.toml` and the CLI parser own exact
+syntax; the JSON schemas and runtime contract own the returned shapes.
 
 The MCP service must not expose crawl, refresh-build, materialize, reindex,
 write, seed-edit, or approval tools in the first slice. It must not touch the
@@ -117,39 +102,28 @@ A standalone agent outside OS Abyss should:
 3. configure `CONNECTOR_DATA_ROOT`, `CONNECTOR_CACHE_ROOT`, and
    `CONNECTOR_ARTIFACT_ROOT`, or intentionally use `.connector-state/` for a
    small starter run;
-4. run `python scripts/validate_connector.py` and `python -m pytest -q`;
-5. run `aoa-4pda doctor`, `aoa-4pda storage status`, and `aoa-4pda ready`;
+4. follow `AGENTS.md` and the executable fresh-copy verifier for validation;
+5. inspect CLI diagnosis, storage, and readiness output;
 6. point an MCP adapter named `aoa-4pda-connector-mcp` at the installed
    `aoa-4pda` CLI and configured storage roots;
-7. smoke `aoa-4pda answer "Xiaomi 13T recovery.img fastboot TWRP" --run <run-id>`.
+7. smoke a deterministic answer against an explicitly selected local run.
 
 The standalone adapter may live in another runtime repository or local service
 tree, but it should keep this repository as the connector source contract.
 
 ## OS Abyss Route
 
-In OS Abyss, the runtime MCP service is stack-owned:
-
-```text
-/home/dionysus/src/abyss-stack/mcp/services/aoa-4pda-connector-mcp/
-```
-
-That package should wrap the local connector CLI and may use an environment
+In OS Abyss, the runtime MCP service is stack-owned under
+`abyss-stack/mcp/services/aoa-4pda-connector-mcp/`. That package should wrap
+the local connector CLI and may use an environment
 variable such as `AOA_4PDA_CONNECTOR_REPO` to locate this checkout during local
 development. It should keep stdio/read-only exposure unless a later decision
 explicitly widens the surface.
 
 ## Verification
 
-Connector-side verification:
-
-```bash
-python scripts/validate_connector.py
-python -m pytest -q
-PYTHONPATH=src python -m aoa_4pda_connector.cli ready --run 20260621T194521Z__crawl --strict
-PYTHONPATH=src python -m aoa_4pda_connector.cli answer "Xiaomi 13T recovery.img fastboot TWRP" --run 20260621T194521Z__crawl --limit 5
-```
-
-The named run check is optional for fresh clones and expected only when that
-local reference run is present in configured storage. All commands above are
-no-network checks.
+Connector-side verification belongs to `AGENTS.md`,
+`scripts/validate_connector.py`, the fresh-copy verifier, tests, and CI. A
+named-run check is optional for fresh clones and expected only when that local
+run is present in configured storage. Read-only MCP smoke checks must remain
+no-network.

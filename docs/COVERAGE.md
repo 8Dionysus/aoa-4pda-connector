@@ -7,26 +7,10 @@ whether the configured profile seed plan has actually been materialized into a
 receipt-backed local corpus, keyword index, deterministic vector index, graph,
 quality-gate route, and explicit information-need coverage.
 
-## Command
+## Executable Surface
 
-```bash
-aoa-4pda coverage audit xiaomi-13t
-```
-
-Inspect a named receipt run:
-
-```bash
-aoa-4pda coverage audit xiaomi-13t --run <run-id>
-```
-
-Use strict mode when a workflow should fail unless the reference profile has
-complete seed-window materialization and usable derived artifacts:
-
-```bash
-aoa-4pda coverage audit xiaomi-13t --run <run-id> --strict
-```
-
-The command does not touch the network, crawl, rebuild indexes, write generated
+The CLI coverage action owns profile, named-run, and strict-mode syntax. It
+does not touch the network, crawl, rebuild indexes, write generated
 artifacts, or download attachments. It reads:
 
 - `connector/profiles/<profile>.yaml`
@@ -87,28 +71,14 @@ The audit does not prove:
 Those require broader discovery, stronger evals, freshness checks, and
 answer-quality gates over the same named run.
 
-## Typical Route
+## Materialization Relationship
 
-```bash
-aoa-4pda profile inspect xiaomi-13t
-aoa-4pda coverage audit xiaomi-13t
-aoa-4pda crawl --profile xiaomi-13t
-aoa-4pda normalize --run latest
-aoa-4pda build-index --profile xiaomi-13t --run latest
-aoa-4pda build-vector --profile xiaomi-13t --run latest
-aoa-4pda build-graph --profile xiaomi-13t --run latest
-aoa-4pda coverage audit xiaomi-13t --run latest
-aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_search_quality.json
-aoa-4pda eval live-search-quality --run latest --suite evals/suites/live_xiaomi_13t_ranking_pressure.json
-aoa-4pda eval live-hybrid-query-quality --run latest --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json
-aoa-4pda eval live-graph-query-quality --run latest --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
-aoa-4pda eval live-answer-quality --run latest --suite evals/suites/live_xiaomi_13t_answer_quality.json
-aoa-4pda eval claim-relations
-aoa-4pda eval claim-answer-packets
-```
-
-Only the explicit `crawl` step touches the network. The audit is safe to run
-before and after the materialization sequence.
+Coverage may be inspected before materialization to expose gaps and after a
+single ordered crawl, normalize, keyword-index, vector-index, and graph chain
+to confirm what is present. Focused quality actions consume that same named
+run. Only the separately authorized crawl touches the network; the coverage
+action itself remains no-network. Exact execution belongs to the CLI,
+`AGENTS.md`, and CI.
 
 On the current local Xiaomi 13T reference run, keyword ranking-pressure is a
 top-N recall gate. Relation-aware top ranking for hard root/recovery queries is

@@ -27,13 +27,7 @@ synthetic normalized topic
 
 The temporary artifacts are deleted after the run.
 
-## Run It
-
-```bash
-aoa-4pda proof starter
-```
-
-Expected posture:
+## Expected Posture
 
 - `network_touched: false`
 - `external_storage_required: false`
@@ -51,20 +45,12 @@ The starter proof keeps that confidence local, small, and GitHub-safe.
 ## Materialized Fixture Route
 
 `aoa-4pda materialize fixture` writes the sanitized live-shaped fixture into
-configured storage roots without touching the network:
-
-```bash
-aoa-4pda init --apply
-aoa-4pda materialize fixture
-aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda query-hybrid "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
-```
-
-This is the first durable local database route for fresh clones. It writes
-normalized data, a keyword index, a deterministic vector index, a graph export,
-and receipts to configured storage roots while leaving generated files ignored
-by Git.
+configured storage roots without touching the network. Exact query, graph,
+hybrid, answer, and fixture invocation belongs to the CLI and the executable
+fresh-copy verifier. This is the first durable local database route for fresh
+clones. It writes normalized data, a keyword index, a deterministic vector
+index, a graph export, and receipts to configured storage roots while leaving
+generated files ignored by Git.
 
 ## Starter Search Eval
 
@@ -127,29 +113,14 @@ Those belong to later bounded runs with configured storage roots.
 run in configured storage. The proof command itself does not touch the network;
 it checks receipts and local artifacts produced by the explicit live route.
 
-Run the live stages in order:
-
-```bash
-aoa-4pda crawl --profile starter --max-topics 3
-aoa-4pda normalize --run latest
-aoa-4pda build-index --profile starter --run latest
-aoa-4pda build-vector --profile starter --run latest
-aoa-4pda build-graph --profile starter --run latest
-aoa-4pda proof live-starter --run latest --query "Redmi Note 10 Pro TWRP boot.img"
-```
-
-For an already-built Xiaomi 13T focused run, use the matching graph-query gate:
-
-```bash
-aoa-4pda eval live-hybrid-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_hybrid_query_quality.json
-aoa-4pda eval live-graph-query-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_graph_query_quality.json
-aoa-4pda eval live-answer-quality --run <run-id> --suite evals/suites/live_xiaomi_13t_answer_quality.json
-```
-
-Those evals read configured crawl, normalize, index, vector, and graph receipts
-as applicable and check that cited root/recovery relation context survives into
-`query-graph` packets and deterministic answer packets. They do not crawl,
-rebuild a corpus, or commit generated artifacts.
+The executable route keeps live stages ordered as crawl, normalize, keyword
+index, vector index, graph, then proof and focused quality consumers. For an
+already-built Xiaomi 13T run, the profile-mapped hybrid, graph-query, and answer
+suites select the matching gates. Those evals read configured crawl,
+normalize, index, vector, and graph receipts as applicable and check that cited
+root/recovery relation context survives into `query-graph` packets and
+deterministic answer packets. They do not crawl, rebuild a corpus, or commit
+generated artifacts.
 
 Do not parallelize `normalize`, `build-index`, `build-vector`, and
 `build-graph`; each stage depends on the receipt written by the previous

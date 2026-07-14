@@ -27,13 +27,8 @@ The scaffold and route cards are tracked. Generated files under the scaffold
 are ignored by Git.
 
 For larger or long-lived runs, operators should override the roots with
-external storage:
-
-```bash
-export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
-```
+external storage through `CONNECTOR_DATA_ROOT`, `CONNECTOR_CACHE_ROOT`, and
+`CONNECTOR_ARTIFACT_ROOT`.
 
 ## Rationale
 

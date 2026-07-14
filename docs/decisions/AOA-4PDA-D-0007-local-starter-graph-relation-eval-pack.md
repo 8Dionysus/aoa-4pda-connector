@@ -17,13 +17,8 @@ starter relation edge coverage.
 
 ## Decision
 
-Add a local graph relation eval:
-
-```bash
-aoa-4pda eval graph-relations
-```
-
-The command reads `evals/suites/starter_graph_relations.json`, normalizes the
+Add a local graph relation eval whose execution is owned by the CLI. The action
+reads `evals/suites/starter_graph_relations.json`, normalizes the
 sanitized live-shaped HTML fixture, builds a temporary graph, and checks that
 expected entity nodes and `post_mentions_entity` edges exist for issue, fix,
 warning, file, and tool evidence. Temporary normalized and graph artifacts are

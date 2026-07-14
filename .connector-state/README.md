@@ -12,11 +12,6 @@ This is the default local state root used when `CONNECTOR_DATA_ROOT`,
 
 Only this scaffold is tracked. Generated files are ignored by Git.
 
-For larger runs, point the environment variables at external storage instead:
-
-```bash
-export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
-```
-
+For larger runs, point the three variables at an operator-approved external
+storage layout. `connector/STORAGE_POLICY.md` owns the variable semantics and
+the CLI storage surface owns exact inspection and initialization syntax.

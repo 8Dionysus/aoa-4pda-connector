@@ -1,133 +1,49 @@
 # Install
 
-## Fresh Clone
+## Executable Owners
 
-```bash
-git clone <repo-url> aoa-4pda-connector
-cd aoa-4pda-connector
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install -e ".[dev]"
-python scripts/verify_agent_install_route.py
-python scripts/validate_connector.py
-python -m pytest -q
-aoa-4pda doctor
-aoa-4pda storage status
-aoa-4pda ready
-aoa-4pda discovery audit xiaomi-13t
-aoa-4pda discovery review xiaomi-13t
-aoa-4pda coverage audit xiaomi-13t
-aoa-4pda refresh audit xiaomi-13t
-aoa-4pda proof starter
-aoa-4pda materialize fixture
-aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval hybrid-query-packets
-aoa-4pda eval answer-packets
-aoa-4pda eval claim-relations
-aoa-4pda eval claim-answer-packets
-```
+- `AGENTS.md` owns the short operator validation route.
+- `pyproject.toml` owns package metadata and the installed `aoa-4pda` entrypoint.
+- `scripts/verify_agent_install_route.py` owns the fresh-copy execution plan.
+- `scripts/validate_connector.py` owns repository validation.
+- `.github/workflows/validate.yml` owns the required CI sequence.
 
-`python scripts/verify_agent_install_route.py` creates a temporary fresh copy
-of the repository, installs the package in an isolated virtual environment,
-routes generated state to temporary external storage roots, materializes the
-fixture database, runs the starter query/answer/eval route, and checks that
-generated connector data did not leak into the repo-local scaffold. Package
-installation may use the network for Python dependencies; the connector route
-itself does not crawl or use 4PDA internal search.
+This document explains installation posture; it is not a second command
+catalog. Exact CLI syntax is exposed by the installed entrypoint and its
+built-in help.
 
-## Configure Storage
+## Fresh Clone Posture
 
-```bash
-aoa-4pda init --apply
-aoa-4pda doctor
-aoa-4pda storage status
-```
+Install the project with its development dependencies in an isolated Python
+environment, then use the fresh-copy verifier when end-to-end installation
+confidence is required. The verifier copies the repository into temporary
+space, installs the package, routes generated state to temporary storage,
+executes repository validation and the bounded starter path, and removes its
+temporary state after success.
 
-Without environment variables, `init --apply` uses the ignored repo-local
-`.connector-state/` root. For larger runs, set external roots first:
+Python dependency installation may use the network. The connector portion of
+the verifier does not crawl 4PDA, use internal search, or download attachments.
+Its plan-only output is the inspectable source for the exact sequence.
 
-```bash
-export CONNECTOR_DATA_ROOT=/path/to/storage/aoa-4pda-connector/data
-export CONNECTOR_CACHE_ROOT=/path/to/storage/aoa-4pda-connector/cache
-export CONNECTOR_ARTIFACT_ROOT=/path/to/storage/aoa-4pda-connector/artifacts
-aoa-4pda init --apply
-```
+## Storage
 
-## Safe Starter Route
+Without environment overrides, small starter state belongs under the ignored
+`.connector-state/` scaffold. Larger or long-lived runs use the three roots
+defined by `connector/STORAGE_POLICY.md`: `CONNECTOR_DATA_ROOT`,
+`CONNECTOR_CACHE_ROOT`, and `CONNECTOR_ARTIFACT_ROOT`. The CLI owns storage
+initialization, diagnosis, and status reporting; `docs/EXTERNAL_STORAGE.md`
+explains portable layouts.
 
-The skeleton does not run network crawls by default. First run the offline proof:
+## Starter and Focused Routes
 
-```bash
-aoa-4pda proof starter
-aoa-4pda materialize fixture
-aoa-4pda ready
-aoa-4pda discovery audit xiaomi-13t
-aoa-4pda discovery review xiaomi-13t
-aoa-4pda coverage audit xiaomi-13t
-aoa-4pda refresh audit xiaomi-13t
-aoa-4pda query-graph "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda query-hybrid "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda answer "bootloop recovery.img camellia" --run starter-fixture
-aoa-4pda eval search-quality
-aoa-4pda eval graph-relations
-aoa-4pda eval graph-query-packets
-aoa-4pda eval hybrid-query-packets
-aoa-4pda eval answer-packets
-aoa-4pda eval claim-relations
-aoa-4pda eval claim-answer-packets
-```
+The executable verifier owns the no-network starter proof, fixture
+materialization, query, answer, and local eval sequence. Live work starts only
+after explicit operator intent and policy/storage review. The CLI profile
+surface owns bounded crawl and derived-stage syntax; receipt-dependent stages
+remain sequential for a single named run.
 
-A live starter crawl should be explicit and bounded:
-
-```bash
-aoa-4pda policy check
-aoa-4pda crawl --profile starter
-aoa-4pda normalize --run latest
-aoa-4pda build-index --profile starter
-aoa-4pda build-vector --profile starter
-aoa-4pda build-graph --profile starter
-aoa-4pda proof live-starter --run latest --query "redmi note 10 twrp boot.img"
-aoa-4pda eval live-search-quality --run latest
-aoa-4pda query "redmi note 10 twrp bootloop"
-aoa-4pda query-graph "redmi note 10 twrp bootloop"
-aoa-4pda query-hybrid "redmi note 10 twrp bootloop"
-aoa-4pda answer "redmi note 10 twrp bootloop"
-```
-
-These commands write to configured storage roots, defaulting to ignored
-repo-local `.connector-state/` when no external roots are set. The default
-starter profile remains bounded and conservative, including a small
-`max_pages_per_topic` limit for public topic pagination.
-
-`eval live-search-quality` reads the already-built keyword index for the named
-run. It is a local quality gate over configured storage, not a new crawl and not
-a committed corpus.
-
-For focused Xiaomi 13T runs, `eval live-graph-query-quality --run <run-id>
---suite evals/suites/live_xiaomi_13t_graph_query_quality.json` reads the
-already-built graph export and checks root/recovery relation context in local
-`query-graph` packets. `eval live-answer-quality --run <run-id> --suite
-evals/suites/live_xiaomi_13t_answer_quality.json` checks the deterministic
-answer packet rendered from that same configured storage.
-`eval live-hybrid-query-quality --run <run-id> --suite
-evals/suites/live_xiaomi_13t_hybrid_query_quality.json` reads the already-built
-keyword index, deterministic vector index, and graph export and checks local
-hybrid retrieval without crawling.
-
-Run `aoa-4pda coverage audit xiaomi-13t --run <run-id>` before those live
-gates to see whether the selected Xiaomi 13T run actually covers the configured
-seed windows, focus areas, receipt chain, keyword index, vector index, and
-graph export.
-Run `aoa-4pda refresh audit xiaomi-13t --run <run-id>` to check whether the
-selected run is fresh enough for those gates or should be refreshed after
-operator confirmation.
-Run `aoa-4pda discovery audit xiaomi-13t --run <run-id>` before seed expansion
-to review public topic/window candidates already visible in stored snapshots.
-Treat `review_priority`, `anchor_texts`, and `evidence_contexts` as seed-review
-inputs. Do not add candidates that are only navigation noise, and do not treat
-already covered seed-plan windows as gaps.
-Run `aoa-4pda discovery review xiaomi-13t --run <run-id>` to compare current
-candidates with the review manifest before editing `connector/seeds`.
+For Xiaomi 13T, the profile owns the seed file, information-need matrix, and
+quality-gate suite map. Discovery, seed review, coverage, refresh, and focused
+quality surfaces inspect an already selected run; they do not grant crawl
+permission. The prepared Redmi Note 10 Pro profile is a separate bounded route,
+not evidence that a second live run has already been materialized.
