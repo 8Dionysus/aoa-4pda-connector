@@ -40,6 +40,11 @@ jobs:
           git -C "$AOA_STATS_ROOT" checkout --quiet --detach FETCH_HEAD
           test "$(git -C "$AOA_STATS_ROOT" rev-parse HEAD)" = "$AOA_STATS_REVISION"
 
+      - name: Install pinned stats validation dependencies
+        env:
+          AOA_STATS_ROOT: ${{ runner.temp }}/aoa-stats
+        run: python -m pip install --disable-pip-version-check -r "$AOA_STATS_ROOT/requirements-dev.txt"
+
       - name: Validate local stats port
         env:
           AOA_STATS_ROOT: ${{ runner.temp }}/aoa-stats

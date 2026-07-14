@@ -730,6 +730,7 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
             "python scripts/verify_agent_install_route.py",
             "python scripts/validate_local_stats_port.py",
             "AOA_STATS_REVISION",
+            "$AOA_STATS_ROOT/requirements-dev.txt",
         ]
     )
     validator_mentions_ready = "docs/CONNECTOR_READY.md" in validator_text and "docs/RUNTIME_CONTRACT.md" in validator_text
@@ -749,6 +750,9 @@ def _validation_ci_gate(repo_root: Path) -> dict[str, object]:
             "workflow_runs_agent_install_verifier": "python scripts/verify_agent_install_route.py" in workflow_text,
             "workflow_runs_local_stats_validator": "python scripts/validate_local_stats_port.py" in workflow_text,
             "workflow_pins_stats_contract_owner": "AOA_STATS_REVISION" in workflow_text,
+            "workflow_installs_stats_validation_dependencies": (
+                "$AOA_STATS_ROOT/requirements-dev.txt" in workflow_text
+            ),
             "validator_checks_ready_docs": validator_mentions_ready,
         },
         "Restore executable validator, stats, test, eval, or fresh-copy CI wiring and confirm GitHub checks during landing.",
