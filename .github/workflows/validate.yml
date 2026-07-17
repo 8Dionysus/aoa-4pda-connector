@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check repo-local KAG index family
-        uses: 8Dionysus/aoa-kag/.github/actions/repo-local-kag-index@da9f50a581645b2173b99dbf771a63d447ec2fec
+        uses: 8Dionysus/aoa-kag/.github/actions/repo-local-kag-index@b28f64a497fd440dd58cbaae90d655da46224d8c
         with:
           history-ref: ${{ github.event.pull_request.base.sha || github.event.before || format('{0}^', github.sha) }}
           event-history-ref: ${{ github.event.pull_request.base.sha || github.event.before || format('{0}^', github.sha) }}
@@ -111,18 +111,14 @@ jobs:
             ".connector-state/cache/.gitkeep",
             ".connector-state/artifacts/.gitkeep",
             "kag/indexes/source_inventory.json",
-            "kag/indexes/source_surface_index.json",
-            "kag/indexes/repo_entity_index.json",
-            "kag/indexes/repo_artifact_index.json",
-            "kag/indexes/repo_anchor_index.json",
-            "kag/indexes/repo_event_index.json",
-            "kag/indexes/repo_assertion_index.json",
-            "kag/indexes/repo_relation_index.json",
+            "kag/indexes/index_family.manifest.json",
           }
           hits = []
           tracked = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
           for rel in tracked:
-              if rel in allowed_scaffold:
+              if rel in allowed_scaffold or (
+                  rel.startswith("kag/indexes/shards/") and rel.endswith(".jsonl")
+              ):
                   continue
               parts = rel.split("/")
               if (
