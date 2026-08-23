@@ -24,6 +24,37 @@ REQUIRED_SECTIONS = (
     "First-Parent Reconciliation",
 )
 
+# This is the current published aoa-stats provider identity resolved from the
+# live v0.2.0 GitHub Release/tag. A future provider release must update this
+# owner-local law and its corresponding workflow pin together.
+EXPECTED_STATS_RELEASE_TAG = "v0.2.0"
+EXPECTED_STATS_RELEASE_REVISION = "dc608fd5de3fcaf0301f356c9efd52e2bdd350ce"
+
+
+def exact_published_stats_pin(workflow_text: str, releasing_text: str) -> tuple[bool, str]:
+    """Require the direct stats checkout to equal the published tag peel."""
+
+    match = re.search(
+        r"^\s+AOA_STATS_REVISION:\s*([0-9a-f]{40})\s*$",
+        workflow_text,
+        flags=re.MULTILINE,
+    )
+    if match is None:
+        return False, "workflow has no 40-hex AOA_STATS_REVISION"
+    observed = match.group(1)
+    if observed != EXPECTED_STATS_RELEASE_REVISION:
+        return (
+            False,
+            f"AOA_STATS_REVISION {observed} is not the exact peeled {EXPECTED_STATS_RELEASE_TAG} commit "
+            f"{EXPECTED_STATS_RELEASE_REVISION}; ancestor-only pins are invalid",
+        )
+    if (
+        f"AOA_STATS_REVISION={EXPECTED_STATS_RELEASE_REVISION}" not in releasing_text
+        or "the workflow checkout must equal the published tag's peeled commit" not in releasing_text
+    ):
+        return False, "docs/RELEASING.md does not state the exact published stats identity"
+    return True, f"AOA_STATS_REVISION equals published {EXPECTED_STATS_RELEASE_TAG} peeled commit"
+
 
 def fail(checks: list[dict[str, object]], name: str, detail: str) -> None:
     checks.append({"name": name, "status": "fail", "detail": detail})
@@ -74,6 +105,7 @@ def main(argv: list[str] | None = None) -> int:
     changelog = (repo / "CHANGELOG.md").read_text(encoding="utf-8")
     readme = (repo / "README.md").read_text(encoding="utf-8")
     releasing = (repo / "docs" / "RELEASING.md").read_text(encoding="utf-8")
+    workflow = (repo / ".github" / "workflows" / "validate.yml").read_text(encoding="utf-8")
 
     expected = f'version = "{version}"'
     if expected in pyproject:
@@ -117,6 +149,12 @@ def main(argv: list[str] | None = None) -> int:
             pass_check(checks, f"releasing-{needle}", "owner-local law references required boundary")
         else:
             fail(checks, f"releasing-{needle}", f"missing {needle!r} in docs/RELEASING.md")
+
+    stats_pin_ok, stats_pin_detail = exact_published_stats_pin(workflow, releasing)
+    if stats_pin_ok:
+        pass_check(checks, "published-stats-exact-pin", stats_pin_detail)
+    else:
+        fail(checks, "published-stats-exact-pin", stats_pin_detail)
 
     code, branch, err = git(repo, "branch", "--show-current")
     if code == 0 and branch:
