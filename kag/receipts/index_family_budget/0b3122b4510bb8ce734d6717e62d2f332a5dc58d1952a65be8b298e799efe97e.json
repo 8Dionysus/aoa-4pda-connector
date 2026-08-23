@@ -1,0 +1,17 @@
+{
+  "allowed_bytes": 1909181,
+  "allowed_tracked_bytes": 3265153,
+  "approved_by": "repository-owner",
+  "base_ref": "a70fc99d8779d1ea834b11244d3832d2ae8f4092",
+  "changed_generated_bytes": 1909181,
+  "changed_generated_files": 91,
+  "decision_ref": "aoa-kag:docs/decisions/AOA-KAG-D-0017-portable-content-addressed-repository-family.md",
+  "default_limit_bytes": 1048576,
+  "head_family_digest": "0b3122b4510bb8ce734d6717e62d2f332a5dc58d1952a65be8b298e799efe97e",
+  "reason": "Initial public v0.1.0 release law, complete human-first changelog/reconciliation, and owner release validators add a bounded generated-family delta; preserve full parity and admit only this measured first-release delta.",
+  "repo": "aoa-4pda-connector",
+  "schema_version": "aoa-repo-local-kag-budget-receipt-v1",
+  "scope": "generated_delta",
+  "tracked_bytes": 3265153,
+  "tracked_bytes_max": 4194304
+}

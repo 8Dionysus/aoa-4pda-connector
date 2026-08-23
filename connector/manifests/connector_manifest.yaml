@@ -3,6 +3,10 @@ connector_id: aoa-4pda-connector
 source_family: 4pda
 repo_role: external_source_connector
 status: skeleton
+release:
+  version: 0.1.0
+  track: initial-public-method-boundary
+  readiness: not_ready
 owns:
   - source_policy
   - parser_method
@@ -16,4 +20,3 @@ does_not_own:
   - runtime_mcp_deployment
   - proof_or_memory_doctrine
 default_profile: starter
-
