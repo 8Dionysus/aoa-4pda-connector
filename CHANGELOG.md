@@ -4,6 +4,107 @@
 
 _No unreleased changes._
 
+## [0.1.3] - 2026-08-23
+
+### Summary
+
+Corrective successor release that revalidates the 4PDA connector against the
+exact current published `aoa-stats@v0.2.2` and `aoa-kag@v0.5.2` providers.
+The immutable `v0.1.2`, `v0.1.1`, and `v0.1.0` releases remain unchanged.
+
+### Added
+
+- Exact live `aoa-stats@v0.2.2` identity: annotated tag object
+  `119f434918e8218e43e977b2edec3e4feab6b493` peeling to
+  `f119805cda69b3edeb2a4c5e407368d70e68650d`.
+- Exact live `aoa-kag@v0.5.2` identity: annotated tag object
+  `251846823f49d18b06c32374b3434e6e11002e96` peeling to
+  `8136d3eb629da28cea1206d13a8f1df52ee14739`.
+- Regression coverage that rejects both the previous published stats pin and
+  an ancestor-only KAG action pin for a new consumer release.
+
+### Changed
+
+- The validation workflow, owner-local release preflight, release law, and
+  current release markers now require exact `aoa-stats@v0.2.2` and
+  `aoa-kag@v0.5.2` identities.
+- The KAG action declaration is pinned directly to the published `v0.5.2`
+  commit; the documented generated owner-family declaration uses the same
+  exact provider identity instead of an ancestor-only pin.
+- The owner decision record now records the active v0.1.3 provider identities
+  while retaining the prior v0.1.1 and v0.1.2 identities as historical.
+- Consumer-visible repository KAG indexes are regenerated from the final
+  source tree with the exact published KAG provider.
+
+### Fixed
+
+- Prevented the stale `aoa-stats@v0.2.1` direct checkout from satisfying the
+  current provider contract.
+- Prevented the prior KAG action and generated-family ancestor pins from being
+  presented as exact-current KAG v0.5.2 provider proof.
+
+### Deprecated
+
+- No public connector API is deprecated.
+
+### Removed
+
+- No connector route, schema, source-policy rule, or runtime boundary was
+  removed.
+
+### Security
+
+- No network crawl, account access, private route, attachment/download,
+  credential, or secret boundary changed. The release remains source-only and
+  adds no artifact class, public asset, deployment, runtime, proof, or
+  acceptance claim.
+
+### Compatibility and migration
+
+- New connector releases must fetch `aoa-stats@v0.2.2` and require checkout
+  equality with `f119805cda69b3edeb2a4c5e407368d70e68650d`; ancestry-only pins
+  and the former v0.2.1 identity are insufficient.
+- The repo-local KAG action and generated owner-family declaration must resolve
+  to `8136d3eb629da28cea1206d13a8f1df52ee14739`, the peeled commit of
+  `aoa-kag@v0.5.2`; ancestor-only KAG pins are insufficient.
+- Existing `v0.1.2`, `v0.1.1`, and `v0.1.0` tags and Releases are preserved
+  unchanged.
+
+### Deployment, observability, recovery, and rollback
+
+- No deployment, MCP, runtime, storage, rollback, or recovery behavior was
+  changed. The connector remains `status: skeleton` and its readiness result
+  remains an independent claim.
+- The release publisher continues to refuse tag/release overwrite. Correction
+  is delivered as a new patch successor rather than rewriting history.
+
+### Validation
+
+- The complete owner-local source, exact stats-port, test, compile, no-network
+  CLI, KAG generated-family, artifact-boundary, PR/CI, tag, Release, and
+  postpublish evidence is recorded in the release execution report.
+- `aoa-4pda ready` remains an honest `not_ready`/`ready=false` result; source
+  publication does not prove runtime health, corpus freshness, semantic
+  quality, central proof, artifact admission, delivery, closure, or human
+  acceptance.
+
+### Notes and non-claims
+
+- This is a compatible 0.x patch correcting current provider identity; it does
+  not broaden the connector's public method boundary.
+- The GitHub Release is source publication evidence, not an artifact trust
+  receipt, deployment, runtime, proof, delivery, closure, or acceptance proof.
+
+### First-Parent Reconciliation
+
+This corrective range starts after immutable `v0.1.2` at
+`94e3c3653f40a53e0acb05b17d648a9bf5c610ee` and contains the exact-current
+provider contract/law correction plus the derived KAG family refresh required
+by the final authored tree. The final landed commit, generated family
+identity, and publication carriers are recorded in the release execution
+report; generated consumer data is derived from source and is not decision
+authority.
+
 ## [0.1.2] - 2026-08-23
 
 ### Summary

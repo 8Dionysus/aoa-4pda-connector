@@ -2,9 +2,10 @@
 
 ## Current release contour
 
-`v0.1.2` is the current corrective source release. It revalidates the direct
-`aoa-stats` validation pin against the exact published `v0.2.1` provider;
-the immutable `v0.1.1` and `v0.1.0` releases remain historical releases. The
+`v0.1.3` is the current corrective source release. It revalidates the direct
+`aoa-stats` and repo-local `aoa-kag` pins against the exact published `v0.2.2`
+and `v0.5.2` providers; the immutable `v0.1.2`, `v0.1.1`, and `v0.1.0`
+releases remain historical releases. The
 connector's bounded source policy, local retrieval/graph/evidence contracts,
 fixtures, eval routes, and owner-local KAG/stats integration surfaces remain
 unchanged in scope. This patch does not mark the connector ready: the current maturity audit remains
