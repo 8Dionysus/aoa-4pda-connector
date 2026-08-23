@@ -10,7 +10,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      AOA_STATS_REVISION: dc608fd5de3fcaf0301f356c9efd52e2bdd350ce
+      AOA_STATS_REVISION: 339ecb2db22ac4552fa88756b650896ebbff5b56
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
           python -m pip install -e ".[dev]"
 
       - name: Check release surfaces
-        run: python scripts/release_check.py --version 0.1.1
+        run: python scripts/release_check.py --version 0.1.2
 
       - name: Fetch exact published aoa-stats provider
         env:

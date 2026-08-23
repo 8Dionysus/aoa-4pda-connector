@@ -30,3 +30,18 @@ def test_release_law_rejects_ancestor_only_stats_pin():
 
     assert not ok
     assert "ancestor-only" in detail
+
+
+def test_release_law_rejects_previous_published_stats_pin():
+    workflow = (REPO_ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
+    releasing = (REPO_ROOT / "docs/RELEASING.md").read_text(encoding="utf-8")
+    stale_workflow = workflow.replace(
+        EXPECTED_STATS_RELEASE_REVISION,
+        "dc608fd5de3fcaf0301f356c9efd52e2bdd350ce",
+        1,
+    )
+
+    ok, detail = exact_published_stats_pin(stale_workflow, releasing)
+
+    assert not ok
+    assert "not the exact peeled" in detail

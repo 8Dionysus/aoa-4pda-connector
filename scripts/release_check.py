@@ -25,10 +25,10 @@ REQUIRED_SECTIONS = (
 )
 
 # This is the current published aoa-stats provider identity resolved from the
-# live v0.2.0 GitHub Release/tag. A future provider release must update this
+# live v0.2.1 GitHub Release/tag. A future provider release must update this
 # owner-local law and its corresponding workflow pin together.
-EXPECTED_STATS_RELEASE_TAG = "v0.2.0"
-EXPECTED_STATS_RELEASE_REVISION = "dc608fd5de3fcaf0301f356c9efd52e2bdd350ce"
+EXPECTED_STATS_RELEASE_TAG = "v0.2.1"
+EXPECTED_STATS_RELEASE_REVISION = "339ecb2db22ac4552fa88756b650896ebbff5b56"
 
 
 def exact_published_stats_pin(workflow_text: str, releasing_text: str) -> tuple[bool, str]:
@@ -144,7 +144,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         fail(checks, "readme-marker", f"missing {marker!r}")
 
-    for needle in ("v0.5.0", "v0.2.0", "source-only", "aoa-sdk"):
+    for needle in ("v0.5.0", "v0.2.1", "source-only", "aoa-sdk"):
         if needle in releasing:
             pass_check(checks, f"releasing-{needle}", "owner-local law references required boundary")
         else:
