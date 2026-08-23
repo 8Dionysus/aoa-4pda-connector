@@ -2,10 +2,12 @@
 
 ## Current release contour
 
-`v0.1.0` is the initial public method-boundary release. It publishes the
+`v0.1.1` is the current corrective source release. It carries the exact
+published-provider identity repair for the direct `aoa-stats` validation pin;
+the immutable `v0.1.0` release remains the initial public method boundary. The
 connector's bounded source policy, local retrieval/graph/evidence contracts,
-fixtures, eval routes, and owner-local KAG/stats integration surfaces. It does
-not mark the connector ready: the current maturity audit remains
+fixtures, eval routes, and owner-local KAG/stats integration surfaces remain
+unchanged in scope. This patch does not mark the connector ready: the current maturity audit remains
 `connector-ready-v1`, `ready=false`, and `not_ready` until one coherent fresh
 crawl-to-derived-artifact receipt chain exists. Runtime/MCP deployment remains
 an `abyss-stack` responsibility.

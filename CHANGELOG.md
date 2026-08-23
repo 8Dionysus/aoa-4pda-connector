@@ -4,6 +4,101 @@
 
 _No unreleased changes._
 
+## [0.1.1] - 2026-08-23
+
+### Summary
+
+Corrective source release for the provider-before-consumer validation
+boundary. The direct `aoa-stats` checkout now resolves to the exact commit
+published by `aoa-stats@v0.2.0`, so a green ancestor-only validation can no
+longer be mistaken for exact published-provider compatibility. The immutable
+`v0.1.0` source release and GitHub Release are preserved unchanged.
+
+### Added
+
+- An owner-local release preflight and regression test for exact published
+  `aoa-stats` provider identity.
+- Decision record `AOA-4PDA-D-0039` documenting the direct-provider equality
+  rule and its boundary from generated KAG action/family pins.
+
+### Changed
+
+- The validation workflow replaces the ancestor-only stats pin with
+  `AOA_STATS_REVISION=dc608fd5de3fcaf0301f356c9efd52e2bdd350ce`, the peeled
+  commit of the published `aoa-stats@v0.2.0` tag.
+- Release law, version markers, roadmap posture, and the release-surface
+  checker now describe and enforce the corrective `v0.1.1` identity.
+
+### Fixed
+
+- Prevented an older contained `aoa-stats` commit from satisfying the direct
+  provider compatibility check for a new connector release.
+
+### Deprecated
+
+- No public connector API is deprecated.
+
+### Removed
+
+- No connector route, schema, source-policy rule, or runtime boundary was
+  removed.
+
+### Security
+
+- No network, account, private-source, attachment, credential, or secret
+  boundary changed. The release remains source-only and does not add an
+  artifact class, public asset, admission, deployment, runtime, proof, or
+  acceptance claim.
+
+### Compatibility and migration
+
+- Direct `aoa-stats` provider identity is now an equality requirement:
+  `AOA_STATS_REVISION` must equal the published `v0.2.0` tag's peeled commit
+  `dc608fd5de3fcaf0301f356c9efd52e2bdd350ce`. Ancestor-only pins are invalid.
+- The generated `aoa-kag` action and owner-family pins remain separate
+  identities governed by their documented ancestry rule.
+
+### Deployment, observability, recovery, and rollback
+
+- No deployment, MCP, runtime, storage, rollback, or recovery behavior was
+  changed. Existing source-only and runtime-owner boundaries remain in force.
+- The release publisher continues to refuse tag/release overwrite; `v0.1.0`
+  is not moved or rewritten.
+
+### Validation
+
+- Fresh live provider resolution: GitHub Release `aoa-stats@v0.2.0` is
+  published, its annotated tag object is
+  `a12ffb39e4bfee0426ea84647aa3e90597002189`, and it peels exactly to
+  `dc608fd5de3fcaf0301f356c9efd52e2bdd350ce`.
+- The owner-local release checker rejects the former ancestor pin
+  `ae87240bd5f1b64769fcf39b4eae67363cee9f38`; the complete owner and CI gate
+  results are recorded in the release execution report.
+- `connector-ready-v1` remains `not_ready`/`ready=false`; source publication
+  does not prove runtime health, corpus freshness, semantic quality, central
+  proof, artifact admission, or human acceptance.
+
+### Notes and non-claims
+
+- This is a compatible 0.x patch correcting release compatibility identity;
+  it does not broaden the connector's public method boundary.
+- The source release has no public package assets or admitted artifact
+  record. GitHub publication is not artifact trust, deployment, runtime,
+  proof, delivery, closure, or acceptance.
+
+### First-Parent Reconciliation
+
+This corrective range starts after immutable `v0.1.0` at
+`702fd73982282e43cbf2b8fe77333a1b4bb86a11` and contains one source correction
+commit before the GitHub squash release carrier. The carrier is publication
+bookkeeping, not a second product change, and its exact landed identity is
+recorded in the owner release execution report and the `v0.1.1` tag. The
+source commit is named here after the release-prep branch is sealed.
+
+| Range item | Exact source ref | URL | Subject | Classification |
+|---|---|---|---|---|
+| prep-1 | `pending-release-prep-source-commit` | release-prep branch commit URL recorded at handoff | Enforce exact published aoa-stats provider identity | changelog-worthy corrective source and owner-law change |
+
 ## [0.1.0] - 2026-08-23
 
 ### Summary

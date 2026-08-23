@@ -9,6 +9,9 @@ contract: it intentionally rejects this repository as an unknown owner.
 ## Release identity
 
 - The first public method-boundary release is `0.1.0` / `v0.1.0`.
+- The current corrective source release is `0.1.1` / `v0.1.1`; it preserves
+  `v0.1.0` as an immutable historical release and repairs the direct published
+  provider identity check.
 - `pyproject.toml`, `src/aoa_4pda_connector/__init__.py`, the connector
   manifest, the README marker, and the dated `CHANGELOG.md` heading must agree.
 - `connector-ready-v1` remains an independent maturity target. A release does
@@ -25,17 +28,21 @@ The release candidate requires these exact published provider tags:
 
 | Provider | Required tag | Consumer pin in `.github/workflows/validate.yml` | Requirement |
 | --- | --- | --- | --- |
-| `8Dionysus/aoa-kag` | `v0.5.0` | action `6a79e62c7d20b6b11406dee78f409ada4a51bb3f` and owner-family `30ce3b8f33ed27ef3888c214b9e9e5cd0f50f80e` | tag exists and both pins are ancestors of the tag |
-| `8Dionysus/aoa-stats` | `v0.2.0` | `AOA_STATS_REVISION=ae87240bd5f1b64769fcf39b4eae67363cee9f38` | tag exists and the pin is an ancestor of the tag |
+| `8Dionysus/aoa-kag` | `v0.5.0` | action `6a79e62c7d20b6b11406dee78f409ada4a51bb3f` and owner-family `30ce3b8f33ed27ef3888c214b9e9e5cd0f50f80e` | tag exists and both generated action/family pins are ancestors of the tag |
+| `8Dionysus/aoa-stats` | `v0.2.0` | `AOA_STATS_REVISION=dc608fd5de3fcaf0301f356c9efd52e2bdd350ce` | tag object `a12ffb39e4bfee0426ea84647aa3e90597002189` peels to this commit; the workflow checkout must equal the published tag's peeled commit |
 
-The release executor must re-check the GitHub Release, tag object, peeled
-commit, and pin ancestry immediately before the PR and again before publish.
-The check is evidence, not a claim that a provider runtime is healthy.
+The direct `aoa-stats` body-provider pin is an immutable identity, not an
+ancestor constraint. A green `git merge-base --is-ancestor` result for an
+older stats commit is insufficient and must fail the release route. The
+release executor must re-check the GitHub Release, tag object, peeled commit,
+and exact direct-provider pin immediately before the PR and again before
+publish. The check is evidence, not a claim that a provider runtime is
+healthy.
 
 ## Required checks
 
 From a clean release-prep worktree run `python scripts/release_check.py
---version 0.1.0`, `python scripts/validate_connector.py`, `python
+--version 0.1.1`, `python scripts/validate_connector.py`, `python
 scripts/validate_local_stats_port.py`, `python -m pytest -q -p
 no:cacheprovider`, `python -m compileall -q src scripts`, and the two
 no-network CLI routes `PYTHONPATH=src python -m aoa_4pda_connector.cli doctor`
@@ -71,15 +78,16 @@ not an artifact trust receipt or runtime proof.
 ## Publication sequence
 
 1. Build and validate on a PR branch based on current `origin/main`.
-2. Re-check both provider tags and pin ancestry; create a release-prep PR.
+2. Re-check both provider Releases/tags and the exact direct stats pin; create
+   a release-prep PR.
 3. Wait for the required `Validate` check, repair failures, and merge through
    GitHub using squash.
 4. Sync local `main` to the exact landed commit and repeat the full gates.
 5. Run the owner-local dry-run with `python scripts/release_publish.py
-   --version 0.1.0 --tag v0.1.0 --dry-run`.
+   --version 0.1.1 --tag v0.1.1 --dry-run`.
 
 6. After the dry-run and exact-landed gates pass, run `python
-   scripts/release_publish.py --version 0.1.0 --tag v0.1.0 --confirm`.
+   scripts/release_publish.py --version 0.1.1 --tag v0.1.1 --confirm`.
 
 The publisher refuses to overwrite an existing tag or release, requires a
 clean `main` at the local `origin/main`, creates an annotated tag at that
