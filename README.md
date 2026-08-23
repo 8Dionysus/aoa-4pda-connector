@@ -4,6 +4,10 @@
 connector that can build local, policy-gated search and graph evidence from
 public 4PDA topic/post pages.
 
+> Current release: v0.1.0 — initial public method boundary. See
+> [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASING.md](docs/RELEASING.md) for
+> release scope and publication law.
+
 It stores method, code, schemas, policy, tiny fixtures, seed profiles, eval
 queries, an install route, and an ignored repo-local state scaffold. It does
 not commit full crawls, raw corpora, large indexes, vector stores, or graph

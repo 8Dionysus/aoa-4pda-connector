@@ -44,3 +44,4 @@ Decision records here explain durable route and boundary choices for
 | `AOA-4PDA-D-0035` | [Deep runtime answer grounding](AOA-4PDA-D-0035-deep-runtime-answer-grounding.md) |
 | `AOA-4PDA-D-0036` | [Claim conflict freshness runtime](AOA-4PDA-D-0036-claim-conflict-freshness-runtime.md) |
 | `AOA-4PDA-D-0037` | [Connector-family claim contract boundary](AOA-4PDA-D-0037-connector-family-claim-contract.md) |
+| `AOA-4PDA-D-0038` | [Initial public release law](AOA-4PDA-D-0038-initial-public-release-law.md) |

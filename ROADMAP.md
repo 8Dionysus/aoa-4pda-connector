@@ -1,5 +1,15 @@
 # Roadmap
 
+## Current release contour
+
+`v0.1.0` is the initial public method-boundary release. It publishes the
+connector's bounded source policy, local retrieval/graph/evidence contracts,
+fixtures, eval routes, and owner-local KAG/stats integration surfaces. It does
+not mark the connector ready: the current maturity audit remains
+`connector-ready-v1`, `ready=false`, and `not_ready` until one coherent fresh
+crawl-to-derived-artifact receipt chain exists. Runtime/MCP deployment remains
+an `abyss-stack` responsibility.
+
 ## Wave 0: Skeleton
 
 - repository route cards
