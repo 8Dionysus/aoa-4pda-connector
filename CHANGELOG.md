@@ -97,7 +97,7 @@ source commit is named here after the release-prep branch is sealed.
 
 | Range item | Exact source ref | URL | Subject | Classification |
 |---|---|---|---|---|
-| prep-1 | `pending-release-prep-source-commit` | release-prep branch commit URL recorded at handoff | Enforce exact published aoa-stats provider identity | changelog-worthy corrective source and owner-law change |
+| prep-1 | `e015ab7ae7739177dd6cf2a05c71b7d55f898094` | https://github.com/8Dionysus/aoa-4pda-connector/commit/e015ab7ae7739177dd6cf2a05c71b7d55f898094 | Enforce exact published aoa-stats provider identity | changelog-worthy corrective source and owner-law change |
 
 ## [0.1.0] - 2026-08-23
 
