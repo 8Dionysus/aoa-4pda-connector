@@ -90,16 +90,18 @@ longer be mistaken for exact published-provider compatibility. The immutable
 
 This corrective range starts after immutable `v0.1.0` at
 `702fd73982282e43cbf2b8fe77333a1b4bb86a11` and contains one source correction
-commit plus one generated-family refresh before the GitHub squash release
-carrier. The carrier is publication bookkeeping, not a second product
-change, and its exact landed identity is recorded in the owner release
-execution report and the `v0.1.1` tag. Both pre-carrier commits are listed
-with their exact branch refs below.
+commit plus derived-family release-carrier refreshes before the GitHub squash
+release carrier. The carriers are publication bookkeeping, not additional
+product changes, and their exact landed identities and final family digest
+are recorded in the owner release execution report and the `v0.1.1` tag. The
+source commit is listed with its exact branch ref below. The generated family
+is derived from this canonical changelog, so repeating a generated commit hash
+inside its generator input would be self-referential.
 
 | Range item | Exact source ref | URL | Subject | Classification |
 |---|---|---|---|---|
 | prep-1 | `e015ab7ae7739177dd6cf2a05c71b7d55f898094` | https://github.com/8Dionysus/aoa-4pda-connector/commit/e015ab7ae7739177dd6cf2a05c71b7d55f898094 | Enforce exact published aoa-stats provider identity | changelog-worthy corrective source and owner-law change |
-| prep-2 | `efa443e8fa740eacbe6482e7e0c612e04c7fc48c` | https://github.com/8Dionysus/aoa-4pda-connector/commit/efa443e8fa740eacbe6482e7e0c612e04c7fc48c | Regenerate portable KAG family for v0.1.1 | generated consumer-visible refresh from the exact owner generator |
+| generated | `kag/indexes/index_family.manifest.json` and content-addressed shards | exact final manifest digest recorded in the release execution report | Regenerate portable KAG family from the final source tree | generated consumer-visible release carrier; not a second product change |
 
 ## [0.1.0] - 2026-08-23
 
