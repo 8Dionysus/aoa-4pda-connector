@@ -9,9 +9,9 @@ contract: it intentionally rejects this repository as an unknown owner.
 ## Release identity
 
 - The first public method-boundary release is `0.1.0` / `v0.1.0`.
-- The current corrective source release is `0.1.1` / `v0.1.1`; it preserves
-  `v0.1.0` as an immutable historical release and repairs the direct published
-  provider identity check.
+- The current corrective source release is `0.1.2` / `v0.1.2`; it preserves
+  `v0.1.1` and `v0.1.0` as immutable historical releases and revalidates the
+  direct published provider identity against the newer exact provider.
 - `pyproject.toml`, `src/aoa_4pda_connector/__init__.py`, the connector
   manifest, the README marker, and the dated `CHANGELOG.md` heading must agree.
 - `connector-ready-v1` remains an independent maturity target. A release does
@@ -29,7 +29,7 @@ The release candidate requires these exact published provider tags:
 | Provider | Required tag | Consumer pin in `.github/workflows/validate.yml` | Requirement |
 | --- | --- | --- | --- |
 | `8Dionysus/aoa-kag` | `v0.5.0` | action `6a79e62c7d20b6b11406dee78f409ada4a51bb3f` and owner-family `30ce3b8f33ed27ef3888c214b9e9e5cd0f50f80e` | tag exists and both generated action/family pins are ancestors of the tag |
-| `8Dionysus/aoa-stats` | `v0.2.0` | `AOA_STATS_REVISION=dc608fd5de3fcaf0301f356c9efd52e2bdd350ce` | tag object `a12ffb39e4bfee0426ea84647aa3e90597002189` peels to this commit; the workflow checkout must equal the published tag's peeled commit |
+| `8Dionysus/aoa-stats` | `v0.2.1` | `AOA_STATS_REVISION=339ecb2db22ac4552fa88756b650896ebbff5b56` | tag object `45ec36ced2117bc387e3bd51fa1af52c2e70f83c` peels to this commit; the workflow checkout must equal the published tag's peeled commit |
 
 The direct `aoa-stats` body-provider pin is an immutable identity, not an
 ancestor constraint. A green `git merge-base --is-ancestor` result for an
@@ -42,7 +42,7 @@ healthy.
 ## Required checks
 
 From a clean release-prep worktree run `python scripts/release_check.py
---version 0.1.1`, `python scripts/validate_connector.py`, `python
+--version 0.1.2`, `python scripts/validate_connector.py`, `python
 scripts/validate_local_stats_port.py`, `python -m pytest -q -p
 no:cacheprovider`, `python -m compileall -q src scripts`, and the two
 no-network CLI routes `PYTHONPATH=src python -m aoa_4pda_connector.cli doctor`
@@ -84,10 +84,10 @@ not an artifact trust receipt or runtime proof.
    GitHub using squash.
 4. Sync local `main` to the exact landed commit and repeat the full gates.
 5. Run the owner-local dry-run with `python scripts/release_publish.py
-   --version 0.1.1 --tag v0.1.1 --dry-run`.
+   --version 0.1.2 --tag v0.1.2 --dry-run`.
 
 6. After the dry-run and exact-landed gates pass, run `python
-   scripts/release_publish.py --version 0.1.1 --tag v0.1.1 --confirm`.
+   scripts/release_publish.py --version 0.1.2 --tag v0.1.2 --confirm`.
 
 The publisher refuses to overwrite an existing tag or release, requires a
 clean `main` at the local `origin/main`, creates an annotated tag at that

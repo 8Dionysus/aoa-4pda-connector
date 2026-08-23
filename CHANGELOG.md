@@ -4,6 +4,95 @@
 
 _No unreleased changes._
 
+## [0.1.2] - 2026-08-23
+
+### Summary
+
+Corrective successor release that revalidates the connector's direct
+`aoa-stats` provider against the exact published `v0.2.1` identity. The
+immutable `v0.1.1` release remains the historical consumer of `v0.2.0`, and
+`v0.1.0` remains the immutable initial public method boundary.
+
+### Added
+
+- Exact live provider identity for `aoa-stats@v0.2.1`: annotated tag object
+  `45ec36ced2117bc387e3bd51fa1af52c2e70f83c` peeling to
+  `339ecb2db22ac4552fa88756b650896ebbff5b56`.
+- A regression test proving that the previous published `v0.2.0` commit is
+  stale for a new connector release even though it was previously accepted.
+
+### Changed
+
+- The validation workflow, owner-local release preflight, release law, and
+  release markers now require exact `aoa-stats@v0.2.1` compatibility.
+- The owner decision record retains the immutable `v0.1.1` identity while
+  recording the active `v0.1.2` provider identity.
+- Consumer-visible repository KAG indexes are regenerated from the final
+  source tree when the pinned `aoa-kag@v0.5.0` generator requires it.
+
+### Fixed
+
+- Prevented the prior `v0.2.0` direct provider pin from being treated as
+  current-provider proof after the published `aoa-stats@v0.2.1` successor.
+
+### Deprecated
+
+- No public connector API is deprecated.
+
+### Removed
+
+- No connector route, schema, source-policy rule, or runtime boundary was
+  removed.
+
+### Security
+
+- No network crawl, account access, private route, internal search,
+  attachment/download, credential, or secret boundary changed. The release is
+  source-only and does not add an artifact class, public asset, admission,
+  deployment, runtime, proof, or acceptance claim.
+
+### Compatibility and migration
+
+- New connector releases must fetch `aoa-stats@v0.2.1` and require checkout
+  equality with `339ecb2db22ac4552fa88756b650896ebbff5b56`; ancestry-only checks
+  and the former `v0.2.0` pin are insufficient.
+- The generated `aoa-kag` action and owner-family pins remain separate
+  identities governed by their documented ancestry rule.
+- Existing `v0.1.1` and `v0.1.0` tags and Releases are preserved unchanged.
+
+### Deployment, observability, recovery, and rollback
+
+- No deployment, MCP, runtime, storage, rollback, or recovery behavior was
+  changed. The connector remains `status: skeleton` and its readiness result
+  remains an independent claim.
+- The release publisher continues to refuse tag/release overwrite. Correction
+  is delivered as a new patch successor rather than rewriting history.
+
+### Validation
+
+- The complete owner-local source, stats-port, test, compile, no-network CLI,
+  KAG generated-family, artifact-boundary, PR/CI, tag, Release, and postpublish
+  evidence is recorded in the release execution report.
+- `aoa-4pda ready` remains an honest `not_ready`/`ready=false` result; source
+  publication does not prove runtime health, corpus freshness, semantic
+  quality, central proof, artifact admission, or human acceptance.
+
+### Notes and non-claims
+
+- This is a compatible 0.x patch correcting a provider identity contract; it
+  does not broaden the connector's public method boundary.
+- The GitHub Release is source publication evidence, not an artifact trust
+  receipt, deployment, runtime, delivery, closure, or acceptance proof.
+
+### First-Parent Reconciliation
+
+This corrective range starts after immutable `v0.1.1` at
+`28503fca383263220127c90878ba5683c2edabb4` and contains the exact-provider
+source/law correction plus any generated KAG family refresh required by the
+final authored tree. The final landed commit, generated family identity, and
+publication carriers are recorded in the release execution report; generated
+consumer data is derived from source and is not decision authority.
+
 ## [0.1.1] - 2026-08-23
 
 ### Summary

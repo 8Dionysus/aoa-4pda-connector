@@ -2,9 +2,9 @@
 
 ## Current release contour
 
-`v0.1.1` is the current corrective source release. It carries the exact
-published-provider identity repair for the direct `aoa-stats` validation pin;
-the immutable `v0.1.0` release remains the initial public method boundary. The
+`v0.1.2` is the current corrective source release. It revalidates the direct
+`aoa-stats` validation pin against the exact published `v0.2.1` provider;
+the immutable `v0.1.1` and `v0.1.0` releases remain historical releases. The
 connector's bounded source policy, local retrieval/graph/evidence contracts,
 fixtures, eval routes, and owner-local KAG/stats integration surfaces remain
 unchanged in scope. This patch does not mark the connector ready: the current maturity audit remains

@@ -4,8 +4,9 @@
 connector that can build local, policy-gated search and graph evidence from
 public 4PDA topic/post pages.
 
-> Current release: v0.1.1 — corrective exact-provider identity patch; v0.1.0
-> remains the immutable initial public method boundary. See
+> Current release: v0.1.2 — corrective revalidation against the exact
+> published `aoa-stats@v0.2.1` provider; v0.1.1 and v0.1.0 remain immutable
+> historical releases. See
 > [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASING.md](docs/RELEASING.md) for
 > release scope and publication law.
 
