@@ -131,14 +131,18 @@ def exact_active_stats_declarations(
     releasing: str,
     decision: str,
     changelog: str,
+    version: str = "0.1.0",
 ) -> tuple[bool, str]:
-    """Require every active owner surface to name the same published stats pin."""
+    """Require active surfaces and the dated release body to name the same pin."""
 
     unreleased = unreleased_section_body(changelog)
     if unreleased is None:
         return False, "CHANGELOG.md has no current ## [Unreleased] section"
     if "_No unreleased changes._" in unreleased:
         return False, "CHANGELOG.md Unreleased section still claims no changes"
+    release = section_body(changelog, version)
+    if release is None:
+        return False, f"CHANGELOG.md has no dated [{version}] section"
     required = (
         EXPECTED_STATS_RELEASE_TAG,
         f"`{EXPECTED_STATS_RELEASE_TAG_OBJECT}`",
@@ -150,6 +154,7 @@ def exact_active_stats_declarations(
         ("docs/RELEASING.md", releasing),
         ("AOA-4PDA-D-0039", decision),
         ("CHANGELOG.md [Unreleased]", unreleased),
+        (f"CHANGELOG.md [{version}]", release),
     )
     for label, text in surfaces:
         missing = [needle for needle in required if needle not in text]
@@ -220,9 +225,9 @@ def main(argv: list[str] | None = None) -> int:
 
     unreleased = unreleased_section_body(changelog)
     if unreleased is not None and "_No unreleased changes._" not in unreleased:
-        pass_check(checks, "unreleased-marker", "post-release correction is declared in Unreleased")
+        pass_check(checks, "unreleased-marker", "final-publication correction is declared in Unreleased")
     else:
-        fail(checks, "unreleased-marker", "expected a non-empty post-release correction in ## [Unreleased]")
+        fail(checks, "unreleased-marker", "expected a non-empty final-publication correction in ## [Unreleased]")
 
     marker = f"Current release: v{version}"
     if marker in readme:
@@ -249,7 +254,7 @@ def main(argv: list[str] | None = None) -> int:
         fail(checks, "published-stats-exact-pin", stats_pin_detail)
 
     active_stats_ok, active_stats_detail = exact_active_stats_declarations(
-        readme, roadmap, releasing, decision, changelog
+        readme, roadmap, releasing, decision, changelog, version
     )
     if active_stats_ok:
         pass_check(checks, "active-stats-declarations", active_stats_detail)

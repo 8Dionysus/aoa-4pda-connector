@@ -9,12 +9,18 @@ contract: it intentionally rejects this repository as an unknown owner.
 ## Release identity
 
 - The consolidated source release is `0.1.0` / `v0.1.0`. It is the only
-  campaign release after cleanup; the four same-day pre-cleanup Release/tag
-  carriers and their source material remain recorded as historical evidence
-  in the task-local conservation ledger.
-- The provider declaration below is a post-release source correction. It does
-  not create, move, delete, or rewrite a tag or GitHub Release, and it does
-  not retroactively alter the immutable `v0.1.0` publication.
+  campaign release after cleanup, and its existing tag/Release is the sole
+  final publication. The four same-day pre-cleanup Release/tag carriers and
+  their source material remain recorded as historical evidence in the
+  task-local conservation ledger.
+- This source and publication line includes one explicitly authorized,
+  target-only post-audit reconsolidation. Before changing the existing
+  `v0.1.0` identity, the owner must capture a digest-bound snapshot of its tag
+  object, peeled commit, Release, body, assets, tagged changelog, deleted
+  carriers, and conservation ledger. The owner may then delete and recreate
+  only the `v0.1.0` tag ref at the exact landed `main` commit and update only
+  the existing `v0.1.0` Release body. No second Release, version, tag, or
+  sibling repository is in scope; this is not general overwrite authority.
 - `pyproject.toml`, `src/aoa_4pda_connector/__init__.py`, the connector
   manifest, the README marker, and the dated `CHANGELOG.md` heading must agree.
 - `connector-ready-v1` remains an independent maturity target. A release does
@@ -87,10 +93,19 @@ not an artifact trust receipt or runtime proof.
    GitHub using squash.
 4. Sync local `main` to the exact landed commit and repeat the full gates.
 5. Run the owner-local dry-run with `python scripts/release_publish.py
-   --version 0.1.0 --tag v0.1.0 --dry-run`.
+   --version 0.1.0 --tag v0.1.0 --dry-run`. Because the target already exists,
+   the standard publisher is expected to refuse mutation; that refusal is
+   evidence that the ordinary route is fail-closed, not a reason to create a
+   corrective version.
 
-6. After the dry-run and exact-landed gates pass, run `python
-   scripts/release_publish.py --version 0.1.0 --tag v0.1.0 --confirm`.
+6. For this one-time authorized reconsolidation, after the pre-mutation
+   snapshot and exact-landed gates pass, delete and recreate only the
+   `refs/tags/v0.1.0` annotated tag at landed `main`, then PATCH the existing
+   Release `v0.1.0` body from the canonical dated changelog section. Preserve
+   its stable/non-draft/non-prerelease flags and zero-asset state; verify that
+   no other tag or Release changed and that the release inventory still has
+   exactly one campaign entry. The normal publisher's overwrite refusal
+   remains in force for every other release operation.
 
 The publisher refuses to overwrite an existing tag or release, requires a
 clean `main` at the local `origin/main`, creates an annotated tag at that
@@ -99,9 +114,9 @@ identity, release body, stable latest marker, and asset state afterward.
 
 ## Rollback and non-claims
 
-GitHub tags and Releases are immutable publication records for this route.
-There is no force-tag or delete-release path in the publisher. If publication
-is wrong, stop and issue a corrective release decision rather than rewriting
-history. The release does not prove source deployment, runtime activation,
-runtime health, corpus completeness, semantic answer quality, central proof,
-or human acceptance.
+The standard publisher has no force-tag, delete-release, or overwrite path.
+The single target-only reconsolidation above is an explicit, audited exception
+for this campaign and must never be generalized to another tag or Release.
+The release does not prove source deployment, runtime activation, runtime
+health, corpus completeness, semantic answer quality, central proof, or human
+acceptance.

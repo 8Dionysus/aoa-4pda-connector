@@ -2,10 +2,11 @@
 
 ## Status
 
-Accepted. The active consolidated source identity is `v0.1.0`; the provider
-identities and release carriers from the same-day campaign are retained as
-historical evidence in the content-conservation ledger and historical
-changelog material.
+Accepted. The active consolidated source and sole final publication identity
+is `v0.1.0`; the provider identities and release carriers from the same-day
+campaign are retained as historical evidence in the content-conservation
+ledger and historical changelog material. The existing target publication was
+reconciled once after a digest-bound pre-mutation snapshot.
 
 ## Decision
 
@@ -48,12 +49,14 @@ acceptance claim is introduced.
   `251846823f49d18b06c32374b3434e6e11002e96`) as historical campaign
   material. Those lines are not the active consolidated KAG binding.
 - No same-day Release body, tag-scoped changelog line, PR, commit, or
-  provider-validation limitation is silently discarded by consolidation.
+  provider-validation limitation is silently discarded by consolidation. The
+  pre-reconciliation target identity and every deleted carrier remain
+  recoverable from the task-local snapshot and ledger.
 
 ## Consequences
 
-- `v0.1.0` is the sole active campaign version; the current source binds the
-  exact provider identities above after a post-release source correction.
+- `v0.1.0` is the sole active campaign version and final publication; the
+  source and canonical release body bind the exact provider identities above.
 - A future provider release requires a new owner-approved provider identity
   update before this connector can publish a consumer release.
 - The exact direct pin is checked in CI by checkout equality and in the

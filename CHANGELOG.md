@@ -4,9 +4,9 @@
 
 ### Summary
 
-Post-release source correction for the direct provider declaration. The
-current `aoa-4pda-connector` source now consumes the already-published
-`aoa-stats@v0.2.0` identity without creating a new connector release.
+Post-audit single-release reconsolidation for the direct provider declaration.
+The sole final `v0.1.0` source and publication now consume and name the exact
+already-published `aoa-stats@v0.2.0` and `aoa-kag@v0.5.0` identities.
 
 ### Changed
 
@@ -17,17 +17,21 @@ current `aoa-4pda-connector` source now consumes the already-published
   preflight, and decision declaration to the exact published provider.
 - Regenerated only the derived portable KAG family after the authored source
   correction.
+- Reconciled only the existing `v0.1.0` tag and GitHub Release after a
+  digest-bound pre-mutation snapshot; no second release was created.
 
 ### Fixed
 
-- Removed the superseded `aoa-stats@v0.2.2` / `f119805cda69b3edeb2a4c5e407368d70e68650d`
-  identity from active consumer declarations.
+- Removed the superseded `aoa-stats@v0.2.2` /
+  `f119805cda69b3edeb2a4c5e407368d70e68650d` identity from the active final
+  publication declaration while retaining it in historical carrier material.
 
 ### Validation
 
-- This is a source-only post-release correction. No tag or GitHub Release was
-  created, moved, deleted, or rewritten; the published `v0.1.0` remains
-  immutable history.
+- The target-only tag/Release reconciliation was performed only after the
+  required digest-bound snapshot. No other tag or Release changed, and the
+  source-only release still has no artifact, runtime, proof, delivery, or
+  acceptance claim.
 - Exact provider, KAG-family, stats-port, source, release, and repository
   gates are required before landing and again on the exact landed `main`.
 
@@ -43,7 +47,7 @@ current `aoa-4pda-connector` source now consumes the already-published
 
 This is the one consolidated campaign source release for the 4PDA connector. It keeps the full public method boundary, source policy, schemas, evidence/search/graph/query/answer contracts, fixtures, evals, owner-local KAG/stats ports, generated consumer family, and explicit readiness/ownership limits from the same-day release history. The exact landed source is the current main lineage at consolidation time; publication carriers are not additional product versions.
 
-The `v0.1.0` publication recorded these provider identities: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.2` tag object `119f434918e8218e43e977b2edec3e4feab6b493` peels to `f119805cda69b3edeb2a4c5e407368d70e68650d`. The current source correction is declared above and does not rewrite that publication.
+The `v0.1.0` publication records the final provider identities: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.0` tag object `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peels to `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`. The superseded `v0.2.2`/`f119805c...` identity remains only in historical campaign material and the pre-mutation conservation evidence.
 
 ### Added
 
@@ -109,6 +113,7 @@ The historical root-to-`v0.1.0` first-parent ledger and all original PR rows are
 | corrective provider carrier | `28503fca383263220127c90878ba5683c2edabb4` | #53 | publish v0.1.1 with exact aoa-stats provider pin | historical provider correction and generated carrier retained |
 | corrective provider carrier | `94e3c3653f40a53e0acb05b17d648a9bf5c610ee` | #54 | revalidate aoa-stats v0.2.1 provider identity | historical provider correction and generated carrier retained |
 | corrective provider carrier | `0ebe087c7867135f41713437f8234eeb8d01038b` | #55 | revalidate exact current KAG and stats providers | landed source baseline for consolidation; historical material retained |
+| final provider correction | `5e16f1a411249d2dd7ebba65a878c1505e427aaf` | #57 | Repair exact aoa-stats provider pin | landed source correction retained in the final publication |
 
 ### Historical campaign material
 
