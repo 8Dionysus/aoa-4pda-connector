@@ -8,11 +8,10 @@ contract: it intentionally rejects this repository as an unknown owner.
 
 ## Release identity
 
-- The first public method-boundary release is `0.1.0` / `v0.1.0`.
-- The current corrective source release is `0.1.3` / `v0.1.3`; it preserves
-  `v0.1.2`, `v0.1.1`, and `v0.1.0` as immutable historical releases and
-  revalidates the direct stats and KAG provider identities against their exact
-  current published commits.
+- The consolidated source release is `0.1.0` / `v0.1.0`. It is the only
+  campaign release after cleanup; the four same-day pre-cleanup Release/tag
+  carriers and their source material remain recorded as historical evidence
+  in the task-local conservation ledger.
 - `pyproject.toml`, `src/aoa_4pda_connector/__init__.py`, the connector
   manifest, the README marker, and the dated `CHANGELOG.md` heading must agree.
 - `connector-ready-v1` remains an independent maturity target. A release does
@@ -29,7 +28,7 @@ The release candidate requires these exact published provider tags:
 
 | Provider | Required tag | Consumer pin in `.github/workflows/validate.yml` | Requirement |
 | --- | --- | --- | --- |
-| `8Dionysus/aoa-kag` | `v0.5.2` | action `8136d3eb629da28cea1206d13a8f1df52ee14739`; owner-family/generated pin `8136d3eb629da28cea1206d13a8f1df52ee14739` | `v0.5.2` tag object `251846823f49d18b06c32374b3434e6e11002e96` peels to `8136d3eb629da28cea1206d13a8f1df52ee14739`; ancestor-only action/family pins are invalid |
+| `8Dionysus/aoa-kag` | `v0.5.0` | action `f46f146cc79a26fa81ad0f400b9c5774df293e57`; owner-family/generated pin `f46f146cc79a26fa81ad0f400b9c5774df293e57` | `v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; ancestor-only action/family pins are invalid |
 | `8Dionysus/aoa-stats` | `v0.2.2` | `AOA_STATS_REVISION=f119805cda69b3edeb2a4c5e407368d70e68650d` | tag object `119f434918e8218e43e977b2edec3e4feab6b493` peels to `f119805cda69b3edeb2a4c5e407368d70e68650d`; the workflow checkout must equal the published tag's peeled commit |
 
 The direct `aoa-stats` body-provider pin is an immutable identity, not an
@@ -43,7 +42,7 @@ healthy.
 ## Required checks
 
 From a clean release-prep worktree run `python scripts/release_check.py
---version 0.1.3`, `python scripts/validate_connector.py`, `python
+--version 0.1.0`, `python scripts/validate_connector.py`, `python
 scripts/validate_local_stats_port.py`, `python -m pytest -q -p
 no:cacheprovider`, `python -m compileall -q src scripts`, and the two
 no-network CLI routes `PYTHONPATH=src python -m aoa_4pda_connector.cli doctor`
@@ -52,7 +51,7 @@ and `PYTHONPATH=src python -m aoa_4pda_connector.cli ready`.
 The `ready` result is recorded honestly. It is not a release pass/fail proxy
 and it must not be upgraded by publication.
 
-The exact published `aoa-kag@v0.5.2` owner generator
+The exact published `aoa-kag@v0.5.0` owner generator
 `scripts/generate_repo_local_kag_index.py` must check
 `kag/indexes/source_surface_index.json` with `--portable-family --check`; its
 `scripts/validate_repo_local_kag_family.py` must then validate the same repo
@@ -60,7 +59,7 @@ root. These scripts are run from the pinned provider checkout because this
 connector intentionally does not copy sibling owner tools into its source.
 
 The source owner must regenerate the family with the exact published
-`aoa-kag@v0.5.2` provider when source/docs/decision surfaces change. Generated
+`aoa-kag@v0.5.0` provider when source/docs/decision surfaces change. Generated
 indexes are consumer-visible derived read models, not authority over the
 authored docs or release decision.
 
@@ -85,10 +84,10 @@ not an artifact trust receipt or runtime proof.
    GitHub using squash.
 4. Sync local `main` to the exact landed commit and repeat the full gates.
 5. Run the owner-local dry-run with `python scripts/release_publish.py
-   --version 0.1.3 --tag v0.1.3 --dry-run`.
+   --version 0.1.0 --tag v0.1.0 --dry-run`.
 
 6. After the dry-run and exact-landed gates pass, run `python
-   scripts/release_publish.py --version 0.1.3 --tag v0.1.3 --confirm`.
+   scripts/release_publish.py --version 0.1.0 --tag v0.1.0 --confirm`.
 
 The publisher refuses to overwrite an existing tag or release, requires a
 clean `main` at the local `origin/main`, creates an annotated tag at that

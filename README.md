@@ -4,9 +4,10 @@
 connector that can build local, policy-gated search and graph evidence from
 public 4PDA topic/post pages.
 
-> Current release: v0.1.3 — corrective revalidation against the exact
-> published `aoa-stats@v0.2.2` and `aoa-kag@v0.5.2` providers; v0.1.2,
-> v0.1.1, and v0.1.0 remain immutable historical releases. See
+> Current release: v0.1.0 — one consolidated source release bound to the
+> exact published `aoa-stats@v0.2.2` and `aoa-kag@v0.5.0` providers. The
+> earlier same-day release bodies, changelog snapshots, PRs, and commits are
+> retained as historical material in the reconciliation ledger. See
 > [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASING.md](docs/RELEASING.md) for
 > release scope and publication law.
 
