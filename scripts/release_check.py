@@ -33,6 +33,11 @@ EXPECTED_KAG_RELEASE_TAG_OBJECT = "8f63e3ae558ea96d21ee06becfa6ef61d63d698a"
 EXPECTED_STATS_RELEASE_TAG = "v0.2.0"
 EXPECTED_STATS_RELEASE_REVISION = "88ff38b1b38eef939f2c5b4541cbe8363a05fc8d"
 EXPECTED_STATS_RELEASE_TAG_OBJECT = "a63dd6f95c6f0c87a371720885c2d90a1baa3436"
+SUPERSEDED_STATS_IDENTITIES = (
+    "aoa-stats@v0.2.2",
+    "119f434918e8218e43e977b2edec3e4feab6b493",
+    "f119805cda69b3edeb2a4c5e407368d70e68650d",
+)
 
 
 def exact_published_kag_pin(workflow_text: str, releasing_text: str) -> tuple[bool, str]:
@@ -148,6 +153,13 @@ def exact_active_stats_declarations(
         f"`{EXPECTED_STATS_RELEASE_TAG_OBJECT}`",
         f"`{EXPECTED_STATS_RELEASE_REVISION}`",
     )
+    active_release = release.split("\n### Historical campaign material", 1)[0]
+    stale = [needle for needle in SUPERSEDED_STATS_IDENTITIES if needle in active_release]
+    if stale:
+        return False, (
+            f"CHANGELOG.md [{version}] retains superseded aoa-stats identity: "
+            + ", ".join(stale)
+        )
     surfaces = (
         ("README.md", readme),
         ("ROADMAP.md", roadmap),

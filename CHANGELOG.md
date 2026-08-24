@@ -47,7 +47,7 @@ already-published `aoa-stats@v0.2.0` and `aoa-kag@v0.5.0` identities.
 
 This is the one consolidated campaign source release for the 4PDA connector. It keeps the full public method boundary, source policy, schemas, evidence/search/graph/query/answer contracts, fixtures, evals, owner-local KAG/stats ports, generated consumer family, and explicit readiness/ownership limits from the same-day release history. The exact landed source is the current main lineage at consolidation time; publication carriers are not additional product versions.
 
-The `v0.1.0` publication records the final provider identities: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.0` tag object `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peels to `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`. The superseded `v0.2.2`/`f119805c...` identity remains only in historical campaign material and the pre-mutation conservation evidence.
+The `v0.1.0` publication records the final provider identities: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.0` tag object `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peels to `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`. Historical carrier bodies, tagged changelog snapshots, and the pre-mutation conservation evidence retain their original provider records outside this canonical release body.
 
 ### Added
 
