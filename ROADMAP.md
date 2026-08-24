@@ -2,13 +2,16 @@
 
 ## Current release contour
 
-`v0.1.0` remains the current consolidated source release. The current source
-binds the direct `aoa-stats@v0.2.0` tag object
+`v0.1.0` remains the sole final consolidated source publication. The current
+source and its reconciled target publication bind the direct
+`aoa-stats@v0.2.0` tag object
 `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peeling to
 `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`, plus the repo-local
-`aoa-kag@v0.5.0` pin, to their exact published identities. This is a
-post-release source correction; it preserves the material from the superseded
-same-day release carriers in the reconciliation ledger. The
+`aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a`
+peeling to `f46f146cc79a26fa81ad0f400b9c5774df293e57`. The existing target was
+reconciled once after a digest-bound pre-mutation snapshot; no second release
+was created. The material from the superseded same-day release carriers is
+preserved in the reconciliation ledger. The
 connector's bounded source policy, local retrieval/graph/evidence contracts,
 fixtures, eval routes, and owner-local KAG/stats integration surfaces remain
 unchanged in scope. This patch does not mark the connector ready: the current maturity audit remains

@@ -4,14 +4,17 @@
 connector that can build local, policy-gated search and graph evidence from
 public 4PDA topic/post pages.
 
-> Current release: v0.1.0 — the current source requires the exact published
-> `aoa-stats@v0.2.0` tag object `a63dd6f95c6f0c87a371720885c2d90a1baa3436`
-> peeling to `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`, plus the exact
-> `aoa-kag@v0.5.0` provider. This is a post-release source correction; the
-> earlier same-day release bodies, changelog snapshots, PRs, and commits are
-> retained as historical material in the reconciliation ledger. See
-> [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASING.md](docs/RELEASING.md) for
-> release scope and publication law.
+> Current release: v0.1.0 — the sole final campaign publication records the
+> exact published `aoa-stats@v0.2.0` tag object
+> `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peeling to
+> `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`, plus the exact published
+> `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a`
+> peeling to `f46f146cc79a26fa81ad0f400b9c5774df293e57`. The existing target
+> tag and Release were reconciled once after a digest-bound pre-mutation
+> snapshot; no second release was created. Earlier same-day release bodies,
+> changelog snapshots, PRs, commits, and deleted carriers remain historical
+> material in the reconciliation ledger. See [CHANGELOG.md](CHANGELOG.md) and
+> [docs/RELEASING.md](docs/RELEASING.md) for release scope and publication law.
 
 It stores method, code, schemas, policy, tiny fixtures, seed profiles, eval
 queries, an install route, and an ignored repo-local state scaffold. It does
