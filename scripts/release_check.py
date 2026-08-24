@@ -30,9 +30,9 @@ REQUIRED_SECTIONS = (
 EXPECTED_KAG_RELEASE_TAG = "v0.5.0"
 EXPECTED_KAG_RELEASE_REVISION = "f46f146cc79a26fa81ad0f400b9c5774df293e57"
 EXPECTED_KAG_RELEASE_TAG_OBJECT = "8f63e3ae558ea96d21ee06becfa6ef61d63d698a"
-EXPECTED_STATS_RELEASE_TAG = "v0.2.2"
-EXPECTED_STATS_RELEASE_REVISION = "f119805cda69b3edeb2a4c5e407368d70e68650d"
-EXPECTED_STATS_RELEASE_TAG_OBJECT = "119f434918e8218e43e977b2edec3e4feab6b493"
+EXPECTED_STATS_RELEASE_TAG = "v0.2.0"
+EXPECTED_STATS_RELEASE_REVISION = "88ff38b1b38eef939f2c5b4541cbe8363a05fc8d"
+EXPECTED_STATS_RELEASE_TAG_OBJECT = "a63dd6f95c6f0c87a371720885c2d90a1baa3436"
 
 
 def exact_published_kag_pin(workflow_text: str, releasing_text: str) -> tuple[bool, str]:
@@ -114,6 +114,50 @@ def section_body(changelog: str, version: str) -> str | None:
     return tail[: next_heading.start()] if next_heading else tail
 
 
+def unreleased_section_body(changelog: str) -> str | None:
+    """Return only the current, unquoted Unreleased section."""
+
+    match = re.search(r"^## \[Unreleased\]\s*$", changelog, flags=re.MULTILINE)
+    if not match:
+        return None
+    tail = changelog[match.end() :]
+    next_heading = re.search(r"^## \[", tail, flags=re.MULTILINE)
+    return tail[: next_heading.start()] if next_heading else tail
+
+
+def exact_active_stats_declarations(
+    readme: str,
+    roadmap: str,
+    releasing: str,
+    decision: str,
+    changelog: str,
+) -> tuple[bool, str]:
+    """Require every active owner surface to name the same published stats pin."""
+
+    unreleased = unreleased_section_body(changelog)
+    if unreleased is None:
+        return False, "CHANGELOG.md has no current ## [Unreleased] section"
+    if "_No unreleased changes._" in unreleased:
+        return False, "CHANGELOG.md Unreleased section still claims no changes"
+    required = (
+        EXPECTED_STATS_RELEASE_TAG,
+        f"`{EXPECTED_STATS_RELEASE_TAG_OBJECT}`",
+        f"`{EXPECTED_STATS_RELEASE_REVISION}`",
+    )
+    surfaces = (
+        ("README.md", readme),
+        ("ROADMAP.md", roadmap),
+        ("docs/RELEASING.md", releasing),
+        ("AOA-4PDA-D-0039", decision),
+        ("CHANGELOG.md [Unreleased]", unreleased),
+    )
+    for label, text in surfaces:
+        missing = [needle for needle in required if needle not in text]
+        if missing:
+            return False, f"{label} is missing exact stats identity: {', '.join(missing)}"
+    return True, "active owner surfaces declare the exact published aoa-stats identity"
+
+
 def git(repo: Path, *args: str) -> tuple[int, str, str]:
     proc = subprocess.run(
         ["git", *args],
@@ -141,7 +185,11 @@ def main(argv: list[str] | None = None) -> int:
     manifest_text = (repo / "connector" / "manifests" / "connector_manifest.yaml").read_text(encoding="utf-8")
     changelog = (repo / "CHANGELOG.md").read_text(encoding="utf-8")
     readme = (repo / "README.md").read_text(encoding="utf-8")
+    roadmap = (repo / "ROADMAP.md").read_text(encoding="utf-8")
     releasing = (repo / "docs" / "RELEASING.md").read_text(encoding="utf-8")
+    decision = (
+        repo / "docs" / "decisions" / "AOA-4PDA-D-0039-exact-published-provider-identity.md"
+    ).read_text(encoding="utf-8")
     workflow = (repo / ".github" / "workflows" / "validate.yml").read_text(encoding="utf-8")
 
     expected = f'version = "{version}"'
@@ -170,10 +218,11 @@ def main(argv: list[str] | None = None) -> int:
         else:
             pass_check(checks, "release-sections", "all human-first and reconciliation sections present")
 
-    if "## [Unreleased]" in changelog and "_No unreleased changes._" in changelog:
-        pass_check(checks, "unreleased-marker", "empty explicit Unreleased section")
+    unreleased = unreleased_section_body(changelog)
+    if unreleased is not None and "_No unreleased changes._" not in unreleased:
+        pass_check(checks, "unreleased-marker", "post-release correction is declared in Unreleased")
     else:
-        fail(checks, "unreleased-marker", "expected empty ## [Unreleased] section")
+        fail(checks, "unreleased-marker", "expected a non-empty post-release correction in ## [Unreleased]")
 
     marker = f"Current release: v{version}"
     if marker in readme:
@@ -198,6 +247,14 @@ def main(argv: list[str] | None = None) -> int:
         pass_check(checks, "published-stats-exact-pin", stats_pin_detail)
     else:
         fail(checks, "published-stats-exact-pin", stats_pin_detail)
+
+    active_stats_ok, active_stats_detail = exact_active_stats_declarations(
+        readme, roadmap, releasing, decision, changelog
+    )
+    if active_stats_ok:
+        pass_check(checks, "active-stats-declarations", active_stats_detail)
+    else:
+        fail(checks, "active-stats-declarations", active_stats_detail)
 
     code, branch, err = git(repo, "branch", "--show-current")
     if code == 0 and branch:

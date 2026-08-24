@@ -5,6 +5,7 @@ from pathlib import Path
 from scripts.release_check import (
     EXPECTED_KAG_RELEASE_REVISION,
     EXPECTED_STATS_RELEASE_REVISION,
+    exact_active_stats_declarations,
     exact_published_kag_pin,
     exact_published_stats_pin,
 )
@@ -21,6 +22,22 @@ def test_release_law_requires_exact_published_stats_commit():
 
     assert ok, detail
     assert EXPECTED_STATS_RELEASE_REVISION in workflow
+
+
+def test_active_surfaces_require_exact_published_stats_identity():
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    roadmap = (REPO_ROOT / "ROADMAP.md").read_text(encoding="utf-8")
+    releasing = (REPO_ROOT / "docs/RELEASING.md").read_text(encoding="utf-8")
+    decision = (
+        REPO_ROOT / "docs/decisions/AOA-4PDA-D-0039-exact-published-provider-identity.md"
+    ).read_text(encoding="utf-8")
+    changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+
+    ok, detail = exact_active_stats_declarations(
+        readme, roadmap, releasing, decision, changelog
+    )
+
+    assert ok, detail
 
 
 def test_release_law_requires_exact_published_kag_commit():
