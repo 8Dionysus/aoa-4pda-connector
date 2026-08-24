@@ -2,9 +2,12 @@
 
 ## Current release contour
 
-`v0.1.0` is the current consolidated source release. It binds the direct
-`aoa-stats@v0.2.2` and repo-local `aoa-kag@v0.5.0` pins to their exact
-published identities while preserving the material from the superseded
+`v0.1.0` remains the current consolidated source release. The current source
+binds the direct `aoa-stats@v0.2.0` tag object
+`a63dd6f95c6f0c87a371720885c2d90a1baa3436` peeling to
+`88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`, plus the repo-local
+`aoa-kag@v0.5.0` pin, to their exact published identities. This is a
+post-release source correction; it preserves the material from the superseded
 same-day release carriers in the reconciliation ledger. The
 connector's bounded source policy, local retrieval/graph/evidence contracts,
 fixtures, eval routes, and owner-local KAG/stats integration surfaces remain

@@ -12,6 +12,9 @@ contract: it intentionally rejects this repository as an unknown owner.
   campaign release after cleanup; the four same-day pre-cleanup Release/tag
   carriers and their source material remain recorded as historical evidence
   in the task-local conservation ledger.
+- The provider declaration below is a post-release source correction. It does
+  not create, move, delete, or rewrite a tag or GitHub Release, and it does
+  not retroactively alter the immutable `v0.1.0` publication.
 - `pyproject.toml`, `src/aoa_4pda_connector/__init__.py`, the connector
   manifest, the README marker, and the dated `CHANGELOG.md` heading must agree.
 - `connector-ready-v1` remains an independent maturity target. A release does
@@ -29,7 +32,7 @@ The release candidate requires these exact published provider tags:
 | Provider | Required tag | Consumer pin in `.github/workflows/validate.yml` | Requirement |
 | --- | --- | --- | --- |
 | `8Dionysus/aoa-kag` | `v0.5.0` | action `f46f146cc79a26fa81ad0f400b9c5774df293e57`; owner-family/generated pin `f46f146cc79a26fa81ad0f400b9c5774df293e57` | `v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; ancestor-only action/family pins are invalid |
-| `8Dionysus/aoa-stats` | `v0.2.2` | `AOA_STATS_REVISION=f119805cda69b3edeb2a4c5e407368d70e68650d` | tag object `119f434918e8218e43e977b2edec3e4feab6b493` peels to `f119805cda69b3edeb2a4c5e407368d70e68650d`; the workflow checkout must equal the published tag's peeled commit |
+| `8Dionysus/aoa-stats` | `v0.2.0` | `AOA_STATS_REVISION=88ff38b1b38eef939f2c5b4541cbe8363a05fc8d` | tag object `a63dd6f95c6f0c87a371720885c2d90a1baa3436` peels to `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`; the workflow checkout must equal the published tag's peeled commit |
 
 The direct `aoa-stats` body-provider pin is an immutable identity, not an
 ancestor constraint. A green `git merge-base --is-ancestor` result for an

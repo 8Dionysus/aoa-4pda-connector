@@ -2,7 +2,40 @@
 
 ## [Unreleased]
 
-_No unreleased changes._
+### Summary
+
+Post-release source correction for the direct provider declaration. The
+current `aoa-4pda-connector` source now consumes the already-published
+`aoa-stats@v0.2.0` identity without creating a new connector release.
+
+### Changed
+
+- Re-resolved the annotated `aoa-stats@v0.2.0` tag object
+  `a63dd6f95c6f0c87a371720885c2d90a1baa3436` to its exact peeled commit
+  `88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`.
+- Updated the active workflow, release law, roadmap, README, release
+  preflight, and decision declaration to the exact published provider.
+- Regenerated only the derived portable KAG family after the authored source
+  correction.
+
+### Fixed
+
+- Removed the superseded `aoa-stats@v0.2.2` / `f119805cda69b3edeb2a4c5e407368d70e68650d`
+  identity from active consumer declarations.
+
+### Validation
+
+- This is a source-only post-release correction. No tag or GitHub Release was
+  created, moved, deleted, or rewritten; the published `v0.1.0` remains
+  immutable history.
+- Exact provider, KAG-family, stats-port, source, release, and repository
+  gates are required before landing and again on the exact landed `main`.
+
+### Notes
+
+- Superseded provider identities remain in dated release material, historical
+  changelog blocks, and provenance receipts as historical evidence; they are
+  not active bindings.
 
 ## [0.1.0] - 2026-08-23
 
@@ -10,7 +43,7 @@ _No unreleased changes._
 
 This is the one consolidated campaign source release for the 4PDA connector. It keeps the full public method boundary, source policy, schemas, evidence/search/graph/query/answer contracts, fixtures, evals, owner-local KAG/stats ports, generated consumer family, and explicit readiness/ownership limits from the same-day release history. The exact landed source is the current main lineage at consolidation time; publication carriers are not additional product versions.
 
-The active provider identities are exact: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.2` tag object `119f434918e8218e43e977b2edec3e4feab6b493` peels to `f119805cda69b3edeb2a4c5e407368d70e68650d`.
+The `v0.1.0` publication recorded these provider identities: `aoa-kag@v0.5.0` tag object `8f63e3ae558ea96d21ee06becfa6ef61d63d698a` peels to `f46f146cc79a26fa81ad0f400b9c5774df293e57`; direct `aoa-stats@v0.2.2` tag object `119f434918e8218e43e977b2edec3e4feab6b493` peels to `f119805cda69b3edeb2a4c5e407368d70e68650d`. The current source correction is declared above and does not rewrite that publication.
 
 ### Added
 

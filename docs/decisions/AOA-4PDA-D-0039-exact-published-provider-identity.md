@@ -10,10 +10,10 @@ changelog material.
 ## Decision
 
 The direct `aoa-stats` body-provider checkout in this connector must equal the
-peeled commit of the required published provider tag. The active consolidated
-consumer identity is `aoa-stats@v0.2.2`: annotated tag object
-`119f434918e8218e43e977b2edec3e4feab6b493` peels to
-`f119805cda69b3edeb2a4c5e407368d70e68650d`. The workflow pin, its fetched
+peeled commit of the required published provider tag. The current source
+identity is `aoa-stats@v0.2.0`: annotated tag object
+`a63dd6f95c6f0c87a371720885c2d90a1baa3436` peels to
+`88ff38b1b38eef939f2c5b4541cbe8363a05fc8d`. The workflow pin, its fetched
 checkout, and the owner-local release preflight must use that exact commit.
 
 The active repo-local KAG action and generated owner-family declaration bind
@@ -52,8 +52,8 @@ acceptance claim is introduced.
 
 ## Consequences
 
-- `v0.1.0` is the sole active campaign version and binds the exact provider
-  identities above.
+- `v0.1.0` is the sole active campaign version; the current source binds the
+  exact provider identities above after a post-release source correction.
 - A future provider release requires a new owner-approved provider identity
   update before this connector can publish a consumer release.
 - The exact direct pin is checked in CI by checkout equality and in the
