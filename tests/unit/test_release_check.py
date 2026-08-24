@@ -62,6 +62,28 @@ def test_dated_release_body_rejects_superseded_stats_identity():
     assert "CHANGELOG.md [0.1.0]" in detail
 
 
+def test_dated_release_body_rejects_historical_stats_pointer_even_with_current_pin():
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    roadmap = (REPO_ROOT / "ROADMAP.md").read_text(encoding="utf-8")
+    releasing = (REPO_ROOT / "docs/RELEASING.md").read_text(encoding="utf-8")
+    decision = (
+        REPO_ROOT / "docs/decisions/AOA-4PDA-D-0039-exact-published-provider-identity.md"
+    ).read_text(encoding="utf-8")
+    changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    contaminated_changelog = changelog.replace(
+        "Historical carrier bodies, tagged changelog snapshots, and the pre-mutation conservation evidence retain their original provider records outside this canonical release body.",
+        "The canonical body also mentions aoa-stats@v0.2.2 for historical context.",
+        1,
+    )
+
+    ok, detail = exact_active_stats_declarations(
+        readme, roadmap, releasing, decision, contaminated_changelog
+    )
+
+    assert not ok
+    assert "superseded aoa-stats identity" in detail
+
+
 def test_release_law_requires_exact_published_kag_commit():
     workflow = (REPO_ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
     releasing = (REPO_ROOT / "docs/RELEASING.md").read_text(encoding="utf-8")
