@@ -37,10 +37,10 @@
         "schema_version": "aoa-repo-local-kag-repository-index-v2"
       },
       {
-        "content_digest": "493152dfecdfe5f505ee9d58f5a62cdf3263087f2d1c1e42cd53a09fe2d1103f",
+        "content_digest": "5f83e610982d6e223ca5f3499ccbd64b60742191476d180e986c885e6aecf514",
         "kind": "event",
         "path": "kag/indexes/repo_event_index.json",
-        "records": 119,
+        "records": 120,
         "schema_version": "aoa-repo-local-kag-repository-index-v2"
       },
       {
@@ -62,7 +62,7 @@
   },
   "family_identity": {
     "artifact_kind": "repo_local_kag_portable_family",
-    "content_digest": "4b8fbd599f9214ca972f671a4ead8de4d02f8c5c56eec693ed1979c1f0e74b51",
+    "content_digest": "8e99e5ffccdb881c58545ee9450651bde87b82766aeee93e55664e1d15877d39",
     "local_id": "family:repo-local:portable-record-corpus",
     "schema_ref": "aoa-kag:schemas/repo-local-kag-family-manifest.schema.json",
     "source_snapshot": "sha256:43c7af9cd6bbf238bbb15ba7aac7e4bd2b8c47c20d8622d0f53440ec99320bb5"
@@ -1877,12 +1877,12 @@
       "records": 7
     },
     {
-      "bytes": 24595,
-      "digest": "sha256:a2a641e35d85848d97420c67fcf5be116e02448ca544f3f01dbf0fe8387a306e",
+      "bytes": 20473,
+      "digest": "sha256:86ad09fae1d5f2f0080ac8e189258067a8961fd5eee080dcb8d93759025695b8",
       "kind": "event",
       "path": "kag/indexes/shards/event/b.jsonl",
       "range": "b",
-      "records": 9
+      "records": 8
     },
     {
       "bytes": 2342,
@@ -1901,12 +1901,12 @@
       "records": 8
     },
     {
-      "bytes": 24233,
-      "digest": "sha256:3e4e9aaeaae186295bc247354a23420829777687b9e171241a0b749da16f446a",
+      "bytes": 32205,
+      "digest": "sha256:87acdf06fe2e1d7a54d482dbfcb81a1a963aa8f54de627354fdb523bdb0a8314",
       "kind": "event",
       "path": "kag/indexes/shards/event/e.jsonl",
       "range": "e",
-      "records": 10
+      "records": 12
     },
     {
       "bytes": 8519,
@@ -2212,11 +2212,11 @@
   },
   "summary": {
     "anchor_records": 2342,
-    "canonical_records": 2657,
-    "event_records": 119,
-    "shard_bytes": 3240177,
+    "canonical_records": 2658,
+    "event_records": 120,
+    "shard_bytes": 3244027,
     "shards": 213,
     "source_records": 196,
-    "tracked_bytes": 3302790
+    "tracked_bytes": 3306640
   }
 }
